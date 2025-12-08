@@ -11,6 +11,9 @@ export const StartStep = ({ onStart, issuer }: StartStepProps) => {
         const response = await fetch("http://localhost:3000/start", {
             method: "POST",
             body: JSON.stringify({ issuer }),
+            headers: {
+                "Content-Type": "application/json",
+            },
         });
 
         if (response.ok) {

@@ -14,6 +14,7 @@ export const Board = ({ issuer }: BoardProps) => {
       body: JSON.stringify({ issuer }),
       headers: {
         Accept: "application/json",
+        "Content-Type": "application/json",
       },
     })
       .then((response) => response.json())
@@ -28,8 +29,10 @@ export const Board = ({ issuer }: BoardProps) => {
     fetch("http://localhost:3000/loot", {
       method: "POST",
       body: JSON.stringify({ issuer }),
-    })
-      .then(() => fetchState());
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then(() => fetchState());
   };
 
   if (!state) {

@@ -12,6 +12,9 @@ export const JoinForm = ({ onJoin }: JoinFormProps) => {
         const response = await fetch("http://localhost:3000/join", {
           method: "POST",
           body: JSON.stringify({ id: name }),
+          headers: {
+            "Content-Type": "application/json",
+          },
         });
     
         const data: JoinResponse = await response.json();
