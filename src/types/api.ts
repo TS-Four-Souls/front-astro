@@ -24,7 +24,7 @@ export type DetailedStateResponse = {
   },
   players: {
     name: string;
-    hand: number;
+    handSize: number;
     inPlay: { slug: string }[];
   }[];
 };

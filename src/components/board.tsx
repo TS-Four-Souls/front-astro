@@ -8,21 +8,20 @@ interface BoardProps {
 export const Board = ({ issuer }: BoardProps) => {
   const [state, setState] = useState<DetailedStateResponse | null>(null);
 
-  const fetchState = () => {
-    fetch("http://localhost:3000/detailedstate", {
-      method: "POST",
-      body: JSON.stringify({ issuer }),
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => setState(data));
-  };
-
   useEffect(() => {
-    fetchState();
+    const url = new URL("http://localhost:3000/sse");
+    url.searchParams.set("id", issuer.id);
+    url.searchParams.set("secret", issuer.secret);
+    const stream = new EventSource(url.toString());
+
+    stream.addEventListener("open", () => {
+      console.log("SSE connection opened");
+    });
+    // Named event: "stateChange"
+    stream.addEventListener("stateChange", (event) => {
+      const data = JSON.parse(event.data);
+      setState(data);
+    });
   }, []);
 
   const drawLoot = () => {
@@ -32,7 +31,7 @@ export const Board = ({ issuer }: BoardProps) => {
       headers: {
         "Content-Type": "application/json",
       },
-    }).then(() => fetchState());
+    });
   };
 
   if (!state) {
@@ -46,6 +45,18 @@ export const Board = ({ issuer }: BoardProps) => {
         <div key={player.name}>
           <h2>{player.name}</h2>
           <p>
+            Hand:<br />
+            {Array.from({ length: player.handSize }).map((_, index) => (
+              <img
+                style={{ width: "200px" }}
+                src={`http://localhost:3000/images/b2-a_dime/back`}
+                alt="b2-a_dime"
+                key={index}
+              />
+            ))}
+          </p>
+          <p>
+            In Play:<br />
             {player.inPlay.map((card) => (
               <img
                 style={{ width: "200px" }}
@@ -62,7 +73,8 @@ export const Board = ({ issuer }: BoardProps) => {
       </div>
       <p>{state.me.name}</p>
       <p>
-        {state.me.hand.map((card) => (
+        In Play:<br />
+        {state.me.inPlay.map((card) => (
           <img
             style={{ width: "200px" }}
             src={`http://localhost:3000/images/${card.slug}/front`}
@@ -72,7 +84,8 @@ export const Board = ({ issuer }: BoardProps) => {
         ))}
       </p>
       <p>
-        {state.me.inPlay.map((card) => (
+        Hand:<br />
+        {state.me.hand.map((card) => (
           <img
             style={{ width: "200px" }}
             src={`http://localhost:3000/images/${card.slug}/front`}
