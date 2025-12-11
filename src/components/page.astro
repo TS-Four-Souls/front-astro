@@ -1,0 +1,144 @@
+---
+
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Four Souls</title>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  body,
+  html {
+    padding: 0;
+    margin: 0;
+    color-scheme: light dark;
+    background-color: light-dark(#EEE, #222);
+  }
+  
+  * {
+    font-family: monospace;
+    color: light-dark(#222, #EEE);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  li {
+    margin: 0;
+    padding: 0;
+  }
+
+  button {
+    padding: 1.2em 2em;
+    font-size: 110%;
+    font-weight: 800;
+  }
+
+  #board {
+    & > nav {
+      display: flex;
+      place-content: center;
+      gap: 5px;
+      margin-bottom: 64px;
+    }
+
+    & > div {
+      display: flex;
+      flex-direction: column;
+      align-content: space-between;
+      grid-auto-rows: 1fr;
+      flex-grow: 1;
+      height: 100%;
+    }
+
+    .player {
+      display: flex;
+      padding: 1em;
+      gap: 4em;
+
+      &[data-is-player="true"] {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+      }
+
+      .in-play {
+        display: flex;
+        gap: 10px;
+
+        & > img {
+          width: 200px;
+          height: auto;
+          box-shadow: 0 0 10px rgb(0 0 0 / 0.3);
+          transition: ease-in-out 100ms transform;
+
+          &:hover {
+            transform: rotate(5deg);
+          }
+        }
+      }
+
+      .cards {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        place-items: center;
+        flex: 1;
+      }
+
+      .souls {
+        & > img {
+          width: 100px;
+        }
+      }
+
+      .loot {
+        display: flex;
+
+        --spacing: -50px;
+
+        &:hover {
+          --spacing: -20px;
+        }
+
+        & > img {
+          &:first-of-type {
+            margin-left: 0;
+          }
+
+          width: 200px;
+          margin-left: var(--spacing);
+          box-shadow: 0 0 20px rgb(0 0 0 / 0.5);
+
+          transition:
+            ease-in-out 100ms transform,
+            ease-in-out 100ms margin-left;
+
+          &:hover {
+            transform: translateY(-5px);
+            z-index: 1;
+          }
+        }
+      }
+    }
+
+    #stack {
+      padding: 1em;
+
+    }
+  }
+</style>

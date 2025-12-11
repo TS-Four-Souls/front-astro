@@ -19,12 +19,33 @@ export type StateResponse = {
 export type DetailedStateResponse = {
   me: {
     name: string;
-    hand: { slug: string }[];
-    inPlay: { slug: string }[];
+    hand: GenericCardType[];
+    inPlay: GenericCardType[];
+    souls: GenericCardType[];
+    coins: number;
+    currentHealthPoints: number;
+    currentAttackPoints: number;
   },
   players: {
     name: string;
     handSize: number;
-    inPlay: { slug: string }[];
+    inPlay: GenericCardType[];
+    souls: GenericCardType[];
+    coins: number
+    currentHealthPoints: number;
+    currentAttackPoints: number;
   }[];
+  topDiscards: {
+    loot?: GenericCardType;
+    treasure?: GenericCardType;
+    monster?: GenericCardType;
+  };
+  monsters: GenericCardType[];
+  shop: GenericCardType[];
+  turn: string;
+  stack: string[];
 };
+
+type GenericCardType = {
+  slug: string;
+}

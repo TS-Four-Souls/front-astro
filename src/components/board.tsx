@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import type { DetailedStateResponse, Issuer } from "../types/api";
+import { PlayerStats } from "./player-stats";
 
 interface BoardProps {
   issuer: Issuer;
@@ -34,66 +35,52 @@ export const Board = ({ issuer }: BoardProps) => {
     });
   };
 
+  const onLootCardClick = (index: number) => {
+    fetch("http://localhost:3000/playcard", {
+      method: "POST",
+      body: JSON.stringify({ issuer, index: index + 1 }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  };
+
   if (!state) {
     return <div>Loading...</div>;
   }
 
+  const resolveStack = () => {
+    fetch("http://localhost:3000/resolve");
+  };
+
   return (
-    <div>
-      <h1>Board</h1>
-      {state.players.map((player) => (
-        <div key={player.name}>
-          <h2>{player.name}</h2>
-          <p>
-            Hand:<br />
-            {Array.from({ length: player.handSize }).map((_, index) => (
-              <img
-                style={{ width: "200px" }}
-                src={`http://localhost:3000/images/b2-a_dime/back`}
-                alt="b2-a_dime"
-                key={index}
-              />
-            ))}
-          </p>
-          <p>
-            In Play:<br />
-            {player.inPlay.map((card) => (
-              <img
-                style={{ width: "200px" }}
-                src={`http://localhost:3000/images/${card.slug}/front`}
-                alt={card.slug}
-                key={card.slug}
-              />
-            ))}
-          </p>
-        </div>
-      ))}
-      <div>
+    <div id="board">
+      <nav>
         <button onClick={drawLoot}>Draw loot</button>
+        <button onClick={resolveStack}>Resolve stack</button>
+      </nav>
+      <div>
+        {state.players.map((player) => (
+          <PlayerStats
+            player={player}
+            state={state.turn === player.name ? "playing" : "waiting"}
+          />
+        ))}
+        <PlayerStats
+          player={state.me}
+          state={state.turn === state.me.name ? "playing" : "waiting"}
+          isPlayer
+          onLootCardClick={onLootCardClick}
+        />
       </div>
-      <p>{state.me.name}</p>
-      <p>
-        In Play:<br />
-        {state.me.inPlay.map((card) => (
-          <img
-            style={{ width: "200px" }}
-            src={`http://localhost:3000/images/${card.slug}/front`}
-            alt={card.slug}
-            key={card.slug}
-          />
-        ))}
-      </p>
-      <p>
-        Hand:<br />
-        {state.me.hand.map((card) => (
-          <img
-            style={{ width: "200px" }}
-            src={`http://localhost:3000/images/${card.slug}/front`}
-            alt={card.slug}
-            key={card.slug}
-          />
-        ))}
-      </p>
+      <div id="stack">
+        <h2>The stack</h2>
+        <ol>
+          {state.stack.toReversed().map((entry) => (
+            <li>{entry}</li>
+          ))}
+        </ol>
+      </div>
     </div>
   );
 };
