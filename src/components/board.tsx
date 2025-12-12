@@ -63,12 +63,23 @@ export const Board = ({ issuer }: BoardProps) => {
     });
   };
 
+  const endTurn = () => {
+    fetch("http://localhost:3000/endturn", {
+      method: "POST",
+      body: JSON.stringify({ issuer }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  };
+
   return (
     <div id="board">
       <nav>
         <button onClick={drawLoot}>Draw loot</button>
         <button onClick={resolveStack}>Resolve stack</button>
         <button onClick={gainTreasure}>Gain a treasure</button>
+        <button onClick={endTurn}>End Turn</button>
       </nav>
       <div>
         {state.players.map((player) => (
