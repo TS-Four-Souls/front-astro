@@ -7,6 +7,7 @@ interface Props {
   state: "playing" | "waiting";
   isPlayer?: boolean;
   onLootCardClick?: (index: number) => void;
+  onTreasureCardClick?: (index: number) => void;
 }
 
 export const PlayerStats = ({
@@ -14,6 +15,7 @@ export const PlayerStats = ({
   state,
   isPlayer = false,
   onLootCardClick,
+  onTreasureCardClick,
 }: Props) => {
   return (
     <div className="player" data-is-player={isPlayer}>
@@ -24,16 +26,18 @@ export const PlayerStats = ({
           <li>Coins: {player.coins}</li>
           <li>Health: {player.currentHealthPoints}</li>
           <li>Attack: {player.currentAttackPoints}</li>
+          <li>Loot play: {player.remainingLootPlay}</li>
         </ul>
       </div>
 
       <div className="cards">
         <div className="in-play">
-          {player.inPlay.map((card) => (
+          {player.inPlay.map((card, index) => (
             <img
               src={`http://localhost:3000/images/${card.slug}/front`}
               alt={card.slug}
               key={card.slug}
+              onClick={() => onTreasureCardClick?.(index)}
             />
           ))}
         </div>

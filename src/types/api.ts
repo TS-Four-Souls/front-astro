@@ -25,6 +25,7 @@ export type DetailedStateResponse = {
     coins: number;
     currentHealthPoints: number;
     currentAttackPoints: number;
+    remainingLootPlay: number;
   },
   players: {
     name: string;
@@ -34,6 +35,7 @@ export type DetailedStateResponse = {
     coins: number
     currentHealthPoints: number;
     currentAttackPoints: number;
+    remainingLootPlay: number;
   }[];
   topDiscards: {
     loot?: GenericCardType;

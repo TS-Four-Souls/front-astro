@@ -35,6 +35,16 @@ export const Board = ({ issuer }: BoardProps) => {
     });
   };
 
+  const onTreasureCardClick = (index: number) => {
+    fetch("http://localhost:3000/activate", {
+      method: "POST",
+      body: JSON.stringify({ issuer, index: index + 1 }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  };
+
   const onLootCardClick = (index: number) => {
     fetch("http://localhost:3000/playcard", {
       method: "POST",
@@ -93,6 +103,7 @@ export const Board = ({ issuer }: BoardProps) => {
           state={state.turn === state.me.name ? "playing" : "waiting"}
           isPlayer
           onLootCardClick={onLootCardClick}
+          onTreasureCardClick={onTreasureCardClick}
         />
       </div>
       <div id="stack">
