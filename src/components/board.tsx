@@ -168,14 +168,49 @@ export const Board = ({ issuer }: BoardProps) => {
           onTreasureCardClick={onTreasureCardClick}
         />
       </div>
-      <div id="stack">
-        <h2>The stack</h2>
-        <ol>
-          {state.stack.toReversed().map((entry) => (
-            <li>{entry}</li>
-          ))}
-        </ol>
-      </div>
+      <section id="board-center">
+        <div id="monsters">
+          <h2>Monsters</h2>
+          <div>
+            <img
+              src={`http://localhost:3000/images/b2-monstro/back`}
+              alt="Monster back"
+            />
+            {state.monsters.map((monster) => (
+              <img
+                src={`http://localhost:3000/images/${monster.slug}/front`}
+                alt={monster.slug}
+                key={monster.slug}
+              />
+            ))}
+          </div>
+        </div>
+        <div id="stack">
+          <h2>The stack</h2>
+          <ol>
+            {state.stack.toReversed().map((entry) => (
+              <li>{entry}</li>
+            ))}
+          </ol>
+        </div>
+        <div id="shop">
+          <h2>Shop</h2>
+          <div>
+            <img
+              src={`http://localhost:3000/images/b2-no/back`}
+              alt="Monster back"
+            />
+            {state.shop.map((card) => (
+              <img
+                src={`http://localhost:3000/images/${card.slug}/front`}
+                alt={card.slug}
+                key={card.slug}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
       {pendingChoices.length > 0 && <ChoicePopup {...pendingChoices[0]} />}
     </div>
   );
