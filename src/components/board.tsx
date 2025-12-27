@@ -1,13 +1,63 @@
 import { useEffect, useState } from "react";
 import type { DetailedStateResponse, Issuer } from "../types/api";
 import { PlayerStats } from "./player-stats";
+import { ChoicePopup } from "./choice-popup";
 
 interface BoardProps {
   issuer: Issuer;
 }
 
+interface PendingCardPlay {
+  index: number;
+  effectTargets: {
+    description: string;
+    choices: string[];
+    choice: string | null;
+  }[];
+}
+
 export const Board = ({ issuer }: BoardProps) => {
   const [state, setState] = useState<DetailedStateResponse | null>(null);
+  const [pendingCardPlay, setPendingCardPlay] =
+    useState<PendingCardPlay | null>(null);
+  const pendingChoices =
+    pendingCardPlay?.effectTargets.flatMap((et, index) =>
+      et.choice === null
+        ? [
+            {
+              description: et.description,
+              choices: et.choices,
+              onChoice: (choice: string) => {
+                // Update the pendingCardPlay state with the chosen choice
+                const newPendingCardPlay = { ...pendingCardPlay! };
+                newPendingCardPlay.effectTargets[index].choice = choice;
+                if (index === pendingCardPlay.effectTargets.length - 1) {
+                  activateTreasureCard(newPendingCardPlay);
+                } else {
+                  setPendingCardPlay(newPendingCardPlay);
+                }
+              },
+            },
+          ]
+        : []
+    ) ?? [];
+
+  const activateTreasureCard = async (pendingCardPlay: PendingCardPlay) => {
+    if (!pendingCardPlay) return;
+
+    await fetch("http://localhost:3000/activate", {
+      method: "POST",
+      body: JSON.stringify({
+        issuer,
+        index: pendingCardPlay.index + 1,
+        choices: pendingCardPlay.effectTargets.map((et) => et.choice),
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    setPendingCardPlay(null);
+  };
 
   useEffect(() => {
     const url = new URL("http://localhost:3000/sse");
@@ -35,14 +85,26 @@ export const Board = ({ issuer }: BoardProps) => {
     });
   };
 
-  const onTreasureCardClick = (index: number) => {
-    fetch("http://localhost:3000/activate", {
+  const onTreasureCardClick = async (index: number) => {
+    const result = await fetch("http://localhost:3000/getEffectTarget", {
       method: "POST",
       body: JSON.stringify({ issuer, index: index + 1 }),
       headers: {
         "Content-Type": "application/json",
       },
     });
+
+    const data = await result.json();
+    if (data) {
+      setPendingCardPlay({
+        index,
+        effectTargets: data.map((et: any) => ({
+          description: et.description,
+          choices: et.choices,
+          choice: null,
+        })),
+      });
+    }
   };
 
   const onLootCardClick = (index: number) => {
@@ -114,6 +176,7 @@ export const Board = ({ issuer }: BoardProps) => {
           ))}
         </ol>
       </div>
+      {pendingChoices.length > 0 && <ChoicePopup {...pendingChoices[0]} />}
     </div>
   );
 };
