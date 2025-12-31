@@ -1,62 +1,57 @@
 import { useEffect, useState } from "react";
-import type { DetailedStateResponse, Issuer } from "../types/api";
+import type {
+  ActiveEffectEntry,
+  DetailedStateResponse,
+  GenericCardType,
+  Issuer,
+  TargetSelectorResponse,
+} from "../types/api";
 import { PlayerStats } from "./player-stats";
 import { ChoicePopup } from "./choice-popup";
+import { CursorCard } from "./cursor-card";
+import { Card } from "./card";
 
 interface BoardProps {
   issuer: Issuer;
 }
 
-interface PendingCardPlay {
+type CardActivationFlow = {
   index: number;
-  effectTargets: {
+  effects: ActiveEffectEntry[];
+  selectedEffect?: ActiveEffectEntry["index"];
+  targets?: {
     description: string;
     choices: string[];
-    choice: string | null;
+    selectedChoice?: string;
   }[];
-}
+};
 
 export const Board = ({ issuer }: BoardProps) => {
   const [state, setState] = useState<DetailedStateResponse | null>(null);
-  const [pendingCardPlay, setPendingCardPlay] =
-    useState<PendingCardPlay | null>(null);
-  const pendingChoices =
-    pendingCardPlay?.effectTargets.flatMap((et, index) =>
-      et.choice === null
-        ? [
-            {
-              description: et.description,
-              choices: et.choices,
-              onChoice: (choice: string) => {
-                // Update the pendingCardPlay state with the chosen choice
-                const newPendingCardPlay = { ...pendingCardPlay! };
-                newPendingCardPlay.effectTargets[index].choice = choice;
-                if (index === pendingCardPlay.effectTargets.length - 1) {
-                  activateTreasureCard(newPendingCardPlay);
-                } else {
-                  setPendingCardPlay(newPendingCardPlay);
-                }
-              },
-            },
-          ]
-        : []
-    ) ?? [];
+  const [cursorCard, setCursorCard] = useState<{
+    card: GenericCardType;
+    face: "front" | "back";
+  } | null>(null);
 
-  const activateTreasureCard = async (pendingCardPlay: PendingCardPlay) => {
-    if (!pendingCardPlay) return;
+  const [cardActivationFlow, setCardActivationFlow] =
+    useState<CardActivationFlow | null>(null);
+
+  const activateTreasureCard = async (activation: CardActivationFlow) => {
+    if (!cardActivationFlow) return;
 
     await fetch("http://localhost:3000/activate", {
       method: "POST",
       body: JSON.stringify({
         issuer,
-        index: pendingCardPlay.index + 1,
-        choices: pendingCardPlay.effectTargets.map((et) => et.choice),
+        index: cardActivationFlow.index + 1,
+        targetChoices: cardActivationFlow.targets.map((et) => et.selectedChoice),
+        effectIndex: cardActivationFlow.selectedEffect,
       }),
       headers: {
         "Content-Type": "application/json",
       },
     });
-    setPendingCardPlay(null);
+    setCardActivationFlow(null);
   };
 
   useEffect(() => {
@@ -86,6 +81,14 @@ export const Board = ({ issuer }: BoardProps) => {
   };
 
   const onTreasureCardClick = async (index: number) => {
+    const card = state?.me.inPlay[index];
+    if (!card) throw new Error("Card not found");
+
+    if (card.activeEffectList && card.activeEffectList.length > 1) {
+      console.log("Asking the user");
+    } else {
+    }
+
     const result = await fetch("http://localhost:3000/getEffectTarget", {
       method: "POST",
       body: JSON.stringify({ issuer, index: index + 1 }),
@@ -96,7 +99,7 @@ export const Board = ({ issuer }: BoardProps) => {
 
     const data = await result.json();
     if (data) {
-      setPendingCardPlay({
+      setCardActivationFlow({
         index,
         effectTargets: data.map((et: any) => ({
           description: et.description,
@@ -135,6 +138,16 @@ export const Board = ({ issuer }: BoardProps) => {
     });
   };
 
+  const onShopCardClick = (index: number) => {
+    fetch("http://localhost:3000/purchase", {
+      method: "POST",
+      body: JSON.stringify({ issuer, index }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  };
+
   const endTurn = () => {
     fetch("http://localhost:3000/endturn", {
       method: "POST",
@@ -145,9 +158,49 @@ export const Board = ({ issuer }: BoardProps) => {
     });
   };
 
+  const declareAttack = () => {
+    fetch("http://localhost:3000/declareAttack", {
+      method: "POST",
+      body: JSON.stringify({ issuer }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  };
+
+  const onMonsterCardClick = (index: number) => {
+    const body = cursorCard
+      ? { issuer, index: "top", replaceIndex: index }
+      : { issuer, index };
+    fetch("http://localhost:3000/attackMonster", {
+      method: "POST",
+      body: JSON.stringify(body),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    setCursorCard(null);
+  };
+
+  const attackRoll = () => {
+    fetch("http://localhost:3000/attackRoll", {
+      method: "POST",
+      body: JSON.stringify({ issuer }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  };
+
+  const onMonsterTopCardClick = () => {
+    setCursorCard({ card: { slug: "b2-monstro" }, face: "back" });
+  };
+
   return (
     <div id="board">
       <nav>
+        <button onClick={declareAttack}>Declare Attack</button>
+        <button onClick={attackRoll}>Attack roll</button>
         <button onClick={drawLoot}>Draw loot</button>
         <button onClick={resolveStack}>Resolve stack</button>
         <button onClick={gainTreasure}>Gain a treasure</button>
@@ -172,15 +225,19 @@ export const Board = ({ issuer }: BoardProps) => {
         <div id="monsters">
           <h2>Monsters</h2>
           <div>
-            <img
-              src={`http://localhost:3000/images/b2-monstro/back`}
-              alt="Monster back"
+            <Card
+              card={{ slug: "b2-monstro" }}
+              face="back"
+              cursor="grab"
+              onClick={onMonsterTopCardClick}
             />
-            {state.monsters.map((monster) => (
-              <img
-                src={`http://localhost:3000/images/${monster.slug}/front`}
-                alt={monster.slug}
+            {state.monsters.map((monster, index) => (
+              <Card
+                card={monster}
+                face="front"
                 key={monster.slug}
+                cursor="url('/sword.png') 50 50, grab"
+                onClick={() => onMonsterCardClick(index)}
               />
             ))}
           </div>
@@ -196,21 +253,25 @@ export const Board = ({ issuer }: BoardProps) => {
         <div id="shop">
           <h2>Shop</h2>
           <div>
-            <img
-              src={`http://localhost:3000/images/b2-no/back`}
-              alt="Monster back"
+            <Card
+              card={{ slug: "b2-no" }}
+              face="back"
+              onClick={() => onShopCardClick(0)}
             />
-            {state.shop.map((card) => (
-              <img
-                src={`http://localhost:3000/images/${card.slug}/front`}
-                alt={card.slug}
+            {state.shop.map((card, index) => (
+              <Card
+                card={card}
+                face="front"
                 key={card.slug}
+                onClick={() => onShopCardClick(index + 1)}
               />
             ))}
           </div>
         </div>
       </section>
-
+      {cursorCard && (
+        <CursorCard card={cursorCard.card} face={cursorCard.face} />
+      )}
       {pendingChoices.length > 0 && <ChoicePopup {...pendingChoices[0]} />}
     </div>
   );

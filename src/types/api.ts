@@ -1,13 +1,12 @@
 export type JoinResponse = {
   message: string;
   secret: string;
-}
+};
 
 export type Issuer = {
   id: string;
   secret: string;
-}
-
+};
 
 export type StateResponse = {
   players: {
@@ -26,13 +25,13 @@ export type DetailedStateResponse = {
     currentHealthPoints: number;
     currentAttackPoints: number;
     remainingLootPlay: number;
-  },
+  };
   players: {
     name: string;
     handSize: number;
     inPlay: GenericCardType[];
     souls: GenericCardType[];
-    coins: number
+    coins: number;
     currentHealthPoints: number;
     currentAttackPoints: number;
     remainingLootPlay: number;
@@ -48,6 +47,28 @@ export type DetailedStateResponse = {
   stack: string[];
 };
 
-type GenericCardType = {
+export type GenericCardType = {
   slug: string;
+  charged?: boolean;
+  activeEffectList?: ActiveEffectEntry[];
+};
+
+export type ActiveEffectEntry = {
+  index: "tap" | number;
+  description: string;
+};
+
+export interface TargetSelectorResponse {
+    /** Description of what to select */
+    description: string;
+    /** How many targets to select */
+    count: number;
+    /** Whether the player can select fewer targets than count (asMany) */
+    asMany: boolean;
+    /** Available options as string identifiers */
+    options: string[];
+    /** Whether target building is complete */
+    complete: boolean;
+    /** For choose-one selectors: true = picking option description, false = picking actual targets */
+    isChooseOne: boolean;
 }

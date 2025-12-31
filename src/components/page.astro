@@ -79,6 +79,12 @@
           width: 150px;
           height: auto;
           box-shadow: 0 0 10px rgb(0 0 0 / 0.3);
+
+          transition: ease-in-out 100ms transform;
+
+          &:hover {
+            transform: translateY(-5px);
+          }
         }
       }
     }
@@ -127,6 +133,14 @@
       padding: 1em;
       gap: 4em;
 
+      pointer-events: none;
+      touch-action: none;
+
+      img {
+        pointer-events: auto;
+        touch-action: auto;
+      }
+
       &[data-is-player="true"] {
         position: absolute;
         bottom: 0;
@@ -144,7 +158,7 @@
           box-shadow: 0 0 10px rgb(0 0 0 / 0.3);
           transition: ease-in-out 100ms transform;
 
-          &:hover {
+          &:hover[data-charged="true"] {
             transform: rotate(5deg);
           }
         }
@@ -202,6 +216,20 @@
 
     img {
       border-radius: 8px;
+      &[data-charged="false"] {
+        filter: grayscale(100%) brightness(50%);
+      }
+    }
+
+    #cursor-card {
+      position: fixed;
+      width: 150px;
+      height: auto;
+      pointer-events: none;
+      top: var(--cursor-y);
+      left: var(--cursor-x);
+      transform: translate(-50%, -30%);
+      box-shadow: 0 0 15px rgb(0 0 0 / 0.4);
     }
   }
 </style>

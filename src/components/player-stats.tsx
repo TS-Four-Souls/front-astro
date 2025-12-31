@@ -1,4 +1,5 @@
 import type { DetailedStateResponse } from "../types/api";
+import { Card } from "./card";
 
 interface Props {
   player:
@@ -33,9 +34,9 @@ export const PlayerStats = ({
       <div className="cards">
         <div className="in-play">
           {player.inPlay.map((card, index) => (
-            <img
-              src={`http://localhost:3000/images/${card.slug}/front`}
-              alt={card.slug}
+            <Card
+              card={card}
+              face="front"
               key={card.slug}
               onClick={() => onTreasureCardClick?.(index)}
             />
@@ -45,14 +46,10 @@ export const PlayerStats = ({
         <div className="loot">
           {"handSize" in player
             ? Array.from({ length: player.handSize }).map((_, index) => (
-                <img
-                  src={`http://localhost:3000/images/b2-a_dime/back`}
-                  alt="b2-a_dime"
-                  key={index}
-                />
+                <Card card={{ slug: "b2-a_dime" }} face="back" key={index} />
               ))
             : player.hand.map((card, index, array) => (
-                <img
+                <Card
                   style={{
                     rotate: `${
                       (10 / array.length) * (0.5 + index - array.length / 2)
@@ -62,8 +59,8 @@ export const PlayerStats = ({
                       Math.abs(0.5 + index - array.length / 2) ** 2
                     }px`,
                   }}
-                  src={`http://localhost:3000/images/${card.slug}/front`}
-                  alt={card.slug}
+                  card={card}
+                  face="front"
                   key={card.slug}
                   onClick={() => onLootCardClick?.(index)}
                 />
@@ -72,11 +69,7 @@ export const PlayerStats = ({
 
         <div className="souls">
           {player.souls.map((card) => (
-            <img
-              src={`http://localhost:3000/images/${card.slug}/front`}
-              alt="b2-a_dime"
-              key={card.slug}
-            />
+            <Card card={card} face="front" key={card.slug} />
           ))}
         </div>
       </div>
