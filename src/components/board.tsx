@@ -16,9 +16,13 @@ interface BoardProps {
 }
 
 type CardActivationFlow = {
-  effectIndex: "tap" | number;
   currentTargetSelector: TargetSelectorResponse;
   onChoice: (choice: string) => void;
+};
+
+type EffectSelectionFlow = {
+  choices: { label: string; value: number | "tap" }[];
+  onChoice: (choice: number | "tap") => void;
 };
 
 export const Board = ({ issuer }: BoardProps) => {
@@ -28,10 +32,9 @@ export const Board = ({ issuer }: BoardProps) => {
     face: "front" | "back";
   } | null>(null);
 
-  const [cardActivationFlow, setCardActivationFlow] =
-    useState<CardActivationFlow | null>(null);
-
   const [activationFlow, setActivationFlow] = useState<CardActivationFlow>();
+  const [effectSelectionFlow, setEffectSelectionFlow] =
+    useState<EffectSelectionFlow>();
 
   useEffect(() => {
     const url = new URL("http://localhost:3000/sse");
@@ -60,7 +63,11 @@ export const Board = ({ issuer }: BoardProps) => {
   };
 
   const onTreasureCardClick = useCallback(
-    async (index: number, choices: string[] = []) => {
+    async (
+      index: number,
+      effectIndex?: number | "tap",
+      choices: string[] = []
+    ) => {
       const card = state?.me.inPlay[index];
       if (!card) throw new Error("Card not found");
 
@@ -69,41 +76,50 @@ export const Board = ({ issuer }: BoardProps) => {
         return;
       }
 
-      if (card.effects && card.effects.length > 1) {
-        // TODO: Ask the user for the choices
-        return;
-      } else {
-        // TODO: Handle user choice if more than one effect
-        const effectIndex = activationFlow?.effectIndex ?? "tap";
-
-        const result = await fetch("http://localhost:3000/activate", {
-          method: "POST",
-          body: JSON.stringify({
-            issuer,
-            index: index,
-            effectIndex,
-            targetChoices: choices,
-          }),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        const data: TargetSelectorResponse = await result.json();
-
-        if (data.complete) {
-          setActivationFlow(undefined);
+      if (effectIndex === undefined) {
+        if (card.effects.length > 1) {
+          setEffectSelectionFlow({
+            choices: card.effects.map(({ index, description }) => ({
+              label: description,
+              value: index,
+            })),
+            onChoice: (choice: number | "tap") => {
+              console.log("You made a choice", choice);
+              setEffectSelectionFlow(undefined);
+              onTreasureCardClick(index, choice, choices);
+            },
+          });
           return;
         }
-
-        setActivationFlow({
-          effectIndex,
-          currentTargetSelector: data,
-          onChoice: (choice: string) => {
-            const newChoices = [...choices, choice];
-            onTreasureCardClick(index, newChoices);
-          },
-        });
+        effectIndex = card.effects[0].index;
       }
+
+      const result = await fetch("http://localhost:3000/activate", {
+        method: "POST",
+        body: JSON.stringify({
+          issuer,
+          index: index,
+          effectIndex,
+          targetChoices: choices,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data: TargetSelectorResponse = await result.json();
+
+      if (data.complete) {
+        setActivationFlow(undefined);
+        return;
+      }
+
+      setActivationFlow({
+        currentTargetSelector: data,
+        onChoice: (choice: string) => {
+          const newChoices = [...choices, choice];
+          onTreasureCardClick(index, effectIndex, newChoices);
+        },
+      });
     },
     [state, activationFlow]
   );
@@ -276,6 +292,14 @@ export const Board = ({ issuer }: BoardProps) => {
           onChoice={activationFlow.onChoice}
           description={activationFlow.currentTargetSelector.description}
           onCancel={() => setActivationFlow(undefined)}
+        />
+      )}
+      {effectSelectionFlow && (
+        <ChoicePopup
+          choices={effectSelectionFlow.choices}
+          onChoice={effectSelectionFlow.onChoice}
+          description="Choose an effect"
+          onCancel={() => setEffectSelectionFlow(undefined)}
         />
       )}
     </div>
