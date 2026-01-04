@@ -50,7 +50,7 @@ export type DetailedStateResponse = {
 export type GenericCardType = {
   slug: string;
   charged?: boolean;
-  activeEffectList?: ActiveEffectEntry[];
+  effects?: ActiveEffectEntry[];
 };
 
 export type ActiveEffectEntry = {

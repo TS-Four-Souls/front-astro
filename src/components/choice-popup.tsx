@@ -2,9 +2,10 @@ interface ChoicePopupProps {
     description: string;
     choices: string[];
     onChoice: (choice: string) => void;
+    onCancel: () => void;
 }
 
-export const ChoicePopup = ({ description, choices, onChoice }: ChoicePopupProps) => {
+export const ChoicePopup = ({ description, choices, onChoice, onCancel }: ChoicePopupProps) => {
     return (
         <div className="popup">
             <div>
@@ -14,6 +15,8 @@ export const ChoicePopup = ({ description, choices, onChoice }: ChoicePopupProps
                         <button key={index} onClick={() => onChoice(choice)}>{choice}</button>
                     ))}
                 </div>
+                <div className="separator"></div>
+                <button onClick={onCancel}>Cancel</button>
             </div>
         </div>
     );

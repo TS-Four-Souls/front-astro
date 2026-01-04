@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type {
   ActiveEffectEntry,
   DetailedStateResponse,
@@ -16,14 +16,9 @@ interface BoardProps {
 }
 
 type CardActivationFlow = {
-  index: number;
-  effects: ActiveEffectEntry[];
-  selectedEffect?: ActiveEffectEntry["index"];
-  targets?: {
-    description: string;
-    choices: string[];
-    selectedChoice?: string;
-  }[];
+  effectIndex: "tap" | number;
+  currentTargetSelector: TargetSelectorResponse;
+  onChoice: (choice: string) => void;
 };
 
 export const Board = ({ issuer }: BoardProps) => {
@@ -36,23 +31,7 @@ export const Board = ({ issuer }: BoardProps) => {
   const [cardActivationFlow, setCardActivationFlow] =
     useState<CardActivationFlow | null>(null);
 
-  const activateTreasureCard = async (activation: CardActivationFlow) => {
-    if (!cardActivationFlow) return;
-
-    await fetch("http://localhost:3000/activate", {
-      method: "POST",
-      body: JSON.stringify({
-        issuer,
-        index: cardActivationFlow.index + 1,
-        targetChoices: cardActivationFlow.targets.map((et) => et.selectedChoice),
-        effectIndex: cardActivationFlow.selectedEffect,
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    setCardActivationFlow(null);
-  };
+  const [activationFlow, setActivationFlow] = useState<CardActivationFlow>();
 
   useEffect(() => {
     const url = new URL("http://localhost:3000/sse");
@@ -80,35 +59,54 @@ export const Board = ({ issuer }: BoardProps) => {
     });
   };
 
-  const onTreasureCardClick = async (index: number) => {
-    const card = state?.me.inPlay[index];
-    if (!card) throw new Error("Card not found");
+  const onTreasureCardClick = useCallback(
+    async (index: number, choices: string[] = []) => {
+      const card = state?.me.inPlay[index];
+      if (!card) throw new Error("Card not found");
 
-    if (card.activeEffectList && card.activeEffectList.length > 1) {
-      console.log("Asking the user");
-    } else {
-    }
+      if (!card.effects) {
+        console.error("Card has no active effects", card.slug);
+        return;
+      }
 
-    const result = await fetch("http://localhost:3000/getEffectTarget", {
-      method: "POST",
-      body: JSON.stringify({ issuer, index: index + 1 }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+      if (card.effects && card.effects.length > 1) {
+        // TODO: Ask the user for the choices
+        return;
+      } else {
+        // TODO: Handle user choice if more than one effect
+        const effectIndex = activationFlow?.effectIndex ?? "tap";
 
-    const data = await result.json();
-    if (data) {
-      setCardActivationFlow({
-        index,
-        effectTargets: data.map((et: any) => ({
-          description: et.description,
-          choices: et.choices,
-          choice: null,
-        })),
-      });
-    }
-  };
+        const result = await fetch("http://localhost:3000/activate", {
+          method: "POST",
+          body: JSON.stringify({
+            issuer,
+            index: index,
+            effectIndex,
+            targetChoices: choices,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const data: TargetSelectorResponse = await result.json();
+
+        if (data.complete) {
+          setActivationFlow(undefined);
+          return;
+        }
+
+        setActivationFlow({
+          effectIndex,
+          currentTargetSelector: data,
+          onChoice: (choice: string) => {
+            const newChoices = [...choices, choice];
+            onTreasureCardClick(index, newChoices);
+          },
+        });
+      }
+    },
+    [state, activationFlow]
+  );
 
   const onLootCardClick = (index: number) => {
     fetch("http://localhost:3000/playcard", {
@@ -272,7 +270,14 @@ export const Board = ({ issuer }: BoardProps) => {
       {cursorCard && (
         <CursorCard card={cursorCard.card} face={cursorCard.face} />
       )}
-      {pendingChoices.length > 0 && <ChoicePopup {...pendingChoices[0]} />}
+      {activationFlow && (
+        <ChoicePopup
+          choices={activationFlow.currentTargetSelector.options}
+          onChoice={activationFlow.onChoice}
+          description={activationFlow.currentTargetSelector.description}
+          onCancel={() => setActivationFlow(undefined)}
+        />
+      )}
     </div>
   );
 };
