@@ -124,15 +124,42 @@ export const Board = ({ issuer }: BoardProps) => {
     [state, activationFlow]
   );
 
-  const onLootCardClick = (index: number) => {
-    fetch("http://localhost:3000/playcard", {
-      method: "POST",
-      body: JSON.stringify({ issuer, index: index + 1 }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-  };
+  const onLootCardClick = useCallback(
+    async (
+      index: number,
+      choices: string[] = []
+    ) => {
+      
+      const effectIndex = "tap";
+      const result = await fetch("http://localhost:3000/playcard", {
+        method: "POST",
+        body: JSON.stringify({
+          issuer,
+          index: index,
+          effectIndex,
+          targetChoices: choices,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data: TargetSelectorResponse = await result.json();
+
+      if (data.complete) {
+        setActivationFlow(undefined);
+        return;
+      }
+
+      setActivationFlow({
+        currentTargetSelector: data,
+        onChoice: (choice: string) => {
+          const newChoices = [...choices, choice];
+          onLootCardClick(index, newChoices);
+        },
+      });
+    },
+    [state, activationFlow]
+  );
 
   if (!state) {
     return <div>Loading...</div>;
