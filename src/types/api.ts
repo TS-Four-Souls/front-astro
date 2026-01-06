@@ -45,6 +45,12 @@ export type DetailedStateResponse = {
   shop: GenericCardType[];
   turn: string;
   stack: string[];
+  pendingSelection?: {
+    requestId: string;
+    options: string[];
+    count: number;
+    asMany: boolean;
+  };
 };
 
 export type GenericCardType = {
@@ -72,3 +78,9 @@ export interface TargetSelectorResponse {
     /** For choose-one selectors: true = picking option description, false = picking actual targets */
     isChooseOne: boolean;
 }
+
+export type SubmitSelectionResponse = {
+  issuer: Issuer;
+  requestId: string;
+  selectedOptions: string[];
+};

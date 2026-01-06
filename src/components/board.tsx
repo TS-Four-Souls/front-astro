@@ -5,6 +5,7 @@ import type {
   GenericCardType,
   Issuer,
   TargetSelectorResponse,
+  SubmitSelectionResponse,
 } from "../types/api";
 import { PlayerStats } from "./player-stats";
 import { ChoicePopup } from "./choice-popup";
@@ -18,6 +19,7 @@ interface BoardProps {
 type CardActivationFlow = {
   currentTargetSelector: TargetSelectorResponse;
   onChoice: (choice: string) => void;
+  selectedChoices?: string[];
 };
 
 type EffectSelectionFlow = {
@@ -35,6 +37,7 @@ export const Board = ({ issuer }: BoardProps) => {
   const [activationFlow, setActivationFlow] = useState<CardActivationFlow>();
   const [effectSelectionFlow, setEffectSelectionFlow] =
     useState<EffectSelectionFlow>();
+  const [handledRequestId, setHandledRequestId] = useState<string | null>(null);
 
   useEffect(() => {
     const url = new URL("http://localhost:3000/sse");
@@ -160,6 +163,48 @@ export const Board = ({ issuer }: BoardProps) => {
     },
     [state, activationFlow]
   );
+
+  const handlePendingSelection = useCallback(
+    async (choices: string[] = []) => {
+      if (!state?.pendingSelection) return;
+
+      const { requestId, options, count, asMany } = state.pendingSelection;
+
+      // Set up the activation flow
+      setActivationFlow({
+        currentTargetSelector: {
+          description: `Select ${asMany ? 'up to' : ''} ${count} option${count > 1 ? 's' : ''} (${choices.length}/${count} selected)`,
+          count: count - choices.length,
+          asMany,
+          options: options, // Keep all options visible
+          complete: false,
+          isChooseOne: false,
+        },
+        selectedChoices: choices,
+        onChoice: (choice: string) => {
+          // Toggle selection: if already selected, remove it; otherwise add it
+          const isAlreadySelected = choices.includes(choice);
+          const newChoices = isAlreadySelected
+            ? choices.filter(c => c !== choice)
+            : [...choices, choice];
+          // Continue selecting without auto-submission
+          handlePendingSelection(newChoices);
+        },
+      });
+    },
+    [state, issuer]
+  );
+
+  // Set up activation flow when pendingSelection appears
+  useEffect(() => {
+    if (state?.pendingSelection && state.pendingSelection.requestId !== handledRequestId) {
+      setHandledRequestId(state.pendingSelection.requestId);
+      handlePendingSelection([]);
+    } else if (!state?.pendingSelection && handledRequestId) {
+      // Clear handled request when pendingSelection is gone
+      setHandledRequestId(null);
+    }
+  }, [state?.pendingSelection, handledRequestId, handlePendingSelection]);
 
   if (!state) {
     return <div>Loading...</div>;
@@ -318,7 +363,40 @@ export const Board = ({ issuer }: BoardProps) => {
           choices={activationFlow.currentTargetSelector.options}
           onChoice={activationFlow.onChoice}
           description={activationFlow.currentTargetSelector.description}
-          onCancel={() => setActivationFlow(undefined)}
+          onCancel={() => {
+            // If this is a pending selection, submit the selected choices
+            if (state?.pendingSelection) {
+              const { asMany, count } = state.pendingSelection;
+              const selectedCount = activationFlow.selectedChoices?.length || 0;
+              
+              // Only submit if valid: either exactly count, or at least 1 if asMany
+              if ((asMany && selectedCount > 0 && selectedCount <= count) || selectedCount === count) {
+                fetch("http://localhost:3000/submitSelection", {
+                  method: "POST",
+                  body: JSON.stringify({
+                    issuer,
+                    requestId: state.pendingSelection.requestId,
+                    selectedOptions: activationFlow.selectedChoices || [],
+                  }),
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                });
+              }
+            }
+            setActivationFlow(undefined);
+          }}
+          selectedChoices={activationFlow.selectedChoices}
+          validateLabel={state?.pendingSelection ? "Validate" : "Cancel"}
+          canValidate={
+            !state?.pendingSelection || 
+            (() => {
+              const { asMany, count } = state.pendingSelection;
+              const selectedCount = activationFlow.selectedChoices?.length || 0;
+              return (asMany && selectedCount > 0 && selectedCount <= count) || selectedCount === count;
+            })()
+          }
+          maxSelections={state?.pendingSelection?.count}
         />
       )}
       {effectSelectionFlow && (
