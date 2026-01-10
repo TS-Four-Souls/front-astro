@@ -1,3 +1,4 @@
+import { BASE_URL } from "astro:env/client";
 import type { Issuer } from "../types/api";
 
 interface StartStepProps {
@@ -8,7 +9,7 @@ interface StartStepProps {
 export const StartStep = ({ onStart, issuer }: StartStepProps) => {
     
     const requestStart = async () => {
-        const response = await fetch("http://localhost:3000/start", {
+        const response = await fetch(`${BASE_URL}/start`, {
             method: "POST",
             body: JSON.stringify({ issuer }),
             headers: {

@@ -1,12 +1,13 @@
 import { useState } from "react";
 import type { Issuer } from "../types/api";
 import { Board } from "./board";
+import { BASE_URL } from "astro:env/client";
 
 export const DebugPage = () => {
   const [issuer, setIssuer] = useState<Issuer | null>(null);
 
   const reset = () => {
-    fetch("http://localhost:3000/debug", {
+    fetch(`${BASE_URL}/debug`, {
       method: "POST",
     });
   };

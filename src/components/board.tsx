@@ -1,16 +1,16 @@
 import { useCallback, useEffect, useState } from "react";
 import type {
-  ActiveEffectEntry,
   DetailedStateResponse,
   GenericCardType,
   Issuer,
   TargetSelectorResponse,
-  SubmitSelectionResponse,
+  PendingSelection,
 } from "../types/api";
 import { PlayerStats } from "./player-stats";
 import { ChoicePopup } from "./choice-popup";
 import { CursorCard } from "./cursor-card";
 import { Card } from "./card";
+import { BASE_URL } from "astro:env/client";
 
 interface BoardProps {
   issuer: Issuer;
@@ -18,13 +18,16 @@ interface BoardProps {
 
 type CardActivationFlow = {
   currentTargetSelector: TargetSelectorResponse;
-  onChoice: (choice: string) => void;
+  onChoice: (choices: string[]) => void;
   selectedChoices?: string[];
+  cancellable: boolean;
 };
 
 type EffectSelectionFlow = {
   choices: { label: string; value: number | "tap" }[];
-  onChoice: (choice: number | "tap") => void;
+  onChoice: (choice: (number | "tap")[]) => void;
+  count: number;
+  asMany: boolean;
 };
 
 export const Board = ({ issuer }: BoardProps) => {
@@ -40,7 +43,7 @@ export const Board = ({ issuer }: BoardProps) => {
   const [handledRequestId, setHandledRequestId] = useState<string | null>(null);
 
   useEffect(() => {
-    const url = new URL("http://localhost:3000/sse");
+    const url = new URL(`${BASE_URL}/sse`);
     url.searchParams.set("id", issuer.id);
     url.searchParams.set("secret", issuer.secret);
     const stream = new EventSource(url.toString());
@@ -51,12 +54,23 @@ export const Board = ({ issuer }: BoardProps) => {
     // Named event: "stateChange"
     stream.addEventListener("stateChange", (event) => {
       const data = JSON.parse(event.data);
+
+      if (
+        data.pendingSelection &&
+        data.pendingSelection.requestId !== handledRequestId
+      ) {
+        setHandledRequestId(data.pendingSelection.requestId);
+        onPendingSelectionReceived(data.pendingSelection);
+      } else if (!data.pendingSelection && handledRequestId) {
+        setHandledRequestId(null);
+      }
+
       setState(data);
     });
   }, []);
 
   const drawLoot = () => {
-    fetch("http://localhost:3000/loot", {
+    fetch(`${BASE_URL}/loot`, {
       method: "POST",
       body: JSON.stringify({ issuer }),
       headers: {
@@ -86,10 +100,11 @@ export const Board = ({ issuer }: BoardProps) => {
               label: description,
               value: index,
             })),
-            onChoice: (choice: number | "tap") => {
-              console.log("You made a choice", choice);
+            count: 1,
+            asMany: false,
+            onChoice: (choice: (number | "tap")[]) => {
               setEffectSelectionFlow(undefined);
-              onTreasureCardClick(index, choice, choices);
+              onTreasureCardClick(index, choice[0], choices);
             },
           });
           return;
@@ -97,7 +112,7 @@ export const Board = ({ issuer }: BoardProps) => {
         effectIndex = card.effects[0].index;
       }
 
-      const result = await fetch("http://localhost:3000/activate", {
+      const result = await fetch(`${BASE_URL}/activate`, {
         method: "POST",
         body: JSON.stringify({
           issuer,
@@ -118,9 +133,9 @@ export const Board = ({ issuer }: BoardProps) => {
 
       setActivationFlow({
         currentTargetSelector: data,
-        onChoice: (choice: string) => {
-          const newChoices = [...choices, choice];
-          onTreasureCardClick(index, effectIndex, newChoices);
+        cancellable: true,
+        onChoice: (newChoices: string[]) => {
+          onTreasureCardClick(index, effectIndex, [...choices, ...newChoices]);
         },
       });
     },
@@ -128,13 +143,9 @@ export const Board = ({ issuer }: BoardProps) => {
   );
 
   const onLootCardClick = useCallback(
-    async (
-      index: number,
-      choices: string[] = []
-    ) => {
-      
+    async (index: number, choices: string[] = []) => {
       const effectIndex = "tap";
-      const result = await fetch("http://localhost:3000/playcard", {
+      const result = await fetch(`${BASE_URL}/playcard`, {
         method: "POST",
         body: JSON.stringify({
           issuer,
@@ -155,67 +166,65 @@ export const Board = ({ issuer }: BoardProps) => {
 
       setActivationFlow({
         currentTargetSelector: data,
-        onChoice: (choice: string) => {
-          const newChoices = [...choices, choice];
-          onLootCardClick(index, newChoices);
+        cancellable: true,
+        onChoice: (newChoices: string[]) => {
+          onLootCardClick(index, [...choices, ...newChoices]);
         },
       });
     },
     [state, activationFlow]
   );
 
-  const handlePendingSelection = useCallback(
-    async (choices: string[] = []) => {
-      if (!state?.pendingSelection) return;
-
-      const { requestId, options, count, asMany } = state.pendingSelection;
+  const onPendingSelectionReceived = useCallback(
+    async (pendingSelection: PendingSelection) => {
+      const { requestId, description, options, count, asMany } =
+        pendingSelection;
 
       // Set up the activation flow
       setActivationFlow({
         currentTargetSelector: {
-          description: `Select ${asMany ? 'up to' : ''} ${count} option${count > 1 ? 's' : ''} (${choices.length}/${count} selected)`,
-          count: count - choices.length,
+          description,
+          count,
           asMany,
-          options: options, // Keep all options visible
+          options,
           complete: false,
           isChooseOne: false,
         },
-        selectedChoices: choices,
-        onChoice: (choice: string) => {
-          // Toggle selection: if already selected, remove it; otherwise add it
-          const isAlreadySelected = choices.includes(choice);
-          const newChoices = isAlreadySelected
-            ? choices.filter(c => c !== choice)
-            : [...choices, choice];
-          // Continue selecting without auto-submission
-          handlePendingSelection(newChoices);
+        selectedChoices: [],
+        cancellable: false,
+        onChoice: async (selectedOptions: string[]) => {
+          const result = await fetch(`${BASE_URL}/submitSelection`, {
+            method: "POST",
+            body: JSON.stringify({
+              issuer,
+              requestId,
+              selectedOptions,
+            }),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          if (result.ok) {
+            setActivationFlow(undefined);
+          } else {
+            console.error("Failed to submit selection", result.statusText);
+          }
         },
       });
     },
     [state, issuer]
   );
 
-  // Set up activation flow when pendingSelection appears
-  useEffect(() => {
-    if (state?.pendingSelection && state.pendingSelection.requestId !== handledRequestId) {
-      setHandledRequestId(state.pendingSelection.requestId);
-      handlePendingSelection([]);
-    } else if (!state?.pendingSelection && handledRequestId) {
-      // Clear handled request when pendingSelection is gone
-      setHandledRequestId(null);
-    }
-  }, [state?.pendingSelection, handledRequestId, handlePendingSelection]);
-
   if (!state) {
     return <div>Loading...</div>;
   }
 
   const resolveStack = () => {
-    fetch("http://localhost:3000/resolve");
+    fetch(`${BASE_URL}/resolve`);
   };
 
   const gainTreasure = () => {
-    fetch("http://localhost:3000/gaintreasure", {
+    fetch(`${BASE_URL}/gaintreasure`, {
       method: "POST",
       body: JSON.stringify({ issuer }),
       headers: {
@@ -225,7 +234,7 @@ export const Board = ({ issuer }: BoardProps) => {
   };
 
   const onShopCardClick = (index: number) => {
-    fetch("http://localhost:3000/purchase", {
+    fetch(`${BASE_URL}/purchase`, {
       method: "POST",
       body: JSON.stringify({ issuer, index }),
       headers: {
@@ -235,7 +244,7 @@ export const Board = ({ issuer }: BoardProps) => {
   };
 
   const endTurn = () => {
-    fetch("http://localhost:3000/endturn", {
+    fetch(`${BASE_URL}/endturn`, {
       method: "POST",
       body: JSON.stringify({ issuer }),
       headers: {
@@ -245,7 +254,7 @@ export const Board = ({ issuer }: BoardProps) => {
   };
 
   const declareAttack = () => {
-    fetch("http://localhost:3000/declareAttack", {
+    fetch(`${BASE_URL}/declareAttack`, {
       method: "POST",
       body: JSON.stringify({ issuer }),
       headers: {
@@ -258,7 +267,7 @@ export const Board = ({ issuer }: BoardProps) => {
     const body = cursorCard
       ? { issuer, index: "top", replaceIndex: index }
       : { issuer, index };
-    fetch("http://localhost:3000/attackMonster", {
+    fetch(`${BASE_URL}/attackMonster`, {
       method: "POST",
       body: JSON.stringify(body),
       headers: {
@@ -269,7 +278,7 @@ export const Board = ({ issuer }: BoardProps) => {
   };
 
   const attackRoll = () => {
-    fetch("http://localhost:3000/attackRoll", {
+    fetch(`${BASE_URL}/attackRoll`, {
       method: "POST",
       body: JSON.stringify({ issuer }),
       headers: {
@@ -318,13 +327,22 @@ export const Board = ({ issuer }: BoardProps) => {
               onClick={onMonsterTopCardClick}
             />
             {state.monsters.map((monster, index) => (
-              <Card
+              <div>
+                <Card
                 card={monster}
                 face="front"
                 key={monster.slug}
                 cursor="url('/sword.png') 50 50, grab"
                 onClick={() => onMonsterCardClick(index)}
               />
+              {monster.stats && (
+                <ul>
+                  <li>Health: {monster.stats.healthPoints}</li>
+                  <li>Attack: {monster.stats.attackPoints}</li>
+                  <li>Evasion: {monster.stats.evasionPoints}</li>
+                </ul>
+              )}
+              </div>
             ))}
           </div>
         </div>
@@ -363,44 +381,17 @@ export const Board = ({ issuer }: BoardProps) => {
           choices={activationFlow.currentTargetSelector.options}
           onChoice={activationFlow.onChoice}
           description={activationFlow.currentTargetSelector.description}
-          onCancel={() => {
-            // If this is a pending selection, submit the selected choices
-            if (state?.pendingSelection) {
-              const { asMany, count } = state.pendingSelection;
-              const selectedCount = activationFlow.selectedChoices?.length || 0;
-              
-              // Only submit if valid: either exactly count, or at least 1 if asMany
-              if ((asMany && selectedCount > 0 && selectedCount <= count) || selectedCount === count) {
-                fetch("http://localhost:3000/submitSelection", {
-                  method: "POST",
-                  body: JSON.stringify({
-                    issuer,
-                    requestId: state.pendingSelection.requestId,
-                    selectedOptions: activationFlow.selectedChoices || [],
-                  }),
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                });
-              }
-            }
-            setActivationFlow(undefined);
-          }}
-          selectedChoices={activationFlow.selectedChoices}
-          validateLabel={state?.pendingSelection ? "Validate" : "Cancel"}
-          canValidate={
-            !state?.pendingSelection || 
-            (() => {
-              const { asMany, count } = state.pendingSelection;
-              const selectedCount = activationFlow.selectedChoices?.length || 0;
-              return (asMany && selectedCount > 0 && selectedCount <= count) || selectedCount === count;
-            })()
-          }
-          maxSelections={state?.pendingSelection?.count}
+          onCancel={() => setActivationFlow(undefined)}
+          count={activationFlow.currentTargetSelector.count}
+          asMany={activationFlow.currentTargetSelector.asMany}
+          cancellable={activationFlow.cancellable}
         />
       )}
       {effectSelectionFlow && (
         <ChoicePopup
+          count={effectSelectionFlow.count}
+          asMany={effectSelectionFlow.asMany}
+          cancellable={true}
           choices={effectSelectionFlow.choices}
           onChoice={effectSelectionFlow.onChoice}
           description="Choose an effect"

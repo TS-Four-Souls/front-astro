@@ -1,4 +1,5 @@
 import type { GenericCardType } from "../types/api";
+import { BASE_URL } from "astro:env/client";
 
 interface CursorCardProps {
   id?: string;
@@ -21,7 +22,7 @@ export const Card = ({
     <img
       id={id}
       style={{ ...style, cursor }}
-      src={`http://localhost:3000/images/${card.slug}/${face}`}
+      src={`${BASE_URL}/images/${card.slug}/${face}`}
       alt={card.slug}
       data-charged={card.charged}
       onClick={onClick}

@@ -3,13 +3,14 @@ import { JoinForm } from "./join-form";
 import type { Issuer } from "../types/api";
 import { StartStep } from "./start-step";
 import { Board } from "./board";
+import { BASE_URL } from "astro:env/client";
 
 export const Main = () => {
   const [issuer, setIssuer] = useState<Issuer | null>(null);
   const [hasStarted, setHasStarted] = useState(false);
 
   useEffect(() => {
-    fetch("http://localhost:3000/sse").then((response) => console.log(response)); }, []);
+    fetch(`${BASE_URL}/sse`).then((response) => console.log(response)); }, []);
 
   if (!issuer) {
     return <JoinForm onJoin={setIssuer} />;

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { Issuer, JoinResponse } from "../types/api";
+import { BASE_URL } from "astro:env/client";
 
 interface JoinFormProps {
     onJoin: (issuer: Issuer) => void;
@@ -9,7 +10,7 @@ export const JoinForm = ({ onJoin }: JoinFormProps) => {
     const [name, setName] = useState("");
 
     const joinGame = async () => {
-        const response = await fetch("http://localhost:3000/join", {
+        const response = await fetch(`${BASE_URL}/join`, {
           method: "POST",
           body: JSON.stringify({ id: name }),
           headers: {

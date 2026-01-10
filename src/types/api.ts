@@ -41,16 +41,28 @@ export type DetailedStateResponse = {
     treasure?: GenericCardType;
     monster?: GenericCardType;
   };
-  monsters: GenericCardType[];
+  monsters: MonsterCard[];
   shop: GenericCardType[];
   turn: string;
   stack: string[];
-  pendingSelection?: {
-    requestId: string;
-    options: string[];
-    count: number;
-    asMany: boolean;
-  };
+  pendingSelection?: PendingSelection;
+};
+
+export type MonsterCard = {
+  slug: string;
+  stats?: {
+    healthPoints: number;
+    attackPoints: number;
+    evasionPoints: number;
+  }
+}
+
+export type PendingSelection = {
+  requestId: string;
+  description: string;
+  options: string[];
+  count: number;
+  asMany: boolean;
 };
 
 export type GenericCardType = {
@@ -65,18 +77,19 @@ export type ActiveEffectEntry = {
 };
 
 export interface TargetSelectorResponse {
-    /** Description of what to select */
-    description: string;
-    /** How many targets to select */
-    count: number;
-    /** Whether the player can select fewer targets than count (asMany) */
-    asMany: boolean;
-    /** Available options as string identifiers */
-    options: string[];
-    /** Whether target building is complete */
-    complete: boolean;
-    /** For choose-one selectors: true = picking option description, false = picking actual targets */
-    isChooseOne: boolean;
+  // TODO: maybe add a requestId here to refresh the selectedChoices in the popup
+  /** Description of what to select */
+  description: string;
+  /** How many targets to select */
+  count: number;
+  /** Whether the player can select fewer targets than count (asMany) */
+  asMany: boolean;
+  /** Available options as string identifiers */
+  options: string[];
+  /** Whether target building is complete */
+  complete: boolean;
+  /** For choose-one selectors: true = picking option description, false = picking actual targets */
+  isChooseOne: boolean;
 }
 
 export type SubmitSelectionResponse = {

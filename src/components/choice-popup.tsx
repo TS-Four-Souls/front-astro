@@ -1,68 +1,96 @@
+import { useEffect, useRef, useState } from "react";
+
 interface ChoicePopupProps {
   description: string;
   choices: ({ label: string; value: string | number } | string)[];
-  onChoice: (choice: any) => void;
+  count: number;
+  asMany: boolean;
+  cancellable: boolean;
+  onChoice: (choices: any[]) => void;
   onCancel: () => void;
-  selectedChoices?: string[];
-  validateLabel?: string;
-  canValidate?: boolean;
-  maxSelections?: number;
 }
 
 export const ChoicePopup = ({
   description,
   choices,
+  count,
+  asMany,
+  cancellable,
   onChoice,
   onCancel,
-  selectedChoices = [],
-  validateLabel = "Cancel",
-  canValidate = true,
-  maxSelections,
 }: ChoicePopupProps) => {
-  const isMaxReached = maxSelections !== undefined && selectedChoices.length >= maxSelections;
-  const showOrder = maxSelections !== undefined && maxSelections > 1;
-  
+  const [selectedChoices, setSelectedChoices] = useState<any[]>([]);
+
+  useEffect(() => {
+    setSelectedChoices([]);
+  }, [choices]);
+
+  const isSingularChoice = count === 1 && !asMany;
+
+  useEffect(() => {
+    if (isSingularChoice && selectedChoices.length === 1) {
+      handleValidate();
+    }
+  }, [selectedChoices, isSingularChoice]);
+
+  const handleChoice = (choice: any) => {
+    if (selectedChoices.includes(choice)) {
+      setSelectedChoices(selectedChoices.filter((c) => c !== choice));
+      return;
+    }
+
+    console.log("selectedChoices", selectedChoices);
+    if (selectedChoices.length === count) {
+      return;
+    }
+    setSelectedChoices([...selectedChoices, choice]);
+  };
+
+  const handleValidate = () => {
+    if (selectedChoices.length > count) {
+      throw new Error(`Cannot select more than ${count} choices`);
+    }
+
+    if (selectedChoices.length < count && !asMany) {
+      return;
+    }
+
+    onChoice(selectedChoices);
+  };
+
+  const indication =
+    (asMany ? "Select up to" : "Select") +
+    " " +
+    count +
+    " option" +
+    (count > 1 ? "s" : "") +
+    " (" +
+    selectedChoices.length +
+    "/" +
+    count +
+    " selected)";
+
   return (
     <div className="popup">
       <div>
         <h3>{description}</h3>
+        {!isSingularChoice && <p>{indication}</p>}
         <div className="grid">
+          {choices.length === 0 && <p>Oops, no choices available</p>}
           {choices.map((choice, index) => {
-            const value = typeof choice === "string" ? choice : choice.value;
             const label = typeof choice === "string" ? choice : choice.label;
-            const isSelected = selectedChoices.includes(String(value));
-            const selectionOrder = isSelected ? selectedChoices.indexOf(String(value)) + 1 : null;
-            const isDisabled = !isSelected && isMaxReached;
-            
+            const value = typeof choice === "string" ? choice : choice.value;
+
             return (
               <button
                 key={index}
-                onClick={() => onChoice(value)}
-                disabled={isDisabled}
-                style={{ 
-                  opacity: isSelected ? 0.7 : isDisabled ? 0.3 : 1,
-                  backgroundColor: isSelected ? '#4a5568' : undefined,
-                  position: 'relative'
-                }}
+                data-selected={selectedChoices.includes(value)}
+                onClick={() => handleChoice(value)}
               >
                 {label}
-                {showOrder && selectionOrder && (
-                  <span style={{
-                    position: 'absolute',
-                    top: '4px',
-                    right: '4px',
-                    backgroundColor: '#2d3748',
-                    color: 'white',
-                    borderRadius: '50%',
-                    width: '20px',
-                    height: '20px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '12px',
-                    fontWeight: 'bold'
-                  }}>
-                    {selectionOrder}
+                {count > 1 && selectedChoices.includes(value) && (
+                  <span className="count">
+                    {selectedChoices.indexOf(value) + 1}
                   </span>
                 )}
               </button>
@@ -70,7 +98,10 @@ export const ChoicePopup = ({
           })}
         </div>
         <div className="separator"></div>
-        <button onClick={onCancel} disabled={!canValidate}>{validateLabel}</button>
+        {!isSingularChoice && (
+          <button onClick={handleValidate}>Validate</button>
+        )}
+        {cancellable && <button onClick={onCancel}>Cancel</button>}
       </div>
     </div>
   );
