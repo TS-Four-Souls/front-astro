@@ -336,7 +336,9 @@ export const Board = ({ issuer }: BoardProps) => {
                 onClick={() => onMonsterCardClick(index)}
               />
               {monster.stats && (
+                
                 <ul>
+                  <h4 style={{ color: monster.stats.isEngagedInCombat ? 'red' : 'inherit' }}>{monster.name}</h4>
                   <li>Health: {monster.stats.healthPoints}</li>
                   <li>Attack: {monster.stats.attackPoints}</li>
                   <li>Evasion: {monster.stats.evasionPoints}</li>

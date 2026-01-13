@@ -21,7 +21,7 @@ export const PlayerStats = ({
   return (
     <div className="player" data-is-player={isPlayer}>
       <div>
-        <h2>{player.name}</h2>
+        <h2 style={{ color: player.isEngagedInCombat ? 'red' : 'inherit' }}>{player.name}</h2>
         <ul>
           <li>State: {state}</li>
           <li>Coins: {player.coins}</li>

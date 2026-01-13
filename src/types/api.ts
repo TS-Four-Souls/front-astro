@@ -25,6 +25,7 @@ export type DetailedStateResponse = {
     currentHealthPoints: number;
     currentAttackPoints: number;
     remainingLootPlay: number;
+    isEngagedInCombat: boolean;
   };
   players: {
     name: string;
@@ -35,6 +36,8 @@ export type DetailedStateResponse = {
     currentHealthPoints: number;
     currentAttackPoints: number;
     remainingLootPlay: number;
+    isEngagedInCombat: boolean;
+
   }[];
   topDiscards: {
     loot?: GenericCardType;
@@ -50,10 +53,12 @@ export type DetailedStateResponse = {
 
 export type MonsterCard = {
   slug: string;
+  name: string;
   stats?: {
     healthPoints: number;
     attackPoints: number;
     evasionPoints: number;
+    isEngagedInCombat: boolean;
   }
 }
 
