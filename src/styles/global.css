@@ -1,0 +1,37 @@
+@layer theme, base, components, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+@theme {
+  --shadow-2xs: 0 0.01em 0.01em rgb(0 0 0 / 0.05);
+  --shadow-xs: 0 0.02em 0.02em rgb(0 0 0 / 0.05);
+  --shadow-sm: 0 0.05em 0.05em rgb(0 0 0 / 0.1);
+  --shadow-md: 0 0.1em 0.1em rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 0.2em 0.2em rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 0.5em 0.5em rgb(0 0 0 / 0.1);
+  --shadow-2xl: 0 1em 1em rgb(0 0 0 / 0.25);
+  --shadow-3xl: 0 2em 2em rgba(0, 0, 0, 0.25);
+  --shadow-4xl: 0 3em 3em rgba(0, 0, 0, 0.2);
+
+  --blur-2xs: 2px;
+  --blur-xs: 4px;
+  --blur-sm: 8px;
+  --blur-md: 12px;
+  --blur-lg: 16px;
+  --blur-xl: 24px;
+  --blur-2xl: 40px;
+  --blur-3xl: 64px;
+
+  --radius-xs: 0.125em;
+  --radius-sm: 0.25em;
+  --radius-md: 0.375em;
+  --radius-lg: 0.5em;
+  --radius-xl: 0.75em;
+  --radius-2xl: 1em;
+  --radius-3xl: 1.5em;
+  --radius-4xl: 2em;
+
+  --spacing: 0.25em;
+}
