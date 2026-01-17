@@ -5,10 +5,11 @@ import { Pile } from "./pile";
 import { useRef } from "react";
 import { useCssOrbitControls } from "./use-css-orbit-controls";
 import { Card, CardType } from "./card";
-import type { DetailedState } from "@/shared/api";
+import type { DetailedState, Issuer } from "@/shared/api";
 
 interface BoardProps {
   state: DetailedState;
+  issuer: Issuer;
 }
 
 export const Board = ({ state }: BoardProps) => {
@@ -38,6 +39,9 @@ export const Board = ({ state }: BoardProps) => {
               health={state.me.currentHealthPoints}
               attack={state.me.currentAttackPoints}
               souls={state.me.souls}
+              currentTurn={state.turn === state.me.name}
+              canEndTurn={state.me.canEndTurn}
+              isMe={true}
             />
             <div className="flex gap-1 transform-3d">
               {state.me.inPlay.map((card) => (
@@ -50,7 +54,7 @@ export const Board = ({ state }: BoardProps) => {
             let horizontal;
             let right;
             if (state.players.length === 1) {
-              className = "col-start-2 row-start-1";
+              className = "col-start-2 row-start-1 mb-24";
               horizontal = true;
             } else if (state.players.length === 2) {
               className = [
@@ -85,6 +89,7 @@ export const Board = ({ state }: BoardProps) => {
                   health={player.currentHealthPoints}
                   attack={player.currentAttackPoints}
                   souls={player.souls}
+                  currentTurn={state.turn === player.name}
                 />
                 <div
                   className={cn(

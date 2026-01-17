@@ -27,7 +27,7 @@ export const Card = ({ card, style, className, thickness = 1, top = true }: Card
     return (
       <div
         className={cn(
-          "aspect-750/1024 h-40 rounded-md shadow-xs inset-shadow-sm shadow-stone-700 inset-shadow-stone-900",
+          "aspect-750/1024 h-40 rounded-md shadow-sm inset-shadow-sm shadow-stone-700 inset-shadow-stone-900",
           className,
         )}
         style={style}

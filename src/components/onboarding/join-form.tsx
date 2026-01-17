@@ -10,6 +10,7 @@ export const JoinForm = ({ onJoin }: JoinFormProps) => {
   const [name, setName] = useState("");
 
   const joinGame = async () => {
+    console.log("joining game with name", name);
     socket.emit("join", name, (response) => {
       if (response.status === 200) {
         onJoin({ id: name, secret: response.secret });

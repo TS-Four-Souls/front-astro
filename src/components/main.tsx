@@ -11,9 +11,17 @@ export const Main = () => {
   const [state, setState] = useState<DetailedState | null>(null);
   
   useEffect(() => {
-    function onConnect() {}
-    function onDisconnect() {}
+    function onConnect() {
+      console.log("connected to socket");
+    }
+    function onConnectError(error: any) {
+      console.error("failed to connect to socket", error);
+    }
+    function onDisconnect() {
+      console.log("disconnected from socket");
+}
     function onGameStart() {
+console.log("game started");
       setHasStarted(true);
     }
 
@@ -22,12 +30,14 @@ export const Main = () => {
     }
 
     socket.on("connect", onConnect);
+socket.on("connect_error", onConnectError);
     socket.on("disconnect", onDisconnect);
     socket.on("on:game:start", onGameStart);
     socket.on("on:game:changed", onGameChanged);
 
     return () => {
       socket.off("connect", onConnect);
+socket.off("connect_error", onConnectError);
       socket.off("disconnect", onDisconnect);
       socket.off("on:game:start", onGameStart);
       socket.off("on:game:changed", onGameChanged);
