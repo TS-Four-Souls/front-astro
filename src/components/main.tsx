@@ -5,11 +5,14 @@ import { Board } from "./board/board";
 import { socket } from "@/utils/socket";
 import type { DetailedState, Issuer } from "@/shared/api";
 import { GameContext } from "./board/useGameContext";
+import { Loading } from "./onboarding/loading";
 
 export const Main = () => {
   const [issuer, setIssuer] = useState<Issuer | null>(null);
   const [hasStarted, setHasStarted] = useState(false);
   const [state, setState] = useState<DetailedState | null>(null);
+
+  const [tryingToRejoin, setTryingToRejoin] = useState<boolean | null>(null);
 
   useEffect(() => {
     function onConnect() {
@@ -54,21 +57,30 @@ export const Main = () => {
 
   // Retrieve the secret from local storage
   useEffect(() => {
-    const storedIssuer = JSON.parse(localStorage.getItem("issuer") || "{}");
-    if (storedIssuer) {
-      socket.emit("rejoin", storedIssuer, (response) => {
-        if (response.status === 200) {
-          setIssuer(storedIssuer);
-          if (response.gameState) {
-            setHasStarted(true);
-            setState(response.gameState);
-          }
-        }
-      });
+    const storedIssuer = localStorage.getItem("issuer");
+    if (!storedIssuer) {
+      setTryingToRejoin(false);
+      return;
     }
+    const storedIssuerObject = JSON.parse(storedIssuer);
+    setTryingToRejoin(true);
+    socket.emit("rejoin", storedIssuerObject, (response) => {
+      if (response.status === 200) {
+        setIssuer(storedIssuerObject);
+        if (response.gameState) {
+          setHasStarted(true);
+          setState(response.gameState);
+        }
+      } else {
+        localStorage.removeItem("issuer");
+      }
+      setTryingToRejoin(false);
+    });
   }, []);
 
-  if (!issuer) {
+  if (tryingToRejoin === null || tryingToRejoin === true) {
+    return <Loading />;
+  } else if (!issuer) {
     return <JoinForm onJoin={setIssuer} />;
   } else if (!hasStarted) {
     return <StartStep issuer={issuer} />;
@@ -78,6 +90,6 @@ export const Main = () => {
         <Board />
       </GameContext.Provider>);
   } else {
-    return "Loading...";
+    return <Loading />;
   }
 };
