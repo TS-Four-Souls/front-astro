@@ -1,13 +1,18 @@
+import { useRef } from "react";
 import { cn } from "../../utils/cn";
 import { Card, CardType } from "./card";
+import seedrandom from "seedrandom";
 
 interface PileProps {
   cards: { slug: string }[] | CardType[];
   size?: number;
+  onClickTopCard?: () => void;
 }
 
-export const Pile = ({ cards, size: sizePx = 160 }: PileProps) => {
+export const Pile = ({ cards, size: sizePx = 160, onClickTopCard }: PileProps) => {
   const size = sizePx / 16;
+  const seed = useRef(Math.random().toString());
+  const rng = seedrandom(seed.current);
 
   return (
     <div
@@ -20,8 +25,9 @@ export const Pile = ({ cards, size: sizePx = 160 }: PileProps) => {
           const thickness = Math.max(0.05 * (cards.length / array.length), 0.1);
           return (
             <Card
+              onClick={index === array.length - 1 ? onClickTopCard : undefined}
               thickness={thickness}
-              key={typeof card === "string" ? card : card.slug}
+              key={index}
               card={card}
               className={cn(
                 "col-start-1 row-start-1",
@@ -34,7 +40,7 @@ export const Pile = ({ cards, size: sizePx = 160 }: PileProps) => {
               style={{
                 transform: `
                   translateZ(${thickness * (index + 1)}rem)
-                  rotate(${(Math.random() - 0.5) * 5}deg)
+                  rotate(${(rng() - 0.5) * 5}deg)
                 `,
                 height: size + "rem",
               }}
