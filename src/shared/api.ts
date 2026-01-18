@@ -134,7 +134,7 @@ export type DetailedState = {
   bonusSouls: BonusSoulCard[];
 
   turn: string;
-  stack: string[];
+  stack: StackElement[];
 
   firstCardTreasureDeck?: Card;
   pendingSelection?: PendingSelection;
@@ -156,7 +156,14 @@ export type Player = {
 export type PlayerMe = Player & {
   hand: Card[];
   inPlay: InPlayMeCard[];
-  canEndTurn: boolean;
+  capabilities: {
+    endTurn: boolean;
+    declareAttack: boolean;
+    rollDice: boolean;
+    buyTreasure: boolean;
+    useLoot: boolean;
+    resolve: boolean;
+  };
 };
 
 export type Card = {
@@ -169,11 +176,17 @@ export type MonsterCard = Card & {
     attackPoints: number;
     evasionPoints: number;
     isEngagedInCombat: boolean;
+    capabilities: {
+      targetable: boolean;
+    };
   };
 };
 
 export type InPlayCard = Card & {
   charged?: boolean;
+  capabilities: {
+    activate?: boolean;
+  };
 };
 
 export type InPlayMeCard = InPlayCard & {
@@ -187,7 +200,7 @@ export type BonusSoulCard = Card & {
 export type PendingSelection = {
   requestId: string;
   description: string;
-  options: string[];
+  options: SelectionItem[];
   count: number;
   asMany: boolean;
 };
@@ -358,7 +371,7 @@ export interface TargetSelectorResponse {
     /** Whether the player can select fewer targets than count (asMany) */
     asMany: boolean;
     /** Available options as string identifiers */
-    options: string[];
+    options: SelectionItem[];
     /** Whether target building is complete */
     complete: boolean;
     /** For choose-one selectors: true = picking option description, false = picking actual targets */
@@ -369,7 +382,7 @@ export type temporaryEffect =
 {
     slug: string,
     issuer: string,
-    targets: string[],
+    targets: SelectionItem[],
     description: string
 }
 
@@ -377,35 +390,36 @@ export type LootCardOnStackJson =
 {
     type: "LootCardEffect",
     slug: string,
-    targets: string[],
+    targets: SelectionItem[],
     issuer: entityType
 }
 
 export type DiceRollJson = {
+  type: "diceRoll";
   diceRoll: number;
   issuer: entityType;
   card?: string;
-  targets?: string[];
+  targets?: SelectionItem[];
 };
 
-export type entityType = 
-{
-  type: "player";
+export type IdentifierType = {
   name: string;
   slug: string;
-} | {
-  type: "monster";
-  name: string;
-  slug: string;
-}
+};
+
+export type entityType = IdentifierType & {
+  type: "player" | "monster";
+};
 
 export type DeathOnStackJson = {
+  type: "death",
   receiver: entityType,
   from: entityType,
   source: DiceRollJson | string
 };
 
 export type DamageOnStackJson = {
+  type: "damage",
   receiver: entityType, 
   from: entityType, 
   damage: number,
@@ -413,8 +427,31 @@ export type DamageOnStackJson = {
 };
 
 export type EffectOnStackJson = { 
+  type: "effect",
   issuer: entityType, 
-  targets: string[], 
+  targets: SelectionItem[], 
   card: string, 
   effect: string 
 };
+
+export type StackElement = LootCardOnStackJson 
+  | DeathOnStackJson 
+  | DamageOnStackJson 
+  | DiceRollJson
+  | EffectOnStackJson;
+
+export type SelectionItem = {type: "card", payload: Card} | 
+  {type: "stackElement", payload: StackElement} | 
+  {type: "player", payload: IdentifierType} |
+  {type: "monster", payload: IdentifierType} |
+  {type: "number", payload: number} |
+  {type: "boolean", payload: boolean} |
+  {type: "string", payload: string} |
+  {type: "couplePlayerHand", payload: {player: IdentifierType, hand: Card[]}} |
+  {type: "array", payload: SelectionItem[]} |
+  {type: "object", payload: {[key: string]: SelectionItem}} |
+  {type: "null", payload: null} |
+  {type: "unknown", payload: null};
+
+  export type SelectionItemType = SelectionItem["type"];
+
