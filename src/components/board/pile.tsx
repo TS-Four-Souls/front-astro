@@ -31,7 +31,7 @@ export const Pile = ({ cards, size: sizePx = 160, onClickTopCard }: PileProps) =
               card={card}
               className={cn(
                 "col-start-1 row-start-1",
-                cards.length === 1 && "shadow-lg/20",
+                cards.length > 0 && index === 0 && "shadow-lg/20",
                 cards.length > 5 && index === 3 && "shadow-lg/20",
                 cards.length > 10 && index === 2 && "shadow-xl/30",
                 cards.length > 40 && index === 1 && "shadow-2xl/30",
