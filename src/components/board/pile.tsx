@@ -40,12 +40,14 @@ export const Pile = ({
   const seed = useRef(Math.random().toString());
   const rng = seedrandom(seed.current);
 
-  const userSettings =
-    useUserSettingsContext();
+  const userSettings = useUserSettingsContext();
 
   const enable3D = optimizations?.disable3D === false || userSettings.enable3D;
-  const enableSides = optimizations?.enableSides ?? userSettings.enableCardSides;
-  const maxCards = optimizations?.maxCards ?? maxCardsByResolution[userSettings.zoomResolutionPreset];
+  const enableSides =
+    optimizations?.enableSides ?? userSettings.enableCardSides;
+  const maxCards =
+    optimizations?.maxCards ??
+    maxCardsByResolution[userSettings.zoomResolutionPreset];
 
   return (
     <div className="grid shrink-0 transform-3d" style={{ height: size + "em" }}>
@@ -72,7 +74,9 @@ export const Pile = ({
                 cards.length > 10 && index === 2 && "shadow-xl/30",
                 cards.length > 40 && index === 1 && "shadow-2xl/30",
                 cards.length > 80 && index === 0 && "shadow-3xl/30",
-                index === array.length - 1 && onClickTopCard && "cursor-pointer",
+                index === array.length - 1 &&
+                  onClickTopCard &&
+                  "cursor-pointer",
               )}
               style={{
                 transform: `

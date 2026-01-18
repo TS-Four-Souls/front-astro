@@ -31,8 +31,8 @@ export const Stack = () => {
   };
 
   return (
-    <div className="flex h-86 w-60 flex-col gap-2 bg-stone-900 p-4 transform-3d rounded-xl">
-      <div className="grid grow place-content-start overflow-auto rounded-xl text-sm scroll-priority">
+    <div className="flex h-86 w-60 flex-col gap-2 rounded-xl bg-stone-900 p-4 transform-3d">
+      <div className="scroll-priority grid grow place-content-start overflow-auto rounded-xl text-sm">
         {state.stack.map((element, index) => (
           <StackElement key={index} element={element} />
         ))}
@@ -40,7 +40,7 @@ export const Stack = () => {
       <button
         disabled={!state.me.capabilities.resolve}
         onClick={resolveStack}
-        className="w-full rounded-md bg-stone-600 px-2 py-1 text-white transition-colors not-disabled:cursor-pointer not-disabled:hover:bg-stone-500 disabled:cursor-not-allowed disabled:opacity-50 translate-z-2">
+        className="w-full translate-z-2 rounded-md bg-stone-600 px-2 py-1 text-white transition-colors not-disabled:cursor-pointer not-disabled:hover:bg-stone-500 disabled:cursor-not-allowed disabled:opacity-50">
         Resolve
       </button>
     </div>

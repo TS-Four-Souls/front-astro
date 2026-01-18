@@ -50,7 +50,9 @@ export const PlayerStats = ({
       )}>
       <div className="flex items-center gap-2">
         <h1 className="font-bold">{name}</h1>
-        {isMe && <Gear className="size-4 cursor-pointer" onClick={() => openMenu()} />}
+        {isMe && (
+          <Gear className="size-4 cursor-pointer" onClick={() => openMenu()} />
+        )}
       </div>
       <ul className="grid grid-cols-2 gap-x-3 gap-y-1 text-xs">
         <li>Health: {health}</li>
@@ -63,7 +65,7 @@ export const PlayerStats = ({
           disabled={!canEndTurn}
           onClick={onEndTurnPress}
           className={cn(
-            "w-full cursor-pointer rounded-md bg-stone-600 px-2 py-1 text-white transition-colors not-disabled:hover:bg-stone-500 disabled:cursor-not-allowed disabled:opacity-50 translate-z-2",
+            "w-full translate-z-2 cursor-pointer rounded-md bg-stone-600 px-2 py-1 text-white transition-colors not-disabled:hover:bg-stone-500 disabled:cursor-not-allowed disabled:opacity-50",
           )}>
           End Turn
         </button>

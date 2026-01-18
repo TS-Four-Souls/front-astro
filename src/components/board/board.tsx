@@ -37,7 +37,13 @@ export const Board = () => {
             />
             <div className="flex max-w-275 flex-wrap gap-1 transform-3d">
               {state.me.inPlay.map((card) => (
-                <Pile key={card.slug} cards={[card]} onClickTopCard={() => {console.log("Clicked top card", card.slug);}} />
+                <Pile
+                  key={card.slug}
+                  cards={[card]}
+                  onClickTopCard={() => {
+                    console.log("Clicked top card", card.slug);
+                  }}
+                />
               ))}
             </div>
           </div>

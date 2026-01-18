@@ -42,8 +42,7 @@ export function useCssOrbitControls(
   boardRef: React.RefObject<HTMLDivElement | null>,
   { rotateSpeed, panSpeed, zoomSpeed }: OrbitControlsProps,
 ) {
-  const { zoomResolutionPreset, enable3D } =
-    useUserSettingsContext();
+  const { zoomResolutionPreset, enable3D } = useUserSettingsContext();
 
   const initialState = {
     rotZ: 0,
@@ -63,7 +62,10 @@ export function useCssOrbitControls(
   };
 
   const { zoomUpscale, maxZoom, zoomSpeedMultipler, panSpeedMultipler } =
-    useMemo(() => zoomResolutionParams[zoomResolutionPreset], [zoomResolutionPreset]);
+    useMemo(
+      () => zoomResolutionParams[zoomResolutionPreset],
+      [zoomResolutionPreset],
+    );
 
   useEffect(() => {
     autoFit();
@@ -87,7 +89,7 @@ export function useCssOrbitControls(
     board.style.transformOrigin = `calc(50% - ${s.x}px) calc(50% - ${s.y}px)`;
 
     board.style.transform = `
-        translate3d(${s.x}px, ${s.y}px, ${zoomDiff * zoomUpscale / resolutionFactor}px)
+        translate3d(${s.x}px, ${s.y}px, ${(zoomDiff * zoomUpscale) / resolutionFactor}px)
         rotateX(${s.rotX}deg)
         rotateZ(${s.rotZ}deg)
       `;

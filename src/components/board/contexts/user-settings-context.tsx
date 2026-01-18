@@ -28,7 +28,7 @@ export const UserSettingsContext = createContext<UserSettingsContextProps>({
   zoomResolutionPreset: ZoomResolutionPreset.HIGH,
   enable3D: true,
   enableCardSides: true,
-  openMenu: () => { },
+  openMenu: () => {},
 });
 
 interface UserSettingsProviderProps {
@@ -38,11 +38,14 @@ interface UserSettingsProviderProps {
 export const UserSettingsProvider = ({
   children,
 }: UserSettingsProviderProps) => {
-  const [zoomResolutionPreset, setZoomResolutionPreset] = useLocalStorage<ZoomResolutionPreset>(
-    "zoom-resolution-preset",
-    ZoomResolutionPreset.MEDIUM,
-  );
-  const [threeDMode, setThreeDMode] = useLocalStorage<"full" | "simple" | "disabled">("3d-mode", "simple");
+  const [zoomResolutionPreset, setZoomResolutionPreset] =
+    useLocalStorage<ZoomResolutionPreset>(
+      "zoom-resolution-preset",
+      ZoomResolutionPreset.MEDIUM,
+    );
+  const [threeDMode, setThreeDMode] = useLocalStorage<
+    "full" | "simple" | "disabled"
+  >("3d-mode", "simple");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
@@ -57,21 +60,30 @@ export const UserSettingsProvider = ({
       {isMenuOpen && (
         <Popup onPressBackdrop={() => setIsMenuOpen(false)}>
           <div className="flex flex-col gap-4">
-            <div className="flex justify-between items-center">
+            <div className="flex items-center justify-between">
               <h1 className="text-3xl font-bold">User settings</h1>
-              <button className="cursor-pointer rounded-md px-2 py-1 transition-colors not-disabled:hover:bg-stone-500 disabled:cursor-not-allowed disabled:opacity-50" onClick={() => setIsMenuOpen(false)}>Close</button>
+              <button
+                className="cursor-pointer rounded-md px-2 py-1 transition-colors not-disabled:hover:bg-stone-500 disabled:cursor-not-allowed disabled:opacity-50"
+                onClick={() => setIsMenuOpen(false)}>
+                Close
+              </button>
             </div>
             <h2 className="text-2xl font-bold">Zoom resolution</h2>
-            <p className="text-sm leading-normal max-w-200 text-stone-300">
-              Adjust how much the resolution increases with zooming.<br />
-              If the cards are blurry when zooming in, try increasing this preset.<br />
-              If the game is laggy or the cards flicker in and out of existence, try decreasing this preset.
+            <p className="max-w-200 text-sm leading-normal text-stone-300">
+              Adjust how much the resolution increases with zooming.
+              <br />
+              If the cards are blurry when zooming in, try increasing this
+              preset.
+              <br />
+              If the game is laggy or the cards flicker in and out of existence,
+              try decreasing this preset.
               <br />
               This has little effect when 3D is disabled.
               <br />
-              Additionally, <strong>very low</strong> will reduce how much you can zoom in and how many cards are rendered in piles.
+              Additionally, <strong>very low</strong> will reduce how much you
+              can zoom in and how many cards are rendered in piles.
             </p>
-            <div className="flex flex-row gap-2 mt-2">
+            <div className="mt-2 flex flex-row gap-2">
               {presets.map((preset) => (
                 <button
                   className={cn(
@@ -86,14 +98,19 @@ export const UserSettingsProvider = ({
                 </button>
               ))}
             </div>
-            <h2 className="text-2xl font-bold mt-4">3D settings</h2>
-            <p className="text-sm leading-normal text-stone-300 max-w-200">With <strong>full 3D</strong>, the cards are rendered as 3D objects and with better lighting effects.
+            <h2 className="mt-4 text-2xl font-bold">3D settings</h2>
+            <p className="max-w-200 text-sm leading-normal text-stone-300">
+              With <strong>full 3D</strong>, the cards are rendered as 3D
+              objects and with better lighting effects.
               <br />
-              With <strong>simple 3D</strong>, the cards are still positioned in 3D space but they are floating 2D images.
+              With <strong>simple 3D</strong>, the cards are still positioned in
+              3D space but they are floating 2D images.
               <br />
-              With <strong>disabled 3D</strong>, the camera can no longer be rotated. Piles of cards are simplified improving performance and reducing video memory usage.
+              With <strong>disabled 3D</strong>, the camera can no longer be
+              rotated. Piles of cards are simplified improving performance and
+              reducing video memory usage.
             </p>
-            <div className="flex flex-row gap-2 mt-2">
+            <div className="mt-2 flex flex-row gap-2">
               <button
                 className={cn(
                   "cursor-pointer rounded-md px-2 py-1 transition-colors not-disabled:hover:bg-stone-500 disabled:cursor-not-allowed disabled:opacity-50",
