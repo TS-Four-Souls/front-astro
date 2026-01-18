@@ -3,4 +3,4 @@ import { io, type Socket } from "socket.io-client";
 import type { ClientToServerEvents, ServerToClientEvents } from "../shared/api";
 
 export const socket: Socket<ServerToClientEvents, ClientToServerEvents> =
-  io(BASE_URL,  { transports: ["websocket"], timeout: 5000 });
+  io(BASE_URL);

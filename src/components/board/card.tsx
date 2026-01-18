@@ -15,14 +15,10 @@ interface CardProps {
   className?: string;
   thickness?: number;
   top?: boolean;
+  onClick?: () => void;
 }
 
-export const Card = ({ card, style, className, thickness = 1, top = true }: CardProps) => {
-
-  const onClick = () => {
-    console.log("clicked", typeof card === "string" ? card : card?.slug);
-  };
-
+export const Card = ({ card, style, className, thickness = 1, top = true, onClick }: CardProps) => {
   if (!card) {
     return (
       <div
@@ -31,7 +27,7 @@ export const Card = ({ card, style, className, thickness = 1, top = true }: Card
           className,
         )}
         style={style}
-      ></div>
+      />
     );
   }
 
@@ -54,7 +50,7 @@ export const Card = ({ card, style, className, thickness = 1, top = true }: Card
         className={cn("pointer-events-auto h-full w-full", !top && "brightness-40")}
         draggable={false}
       />
-     <img
+      <img
         src={src}
         alt={alt}
         className="absolute top-0 bottom-0 left-0 h-full origin-left rotate-y-90 object-cover object-left brightness-60"

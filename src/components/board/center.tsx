@@ -1,17 +1,40 @@
 import type { DetailedState } from "@/shared/api";
 import { Pile } from "./pile";
 import { CardType } from "./card";
+import { Stack } from "./stack";
+import { socket } from "@/utils/socket";
+import { useGameContext } from "./useGameContext";
 
 interface CenterProps {
   state: DetailedState;
 }
 
 export const Center = ({ state }: CenterProps) => {
+  const { issuer } = useGameContext();
+
+  const onLootDeckClick = () => {
+    socket.emit("debugLoot", issuer, (response) => {
+      if (response.status === 200) {
+        console.log("Looted");
+      } else {
+        console.error("Failed to loot", response);
+      }
+    });
+  };
+
+  const onTreasureDeckClick = () => {
+    socket.emit("debugGainTreasure", issuer, (response) => {
+      if (response.status === 200) {
+        console.log("Gained treasure");
+      } else {
+        console.error("Failed to gain treasure", response);
+      }
+    });
+  };
+
   return (
     <div className="flex place-items-center gap-12 transform-3d">
-      <div className="grid h-86 w-60 place-items-center rounded-xl bg-stone-900 text-stone-500">
-        Stack
-      </div>
+      <Stack />
       <div className="flex shrink-0 flex-col place-items-center gap-2 transform-3d">
         {state.bonusSouls.map((soul) => (
           <Pile key={soul.slug} cards={[soul]} size={105} />
@@ -22,6 +45,7 @@ export const Center = ({ state }: CenterProps) => {
           cards={Array.from({ length: state.loot.deckSize }).map(
             () => CardType.LootCard,
           )}
+          onClickTopCard={onLootDeckClick}
         />
         <Pile cards={state.loot.discard} />
       </div>
@@ -34,6 +58,7 @@ export const Center = ({ state }: CenterProps) => {
             cards={Array.from({ length: state.treasure.deckSize }).map(
               () => CardType.TreasureCard,
             )}
+            onClickTopCard={onTreasureDeckClick}
           />
           {state.treasure.inPlay.map((card) => (
             <Pile key={card.slug} cards={[card]} />

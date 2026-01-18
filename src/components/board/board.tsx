@@ -5,14 +5,10 @@ import { Pile } from "./pile";
 import { useRef } from "react";
 import { useCssOrbitControls } from "./use-css-orbit-controls";
 import { Card, CardType } from "./card";
-import type { DetailedState, Issuer } from "@/shared/api";
+import { useGameContext } from "./useGameContext";
 
-interface BoardProps {
-  state: DetailedState;
-  issuer: Issuer;
-}
-
-export const Board = ({ state }: BoardProps) => {
+export const Board = () => {
+  const { state } = useGameContext();
   const boardRef = useRef<HTMLDivElement | null>(null);
   const parentRef = useRef<HTMLDivElement | null>(null);
 
@@ -32,18 +28,15 @@ export const Board = ({ state }: BoardProps) => {
           ref={boardRef}
           className="absolute top-1/2 left-1/2 grid h-max w-max -translate-x-1/2 -translate-y-1/2 grid-cols-[auto_1fr_auto] grid-rows-[auto_1fr_auto] p-6 pb-24 transform-3d"
         >
-          <div className="col-start-2 row-start-3 mt-24 flex place-content-center transform-3d">
+          <div className="col-start-2 row-start-3 mt-24 flex place-content-center transform-3d gap-8 items-start">
             <PlayerStats
               name={state.me.name}
               coins={state.me.coins}
               health={state.me.currentHealthPoints}
               attack={state.me.currentAttackPoints}
               souls={state.me.souls}
-              currentTurn={state.turn === state.me.name}
-              canEndTurn={state.me.canEndTurn}
-              isMe={true}
             />
-            <div className="flex gap-1 transform-3d">
+            <div className="flex gap-1 transform-3d max-w-275 flex-wrap">
               {state.me.inPlay.map((card) => (
                 <Pile key={card.slug} cards={[card]} />
               ))}
@@ -89,18 +82,15 @@ export const Board = ({ state }: BoardProps) => {
                   health={player.currentHealthPoints}
                   attack={player.currentAttackPoints}
                   souls={player.souls}
-                  currentTurn={state.turn === player.name}
                 />
                 <div
                   className={cn(
                     "flex flex-wrap gap-1 transform-3d",
-                    !horizontal && player.inPlay.length <= 3
-                      ? "flex-col"
-                      : right && "flex-row-reverse",
+                    horizontal ? "max-w-275" : "max-h-200",
                   )}
                 >
                   {player.inPlay.map((card) => (
-                    <Pile key={card.slug} cards={[card]} size={144} />
+                    <Pile key={card.slug} cards={[card]} />
                   ))}
                 </div>
                 {player.handSize > 0 && (
@@ -127,10 +117,10 @@ export const Board = ({ state }: BoardProps) => {
           </div>
         </div>
       </div>
-      <div className="fixed right-0 bottom-0 left-0 flex place-content-center place-items-center gap-4 text-[16px] pointer-events-none">
-        <div className="flex gap-4 translate-y-3/4 duration-600 hover:translate-y-0 hover:blur-none transition-transform pointer-events-auto">
+      <div className="fixed right-0 bottom-0 left-0 flex place-content-center place-items-center text-[16px] pointer-events-none">
+        <div className="grid auto-cols-fr grid-flow-col translate-y-3/4 duration-600 hover:translate-y-0 hover:blur-none transition-transform pointer-events-auto">
           {state.me.hand.map((card) => (
-            <Card key={card.slug} card={card} className="shadow-3xl/100 hover:-translate-y-10 transition-transform duration-300 cursor-pointer rounded-lg overflow-hidden" style={{ height: "30vh" }} />
+            <Card key={card.slug} card={card} className="shadow-3xl/100 hover:-translate-y-10 transition-transform duration-300 cursor-pointer rounded-lg overflow-hidden m-1 max-h-[25vh]"  />
           ))}
         </div>
       </div>
