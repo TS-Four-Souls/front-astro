@@ -1,10 +1,8 @@
 ---
-import { Main } from "../components/main";
 import Page from "../components/page.astro";
+import { App } from "@/components/app";
 ---
 
 <Page>
-	<div class="bg-stone-800 h-screen w-screen overflow-hidden text-white">
-		<Main client:load />
-	</div>
+	<App page="game" client:load />
 </Page>

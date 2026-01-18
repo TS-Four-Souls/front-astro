@@ -3,7 +3,7 @@ import { Pile } from "./pile";
 import { CardType } from "./card";
 import { Stack } from "./stack";
 import { socket } from "@/utils/socket";
-import { useGameContext } from "./useGameContext";
+import { useGameContext } from "./contexts/game-context";
 
 interface CenterProps {
   state: DetailedState;
@@ -51,9 +51,7 @@ export const Center = ({ state }: CenterProps) => {
       </div>
       <div className="flex flex-col gap-8 transform-3d">
         <div className="flex place-items-center gap-2 transform-3d">
-          <Pile
-            cards={state.treasure.discard}
-          />
+          <Pile cards={state.treasure.discard} />
           <Pile
             cards={Array.from({ length: state.treasure.deckSize }).map(
               () => CardType.TreasureCard,

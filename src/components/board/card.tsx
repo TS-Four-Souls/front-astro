@@ -14,11 +14,24 @@ interface CardProps {
   style?: React.CSSProperties;
   className?: string;
   thickness?: number;
-  top?: boolean;
+  brightness?: number;
+  enableSides?: boolean;
   onClick?: () => void;
 }
 
-export const Card = ({ card, style, className, thickness = 1, top = true, onClick }: CardProps) => {
+const CARD_RADIUS = 9; // %
+const RX = `${CARD_RADIUS}%`;
+const RY = `${(CARD_RADIUS * 750) / 1024}%`;
+
+export const Card = ({
+  card,
+  style,
+  className,
+  thickness = 1,
+  brightness = 1,
+  enableSides = true,
+  onClick,
+}: CardProps) => {
   if (!card) {
     return (
       <div
@@ -40,44 +53,97 @@ export const Card = ({ card, style, className, thickness = 1, top = true, onClic
 
   return (
     <div
-      className={cn("relative transform-3d aspect-750/1024", className)}
-      style={{ ...style }}
-      onClick={onClick}
-    >
-      <img
-        src={src}
-        alt={alt}
-        className={cn("pointer-events-auto h-full w-full", !top && "brightness-40")}
-        draggable={false}
+      className={cn(
+        "relative aspect-750/1024 select-none transform-3d",
+        !enableSides && "overflow-hidden",
+        className,
+      )}
+      style={{
+        ...style,
+        borderRadius: `${RX} ${RX} ${RX} ${RX} / ${RY} ${RY} ${RY} ${RY}`,
+      }}
+      onClick={onClick}>
+      <CardImage
+        card={card}
+        className={cn("pointer-events-auto h-full w-full")}
+        style={{
+          filter: `brightness(${Math.max(0.2, brightness * brightness)})`,
+        }}
       />
-      <img
-        src={src}
-        alt={alt}
-        className="absolute top-0 bottom-0 left-0 h-full origin-left rotate-y-90 object-cover object-left brightness-60"
-        style={{ width: `${thickness}rem` }}
-        draggable={false}
-      />
-      <img
-        src={src}
-        alt={alt}
-        className="absolute top-0 bottom-0 right-0 h-full origin-right -rotate-y-90 object-cover object-right brightness-70"
-        style={{ width: `${thickness}rem` }}
-        draggable={false}
-      />
-      <img
-        src={src}
-        alt={alt}
-        className="absolute left-0 right-0 top-0 w-full origin-top -rotate-x-90 object-cover object-top brightness-150"
-        style={{ height: `${thickness}rem` }}
-        draggable={false}
-      />
-      <img
-        src={src}
-        alt={alt}
-        className="absolute left-0 right-0 bottom-0 w-full origin-bottom rotate-x-90 object-cover object-bottom brightness-20"
-        style={{ height: `${thickness}rem` }}
-        draggable={false}
-      />
+      {enableSides && (
+        <>
+          <img
+            src={src}
+            alt={alt}
+            className="absolute top-0 bottom-0 left-0 h-full origin-left rotate-y-90 object-cover object-left brightness-60"
+            style={{
+              width: `${thickness}em`,
+              filter: `brightness(${0.4 * brightness + 0.2})`,
+            }}
+            draggable={false}
+          />
+          <img
+            src={src}
+            alt={alt}
+            className="absolute top-0 right-0 bottom-0 h-full origin-right -rotate-y-90 object-cover object-right brightness-70"
+            style={{
+              width: `${thickness}em`,
+              filter: `brightness(${0.8 * brightness + 0.2})`,
+            }}
+            draggable={false}
+          />
+          <img
+            src={src}
+            alt={alt}
+            className="absolute top-0 right-0 left-0 w-full origin-top -rotate-x-90 object-cover object-top brightness-150"
+            style={{
+              height: `${thickness}em`,
+              filter: `brightness(${0.4 * brightness + 1})`,
+            }}
+            draggable={false}
+          />
+          <img
+            src={src}
+            alt={alt}
+            className="absolute right-0 bottom-0 left-0 w-full origin-bottom rotate-x-90 object-cover object-bottom brightness-20"
+            style={{
+              height: `${thickness}em`,
+              filter: `brightness(${0.2 * brightness + 0.1})`,
+            }}
+            draggable={false}
+          />
+        </>
+      )}
     </div>
+  );
+};
+
+export const CardImage = ({
+  card,
+  className,
+  onClick,
+  style,
+}: {
+  card: { slug: string } | CardType;
+  className?: string;
+  onClick?: () => void;
+  style?: React.CSSProperties;
+}) => {
+  const src =
+    typeof card === "string"
+      ? `http://localhost:4321/images/back/${card}.webp`
+      : `http://localhost:4321/images/front/${card.slug}.webp`;
+
+  const alt = typeof card === "string" ? card : card.slug;
+
+  return (
+    <img
+      src={src}
+      alt={alt}
+      className={cn("aspect-750/1024 select-none", className)}
+      draggable={false}
+      onClick={onClick}
+      style={style}
+    />
   );
 };

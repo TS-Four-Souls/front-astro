@@ -4,8 +4,9 @@ import { Center } from "./center";
 import { Pile } from "./pile";
 import { useRef } from "react";
 import { useCssOrbitControls } from "./use-css-orbit-controls";
-import { Card, CardType } from "./card";
-import { useGameContext } from "./useGameContext";
+import { CardType } from "./card";
+import { useGameContext } from "./contexts/game-context";
+import { Hand } from "./hand";
 
 export const Board = () => {
   const { state } = useGameContext();
@@ -22,13 +23,11 @@ export const Board = () => {
     <>
       <div
         ref={parentRef}
-        className="relative h-screen w-screen overflow-hidden bg-stone-800 select-none perspective-[60vmax] perspective-origin-center"
-      >
+        className="relative h-screen w-screen overflow-hidden bg-stone-800 select-none perspective-[60vmax] perspective-origin-center">
         <div
           ref={boardRef}
-          className="absolute top-1/2 left-1/2 grid h-max w-max -translate-x-1/2 -translate-y-1/2 grid-cols-[auto_1fr_auto] grid-rows-[auto_1fr_auto] p-6 pb-24 transform-3d"
-        >
-          <div className="col-start-2 row-start-3 mt-24 flex place-content-center transform-3d gap-8 items-start">
+          className="absolute top-1/2 left-1/2 grid h-max w-max -translate-x-1/2 -translate-y-1/2 grid-cols-[auto_1fr_auto] grid-rows-[auto_1fr_auto] p-6 pb-24 transform-3d">
+          <div className="col-start-2 row-start-3 mt-24 flex place-content-center items-start gap-8 transform-3d">
             <PlayerStats
               name={state.me.name}
               coins={state.me.coins}
@@ -36,9 +35,9 @@ export const Board = () => {
               attack={state.me.currentAttackPoints}
               souls={state.me.souls}
             />
-            <div className="flex gap-1 transform-3d max-w-275 flex-wrap">
+            <div className="flex max-w-275 flex-wrap gap-1 transform-3d">
               {state.me.inPlay.map((card) => (
-                <Pile key={card.slug} cards={[card]} />
+                <Pile key={card.slug} cards={[card]} onClickTopCard={() => {console.log("Clicked top card", card.slug);}} />
               ))}
             </div>
           </div>
@@ -74,8 +73,7 @@ export const Board = () => {
                   "flex place-content-center gap-8 transform-3d",
                   horizontal ? "flex-row" : "flex-col",
                   right ? "items-end text-right" : "items-start text-left",
-                )}
-              >
+                )}>
                 <PlayerStats
                   name={player.name}
                   coins={player.coins}
@@ -87,8 +85,7 @@ export const Board = () => {
                   className={cn(
                     "flex flex-wrap gap-1 transform-3d",
                     horizontal ? "max-w-275" : "max-h-200",
-                  )}
-                >
+                  )}>
                   {player.inPlay.map((card) => (
                     <Pile key={card.slug} cards={[card]} />
                   ))}
@@ -98,8 +95,7 @@ export const Board = () => {
                     className={cn(
                       "grid place-items-center transform-3d",
                       right ? "place-self-end" : "place-self-start",
-                    )}
-                  >
+                    )}>
                     <Pile
                       key={index}
                       cards={Array.from({ length: player.handSize }).map(
@@ -117,13 +113,7 @@ export const Board = () => {
           </div>
         </div>
       </div>
-      <div className="fixed right-0 bottom-0 left-0 flex place-content-center place-items-center text-[16px] pointer-events-none">
-        <div className="grid auto-cols-fr grid-flow-col translate-y-3/4 duration-600 hover:translate-y-0 hover:blur-none transition-transform pointer-events-auto">
-          {state.me.hand.map((card) => (
-            <Card key={card.slug} card={card} className="shadow-3xl/100 hover:-translate-y-10 transition-transform duration-300 cursor-pointer rounded-lg overflow-hidden m-1 max-h-[25vh]"  />
-          ))}
-        </div>
-      </div>
+      <Hand />
     </>
   );
 };

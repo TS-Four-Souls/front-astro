@@ -1,4 +1,8 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
+import {
+  ZoomResolutionPreset,
+  useUserSettingsContext,
+} from "./contexts/user-settings-context";
 
 interface OrbitControlsProps {
   rotateSpeed: number;
@@ -6,11 +10,40 @@ interface OrbitControlsProps {
   zoomSpeed: number;
 }
 
+export const zoomResolutionParams = {
+  [ZoomResolutionPreset.HIGH]: {
+    zoomUpscale: 1,
+    maxZoom: 480,
+    zoomSpeedMultipler: 1,
+    panSpeedMultipler: 0.23,
+  },
+  [ZoomResolutionPreset.MEDIUM]: {
+    zoomUpscale: 2,
+    maxZoom: 380,
+    zoomSpeedMultipler: 0.7,
+    panSpeedMultipler: 0.42,
+  },
+  [ZoomResolutionPreset.LOW]: {
+    zoomUpscale: 4,
+    maxZoom: 290,
+    zoomSpeedMultipler: 0.5,
+    panSpeedMultipler: 0.77,
+  },
+  [ZoomResolutionPreset.VERY_LOW]: {
+    zoomUpscale: 8,
+    maxZoom: 200,
+    zoomSpeedMultipler: 0.3,
+    panSpeedMultipler: 1.4,
+  },
+};
+
 export function useCssOrbitControls(
   parentRef: React.RefObject<HTMLDivElement | null>,
   boardRef: React.RefObject<HTMLDivElement | null>,
   { rotateSpeed, panSpeed, zoomSpeed }: OrbitControlsProps,
 ) {
+  const { zoomResolutionPreset, enable3D } =
+    useUserSettingsContext();
 
   const initialState = {
     rotZ: 0,
@@ -27,7 +60,14 @@ export function useCssOrbitControls(
     isDragging: false,
     zoom: 100,
     autoFitZoom: 100,
-  }
+  };
+
+  const { zoomUpscale, maxZoom, zoomSpeedMultipler, panSpeedMultipler } =
+    useMemo(() => zoomResolutionParams[zoomResolutionPreset], [zoomResolutionPreset]);
+
+  useEffect(() => {
+    autoFit();
+  }, [zoomResolutionPreset, enable3D]);
 
   const state = useRef({ ...initialState });
 
@@ -41,14 +81,18 @@ export function useCssOrbitControls(
 
     const s = state.current;
 
-    board.style.transformOrigin = `calc(50% - ${s.x}px) calc(50% - ${s.y}px)`;
-    board.style.transform = `
-      translate3d(${s.x}px, ${s.y}px, ${s.zoom - s.autoFitZoom}px)
-      rotateX(${s.rotX}deg)
-      rotateZ(${s.rotZ}deg)
-    `;
+    const zoomDiff = s.zoom - s.autoFitZoom;
+    const resolutionFactor = window.screen.width / 1920;
 
-    document.documentElement.style.fontSize = `${s.zoom}%`;
+    board.style.transformOrigin = `calc(50% - ${s.x}px) calc(50% - ${s.y}px)`;
+
+    board.style.transform = `
+        translate3d(${s.x}px, ${s.y}px, ${zoomDiff * zoomUpscale / resolutionFactor}px)
+        rotateX(${s.rotX}deg)
+        rotateZ(${s.rotZ}deg)
+      `;
+
+    board.style.fontSize = `${s.zoom}%`;
   };
 
   const autoFit = () => {
@@ -57,10 +101,16 @@ export function useCssOrbitControls(
 
     const s = state.current;
 
-    const body = { width: document.body.clientWidth, height: document.body.clientHeight };
+    const body = {
+      width: document.body.clientWidth,
+      height: document.body.clientHeight,
+    };
     const boardSize = { width: board.clientWidth, height: board.clientHeight };
 
-    const scale = Math.min(body.width / boardSize.width, body.height / boardSize.height)
+    const scale = Math.min(
+      body.width / boardSize.width,
+      body.height / boardSize.height,
+    );
 
     s.rotZ = 0;
     s.rotX = 0;
@@ -70,7 +120,7 @@ export function useCssOrbitControls(
     s.autoFitZoom = s.zoom;
 
     update();
-  }
+  };
 
   useEffect(() => {
     const parent = parentRef.current;
@@ -115,7 +165,7 @@ export function useCssOrbitControls(
       // Only update camera if we're actually dragging
       if (!s.isDragging) return;
 
-      if (s.mode === "rotate") {
+      if (s.mode === "rotate" && enable3D) {
         s.rotX = s.startRotX - dy * rotateSpeed;
         s.rotX = Math.max(-60, Math.min(60, s.rotX)); // optional clamp
         s.rotZ = s.startRotZ - dx * rotateSpeed;
@@ -130,10 +180,12 @@ export function useCssOrbitControls(
         const worldDx = dx * cos + dy * sin;
         const worldDy = -dx * sin + dy * cos;
 
-        s.x = s.startX + worldDx * panSpeed;
-        s.y = s.startY + worldDy * panSpeed;
-      }
+        const ajustedPanSpeed =
+          panSpeed * (s.autoFitZoom / s.zoom) ** panSpeedMultipler;
 
+        s.x = s.startX + worldDx * ajustedPanSpeed;
+        s.y = s.startY + worldDy * ajustedPanSpeed;
+      }
 
       update();
     };
@@ -144,8 +196,27 @@ export function useCssOrbitControls(
     };
 
     const onWheel = (e: WheelEvent) => {
+      const goUpDomChain = (element: Element) => {
+        if (element.classList.contains("scroll-priority")) {
+          return true;
+        }
+        if (element.parentElement) {
+          return goUpDomChain(element.parentElement);
+        }
+        return false;
+      };
+
+      if (goUpDomChain(e.target as Element)) {
+        return;
+      }
+
+      const resolutionFactor = window.screen.width / 1920;
+
       const currentZoom = s.zoom;
-      const newZoom = Math.min(500, Math.max(100, s.zoom + -e.deltaY * zoomSpeed));
+      const newZoom = Math.min(
+        maxZoom * resolutionFactor,
+        Math.max(100, s.zoom + -e.deltaY * zoomSpeed * zoomSpeedMultipler),
+      );
       const diff = newZoom / currentZoom;
       s.zoom = newZoom;
 
@@ -180,5 +251,16 @@ export function useCssOrbitControls(
       parent.removeEventListener("contextmenu", onContextMenu);
       window.removeEventListener("keydown", onKeyDown);
     };
-  }, [parentRef, boardRef, rotateSpeed, panSpeed, zoomSpeed]);
+  }, [
+    parentRef,
+    boardRef,
+    rotateSpeed,
+    panSpeed,
+    zoomSpeed,
+    zoomUpscale,
+    maxZoom,
+    zoomSpeedMultipler,
+    panSpeedMultipler,
+    enable3D,
+  ]);
 }

@@ -1,28 +1,64 @@
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 import { cn } from "../../utils/cn";
 import { Card, CardType } from "./card";
 import seedrandom from "seedrandom";
+import { clamp } from "@/utils/numbers";
+import {
+  ZoomResolutionPreset,
+  useUserSettingsContext,
+} from "./contexts/user-settings-context";
+
+export type PerformanceMode = "none" | "minimal" | "full";
 
 interface PileProps {
   cards: { slug: string }[] | CardType[];
   size?: number;
   onClickTopCard?: () => void;
+  optimizations?: {
+    maxCards: number;
+    enableSides: boolean;
+    disable3D: boolean;
+  };
 }
 
-export const Pile = ({ cards, size: sizePx = 160, onClickTopCard }: PileProps) => {
+const BRIGHTNESS_MIN = 0.3;
+
+const maxCardsByResolution = {
+  [ZoomResolutionPreset.HIGH]: 20,
+  [ZoomResolutionPreset.MEDIUM]: 20,
+  [ZoomResolutionPreset.LOW]: 15,
+  [ZoomResolutionPreset.VERY_LOW]: 10,
+};
+
+export const Pile = ({
+  cards,
+  size: sizePx = 160,
+  onClickTopCard,
+  optimizations,
+}: PileProps) => {
   const size = sizePx / 16;
   const seed = useRef(Math.random().toString());
   const rng = seedrandom(seed.current);
 
+  const userSettings =
+    useUserSettingsContext();
+
+  const enable3D = optimizations?.disable3D === false || userSettings.enable3D;
+  const enableSides = optimizations?.enableSides ?? userSettings.enableCardSides;
+  const maxCards = optimizations?.maxCards ?? maxCardsByResolution[userSettings.zoomResolutionPreset];
+
   return (
-    <div
-      className="grid shrink-0 transform-3d"
-      style={{ height: size + "rem" }}
-    >
+    <div className="grid shrink-0 transform-3d" style={{ height: size + "em" }}>
       {cards
-        .filter((_, index) => index >= cards.length - 20)
+        .filter((_, index) => index >= cards.length - maxCards)
         .map((card, index, array) => {
           const thickness = Math.max(0.05 * (cards.length / array.length), 0.1);
+          const distanceFromTop = array.length - index - 1;
+          const brightness = clamp(
+            1 - ((1 - BRIGHTNESS_MIN) / array.length) * distanceFromTop,
+            BRIGHTNESS_MIN,
+            1,
+          );
           return (
             <Card
               onClick={index === array.length - 1 ? onClickTopCard : undefined}
@@ -36,19 +72,21 @@ export const Pile = ({ cards, size: sizePx = 160, onClickTopCard }: PileProps) =
                 cards.length > 10 && index === 2 && "shadow-xl/30",
                 cards.length > 40 && index === 1 && "shadow-2xl/30",
                 cards.length > 80 && index === 0 && "shadow-3xl/30",
+                index === array.length - 1 && onClickTopCard && "cursor-pointer",
               )}
               style={{
                 transform: `
-                  translateZ(${thickness * (index + 1)}rem)
+                  ${enable3D ? `translateZ(${thickness * (index + 1)}em)` : ""}
                   rotate(${(rng() - 0.5) * 5}deg)
                 `,
-                height: size + "rem",
+                height: size + "em",
               }}
-              top={index === array.length - 1}
+              brightness={brightness}
+              enableSides={enableSides}
             />
           );
         })}
-      {cards.length === 0 && <Card style={{ height: size + "rem" }} />}
+      {cards.length === 0 && <Card style={{ height: size + "em" }} />}
     </div>
   );
 };

@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
-import { JoinForm } from "./onboarding/join-form";
-import { StartStep } from "./onboarding/start-step";
-import { Board } from "./board/board";
+import { JoinForm } from "../onboarding/join-form";
+import { StartStep } from "../onboarding/start-step";
+import { Board } from "../board/board";
 import { socket } from "@/utils/socket";
 import type { DetailedState, Issuer } from "@/shared/api";
-import { GameContext } from "./board/useGameContext";
-import { Loading } from "./onboarding/loading";
+import { GameProvider } from "../board/contexts/game-context";
+import { Loading } from "../onboarding/loading";
+import { useLocalStorage } from "@/utils/use-local-storage";
 
-export const Main = () => {
-  const [issuer, setIssuer] = useState<Issuer | null>(null);
+export const GamePage = () => {
+  const [issuer, setIssuer] = useLocalStorage<Issuer | null>("issuer", null);
   const [hasStarted, setHasStarted] = useState(false);
   const [state, setState] = useState<DetailedState | null>(null);
 
@@ -48,31 +49,21 @@ export const Main = () => {
     };
   }, []);
 
-  // Store the secret in local storage
-  useEffect(() => {
-    if (issuer) {
-      localStorage.setItem("issuer", JSON.stringify(issuer));
-    }
-  }, [issuer]);
-
   // Retrieve the secret from local storage
   useEffect(() => {
-    const storedIssuer = localStorage.getItem("issuer");
-    if (!storedIssuer) {
+    if (!issuer) {
       setTryingToRejoin(false);
       return;
     }
-    const storedIssuerObject = JSON.parse(storedIssuer);
     setTryingToRejoin(true);
-    socket.emit("rejoin", storedIssuerObject, (response) => {
+    socket.emit("rejoin", issuer, (response) => {
       if (response.status === 200) {
-        setIssuer(storedIssuerObject);
         if (response.gameState) {
           setHasStarted(true);
           setState(response.gameState);
         }
       } else {
-        localStorage.removeItem("issuer");
+        setIssuer(null);
       }
       setTryingToRejoin(false);
     });
@@ -86,9 +77,10 @@ export const Main = () => {
     return <StartStep issuer={issuer} />;
   } else if (state) {
     return (
-      <GameContext.Provider value={{ state, issuer }}>
+      <GameProvider state={state} issuer={issuer}>
         <Board />
-      </GameContext.Provider>);
+      </GameProvider>
+    );
   } else {
     return <Loading />;
   }
