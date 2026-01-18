@@ -8,6 +8,7 @@ interface JoinFormProps {
 
 export const JoinForm = ({ onJoin }: JoinFormProps) => {
   const [name, setName] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   const joinGame = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -16,7 +17,7 @@ export const JoinForm = ({ onJoin }: JoinFormProps) => {
       if (response.status === 200) {
         onJoin({ id: name, secret: response.secret });
       } else {
-        console.error("Failed to join the game", response);
+        setError(response.error);
       }
     });
   };
@@ -28,14 +29,24 @@ export const JoinForm = ({ onJoin }: JoinFormProps) => {
         <form onSubmit={joinGame} className="flex flex-col gap-2">
           <input
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => {
+              setName(e.target.value);
+              setError(null);
+            }}
             type="text"
             placeholder="Enter your name..."
             autoComplete="off"
             minLength={1}
             required
             className="bg-stone-800 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-stone-500"
+            aria-invalid={error ? "true" : "false"}
+            aria-describedby={error ? "error-message" : undefined}
           />
+          {error && (
+            <p id="error-message" className="text-red-500 mb-8">
+              {error}
+            </p>
+          )}
           <button className="bg-stone-600 text-white px-4 py-2 rounded-md hover:bg-stone-500 transition-colors cursor-pointer" type="submit">Join</button>
         </form>
       </div>

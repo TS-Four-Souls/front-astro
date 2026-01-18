@@ -40,7 +40,7 @@ type JoinResponse =
   }
   | {
     status: 400;
-    error: any;
+    error: string;
   };
 
 const rejoinRequestSchema = issuerSchema;
@@ -52,7 +52,7 @@ type RejoinResponse =
   }
   | {
     status: 400;
-    error: any;
+    error: string;
   };
 
 const startRequestSchema = z.object({
@@ -67,7 +67,7 @@ type BasicResponse =
   }
   | {
     status: 400;
-    error: any;
+    error: string;
   };
 
   type StringResponse =
@@ -77,7 +77,7 @@ type BasicResponse =
   }
   | {
     status: 400;
-    error: any;
+    error: string;
   };
 
   type NextTargetSelectorResponse =
@@ -87,7 +87,7 @@ type BasicResponse =
   }
   | {
     status: 400;
-    error: any;
+    error: string;
   };
 
 const resolveRequestSchema = startRequestSchema
@@ -378,31 +378,42 @@ export type LootCardOnStackJson =
     type: "LootCardEffect",
     slug: string,
     targets: string[],
-    issuer: string
+    issuer: entityType
 }
 
 export type DiceRollJson = {
   diceRoll: number;
-  issuer: string;
+  issuer: entityType;
   card?: string;
   targets?: string[];
 };
 
+export type entityType = 
+{
+  type: "player";
+  name: string;
+  slug: string;
+} | {
+  type: "monster";
+  name: string;
+  slug: string;
+}
+
 export type DeathOnStackJson = {
-  receiver: string, 
-  from: string, 
+  receiver: entityType,
+  from: entityType,
   source: DiceRollJson | string
 };
 
 export type DamageOnStackJson = {
-  receiver: string, 
-  from: string, 
+  receiver: entityType, 
+  from: entityType, 
   damage: number,
   source: DiceRollJson | string
 };
 
 export type EffectOnStackJson = { 
-  issuer: string, 
+  issuer: entityType, 
   targets: string[], 
   card: string, 
   effect: string 
