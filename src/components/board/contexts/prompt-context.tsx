@@ -3,6 +3,7 @@ import { createContext, useContext, useState } from "react";
 import { PromptPopup } from "../prompt-popup";
 
 interface Prompt {
+  promptId: string;
   /**
    * The prompt to display to the user
    */
@@ -31,29 +32,47 @@ interface Prompt {
 }
 
 interface PromptContextProps {
-  prompts: Prompt[];
+  prompts: Map<string, Prompt>;
   addPrompt: (prompt: Prompt) => void;
-  removePrompt: () => void;
+  removePrompt: (promptId: string) => void;
 }
 
 const PromptContext = createContext<PromptContextProps>({
-  prompts: [],
+  prompts: new Map(),
   addPrompt: () => {},
   removePrompt: () => {},
 });
 
 export const PromptProvider = ({ children }: { children: React.ReactNode }) => {
-  const [prompts, setPrompts] = useState<Prompt[]>([]);
+  const [prompts, setPrompts] = useState<Map<string, Prompt>>(new Map());
+
   const addPrompt = (prompt: Prompt) => {
-    setPrompts((current) => [...current, prompt]);
+    // Check if a prompt with the same ID already exists
+    if (prompts.has(prompt.promptId)) {
+      console.warn(`Prompt with ID ${prompt.promptId} already exists`);
+      return;
+    }
+    setPrompts((current) => {
+      const newMap = new Map(current);
+      newMap.set(prompt.promptId, prompt);
+      return newMap;
+    });
   };
-  const removePrompt = () => {
-    setPrompts((current) => [...current.slice(0, -1)]);
+
+  const removePrompt = (promptId: string) => {
+    setPrompts((current) => {
+      const newMap = new Map(current);
+      newMap.delete(promptId);
+      return newMap;
+    });
   };
+
+  const nextPrompt = prompts.values().next().value;
+
   return (
     <PromptContext.Provider value={{ prompts, addPrompt, removePrompt }}>
       {children}
-      {prompts.length > 0 && <PromptPopup {...prompts[prompts.length - 1]} />}
+      {nextPrompt && <PromptPopup {...nextPrompt} />}
     </PromptContext.Provider>
   );
 };

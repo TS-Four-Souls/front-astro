@@ -23,21 +23,25 @@ export const Hand = () => {
             } else if (response.response.options.length === 0) {
               toast("error", "Cannot play this card", "No options available");
             } else {
+              const promptId = `play-card-${issuer.id}-${index}-${selections.length}`;
               console.log(
                 "Prompting for additional selections",
                 response.response.options,
               );
               addPrompt({
+                promptId,
                 prompt: response.response.description,
                 options: response.response.options,
-                minCount: response.response.count,
+                minCount: response.response.asMany
+                  ? 0
+                  : response.response.count,
                 maxCount: response.response.count,
                 onSubmit: (additionalSelections) => {
                   playCard(index, [...selections, ...additionalSelections]);
-                  removePrompt();
+                  removePrompt(promptId);
                 },
                 onCancel: () => {
-                  removePrompt();
+                  removePrompt(promptId);
                 },
               });
             }
