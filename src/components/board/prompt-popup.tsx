@@ -1,7 +1,7 @@
 import type { SelectionItem } from "@/shared/api";
 import { cn } from "@/utils/cn";
 import { useState } from "react";
-import { Card } from "./card";
+import { Card, CardImage } from "./card";
 import { Person } from "@/icons/person";
 import { Sword } from "@/icons/sword";
 import { StackElement } from "./stack";
@@ -140,10 +140,11 @@ export const GenericOption = ({ option }: { option: SelectionItem }) => {
       return <StringOption option={option} />;
     case "stackElement":
       return <StackElementOption option={option} />;
+    case "card":
+      return <CardOption option={option} />;
     case "number":
     case "boolean":
     case "object":
-    case "card":
     case "couplePlayerHand":
     case "array":
     case "null":
@@ -203,6 +204,18 @@ export const StackElementOption = ({
   return (
     <div className="rounded-md bg-stone-900 p-4 pr-12 text-xl">
       <StackElement element={option.payload} />
+    </div>
+  );
+};
+
+export const CardOption = ({
+  option,
+}: {
+  option: Extract<SelectionItem, { type: "card" }>;
+}) => {
+  return (
+    <div className="flex flex-col items-center gap-2">
+      <CardImage card={option.payload} className="h-64" />
     </div>
   );
 };
