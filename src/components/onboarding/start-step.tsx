@@ -1,23 +1,28 @@
 import { socket } from "@/utils/socket";
 import type { Issuer } from "@/shared/api";
 import { useState } from "react";
+import { useToastContext } from "../board/contexts/toast-context";
 
 interface StartStepProps {
   issuer: Issuer;
 }
 
 export const StartStep = ({ issuer }: StartStepProps) => {
-  const [error, setError] = useState<string | null>(null);
+  const { toast } = useToastContext();
 
   const requestStart = async () => {
     socket.emit("start", { issuer }, (response) => {
-      if (response.status === 200) {
-        setError(null);
-      } else if (response.status === 400) {
-        setError(response.error);
+      switch (response.status) {
+        case 200:
+          break;
+        case 400:
+        default:
+          toast("error", "Failed to start game", response.error);
+          break;
       }
     });
   };
+  
   return (
     <div className="grid h-screen place-content-center place-items-center">
       <div className="flex flex-col gap-8 rounded-lg border-2 border-stone-700 p-8 text-center">
@@ -32,7 +37,6 @@ export const StartStep = ({ issuer }: StartStepProps) => {
           onClick={requestStart}>
           Start
         </button>
-        {error && <p className="text-red-500">{error}</p>}
       </div>
     </div>
   );
