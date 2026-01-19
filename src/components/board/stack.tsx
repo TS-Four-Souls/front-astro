@@ -32,10 +32,15 @@ export const Stack = () => {
 
   return (
     <div className="flex h-86 w-60 flex-col gap-2 rounded-xl bg-stone-900 p-4 transform-3d">
-      <div className="scroll-priority grid grow place-content-start overflow-auto rounded-xl text-sm">
+      <div className="scroll-priority grid grow place-content-start overflow-auto text-sm">
         {state.stack.map((element, index) => (
           <StackElement key={index} element={element} />
         ))}
+        {state.stack.length === 0 && (
+          <div className="flex text-center">
+            <p className="text-stone-500">Nothing is on the stack</p>
+          </div>
+        )}
       </div>
       <button
         disabled={!state.me.capabilities.resolve}

@@ -66,7 +66,7 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
           t.visible ? "animate-in-right" : "animate-out-right",
         )}>
         <Icon type={type} className="size-8 shrink-0" />
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-1">
           <h1 className="text-lg font-bold">{title}</h1>
           <p className="text-sm">{message}</p>
         </div>

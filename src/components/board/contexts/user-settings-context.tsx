@@ -10,6 +10,12 @@ export enum ZoomResolutionPreset {
   VERY_LOW = "veryLow",
 }
 
+export enum ThreeDMode {
+  FULL = "full",
+  SIMPLE = "simple",
+  DISABLED = "disabled",
+}
+
 const presets = [
   { label: "High", value: ZoomResolutionPreset.HIGH },
   { label: "Medium", value: ZoomResolutionPreset.MEDIUM },
@@ -43,17 +49,18 @@ export const UserSettingsProvider = ({
       "zoom-resolution-preset",
       ZoomResolutionPreset.MEDIUM,
     );
-  const [threeDMode, setThreeDMode] = useLocalStorage<
-    "full" | "simple" | "disabled"
-  >("3d-mode", "simple");
+  const [threeDMode, setThreeDMode] = useLocalStorage<ThreeDMode>(
+    "3d-mode",
+    ThreeDMode.SIMPLE,
+  );
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <UserSettingsContext.Provider
       value={{
         zoomResolutionPreset: zoomResolutionPreset,
-        enable3D: threeDMode !== "disabled",
-        enableCardSides: threeDMode === "full",
+        enable3D: threeDMode !== ThreeDMode.DISABLED,
+        enableCardSides: threeDMode === ThreeDMode.FULL,
         openMenu: () => setIsMenuOpen(true),
       }}>
       {children}
@@ -114,31 +121,31 @@ export const UserSettingsProvider = ({
               <button
                 className={cn(
                   "cursor-pointer rounded-md px-2 py-1 transition-colors not-disabled:hover:bg-stone-500 disabled:cursor-not-allowed disabled:opacity-50",
-                  threeDMode === "full"
+                  threeDMode === ThreeDMode.FULL
                     ? "bg-stone-300 text-stone-900"
                     : "bg-stone-600 text-stone-100",
                 )}
-                onClick={() => setThreeDMode("full")}>
+                onClick={() => setThreeDMode(ThreeDMode.FULL)}>
                 Full
               </button>
               <button
                 className={cn(
                   "cursor-pointer rounded-md px-2 py-1 transition-colors not-disabled:hover:bg-stone-500 disabled:cursor-not-allowed disabled:opacity-50",
-                  threeDMode === "simple"
+                  threeDMode === ThreeDMode.SIMPLE
                     ? "bg-stone-300 text-stone-900"
                     : "bg-stone-600 text-stone-100",
                 )}
-                onClick={() => setThreeDMode("simple")}>
+                onClick={() => setThreeDMode(ThreeDMode.SIMPLE)}>
                 Simple
               </button>
               <button
                 className={cn(
                   "cursor-pointer rounded-md px-2 py-1 transition-colors not-disabled:hover:bg-stone-500 disabled:cursor-not-allowed disabled:opacity-50",
-                  threeDMode === "disabled"
+                  threeDMode === ThreeDMode.DISABLED
                     ? "bg-stone-300 text-stone-900"
                     : "bg-stone-600 text-stone-100",
                 )}
-                onClick={() => setThreeDMode("disabled")}>
+                onClick={() => setThreeDMode(ThreeDMode.DISABLED)}>
                 Disabled
               </button>
             </div>

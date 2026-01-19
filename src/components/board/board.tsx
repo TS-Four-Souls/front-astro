@@ -15,7 +15,6 @@ export const Board = () => {
 
   useCssOrbitControls(parentRef, boardRef, {
     rotateSpeed: 0.2,
-    panSpeed: 1,
     zoomSpeed: 0.15,
   });
 
@@ -40,9 +39,6 @@ export const Board = () => {
                 <Pile
                   key={card.slug}
                   cards={[card]}
-                  onClickTopCard={() => {
-                    console.log("Clicked top card", card.slug);
-                  }}
                 />
               ))}
             </div>
