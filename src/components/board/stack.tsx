@@ -7,15 +7,17 @@ import type {
   DiceRollJson,
   EffectOnStackJson,
   LootCardOnStackJson,
-  SelectionItem,
   StackElement as StackElementType,
 } from "@/shared/api";
 import { Dice } from "@/icons/dice";
 import { CardImage } from "./card";
+import { useEffect, useRef } from "react";
 
 export const Stack = () => {
   const { state, issuer } = useGameContext();
   const { toast } = useToastContext();
+
+  const scrollViewRef = useRef<HTMLDivElement>(null);
 
   const resolveStack = () => {
     socket.emit("resolve", { issuer }, (response) => {
@@ -30,9 +32,22 @@ export const Stack = () => {
     });
   };
 
+  useEffect(() => {
+    const scrollView = scrollViewRef.current;
+    if (!scrollView) return;
+
+    // Measure if the scroll view is overflowing
+    const isOverflowing = scrollView.scrollHeight > scrollView.clientHeight;
+    if (isOverflowing) {
+      scrollView.classList.add("scroll-priority");
+    } else {
+      scrollView.classList.remove("scroll-priority");
+    }
+  }, [state.stack.length]);
+
   return (
     <div className="flex h-86 w-60 flex-col gap-2 rounded-xl bg-stone-900 p-4 transform-3d">
-      <div className="scroll-priority grid grow place-content-start overflow-auto text-sm">
+      <div ref={scrollViewRef} className="grid grow place-content-start overflow-auto text-sm">
         {state.stack.map((element, index) => (
           <StackElement key={index} element={element} />
         ))}
