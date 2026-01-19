@@ -17,16 +17,18 @@ export const GamePage = () => {
 
   useEffect(() => {
     function onConnect() {
-      console.log("connected to socket");
+      console.log("[🔌 Socket] Connected to socket");
     }
+
     function onConnectError(error: any) {
-      console.error("failed to connect to socket", error);
+      console.error("[🔌 Socket] Failed to connect to socket", error);
     }
+
     function onDisconnect() {
-      console.log("disconnected from socket");
+      console.log("[🔌 Socket] Disconnected from socket");
     }
+
     function onGameStart() {
-      console.log("game started");
       setHasStarted(true);
     }
 
@@ -34,11 +36,21 @@ export const GamePage = () => {
       setState(state);
     }
 
+    function onAnyOutgoing(event: string, ...args: any[]) {
+      console.log("[🔌 Socket] Outgoing event", event, args);
+    }
+
+    function onAnyIncoming(event: string, ...args: any[]) {
+      console.log("[🔌 Socket] Incoming event", event, args);
+    }
+
     socket.on("connect", onConnect);
     socket.on("connect_error", onConnectError);
     socket.on("disconnect", onDisconnect);
     socket.on("on:game:start", onGameStart);
     socket.on("on:game:changed", onGameChanged);
+    socket.onAnyOutgoing(onAnyOutgoing);
+    socket.onAny(onAnyIncoming);
 
     return () => {
       socket.off("connect", onConnect);
@@ -46,6 +58,8 @@ export const GamePage = () => {
       socket.off("disconnect", onDisconnect);
       socket.off("on:game:start", onGameStart);
       socket.off("on:game:changed", onGameChanged);
+      socket.offAnyOutgoing(onAnyOutgoing);
+      socket.offAny(onAnyIncoming);
     };
   }, []);
 
