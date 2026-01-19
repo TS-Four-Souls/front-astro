@@ -8,7 +8,7 @@ import { StackElement } from "./stack";
 import { Popup } from "../popup";
 import { Button } from "../button";
 
-interface PromptPopupProps {
+interface PromptPopupProps<T extends SelectionItem = SelectionItem> {
   /**
    * The prompt to display to the user
    */
@@ -16,7 +16,7 @@ interface PromptPopupProps {
   /**
    * The options to select from
    */
-  options: SelectionItem[];
+  options: T[];
   /**
    * The minimum number of targets to select
    */
@@ -28,7 +28,7 @@ interface PromptPopupProps {
   /**
    * The function to call when the user submits the prompt
    */
-  onSubmit: (selections: SelectionItem[]) => void;
+  onSubmit: (selections: T[]) => void;
   /**
    * If the user cancels the prompt, this function will be called
    * If not provided, we consider the prompt is not cancellable

@@ -2,7 +2,7 @@ import type { SelectionItem } from "@/shared/api";
 import { createContext, useContext, useState } from "react";
 import { PromptPopup } from "../prompt-popup";
 
-interface Prompt {
+interface Prompt<T extends SelectionItem = SelectionItem> {
   promptId: string;
   /**
    * The prompt to display to the user
@@ -11,7 +11,7 @@ interface Prompt {
   /**
    * The options to select from
    */
-  options: SelectionItem[];
+  options: T[];
   /**
    * The minimum number of targets to select
    */
@@ -23,7 +23,7 @@ interface Prompt {
   /**
    * The function to call when the user submits the prompt
    */
-  onSubmit: (selections: SelectionItem[]) => void;
+  onSubmit: (selections: T[]) => void;
   /**
    * If the user cancels the prompt, this function will be called
    * If not provided, we consider the prompt is not cancellable
@@ -33,7 +33,7 @@ interface Prompt {
 
 interface PromptContextProps {
   prompts: Map<string, Prompt>;
-  addPrompt: (prompt: Prompt) => void;
+  addPrompt<T extends SelectionItem = SelectionItem>(prompt: Prompt<T>): void;
   removePrompt: (promptId: string) => void;
 }
 
@@ -44,9 +44,11 @@ const PromptContext = createContext<PromptContextProps>({
 });
 
 export const PromptProvider = ({ children }: { children: React.ReactNode }) => {
-  const [prompts, setPrompts] = useState<Map<string, Prompt>>(new Map());
+  const [prompts, setPrompts] = useState<Map<string, Prompt<any>>>(new Map());
 
-  const addPrompt = (prompt: Prompt) => {
+  const addPrompt = <T extends SelectionItem = SelectionItem>(
+    prompt: Prompt<T>,
+  ): void => {
     // Check if a prompt with the same ID already exists
     if (prompts.has(prompt.promptId)) {
       console.warn(`Prompt with ID ${prompt.promptId} already exists`);

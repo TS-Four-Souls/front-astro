@@ -9,7 +9,7 @@ import {
 } from "./contexts/user-settings-context";
 
 interface PileProps {
-  cards: { slug: string }[] | CardType[];
+  cards: { slug: string, charged?: boolean }[] | CardType[];
   size?: number;
   onClickTopCard?: () => void;
   optimizations?: {
@@ -59,6 +59,9 @@ export const Pile = ({
             BRIGHTNESS_MIN,
             1,
           );
+
+          const charged = typeof card === "string" ? true : (card.charged ?? true);
+
           return (
             <Card
               onClick={index === array.length - 1 ? onClickTopCard : undefined}
@@ -67,21 +70,23 @@ export const Pile = ({
               card={card}
               className={cn(
                 "col-start-1 row-start-1",
+                !charged && "opacity-60",
                 cards.length > 0 && index === 0 && "shadow-lg/20",
                 cards.length > 5 && index === 3 && "shadow-lg/20",
                 cards.length > 10 && index === 2 && "shadow-xl/30",
                 cards.length > 40 && index === 1 && "shadow-2xl/30",
                 cards.length > 80 && index === 0 && "shadow-3xl/30",
                 index === array.length - 1 &&
-                  onClickTopCard &&
-                  "cursor-pointer",
+                onClickTopCard &&
+                "cursor-pointer",
               )}
               style={{
                 transform: `
                   ${enable3D ? `translateZ(${thickness * (index + 1)}em)` : ""}
-                  rotate(${(rng() - 0.5) * 5}deg)
+                  rotate(${charged ? ((rng() - 0.5) * 5) : 90}deg)
                 `,
                 height: size + "em",
+                marginInline: charged ? 0 : `${size * 0.13}em`,
               }}
               brightness={brightness}
               enableSides={enableSides}
