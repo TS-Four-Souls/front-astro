@@ -1,7 +1,6 @@
 import { Pile } from "../board/pile";
 import { CardType } from "../board/card";
 import { useToastContext } from "../board/contexts/toast-context";
-import { Dice } from "@/icons/dice";
 import type { StackElement as StackElementType } from "@/shared/api";
 import { StackElement } from "../board/stack";
 

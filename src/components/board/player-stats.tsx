@@ -48,7 +48,7 @@ export const PlayerStats = ({
         "flex flex-col gap-2 rounded-lg border-3 border-transparent p-4 text-white transform-3d",
         isCurrentTurn && "border-stone-700",
       )}>
-      <div className="flex items-center gap-2 translate-z-1">
+      <div className="flex translate-z-1 items-center gap-2">
         <h1 className="font-bold">{name}</h1>
         {isMe && (
           <Gear className="size-4 cursor-pointer" onClick={() => openMenu()} />

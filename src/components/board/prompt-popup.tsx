@@ -1,6 +1,6 @@
-import type { SelectionItem, TargetSelectorResponse } from "@/shared/api";
+import type { SelectionItem } from "@/shared/api";
 import { cn } from "@/utils/cn";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Card } from "./card";
 import { Person } from "@/icons/person";
 import { Sword } from "@/icons/sword";
@@ -53,7 +53,7 @@ export const PromptPopup = ({
   };
 
   const replaceSelection = (option: SelectionItem) => {
-    setSelectedOptions((current) => [option]);
+    setSelectedOptions([option]);
   };
 
   return (

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import type { Issuer } from "@/shared/api";
 import { socket } from "@/utils/socket";
 import { useLocalStorage } from "@/utils/use-local-storage";

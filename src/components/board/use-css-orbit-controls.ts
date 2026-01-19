@@ -181,8 +181,7 @@ export function useCssOrbitControls(
         const worldDx = dx * cos + dy * sin;
         const worldDy = -dx * sin + dy * cos;
 
-        const ajustedPanSpeed =
-          (s.autoFitZoom / s.zoom) ** panSpeedMultipler;
+        const ajustedPanSpeed = (s.autoFitZoom / s.zoom) ** panSpeedMultipler;
 
         s.x = s.startX + worldDx * ajustedPanSpeed;
         s.y = s.startY + worldDy * ajustedPanSpeed;
@@ -198,7 +197,7 @@ export function useCssOrbitControls(
 
     const onWheel = (e: WheelEvent) => {
       if (e.ctrlKey) {
-        e.preventDefault()
+        e.preventDefault();
       }
 
       const goUpDomChain = (element: Element) => {

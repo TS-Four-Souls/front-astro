@@ -1,6 +1,5 @@
 import { socket } from "@/utils/socket";
 import type { Issuer } from "@/shared/api";
-import { useState } from "react";
 import { useToastContext } from "../board/contexts/toast-context";
 
 interface StartStepProps {
@@ -22,7 +21,7 @@ export const StartStep = ({ issuer }: StartStepProps) => {
       }
     });
   };
-  
+
   return (
     <div className="grid h-screen place-content-center place-items-center">
       <div className="flex flex-col gap-8 rounded-lg border-2 border-stone-700 p-8 text-center">

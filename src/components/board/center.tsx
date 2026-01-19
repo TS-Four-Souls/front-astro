@@ -18,7 +18,11 @@ export const Center = ({ state }: CenterProps) => {
   const onLootDeckClick = () => {
     socket.emit("debugLoot", issuer, (response) => {
       if (response.status === 200) {
-        toast("success", "CHEAT MODE", "You have looted a card from the loot deck");
+        toast(
+          "success",
+          "CHEAT MODE",
+          "You have looted a card from the loot deck",
+        );
       } else {
         toast("error", "CHEAT MODE", response.error);
       }
@@ -28,7 +32,11 @@ export const Center = ({ state }: CenterProps) => {
   const onTreasureDeckClick = () => {
     socket.emit("debugGainTreasure", issuer, (response) => {
       if (response.status === 200) {
-        toast("success", "CHEAT MODE", "You have gained a treasure card from the treasure deck");
+        toast(
+          "success",
+          "CHEAT MODE",
+          "You have gained a treasure card from the treasure deck",
+        );
       } else {
         toast("error", "CHEAT MODE", response.error);
       }

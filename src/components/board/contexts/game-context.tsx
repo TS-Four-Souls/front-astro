@@ -1,5 +1,5 @@
 import type { DetailedState, Issuer } from "@/shared/api";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext } from "react";
 
 interface GameContextProps {
   state: DetailedState;
