@@ -70,7 +70,7 @@ export const Pile = ({
               card={card}
               className={cn(
                 "col-start-1 row-start-1",
-                !charged && "opacity-60",
+                !charged && "brightness-70 contrast-90",
                 cards.length > 0 && index === 0 && "shadow-lg/20",
                 cards.length > 5 && index === 3 && "shadow-lg/20",
                 cards.length > 10 && index === 2 && "shadow-xl/30",
