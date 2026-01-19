@@ -1,3 +1,4 @@
+import { CARD_RADIUS } from "@/constants";
 import { cn } from "../../utils/cn";
 
 export enum CardType {
@@ -19,7 +20,6 @@ interface CardProps {
   onClick?: () => void;
 }
 
-const CARD_RADIUS = 9; // %
 const RX = `${CARD_RADIUS}%`;
 const RY = `${(CARD_RADIUS * 750) / 1024}%`;
 

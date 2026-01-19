@@ -1,4 +1,4 @@
-import { useMemo, useRef } from "react";
+import { useRef } from "react";
 import { cn } from "../../utils/cn";
 import { Card, CardType } from "./card";
 import seedrandom from "seedrandom";
@@ -7,8 +7,6 @@ import {
   ZoomResolutionPreset,
   useUserSettingsContext,
 } from "./contexts/user-settings-context";
-
-export type PerformanceMode = "none" | "minimal" | "full";
 
 interface PileProps {
   cards: { slug: string }[] | CardType[];

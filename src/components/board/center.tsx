@@ -4,6 +4,8 @@ import { CardType } from "./card";
 import { Stack } from "./stack";
 import { socket } from "@/utils/socket";
 import { useGameContext } from "./contexts/game-context";
+import { CHEAT_MODE } from "@/constants";
+import { useToastContext } from "./contexts/toast-context";
 
 interface CenterProps {
   state: DetailedState;
@@ -11,13 +13,14 @@ interface CenterProps {
 
 export const Center = ({ state }: CenterProps) => {
   const { issuer } = useGameContext();
+  const { toast } = useToastContext();
 
   const onLootDeckClick = () => {
     socket.emit("debugLoot", issuer, (response) => {
       if (response.status === 200) {
-        console.log("Looted");
+        toast("success", "CHEAT MODE", "You have looted a card from the loot deck");
       } else {
-        console.error("Failed to loot", response);
+        toast("error", "CHEAT MODE", response.error);
       }
     });
   };
@@ -25,9 +28,9 @@ export const Center = ({ state }: CenterProps) => {
   const onTreasureDeckClick = () => {
     socket.emit("debugGainTreasure", issuer, (response) => {
       if (response.status === 200) {
-        console.log("Gained treasure");
+        toast("success", "CHEAT MODE", "You have gained a treasure card from the treasure deck");
       } else {
-        console.error("Failed to gain treasure", response);
+        toast("error", "CHEAT MODE", response.error);
       }
     });
   };
@@ -45,7 +48,7 @@ export const Center = ({ state }: CenterProps) => {
           cards={Array.from({ length: state.loot.deckSize }).map(
             () => CardType.LootCard,
           )}
-          onClickTopCard={onLootDeckClick}
+          onClickTopCard={CHEAT_MODE ? onLootDeckClick : undefined}
         />
         <Pile cards={state.loot.discard} />
       </div>
@@ -56,7 +59,7 @@ export const Center = ({ state }: CenterProps) => {
             cards={Array.from({ length: state.treasure.deckSize }).map(
               () => CardType.TreasureCard,
             )}
-            onClickTopCard={onTreasureDeckClick}
+            onClickTopCard={CHEAT_MODE ? onTreasureDeckClick : undefined}
           />
           {state.treasure.inPlay.map((card) => (
             <Pile key={card.slug} cards={[card]} />
