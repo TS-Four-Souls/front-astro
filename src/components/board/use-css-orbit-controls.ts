@@ -6,7 +6,6 @@ import {
 
 interface OrbitControlsProps {
   rotateSpeed: number;
-  panSpeed: number;
   zoomSpeed: number;
 }
 
@@ -40,7 +39,7 @@ export const zoomResolutionParams = {
 export function useCssOrbitControls(
   parentRef: React.RefObject<HTMLDivElement | null>,
   boardRef: React.RefObject<HTMLDivElement | null>,
-  { rotateSpeed, panSpeed, zoomSpeed }: OrbitControlsProps,
+  { rotateSpeed, zoomSpeed }: OrbitControlsProps,
 ) {
   const { zoomResolutionPreset, enable3D } = useUserSettingsContext();
 
@@ -183,7 +182,7 @@ export function useCssOrbitControls(
         const worldDy = -dx * sin + dy * cos;
 
         const ajustedPanSpeed =
-          panSpeed * (s.autoFitZoom / s.zoom) ** panSpeedMultipler;
+          (s.autoFitZoom / s.zoom) ** panSpeedMultipler;
 
         s.x = s.startX + worldDx * ajustedPanSpeed;
         s.y = s.startY + worldDy * ajustedPanSpeed;
@@ -198,6 +197,10 @@ export function useCssOrbitControls(
     };
 
     const onWheel = (e: WheelEvent) => {
+      if (e.ctrlKey) {
+        e.preventDefault()
+      }
+
       const goUpDomChain = (element: Element) => {
         if (element.classList.contains("scroll-priority")) {
           return true;
@@ -239,7 +242,7 @@ export function useCssOrbitControls(
     parent.addEventListener("pointerdown", onPointerDown);
     parent.addEventListener("pointermove", onPointerMove);
     parent.addEventListener("pointerup", onPointerUp);
-    parent.addEventListener("wheel", onWheel, { passive: true });
+    parent.addEventListener("wheel", onWheel);
     parent.addEventListener("contextmenu", onContextMenu);
     window.addEventListener("keydown", onKeyDown);
 
@@ -257,7 +260,6 @@ export function useCssOrbitControls(
     parentRef,
     boardRef,
     rotateSpeed,
-    panSpeed,
     zoomSpeed,
     zoomUpscale,
     maxZoom,
