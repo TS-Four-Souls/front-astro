@@ -2,14 +2,20 @@ import { PlayerStats } from "./player-stats";
 import { cn } from "../../utils/cn";
 import { Center } from "./center";
 import { Pile } from "./pile";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useCssOrbitControls } from "./use-css-orbit-controls";
 import { CardType } from "./card";
 import { useGameContext } from "./contexts/game-context";
 import { Hand } from "./hand";
+import { usePromptContext } from "./contexts/prompt-context";
+import { socket } from "@/utils/socket";
+import { useToastContext } from "./contexts/toast-context";
 
 export const Board = () => {
-  const { state } = useGameContext();
+  const { state, issuer } = useGameContext();
+  const { toast } = useToastContext();
+  const { addPrompt, removePrompt } = usePromptContext();
+
   const boardRef = useRef<HTMLDivElement | null>(null);
   const parentRef = useRef<HTMLDivElement | null>(null);
 
@@ -17,6 +23,39 @@ export const Board = () => {
     rotateSpeed: 0.2,
     zoomSpeed: 0.15,
   });
+
+  useEffect(() => {
+    const pendingSelection = state.me.pendingSelection;
+    if (pendingSelection) {
+      addPrompt({
+        promptId: pendingSelection.requestId,
+        prompt: pendingSelection.description,
+        options: pendingSelection.options,
+        minCount: pendingSelection.asMany ? 0 : pendingSelection.count,
+        maxCount: pendingSelection.count,
+        onSubmit: (selectedOptions) => {
+          socket.emit(
+            "submitSelection",
+            {
+              issuer,
+              requestId: pendingSelection.requestId,
+              selections: selectedOptions,
+            },
+            (response) => {
+              switch (response.status) {
+                case 200:
+                  removePrompt(pendingSelection.requestId);
+                  break;
+                case 400:
+                  toast("error", "Failed to submit selection", response.error);
+                  break;
+              }
+            },
+          );
+        },
+      });
+    }
+  }, [state.me.pendingSelection, addPrompt, removePrompt, issuer, toast]);
 
   return (
     <>
