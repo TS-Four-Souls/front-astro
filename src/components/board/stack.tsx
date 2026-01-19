@@ -12,6 +12,7 @@ import type {
 import { Dice } from "@/icons/dice";
 import { CardImage } from "./card";
 import { useEffect, useRef } from "react";
+import { Button } from "../button";
 
 export const Stack = () => {
   const { state, issuer } = useGameContext();
@@ -59,12 +60,13 @@ export const Stack = () => {
           </div>
         )}
       </div>
-      <button
-        disabled={!state.me.capabilities.resolve}
+      <Button
         onClick={resolveStack}
-        className="w-full translate-z-2 rounded-md bg-stone-600 px-2 py-1 text-white transition-colors not-disabled:cursor-pointer not-disabled:hover:bg-stone-500 disabled:cursor-not-allowed disabled:opacity-50">
-        Resolve
-      </button>
+        disabled={!state.me.capabilities.resolve}
+        label="Resolve"
+        className="translate-z-1"
+        theme="onDark"
+      />
     </div>
   );
 };

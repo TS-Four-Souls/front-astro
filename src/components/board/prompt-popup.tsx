@@ -6,6 +6,7 @@ import { Person } from "@/icons/person";
 import { Sword } from "@/icons/sword";
 import { StackElement } from "./stack";
 import { Popup } from "../popup";
+import { Button } from "../button";
 
 interface PromptPopupProps {
   /**
@@ -60,13 +61,7 @@ export const PromptPopup = ({
     <Popup onPressBackdrop={onCancel}>
       <div className="flex flex-row justify-between gap-8">
         <h1 className="text-2xl font-bold">{prompt}</h1>
-        {onCancel && (
-          <button
-            className="cursor-pointer rounded-md bg-stone-500/50 px-4 py-2 text-white transition-colors duration-300 hover:bg-stone-500"
-            onClick={onCancel}>
-            Cancel
-          </button>
-        )}
+        {onCancel && <Button onClick={onCancel} label="Cancel" />}
       </div>
       <div className="flex grow place-content-center gap-2">
         {options.map((option, index) => {
@@ -97,14 +92,14 @@ export const PromptPopup = ({
           </div>
         )}
       </div>
-      <button
+      <Button
+        onClick={() => onSubmit(selectedOptions)}
         disabled={
           selectedOptions.length < minCount || selectedOptions.length > maxCount
         }
-        className="cursor-pointer rounded-md bg-stone-500 px-4 py-2 text-white transition-colors duration-300 not-disabled:hover:bg-stone-400 disabled:cursor-not-allowed disabled:opacity-30"
-        onClick={() => onSubmit(selectedOptions)}>
-        Submit
-      </button>
+        label="Submit"
+        theme="onLight"
+      />
     </Popup>
   );
 };

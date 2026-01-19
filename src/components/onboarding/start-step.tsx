@@ -1,6 +1,7 @@
 import { socket } from "@/utils/socket";
 import type { Issuer } from "@/shared/api";
 import { useToastContext } from "../board/contexts/toast-context";
+import { Button } from "../button";
 
 interface StartStepProps {
   issuer: Issuer;
@@ -31,11 +32,7 @@ export const StartStep = ({ issuer }: StartStepProps) => {
           <br />
           click the button below to start the game
         </p>
-        <button
-          className="cursor-pointer rounded-md bg-stone-600 px-4 py-2 text-white transition-colors hover:bg-stone-500"
-          onClick={requestStart}>
-          Start
-        </button>
+        <Button onClick={requestStart} label="Start" />
       </div>
     </div>
   );

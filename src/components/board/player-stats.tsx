@@ -4,6 +4,7 @@ import { socket } from "@/utils/socket";
 import { useToastContext } from "./contexts/toast-context";
 import { useUserSettingsContext } from "./contexts/user-settings-context";
 import { Gear } from "@/icons/gear";
+import { Button } from "../button";
 
 interface PlayerStatsProps {
   name: string;
@@ -61,14 +62,12 @@ export const PlayerStats = ({
         <li>Souls: {souls}</li>
       </ul>
       {isMe && (
-        <button
-          disabled={!canEndTurn}
+        <Button
           onClick={onEndTurnPress}
-          className={cn(
-            "w-full translate-z-2 cursor-pointer rounded-md bg-stone-600 px-2 py-1 text-white transition-colors not-disabled:hover:bg-stone-500 disabled:cursor-not-allowed disabled:opacity-50",
-          )}>
-          End Turn
-        </button>
+          disabled={!canEndTurn}
+          label="End Turn"
+          className="translate-z-1"
+        />
       )}
     </div>
   );

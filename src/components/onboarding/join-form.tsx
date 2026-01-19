@@ -2,6 +2,7 @@ import type { Issuer } from "@/shared/api";
 import { socket } from "@/utils/socket";
 import { useLocalStorage } from "@/utils/use-local-storage";
 import { useToastContext } from "../board/contexts/toast-context";
+import { Button } from "../button";
 
 interface JoinFormProps {
   onJoin: (issuer: Issuer) => void;
@@ -41,11 +42,7 @@ export const JoinForm = ({ onJoin }: JoinFormProps) => {
             required
             className="rounded-md bg-stone-800 px-4 py-2 text-white focus:ring-2 focus:ring-stone-500 focus:outline-none"
           />
-          <button
-            className="cursor-pointer rounded-md bg-stone-600 px-4 py-2 text-white transition-colors hover:bg-stone-500"
-            type="submit">
-            Join
-          </button>
+          <Button type="submit" label="Join" />
         </form>
       </div>
     </div>

@@ -3,6 +3,7 @@ import { CardType } from "../board/card";
 import { useToastContext } from "../board/contexts/toast-context";
 import type { StackElement as StackElementType } from "@/shared/api";
 import { StackElement } from "../board/stack";
+import { Button } from "../button";
 
 const fakeStack: StackElementType[] = [
   {
@@ -61,23 +62,20 @@ export const DebugPage = () => {
 
       <h2 className="mt-16 mb-2 text-2xl font-bold">Toasts</h2>
       <div className="flex flex-row gap-2">
-        <button
-          className="cursor-pointer rounded-md bg-stone-600 px-4 py-2 text-white transition-colors hover:bg-stone-500"
+        <Button
           onClick={() =>
             toast("success", "Success", "This is a success message")
-          }>
-          Success
-        </button>
-        <button
-          className="cursor-pointer rounded-md bg-stone-600 px-4 py-2 text-white transition-colors hover:bg-stone-500"
-          onClick={() => toast("error", "Error", "This is an error message")}>
-          Error
-        </button>
-        <button
-          className="cursor-pointer rounded-md bg-stone-600 px-4 py-2 text-white transition-colors hover:bg-stone-500"
-          onClick={() => toast("info", "Info", "This is an info message")}>
-          Info
-        </button>
+          }
+          label="Success"
+        />
+        <Button
+          onClick={() => toast("error", "Error", "This is an error message")}
+          label="Error"
+        />
+        <Button
+          onClick={() => toast("info", "Info", "This is an info message")}
+          label="Info"
+        />
       </div>
 
       <h2 className="mt-16 mb-2 text-2xl font-bold">Cards</h2>
@@ -91,6 +89,11 @@ export const DebugPage = () => {
                 cards={Array.from({ length: size }).map(
                   () => CardType.MonsterCard,
                 )}
+                optimizations={{
+                  maxCards: 20,
+                  enableSides: true,
+                  disable3D: false,
+                }}
               />
             </div>
             <p className="mt-8 text-center text-sm text-gray-500">{size}</p>

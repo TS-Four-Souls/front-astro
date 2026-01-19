@@ -52,13 +52,13 @@ export const Hand = () => {
 
   return (
     <div className="pointer-events-none fixed right-0 bottom-0 left-0 flex place-content-center place-items-center">
-      <div className="pointer-events-auto grid translate-y-3/4 auto-cols-fr grid-flow-col transition-transform duration-600 hover:translate-y-0 hover:blur-none">
+      <div className="pointer-events-auto grid translate-y-3/4 auto-cols-fr grid-flow-col transition-transform duration-500 hover:translate-y-0 hover:blur-none">
         {state.me.hand.map((card, index) => (
           <CardImage
             key={card.slug}
             card={card}
             className={cn(
-              "m-1 max-h-[25vh] overflow-hidden rounded-lg shadow-3xl/100 transition-transform duration-300",
+              "m-1 max-h-[25vh] overflow-hidden rounded-lg transition-transform",
               state.me.capabilities.useLoot
                 ? "cursor-pointer hover:-translate-y-10"
                 : "cursor-not-allowed",

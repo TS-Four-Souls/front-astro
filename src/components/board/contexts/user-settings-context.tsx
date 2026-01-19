@@ -1,5 +1,5 @@
+import { Button } from "@/components/button";
 import { Popup } from "@/components/popup";
-import { cn } from "@/utils/cn";
 import { useLocalStorage } from "@/utils/use-local-storage";
 import { createContext, useContext, useState } from "react";
 
@@ -69,11 +69,7 @@ export const UserSettingsProvider = ({
           <div className="flex flex-col gap-4">
             <div className="flex items-center justify-between">
               <h1 className="text-3xl font-bold">User settings</h1>
-              <button
-                className="cursor-pointer rounded-md px-2 py-1 transition-colors not-disabled:hover:bg-stone-500 disabled:cursor-not-allowed disabled:opacity-50"
-                onClick={() => setIsMenuOpen(false)}>
-                Close
-              </button>
+              <Button onClick={() => setIsMenuOpen(false)} label="Close" />
             </div>
             <h2 className="text-2xl font-bold">Zoom resolution</h2>
             <p className="max-w-200 text-sm leading-normal text-stone-300">
@@ -92,17 +88,16 @@ export const UserSettingsProvider = ({
             </p>
             <div className="mt-2 flex flex-row gap-2">
               {presets.map((preset) => (
-                <button
-                  className={cn(
-                    "cursor-pointer rounded-md px-2 py-1 transition-colors not-disabled:hover:bg-stone-500 disabled:cursor-not-allowed disabled:opacity-50",
-                    zoomResolutionPreset === preset.value
-                      ? "bg-stone-300 text-stone-900"
-                      : "bg-stone-600 text-stone-100",
-                  )}
+                <Button
                   key={preset.value}
-                  onClick={() => setZoomResolutionPreset(preset.value)}>
-                  {preset.label}
-                </button>
+                  onClick={
+                    zoomResolutionPreset !== preset.value
+                      ? () => setZoomResolutionPreset(preset.value)
+                      : undefined
+                  }
+                  label={preset.label}
+                  active={zoomResolutionPreset === preset.value}
+                />
               ))}
             </div>
             <h2 className="mt-4 text-2xl font-bold">3D settings</h2>
@@ -118,36 +113,33 @@ export const UserSettingsProvider = ({
               reducing video memory usage.
             </p>
             <div className="mt-2 flex flex-row gap-2">
-              <button
-                className={cn(
-                  "cursor-pointer rounded-md px-2 py-1 transition-colors not-disabled:hover:bg-stone-500 disabled:cursor-not-allowed disabled:opacity-50",
-                  threeDMode === ThreeDMode.FULL
-                    ? "bg-stone-300 text-stone-900"
-                    : "bg-stone-600 text-stone-100",
-                )}
-                onClick={() => setThreeDMode(ThreeDMode.FULL)}>
-                Full
-              </button>
-              <button
-                className={cn(
-                  "cursor-pointer rounded-md px-2 py-1 transition-colors not-disabled:hover:bg-stone-500 disabled:cursor-not-allowed disabled:opacity-50",
-                  threeDMode === ThreeDMode.SIMPLE
-                    ? "bg-stone-300 text-stone-900"
-                    : "bg-stone-600 text-stone-100",
-                )}
-                onClick={() => setThreeDMode(ThreeDMode.SIMPLE)}>
-                Simple
-              </button>
-              <button
-                className={cn(
-                  "cursor-pointer rounded-md px-2 py-1 transition-colors not-disabled:hover:bg-stone-500 disabled:cursor-not-allowed disabled:opacity-50",
-                  threeDMode === ThreeDMode.DISABLED
-                    ? "bg-stone-300 text-stone-900"
-                    : "bg-stone-600 text-stone-100",
-                )}
-                onClick={() => setThreeDMode(ThreeDMode.DISABLED)}>
-                Disabled
-              </button>
+              <Button
+                onClick={
+                  threeDMode !== ThreeDMode.FULL
+                    ? () => setThreeDMode(ThreeDMode.FULL)
+                    : undefined
+                }
+                label="Full"
+                active={threeDMode === ThreeDMode.FULL}
+              />
+              <Button
+                onClick={
+                  threeDMode !== ThreeDMode.SIMPLE
+                    ? () => setThreeDMode(ThreeDMode.SIMPLE)
+                    : undefined
+                }
+                label="Simple"
+                active={threeDMode === ThreeDMode.SIMPLE}
+              />
+              <Button
+                onClick={
+                  threeDMode !== ThreeDMode.DISABLED
+                    ? () => setThreeDMode(ThreeDMode.DISABLED)
+                    : undefined
+                }
+                label="Disabled"
+                active={threeDMode === ThreeDMode.DISABLED}
+              />
             </div>
           </div>
         </Popup>
