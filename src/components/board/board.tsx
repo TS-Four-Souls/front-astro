@@ -71,7 +71,7 @@ export const Board = () => {
                 />
                 <div
                   className={cn(
-                    "flex flex-wrap gap-1 transform-3d",
+                    "flex flex-wrap gap-2 transform-3d",
                     horizontal ? "max-w-275" : "max-h-200",
                   )}>
                   {player.inPlay.map((card) => (

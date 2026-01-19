@@ -86,7 +86,7 @@ export const Pile = ({
                   rotate(${charged ? ((rng() - 0.5) * 5) : 90}deg)
                 `,
                 height: size + "em",
-                marginInline: charged ? 0 : `${size * 0.13}em`,
+                marginInline: charged ? 0 : `${size * 0.135}em`,
               }}
               brightness={brightness}
               enableSides={enableSides}

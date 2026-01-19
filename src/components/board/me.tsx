@@ -142,7 +142,7 @@ export const Me = () => {
         attack={state.me.currentAttackPoints}
         souls={state.me.souls}
       />
-      <div className="flex max-w-275 flex-wrap gap-1 transform-3d">
+      <div className="flex max-w-275 flex-wrap gap-2 transform-3d">
         {state.me.inPlay.map((card, index) => (
           <Pile
             key={card.slug}
