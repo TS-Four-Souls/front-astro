@@ -44,11 +44,16 @@ export const GamePage = () => {
       console.log("[🔌 Socket] Incoming event", event, args);
     }
 
+    function onGameReset() {
+      window.location.reload();
+    }
+
     socket.on("connect", onConnect);
     socket.on("connect_error", onConnectError);
     socket.on("disconnect", onDisconnect);
     socket.on("on:game:start", onGameStart);
     socket.on("on:game:changed", onGameChanged);
+    socket.on("on:game:reset", onGameReset);
     socket.onAnyOutgoing(onAnyOutgoing);
     socket.onAny(onAnyIncoming);
 
@@ -58,6 +63,7 @@ export const GamePage = () => {
       socket.off("disconnect", onDisconnect);
       socket.off("on:game:start", onGameStart);
       socket.off("on:game:changed", onGameChanged);
+      socket.off("on:game:reset", onGameReset);
       socket.offAnyOutgoing(onAnyOutgoing);
       socket.offAny(onAnyIncoming);
     };

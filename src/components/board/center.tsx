@@ -19,13 +19,40 @@ export const Center = ({ state }: CenterProps) => {
   const { addPrompt, removePrompt } = usePromptContext();
 
   const onLootDeckClick = () => {
-    socket.emit("debugLoot", issuer, (response) => {
+    socket.emit("debugListLoot", issuer, (response) => {
       if (response.status === 200) {
-        toast(
-          "success",
-          "CHEAT MODE",
-          "You have looted a card from the loot deck",
-        );
+        const promptId = `debug-list-loot-${Date.now()}`;
+        addPrompt({
+          promptId,
+          isUnique: false,
+          prompt: "Select a loot card to loot",
+          options: response.cards.map((card) => ({
+            type: "card",
+            payload: card,
+          })),
+          minCount: 1,
+          maxCount: 50,
+          onSubmit: (selections) => {
+            socket.emit(
+              "debugLoot",
+              {
+                ...issuer,
+                slugs: selections.map((selection) => selection.payload.slug),
+              },
+              (response) => {
+                if (response.status === 200) {
+                  toast("success", "CHEAT MODE", response.response);
+                } else {
+                  toast("error", "CHEAT MODE", response.error);
+                }
+              },
+            );
+            removePrompt(promptId);
+          },
+          onCancel: () => {
+            removePrompt(promptId);
+          },
+        });
       } else {
         toast("error", "CHEAT MODE", response.error);
       }
@@ -33,13 +60,40 @@ export const Center = ({ state }: CenterProps) => {
   };
 
   const onTreasureDeckClick = () => {
-    socket.emit("debugGainTreasure", issuer, (response) => {
+    socket.emit("debugListTreasure", issuer, (response) => {
       if (response.status === 200) {
-        toast(
-          "success",
-          "CHEAT MODE",
-          "You have gained a treasure card from the treasure deck",
-        );
+        const promptId = `debug-list-treasure-${Date.now()}`;
+        addPrompt({
+          promptId,
+          isUnique: false,
+          prompt: "Select a treasure card to gain",
+          options: response.cards.map((card) => ({
+            type: "card",
+            payload: card,
+          })),
+          minCount: 1,
+          maxCount: 50,
+          onSubmit: (selections) => {
+            socket.emit(
+              "debugGainTreasure",
+              {
+                ...issuer,
+                slugs: selections.map((selection) => selection.payload.slug),
+              },
+              (response) => {
+                if (response.status === 200) {
+                  toast("success", "CHEAT MODE", response.response);
+                } else {
+                  toast("error", "CHEAT MODE", response.error);
+                }
+              },
+            );
+            removePrompt(promptId);
+          },
+          onCancel: () => {
+            removePrompt(promptId);
+          },
+        });
       } else {
         toast("error", "CHEAT MODE", response.error);
       }

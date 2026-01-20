@@ -61,7 +61,9 @@ export const PromptProvider = ({ children }: { children: React.ReactNode }) => {
     }
     // Check if the prompt already blocked
     if (blockedPrompts.current.has(prompt.promptId)) {
-      console.warn(`Prompt with ID ${prompt.promptId} is unique and already exists`);
+      console.warn(
+        `Prompt with ID ${prompt.promptId} is unique and already exists`,
+      );
       return;
     }
     // If the prompt is unique, block future prompts with the same ID

@@ -57,13 +57,22 @@ export const PromptPopup = ({
     setSelectedOptions([option]);
   };
 
+  const displayRow = options.some(
+    (option) => option.type === "couplePlayerHand",
+  );
+
   return (
     <Popup onPressBackdrop={onCancel}>
       <div className="flex flex-row justify-between gap-8">
         <h1 className="text-2xl font-bold">{prompt}</h1>
         {onCancel && <Button onClick={onCancel} label="Cancel" />}
       </div>
-      <div className="flex grow place-content-center gap-2">
+
+      <div
+        className={cn(
+          "flex grow flex-wrap gap-2 overflow-auto",
+          displayRow ? "flex-col" : "flex-row justify-center",
+        )}>
         {options.map((option, index) => {
           const isSelected = selectedOptions.includes(option);
           const canAddMore = selectedOptions.length < maxCount;
@@ -92,6 +101,7 @@ export const PromptPopup = ({
           </div>
         )}
       </div>
+
       <Button
         onClick={() => onSubmit(selectedOptions)}
         disabled={
@@ -118,7 +128,7 @@ export const PromptOption = ({
   return (
     <div
       className={cn(
-        "flex flex-row place-content-center place-items-center gap-2 rounded-md border-2 border-stone-500 p-2 select-none",
+        "flex w-max flex-row place-items-center gap-2 rounded-md border-2 border-stone-500 p-2 select-none",
         isSelected
           ? "border-stone-300 bg-stone-300 text-stone-900"
           : "bg-stone-600",
@@ -144,8 +154,10 @@ export const GenericOption = ({ option }: { option: SelectionItem }) => {
       return <CardOption option={option} />;
     case "couplePlayerHand":
       return <CouplePlayerHandOption option={option} />;
-    case "number":
     case "boolean":
+      return <BooleanOption option={option} />;
+    case "number":
+      return <NumberOption option={option} />;
     case "object":
     case "array":
     case "null":
@@ -197,6 +209,18 @@ export const StringOption = ({
   );
 };
 
+export const BooleanOption = ({
+  option,
+}: {
+  option: Extract<SelectionItem, { type: "boolean" }>;
+}) => {
+  return (
+    <p className="w-60 p-4 text-center text-lg font-bold">
+      {option.payload ? "Yes" : "No"}
+    </p>
+  );
+};
+
 export const StackElementOption = ({
   option,
 }: {
@@ -227,13 +251,30 @@ export const CouplePlayerHandOption = ({
   option: Extract<SelectionItem, { type: "couplePlayerHand" }>;
 }) => {
   return (
-    <div className="flex flex-col items-center gap-2">
-      <p className="text-center text-lg font-bold">
-        {option.payload.player.name}
-      </p>
+    <div className="flex items-end gap-2">
+      <div className="flex flex-col items-center gap-2">
+        <div className="flex flex-row items-center gap-2">
+          <Person className="size-6" />
+          <p className="text-center text-lg font-bold">
+            {option.payload.player.name}
+          </p>
+        </div>
+        <CardImage card={option.payload.player} className="h-64" />
+      </div>
+      <div className="mx-2 h-64" />
       {option.payload.hand.map((card) => (
         <CardImage key={card.slug} card={card} className="h-64" />
       ))}
     </div>
+  );
+};
+
+export const NumberOption = ({
+  option,
+}: {
+  option: Extract<SelectionItem, { type: "number" }>;
+}) => {
+  return (
+    <p className="w-10 p-4 text-center text-lg font-bold">{option.payload}</p>
   );
 };

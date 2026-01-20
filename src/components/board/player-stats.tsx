@@ -5,6 +5,7 @@ import { useToastContext } from "./contexts/toast-context";
 import { useUserSettingsContext } from "./contexts/user-settings-context";
 import { Gear } from "@/icons/gear";
 import { Button } from "../button";
+import { usePromptContext } from "./contexts/prompt-context";
 
 interface PlayerStatsProps {
   name: string;
@@ -26,13 +27,13 @@ export const PlayerStats = ({
   const { state, issuer } = useGameContext();
   const { openMenu } = useUserSettingsContext();
   const { toast } = useToastContext();
+  const { addPrompt, removePrompt } = usePromptContext();
 
   const isCurrentTurn = state.turn === name;
   const isMe = state.me.name === name;
   const canEndTurn = isMe && state.me.capabilities?.endTurn;
 
   const onEndTurnPress = () => {
-    console.log("Ending turn for", { name, issuer });
     socket.emit("endTurn", { issuer }, (response) => {
       switch (response.status) {
         case 200:
@@ -40,6 +41,41 @@ export const PlayerStats = ({
         default:
         case 400:
           toast("error", "Failed to end turn", response.error);
+          break;
+      }
+    });
+  };
+
+  const onResetPress = (confirmed?: true) => {
+    if (confirmed === undefined) {
+      const promptId = `reset-confirm-${Date.now()}`;
+      addPrompt({
+        promptId,
+        isUnique: true,
+        prompt: "Are you sure you want to reset the game?",
+        options: [
+          { type: "boolean", payload: true },
+          { type: "boolean", payload: false },
+        ],
+        minCount: 1,
+        maxCount: 1,
+        onSubmit: (selectedOptions) => {
+          if (selectedOptions[0].payload === true) {
+            onResetPress(true);
+          }
+          removePrompt(promptId);
+        },
+      });
+      return;
+    }
+    socket.emit("reset", null, (response) => {
+      switch (response.status) {
+        case 200:
+          toast("success", "Reset", "Game reset");
+          break;
+        default:
+        case 400:
+          toast("error", "Failed to reset", response.error);
           break;
       }
     });
@@ -65,12 +101,19 @@ export const PlayerStats = ({
         <li>Souls: {souls}</li>
       </ul>
       {isMe && (
-        <Button
-          onClick={onEndTurnPress}
-          disabled={!canEndTurn}
-          label="End Turn"
-          className="translate-z-1"
-        />
+        <>
+          <Button
+            onClick={() => onEndTurnPress()}
+            disabled={!canEndTurn}
+            label="End Turn"
+            className="translate-z-1"
+          />
+          <Button
+            onClick={() => onResetPress()}
+            label="Reset"
+            className="translate-z-1"
+          />
+        </>
       )}
     </div>
   );
