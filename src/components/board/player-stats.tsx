@@ -105,7 +105,7 @@ export const PlayerStats = ({
           <Button
             onClick={() => onEndTurnPress()}
             disabled={!canEndTurn}
-            label="End Turn"
+            label="End turn"
             className="translate-z-1"
           />
           <Button

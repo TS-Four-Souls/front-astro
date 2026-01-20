@@ -14,6 +14,7 @@ interface PileProps {
     | CardType
   )[];
   size?: number;
+  disabled?: boolean;
   onClickTopCard?: () => void;
   optimizations?: {
     maxCards: number;
@@ -34,6 +35,7 @@ const maxCardsByResolution = {
 export const Pile = ({
   cards,
   size: sizePx = 160,
+  disabled,
   onClickTopCard,
   optimizations,
 }: PileProps) => {
@@ -86,7 +88,7 @@ export const Pile = ({
                 cards.length > 80 && index === 0 && "shadow-3xl/30",
                 index === array.length - 1 &&
                   onClickTopCard &&
-                  "cursor-pointer",
+                  (disabled ? "cursor-not-allowed" : "cursor-pointer"),
               )}
               style={{
                 transform: `
@@ -101,7 +103,12 @@ export const Pile = ({
             />
           );
         })}
-      {cards.length === 0 && <Card style={{ height: size + "em" }} />}
+      {cards.length === 0 && (
+        <Card
+          onClick={onClickTopCard}
+          style={{ height: size + "em" }}
+        />
+      )}
     </div>
   );
 };

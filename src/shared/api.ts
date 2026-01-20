@@ -83,6 +83,8 @@ const pendingSelectionSchema = z.object({
 });
 export type PendingSelection = z.infer<typeof pendingSelectionSchema>;
 
+const capabilitySchema = z.union([z.literal(true), z.string()]);
+
 const monsterCardSchema = cardSchema.extend({
   stats: z
     .object({
@@ -91,7 +93,7 @@ const monsterCardSchema = cardSchema.extend({
       evasionPoints: z.number(),
       isEngagedInCombat: z.boolean(),
       capabilities: z.object({
-        targetable: z.boolean(),
+        targetable: capabilitySchema,
       }),
     })
     .optional(),
@@ -363,6 +365,11 @@ const submitSelectionSchema = z.object({
   selections: z.array(selectionItemSchema),
 });
 
+const purchaseSchema = z.object({
+  issuer: issuerSchema,
+  index: z.union([z.number(), z.literal("top")]),
+});
+
 const cardActivationSchema = z.object({
   issuer: issuerSchema,
   index: z.number(),
@@ -409,7 +416,7 @@ const detailedStateSchema = z.object({
     discard: z.array(cardSchema),
     deckSize: z.number(),
     capabilities: z.object({
-      targetableDeck: z.boolean(),
+      targetableDeck: z.union([z.literal(true), z.string()]),
     }),
     inPlay: z.array(
       z.object({
@@ -452,7 +459,7 @@ export const schemas = {
   playCardRequest: cardActivationSchema,
   endTurnRequest: NextTurnRequestSchema,
   activateRequest: cardActivationSchema,
-  purchaseRequest: indexSchema,
+  purchaseRequest: purchaseSchema,
   giveCoinsRequest: giveCoinsSchema,
   issuer: issuerSchema,
 };
@@ -468,7 +475,7 @@ export namespace Requests {
   export type PlayCard = z.infer<typeof cardActivationSchema>;
   export type EndTurn = z.infer<typeof NextTurnRequestSchema>;
   export type Activate = z.infer<typeof cardActivationSchema>;
-  export type Purchase = z.infer<typeof indexSchema>;
+  export type Purchase = z.infer<typeof purchaseSchema>;
   export type GiveCoins = z.infer<typeof giveCoinsSchema>;
   export type AttackMonster = z.infer<typeof AttackMonsterSchema>;
   export type AttackRoll = z.infer<typeof issuerSchema>;

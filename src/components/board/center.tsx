@@ -18,7 +18,19 @@ export const Center = ({ state }: CenterProps) => {
   const { toast } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
 
-  const onLootDeckClick = () => {
+  const purchaseTreasure = (index: number | "top") => {
+    socket.emit("purchase", { issuer, index }, (response) => {
+      switch (response.status) {
+        case 200:
+          break;
+        case 400:
+          toast("error", "Failed to purchase", response.error);
+          break;
+      }
+    });
+  };
+
+  const debugGainLoot = () => {
     socket.emit("debugListLoot", issuer, (response) => {
       if (response.status === 200) {
         const promptId = `debug-list-loot-${Date.now()}`;
@@ -59,7 +71,7 @@ export const Center = ({ state }: CenterProps) => {
     });
   };
 
-  const onTreasureDeckClick = () => {
+  const debugGainTreasure = () => {
     socket.emit("debugListTreasure", issuer, (response) => {
       if (response.status === 200) {
         const promptId = `debug-list-treasure-${Date.now()}`;
@@ -203,21 +215,32 @@ export const Center = ({ state }: CenterProps) => {
             cards={Array.from({ length: state.loot.deckSize }).map(
               () => CardType.LootCard,
             )}
-            onClickTopCard={CHEAT_MODE ? onLootDeckClick : undefined}
           />
-          <Pile cards={state.loot.discard} />
+          <Pile
+            cards={state.loot.discard}
+            onClickTopCard={CHEAT_MODE ? debugGainLoot : undefined}
+          />
         </div>
         <div className="flex flex-col gap-8 transform-3d">
           <div className="flex place-items-center gap-2 transform-3d">
-            <Pile cards={state.treasure.discard} />
+            <Pile
+              cards={state.treasure.discard}
+              onClickTopCard={CHEAT_MODE ? debugGainTreasure : undefined}
+            />
             <Pile
               cards={Array.from({ length: state.treasure.deckSize }).map(
                 () => CardType.TreasureCard,
               )}
-              onClickTopCard={CHEAT_MODE ? onTreasureDeckClick : undefined}
+              disabled={!state.me.capabilities.buyTreasure}
+              onClickTopCard={() => purchaseTreasure("top")}
             />
-            {state.treasure.inPlay.map((card) => (
-              <Pile key={card.slug} cards={[card]} />
+            {state.treasure.inPlay.map((card, index) => (
+              <Pile
+                key={card.slug}
+                cards={[card]}
+                disabled={!state.me.capabilities.buyTreasure}
+                onClickTopCard={() => purchaseTreasure(index)}
+              />
             ))}
           </div>
           <div className="flex place-items-center gap-2 transform-3d">
@@ -250,7 +273,7 @@ export const Center = ({ state }: CenterProps) => {
                 onClickTopCard={
                   card.top.stats?.capabilities.targetable
                     ? () => selectMonsterToAttack(index)
-                    : undefined
+                      : undefined
                 }
               />
             ))}
