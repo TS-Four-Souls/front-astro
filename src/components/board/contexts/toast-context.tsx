@@ -50,15 +50,22 @@ const Icon = ({ type, className }: { type: ToastType; className?: string }) => {
 
 interface ToastContextProps {
   toast: (type: ToastType, title: string, message: string) => void;
+  /**
+   * Block the action if the message is not true.
+   * @param title - The title of the toast.
+   * @param capable - The message of the toast. If true, the action is not blocked.
+   * @param callback - The callback to call if the action is not blocked.
+   */
+  block: (title: string, capable: string | true, callback: () => void) => void;
 }
 
 const ToastContext = createContext<ToastContextProps>({
   toast: () => {},
+  block: () => {},
 });
 
 export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
   const addToast = (type: ToastType, title: string, message: string) => {
-    console.log("Adding toast", type, title, message);
     toastLib.custom((t) => (
       <div
         className={cn(
@@ -81,8 +88,20 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
       </div>
     ));
   };
+
+  const block = (
+    title: string,
+    capable: string | true,
+    callback: () => void,
+  ) => {
+    if (typeof capable === "string") {
+      return addToast("error", title, capable);
+    }
+    callback();
+  };
+
   return (
-    <ToastContext.Provider value={{ toast: addToast }}>
+    <ToastContext.Provider value={{ toast: addToast, block }}>
       {children}
       <Toaster position="top-right" />
     </ToastContext.Provider>

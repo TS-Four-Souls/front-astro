@@ -8,6 +8,7 @@ import { CHEAT_MODE } from "@/constants";
 import { useToastContext } from "./contexts/toast-context";
 import { Button } from "../button";
 import { usePromptContext } from "./contexts/prompt-context";
+import { tooltip } from "@/utils/tooltip";
 
 interface CenterProps {
   state: DetailedState;
@@ -15,7 +16,7 @@ interface CenterProps {
 
 export const Center = ({ state }: CenterProps) => {
   const { issuer } = useGameContext();
-  const { toast } = useToastContext();
+  const { toast, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
 
   const purchaseTreasure = (index: number | "top") => {
@@ -127,15 +128,6 @@ export const Center = ({ state }: CenterProps) => {
     replaceIndex?: number,
   ) => {
     if (index === "top") {
-      if (typeof state.monsters.capabilities.targetableDeck === "string") {
-        toast(
-          "error",
-          "Failed to select monster to attack",
-          state.monsters.capabilities.targetableDeck,
-        );
-        return;
-      }
-
       if (replaceIndex === undefined) {
         type ReplaceIndexOption = {
           type: "card";
@@ -189,34 +181,17 @@ export const Center = ({ state }: CenterProps) => {
       return;
     }
 
-    if (state.monsters.inPlay[index].top.stats === undefined) {
-      toast(
-        "error",
-        "Failed to select monster to attack",
-        "This is not a monster card.",
-      );
-    } else if (
-      typeof state.monsters.inPlay[index].top.stats.capabilities.targetable ===
-      "string"
-    ) {
-      toast(
-        "error",
-        "Failed to select monster to attack",
-        state.monsters.inPlay[index].top.stats.capabilities.targetable,
-      );
-    } else {
-      socket.emit("attackMonster", { issuer, index }, (response) => {
-        if (response.status === 200) {
-          toast(
-            "success",
-            "Selected monster to attack",
-            "You have selected a monster to attack",
-          );
-        } else {
-          toast("error", "Failed to select monster to attack", response.error);
-        }
-      });
-    }
+    socket.emit("attackMonster", { issuer, index }, (response) => {
+      if (response.status === 200) {
+        toast(
+          "success",
+          "Selected monster to attack",
+          "You have selected a monster to attack",
+        );
+      } else {
+        toast("error", "Failed to select monster to attack", response.error);
+      }
+    });
   };
 
   const rollDice = () => {
@@ -283,36 +258,46 @@ export const Center = ({ state }: CenterProps) => {
                 () => CardType.MonsterCard,
               )}
               disabled={state.monsters.capabilities.targetableDeck !== true}
-              onClickTopCard={() => {
-                selectMonsterToAttack("top");
-              }}
+              onClickTopCard={() =>
+                block(
+                  "Failed to select monster to attack",
+                  state.monsters.capabilities.targetableDeck,
+                  () => {
+                    selectMonsterToAttack("top");
+                  },
+                )
+              }
               tooltip={
-                typeof state.monsters.capabilities.targetableDeck === "string"
-                  ? state.monsters.capabilities.targetableDeck
-                  : undefined
+                tooltip("You cannot attack this card", state.monsters.capabilities.targetableDeck)
               }
             />
-            {state.monsters.inPlay.map((card, index) => (
-              <Pile
-                key={card.top.slug}
-                cards={[
-                  ...card.covered,
-                  {
-                    slug: card.top.slug,
-                    engagedInCombat: card.top.stats?.isEngagedInCombat ?? false,
-                  },
-                ]}
-                disabled={card.top.stats?.capabilities.targetable !== true}
-                onClickTopCard={() => selectMonsterToAttack(index)}
-                tooltip={
-                  card.top.stats === undefined
-                    ? "You cannot attack this card."
-                    : card.top.stats.capabilities.targetable !== true
-                      ? card.top.stats.capabilities.targetable
-                      : undefined
-                }
-              />
-            ))}
+            {state.monsters.inPlay.map((card, index) => {
+              const targetable =
+                card.top.stats?.capabilities.targetable ??
+                "This card is not a monster card.";
+              return (
+                <Pile
+                  key={card.top.slug}
+                  cards={[
+                    ...card.covered,
+                    {
+                      slug: card.top.slug,
+                      engagedInCombat:
+                        card.top.stats?.isEngagedInCombat ?? false,
+                    },
+                  ]}
+                  disabled={card.top.stats?.capabilities.targetable !== true}
+                  onClickTopCard={() =>
+                    block(
+                      "Failed to select monster to attack",
+                      targetable,
+                      () => selectMonsterToAttack(index),
+                    )
+                  }
+                  tooltip={tooltip("You cannot attack this card", targetable)}
+                />
+              );
+            })}
           </div>
         </div>
       </div>
