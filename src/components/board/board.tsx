@@ -68,6 +68,7 @@ export const Board = () => {
                   health={player.currentHealthPoints}
                   attack={player.currentAttackPoints}
                   souls={player.souls}
+                  isEngagedInCombat={player.isEngagedInCombat}
                 />
                 <div
                   className={cn(

@@ -2,12 +2,9 @@
 - Escape to close popup
 
 - Add missing fonctions:
-    - declare attack
-    - attack monster
-    - attack roll
-    - purchase
-    - give coins
-    - reset 
-    - debug reset
+  - purchase
+  - give coins
+  - reset
+  - debug reset
 
 - Handle couplePlayerHand target selection

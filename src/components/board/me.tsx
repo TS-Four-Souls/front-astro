@@ -27,7 +27,7 @@ export const Me = () => {
             "submitSelection",
             {
               issuer,
-              requestId: pendingSelection.requestId,  
+              requestId: pendingSelection.requestId,
               selections: selectedOptions,
             },
             (response) => {
@@ -144,6 +144,7 @@ export const Me = () => {
         health={state.me.currentHealthPoints}
         attack={state.me.currentAttackPoints}
         souls={state.me.souls}
+        isEngagedInCombat={state.me.isEngagedInCombat}
       />
       <div className="flex max-w-275 flex-wrap gap-2 transform-3d">
         {state.me.inPlay.map((card, index) => (

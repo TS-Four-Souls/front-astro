@@ -12,6 +12,7 @@ interface PlayerStatsProps {
   health: number;
   attack: number;
   souls: number;
+  isEngagedInCombat: boolean;
 }
 
 export const PlayerStats = ({
@@ -20,6 +21,7 @@ export const PlayerStats = ({
   health,
   attack,
   souls,
+  isEngagedInCombat,
 }: PlayerStatsProps) => {
   const { state, issuer } = useGameContext();
   const { openMenu } = useUserSettingsContext();
@@ -46,8 +48,9 @@ export const PlayerStats = ({
   return (
     <div
       className={cn(
-        "flex flex-col gap-2 rounded-lg border-3 border-transparent p-4 text-white transform-3d",
-        isCurrentTurn && "border-stone-700",
+        "flex flex-col gap-2 rounded-lg p-4 text-white outline-3 outline-transparent transform-3d",
+        isCurrentTurn && "outline-stone-700",
+        isEngagedInCombat && "outline-red-500/60",
       )}>
       <div className="flex translate-z-1 items-center gap-2">
         <h1 className="font-bold">{name}</h1>

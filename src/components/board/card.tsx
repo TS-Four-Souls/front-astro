@@ -40,7 +40,7 @@ export const Card = ({
           "aspect-750/1024 h-40 rounded-md shadow-sm inset-shadow-sm shadow-stone-700 inset-shadow-stone-900",
           className,
         )}
-        style={{...style, borderRadius: BORDER_RADIUS}}
+        style={{ ...style, borderRadius: BORDER_RADIUS }}
       />
     );
   }
@@ -69,6 +69,7 @@ export const Card = ({
         className={cn("pointer-events-auto h-full w-full")}
         style={{
           filter: `brightness(${Math.max(0.2, brightness * brightness)})`,
+          borderRadius: enableSides ? "unset" : BORDER_RADIUS,
         }}
       />
       {enableSides && (
@@ -144,7 +145,7 @@ export const CardImage = ({
       className={cn("aspect-750/1024 select-none", className)}
       draggable={false}
       onClick={onClick}
-      style={{...style, borderRadius: BORDER_RADIUS}}
+      style={{ borderRadius: BORDER_RADIUS, ...style }}
     />
   );
 };

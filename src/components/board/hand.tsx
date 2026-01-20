@@ -23,7 +23,7 @@ export const Hand = () => {
             } else if (response.response.options.length === 0) {
               toast("error", "Cannot play this card", "No options available");
             } else {
-              const promptId = `card-play-${issuer.id}-${index}-${selections.length}`;
+              const promptId = `card-play-${index}-${selections.length}`;
               addPrompt({
                 promptId,
                 isUnique: false,

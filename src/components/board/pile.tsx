@@ -9,13 +9,16 @@ import {
 } from "./contexts/user-settings-context";
 
 interface PileProps {
-  cards: { slug: string, charged?: boolean }[] | CardType[];
+  cards: (
+    | { slug: string; charged?: boolean; engagedInCombat?: boolean }
+    | CardType
+  )[];
   size?: number;
   onClickTopCard?: () => void;
   optimizations?: {
     maxCards: number;
     enableSides: boolean;
-    disable3D: boolean;
+    enable3D: boolean;
   };
 }
 
@@ -40,7 +43,7 @@ export const Pile = ({
 
   const userSettings = useUserSettingsContext();
 
-  const enable3D = optimizations?.disable3D === false || userSettings.enable3D;
+  const enable3D = optimizations?.enable3D ?? userSettings.enable3D;
   const enableSides =
     optimizations?.enableSides ?? userSettings.enableCardSides;
   const maxCards =
@@ -60,7 +63,11 @@ export const Pile = ({
             1,
           );
 
-          const charged = typeof card === "string" ? true : (card.charged ?? true);
+          const charged =
+            typeof card === "string" ? true : (card.charged ?? true);
+
+          const engagedInCombat =
+            typeof card === "string" ? false : (card.engagedInCombat ?? false);
 
           return (
             <Card
@@ -71,19 +78,20 @@ export const Pile = ({
               className={cn(
                 "col-start-1 row-start-1",
                 !charged && "brightness-70 contrast-90",
+                engagedInCombat && "outline-[0.2em] outline-red-500/60",
                 cards.length > 0 && index === 0 && "shadow-lg/20",
                 cards.length > 5 && index === 3 && "shadow-lg/20",
                 cards.length > 10 && index === 2 && "shadow-xl/30",
                 cards.length > 40 && index === 1 && "shadow-2xl/30",
                 cards.length > 80 && index === 0 && "shadow-3xl/30",
                 index === array.length - 1 &&
-                onClickTopCard &&
-                "cursor-pointer",
+                  onClickTopCard &&
+                  "cursor-pointer",
               )}
               style={{
                 transform: `
                   ${enable3D ? `translateZ(${thickness * (index + 1)}em)` : ""}
-                  rotate(${charged ? ((rng() - 0.5) * 5) : 90}deg)
+                  rotate(${charged ? (rng() - 0.5) * 5 : 90}deg)
                 `,
                 height: size + "em",
                 marginInline: charged ? 0 : `${size * 0.135}em`,

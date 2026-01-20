@@ -9,12 +9,14 @@ const fakeStack: StackElementType[] = [
   {
     type: "LootCardEffect",
     card: { name: "Dice Shard", slug: "b2-dice_shard" },
+    id: 1,
     targets: [],
     issuer: { name: "Sylvain", slug: "player-1", type: "player" },
   },
   {
     type: "diceRoll",
     diceRoll: 3,
+    id: 2,
     targets: [
       { type: "player", payload: { name: "Player 1", slug: "player-1" } },
     ],
@@ -26,12 +28,14 @@ const fakeStack: StackElementType[] = [
     receiver: { name: "Anna", slug: "player-2", type: "player" },
     damage: 3,
     source: { name: "Dice Shard", slug: "b2-dice_shard" },
+    id: 3,
   },
   {
     type: "death",
     receiver: { name: "Joe", slug: "player-2", type: "player" },
     from: { name: "Marc", slug: "player-1", type: "player" },
     source: { name: "Dice Shard", slug: "b2-dice_shard" },
+    id: 4,
   },
   {
     type: "effect",
@@ -41,6 +45,7 @@ const fakeStack: StackElementType[] = [
       { type: "player", payload: { name: "Player 1", slug: "player-1" } },
     ],
     issuer: { name: "Sylvain", slug: "player-1", type: "player" },
+    id: 5,
   },
 ];
 
@@ -92,7 +97,7 @@ export const DebugPage = () => {
                 optimizations={{
                   maxCards: 20,
                   enableSides: true,
-                  disable3D: false,
+                  enable3D: true,
                 }}
               />
             </div>
@@ -119,7 +124,7 @@ export const DebugPage = () => {
                 optimizations={{
                   maxCards: size,
                   enableSides: true,
-                  disable3D: false,
+                  enable3D: true,
                 }}
               />
             </div>
@@ -148,7 +153,7 @@ export const DebugPage = () => {
                 cards={Array.from({ length: 120 }).map(
                   () => CardType.TreasureCard,
                 )}
-                optimizations={{ maxCards: 10, enableSides, disable3D: false }}
+                optimizations={{ maxCards: 10, enableSides, enable3D: true }}
               />
             </div>
             <p className="mt-8 text-center text-sm text-stone-500">
@@ -158,7 +163,7 @@ export const DebugPage = () => {
         ))}
       </div>
 
-      <h3 className="mt-32 mb-2 text-lg font-bold">3D disabled</h3>
+      <h3 className="mt-32 mb-2 text-lg font-bold">3D enabled</h3>
       <p className="mb-32 text-sm leading-snug text-stone-500">
         When 3D is disabled, the cards are rendered as a flat list.
         <br />
@@ -167,9 +172,9 @@ export const DebugPage = () => {
         Hover to see the difference.
       </p>
       <div className="group flex flex-row place-content-center gap-24">
-        {[false, true].map((disable3D) => (
+        {[true, false].map((enable3D) => (
           <div
-            key={disable3D ? "true" : "false"}
+            key={enable3D ? "true" : "false"}
             className="flex flex-col gap-2 transform-3d">
             <div className="rotate-x-0 transition-transform duration-300 transform-3d group-hover:rotate-x-45 group-hover:rotate-z-55">
               <Pile
@@ -177,11 +182,11 @@ export const DebugPage = () => {
                 cards={Array.from({ length: 120 }).map(
                   () => CardType.TreasureCard,
                 )}
-                optimizations={{ maxCards: 20, enableSides: false, disable3D }}
+                optimizations={{ maxCards: 20, enableSides: false, enable3D }}
               />
             </div>
             <p className="mt-8 text-center text-sm text-stone-500">
-              disable3D: {disable3D ? "true" : "false"}
+              enable3D: {enable3D ? "true" : "false"}
             </p>
           </div>
         ))}

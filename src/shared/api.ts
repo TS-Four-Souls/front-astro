@@ -11,9 +11,7 @@ export const entityTypeSchema = IdentifierTypeSchema.extend({
 });
 export type entityType = z.infer<typeof entityTypeSchema>;
 
-const cardSchema = z.object({
-  slug: z.string(),
-});
+const cardSchema = IdentifierTypeSchema;
 export type Card = z.infer<typeof cardSchema>;
 
 const activeEffectEntrySchema = z.object({
@@ -152,6 +150,7 @@ const lootCardOnStackJsonSchema = z.object({
   card: IdentifierTypeSchema.optional(),
   targets: z.array(selectionItemSchema),
   issuer: entityTypeSchema,
+  id: z.number(),
 });
 export type LootCardOnStackJson = z.infer<typeof lootCardOnStackJsonSchema>;
 
@@ -161,6 +160,7 @@ const diceRollJsonSchema = z.object({
   issuer: entityTypeSchema,
   card: IdentifierTypeSchema.optional(),
   targets: z.array(selectionItemSchema).optional(),
+  id: z.number(),
 });
 export type DiceRollJson = z.infer<typeof diceRollJsonSchema>;
 
@@ -169,6 +169,7 @@ const deathOnStackJsonSchema = z.object({
   receiver: entityTypeSchema,
   from: entityTypeSchema,
   source: z.union([z.lazy(() => diceRollJsonSchema), IdentifierTypeSchema]),
+  id: z.number(),
 });
 export type DeathOnStackJson = z.infer<typeof deathOnStackJsonSchema>;
 
@@ -178,6 +179,7 @@ const damageOnStackJsonSchema = z.object({
   from: entityTypeSchema,
   damage: z.number(),
   source: z.union([z.lazy(() => diceRollJsonSchema), IdentifierTypeSchema]),
+  id: z.number(),
 });
 export type DamageOnStackJson = z.infer<typeof damageOnStackJsonSchema>;
 
@@ -187,6 +189,7 @@ const effectOnStackJsonSchema = z.object({
   targets: z.array(selectionItemSchema),
   card: IdentifierTypeSchema,
   effect: z.string(),
+  id: z.number(),
 });
 export type EffectOnStackJson = z.infer<typeof effectOnStackJsonSchema>;
 
@@ -372,6 +375,9 @@ const detailedStateSchema = z.object({
   monsters: z.object({
     discard: z.array(cardSchema),
     deckSize: z.number(),
+    capabilities: z.object({
+      targetableDeck: z.boolean(),
+    }),
     inPlay: z.array(
       z.object({
         top: monsterCardSchema,

@@ -4,7 +4,7 @@ import {
 } from "./components/board/contexts/user-settings-context";
 
 /** Allow the user to draw treasures and loot cards from the decks */
-export const CHEAT_MODE: boolean = true;
+export const CHEAT_MODE: boolean = false;
 
 export const DEFAULT_ZOOM_RESOLUTION_PRESET: ZoomResolutionPreset =
   ZoomResolutionPreset.LOW;

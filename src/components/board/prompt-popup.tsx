@@ -142,10 +142,11 @@ export const GenericOption = ({ option }: { option: SelectionItem }) => {
       return <StackElementOption option={option} />;
     case "card":
       return <CardOption option={option} />;
+    case "couplePlayerHand":
+      return <CouplePlayerHandOption option={option} />;
     case "number":
     case "boolean":
     case "object":
-    case "couplePlayerHand":
     case "array":
     case "null":
     case "unknown":
@@ -216,6 +217,23 @@ export const CardOption = ({
   return (
     <div className="flex flex-col items-center gap-2">
       <CardImage card={option.payload} className="h-64" />
+    </div>
+  );
+};
+
+export const CouplePlayerHandOption = ({
+  option,
+}: {
+  option: Extract<SelectionItem, { type: "couplePlayerHand" }>;
+}) => {
+  return (
+    <div className="flex flex-col items-center gap-2">
+      <p className="text-center text-lg font-bold">
+        {option.payload.player.name}
+      </p>
+      {option.payload.hand.map((card) => (
+        <CardImage key={card.slug} card={card} className="h-64" />
+      ))}
     </div>
   );
 };
