@@ -18,6 +18,7 @@ interface CardProps {
   brightness?: number;
   enableSides?: boolean;
   onClick?: () => void;
+  tooltip?: string;
 }
 
 const RX = `${CARD_RADIUS}%`;
@@ -32,15 +33,19 @@ export const Card = ({
   brightness = 1,
   enableSides = true,
   onClick,
+  tooltip,
 }: CardProps) => {
   if (!card) {
     return (
       <div
         className={cn(
           "aspect-750/1024 h-40 rounded-md shadow-sm inset-shadow-sm shadow-stone-700 inset-shadow-stone-900",
+          onClick && "cursor-pointer",
           className,
         )}
         style={{ ...style, borderRadius: BORDER_RADIUS }}
+        title={tooltip}
+        onClick={onClick}
       />
     );
   }
@@ -63,7 +68,8 @@ export const Card = ({
         ...style,
         borderRadius: BORDER_RADIUS,
       }}
-      onClick={onClick}>
+      onClick={onClick}
+      title={tooltip}>
       <CardImage
         card={card}
         className={cn("pointer-events-auto h-full w-full")}

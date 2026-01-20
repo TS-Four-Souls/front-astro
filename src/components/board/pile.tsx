@@ -16,6 +16,7 @@ interface PileProps {
   size?: number;
   disabled?: boolean;
   onClickTopCard?: () => void;
+  tooltip?: string;
   optimizations?: {
     maxCards: number;
     enableSides: boolean;
@@ -37,6 +38,7 @@ export const Pile = ({
   size: sizePx = 160,
   disabled,
   onClickTopCard,
+  tooltip,
   optimizations,
 }: PileProps) => {
   const size = sizePx / 16;
@@ -100,6 +102,7 @@ export const Pile = ({
               }}
               brightness={brightness}
               enableSides={enableSides}
+              tooltip={index === array.length - 1 ? tooltip : undefined}
             />
           );
         })}
@@ -107,6 +110,7 @@ export const Pile = ({
         <Card
           onClick={onClickTopCard}
           style={{ height: size + "em" }}
+          tooltip={tooltip}
         />
       )}
     </div>
