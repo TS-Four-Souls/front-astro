@@ -17,6 +17,7 @@ export const Me = () => {
     if (pendingSelection) {
       addPrompt({
         promptId: pendingSelection.requestId,
+        isUnique: true,
         prompt: pendingSelection.description,
         options: pendingSelection.options,
         minCount: pendingSelection.asMany ? 0 : pendingSelection.count,
@@ -26,7 +27,7 @@ export const Me = () => {
             "submitSelection",
             {
               issuer,
-              requestId: pendingSelection.requestId,
+              requestId: pendingSelection.requestId,  
               selections: selectedOptions,
             },
             (response) => {
@@ -76,6 +77,7 @@ export const Me = () => {
                 const promptId = `card-activation-${card.slug}-${index}-${effectIndex}-${selections.length}`;
                 addPrompt({
                   promptId,
+                  isUnique: false,
                   prompt: response.response.description,
                   options: response.response.options,
                   minCount: response.response.asMany
@@ -119,6 +121,7 @@ export const Me = () => {
       const promptId = `select-card-effect-${card.slug}-${index}`;
       addPrompt<EffectOption>({
         promptId,
+        isUnique: false,
         prompt: "Select an effect to activate",
         options: effects,
         minCount: 1,

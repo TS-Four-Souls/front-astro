@@ -1,9 +1,13 @@
 import type { SelectionItem } from "@/shared/api";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useRef, useState } from "react";
 import { PromptPopup } from "../prompt-popup";
 
 interface Prompt<T extends SelectionItem = SelectionItem> {
   promptId: string;
+  /**
+   * If the prompt is unique, no other prompt with the same promptId can be added
+   */
+  isUnique: boolean;
   /**
    * The prompt to display to the user
    */
@@ -45,6 +49,7 @@ const PromptContext = createContext<PromptContextProps>({
 
 export const PromptProvider = ({ children }: { children: React.ReactNode }) => {
   const [prompts, setPrompts] = useState<Map<string, Prompt<any>>>(new Map());
+  const blockedPrompts = useRef<Set<string>>(new Set());
 
   const addPrompt = <T extends SelectionItem = SelectionItem>(
     prompt: Prompt<T>,
@@ -53,6 +58,15 @@ export const PromptProvider = ({ children }: { children: React.ReactNode }) => {
     if (prompts.has(prompt.promptId)) {
       console.warn(`Prompt with ID ${prompt.promptId} already exists`);
       return;
+    }
+    // Check if the prompt already blocked
+    if (blockedPrompts.current.has(prompt.promptId)) {
+      console.warn(`Prompt with ID ${prompt.promptId} is unique and already exists`);
+      return;
+    }
+    // If the prompt is unique, block future prompts with the same ID
+    if (prompt.isUnique) {
+      blockedPrompts.current.add(prompt.promptId);
     }
     setPrompts((current) => {
       const newMap = new Map(current);

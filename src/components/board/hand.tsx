@@ -26,6 +26,7 @@ export const Hand = () => {
               const promptId = `card-play-${issuer.id}-${index}-${selections.length}`;
               addPrompt({
                 promptId,
+                isUnique: false,
                 prompt: response.response.description,
                 options: response.response.options,
                 minCount: response.response.asMany
@@ -58,7 +59,7 @@ export const Hand = () => {
             key={card.slug}
             card={card}
             className={cn(
-              "m-1 max-h-[25vh] overflow-hidden rounded-lg transition-transform",
+              "m-1 max-h-[25vh] transition-transform",
               state.me.capabilities.useLoot
                 ? "cursor-pointer hover:-translate-y-10"
                 : "cursor-not-allowed",

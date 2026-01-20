@@ -22,6 +22,7 @@ interface CardProps {
 
 const RX = `${CARD_RADIUS}%`;
 const RY = `${(CARD_RADIUS * 750) / 1024}%`;
+const BORDER_RADIUS = `${RX} ${RX} ${RX} ${RX} / ${RY} ${RY} ${RY} ${RY}`;
 
 export const Card = ({
   card,
@@ -39,7 +40,7 @@ export const Card = ({
           "aspect-750/1024 h-40 rounded-md shadow-sm inset-shadow-sm shadow-stone-700 inset-shadow-stone-900",
           className,
         )}
-        style={style}
+        style={{...style, borderRadius: BORDER_RADIUS}}
       />
     );
   }
@@ -60,7 +61,7 @@ export const Card = ({
       )}
       style={{
         ...style,
-        borderRadius: `${RX} ${RX} ${RX} ${RX} / ${RY} ${RY} ${RY} ${RY}`,
+        borderRadius: BORDER_RADIUS,
       }}
       onClick={onClick}>
       <CardImage
@@ -143,7 +144,7 @@ export const CardImage = ({
       className={cn("aspect-750/1024 select-none", className)}
       draggable={false}
       onClick={onClick}
-      style={style}
+      style={{...style, borderRadius: BORDER_RADIUS}}
     />
   );
 };
