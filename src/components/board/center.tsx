@@ -232,7 +232,7 @@ export const Center = ({ state }: CenterProps) => {
             />
             <Pile
               cards={Array.from({ length: state.treasure.deckSize }).map(
-                () => CardType.TreasureCard,
+                (_, index) => (index === state.treasure.deckSize - 1 && state.firstCardTreasureDeck !== undefined) ? state.firstCardTreasureDeck : CardType.TreasureCard,
               )}
               disabled={state.me.capabilities.buyTreasure !== true}
               onClickTopCard={() =>
