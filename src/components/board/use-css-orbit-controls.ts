@@ -219,7 +219,7 @@ export function useCssOrbitControls(
       const currentZoom = s.zoom;
       const newZoom = Math.min(
         maxZoom * resolutionFactor,
-        Math.max(100, s.zoom + -e.deltaY * zoomSpeed * zoomSpeedMultipler),
+        Math.max(50, s.zoom + -e.deltaY * zoomSpeed * zoomSpeedMultipler),
       );
       const diff = newZoom / currentZoom;
       s.zoom = newZoom;

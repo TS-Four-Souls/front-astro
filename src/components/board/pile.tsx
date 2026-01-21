@@ -15,6 +15,7 @@ interface PileProps {
   )[];
   size?: number;
   disabled?: boolean;
+  className?: string;
   onClickTopCard?: () => void;
   tooltip?: string;
   optimizations?: {
@@ -38,6 +39,7 @@ export const Pile = ({
   size: sizePx = 160,
   disabled,
   onClickTopCard,
+  className,
   tooltip,
   optimizations,
 }: PileProps) => {
@@ -55,7 +57,9 @@ export const Pile = ({
     maxCardsByResolution[userSettings.zoomResolutionPreset];
 
   return (
-    <div className="grid shrink-0 transform-3d" style={{ height: size + "em" }}>
+    <div
+      className={cn("grid shrink-0 transform-3d", className)}
+      style={{ height: size + "em" }}>
       {cards
         .filter((_, index) => index >= cards.length - maxCards)
         .map((card, index, array) => {
@@ -81,7 +85,7 @@ export const Pile = ({
               card={card}
               className={cn(
                 "col-start-1 row-start-1",
-                !charged && "brightness-70 contrast-90",
+                !charged && "brightness-50 contrast-90",
                 engagedInCombat && "outline-[0.2em] outline-red-500/60",
                 cards.length > 0 && index === 0 && "shadow-lg/20",
                 cards.length > 5 && index === 3 && "shadow-lg/20",
@@ -95,10 +99,9 @@ export const Pile = ({
               style={{
                 transform: `
                   ${enable3D ? `translateZ(${thickness * (index + 1)}em)` : ""}
-                  rotate(${charged ? (rng() - 0.5) * 5 : 90}deg)
+                  rotate(${(rng() - 0.5) * 5}deg)
                 `,
                 height: size + "em",
-                marginInline: charged ? 0 : `${size * 0.135}em`,
               }}
               brightness={brightness}
               enableSides={enableSides}

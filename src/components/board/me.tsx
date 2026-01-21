@@ -130,7 +130,7 @@ export const Me = () => {
   };
 
   return (
-    <div className="col-start-2 row-start-3 mt-24 flex place-content-center items-start gap-8 transform-3d">
+    <div className="col-start-2 row-start-3 flex place-content-center place-items-center gap-8 transform-3d">
       <PlayerStats
         name={state.me.name}
         coins={state.me.coins}
@@ -139,7 +139,11 @@ export const Me = () => {
         souls={state.me.souls}
         isEngagedInCombat={state.me.isEngagedInCombat}
       />
-      <div className="flex max-w-275 flex-wrap gap-2 transform-3d">
+      <div
+        className="grid grid-cols-7 gap-2 transform-3d"
+        style={{
+          gridTemplateColumns: `repeat(${Math.min(state.me.inPlay.length, 7)}, 1fr)`,
+        }}>
         {state.me.inPlay.map((card, index) => (
           <Pile
             key={card.slug}

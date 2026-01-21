@@ -205,7 +205,7 @@ export const Center = ({ state }: CenterProps) => {
   };
 
   return (
-    <div className="flex flex-col gap-4 transform-3d">
+    <div className="m-12 flex flex-col gap-4 rounded-xl bg-stone-700/10 p-12 shadow-md inset-shadow-xs inset-shadow-stone-700 transform-3d">
       <div className="flex place-items-center gap-12 transform-3d">
         <Stack />
         <div className="flex shrink-0 flex-col place-items-center gap-2 transform-3d">

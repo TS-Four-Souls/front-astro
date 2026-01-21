@@ -24,7 +24,7 @@ export const Button = ({
   return (
     <button
       className={cn(
-        "rounded-md px-4 py-2 text-white transition-colors",
+        "rounded-md px-4 py-2 font-main text-white uppercase shadow-2xl shadow-stone-950/10 transition-colors",
         onClick &&
           (disabled
             ? "cursor-not-allowed brightness-40 contrast-60"

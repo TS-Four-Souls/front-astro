@@ -4,7 +4,29 @@
 @import "tailwindcss/preflight.css" layer(base);
 @import "tailwindcss/utilities.css" layer(utilities);
 
+@font-face {
+  font-family: FourSoulsMain;
+  src: url("/fonts/EdmundMcMillen_v2.ttf");
+}
+@font-face {
+  font-family: FourSoulsStatblock;
+  src: url("/fonts/TheEnd_v2.ttf");
+}
+@font-face {
+  font-family: FourSoulsAltStats;
+  src: url("/fonts/Team Meat font.ttf");
+}
+@font-face {
+  font-family: TimeFcuk;
+  src: url("/fonts/PC_Senior.ttf");
+}
+
 @theme {
+  --font-main: FourSoulsMain, sans-serif;
+  --font-statblock: FourSoulsStatblock, sans-serif;
+  --font-alt-stats: FourSoulsAltStats, sans-serif;
+  --font-time-fcuk: TimeFcuk, sans-serif;
+
   --shadow-2xs: 0 0.01em 0.01em rgb(0 0 0 / 0.05);
   --shadow-xs: 0 0.02em 0.02em rgb(0 0 0 / 0.05);
   --shadow-sm: 0 0.05em 0.05em rgb(0 0 0 / 0.1);

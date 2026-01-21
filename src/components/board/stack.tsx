@@ -14,6 +14,7 @@ import { CardImage } from "./card";
 import { useEffect, useRef } from "react";
 import { Button } from "../button";
 import { tooltip } from "@/utils/tooltip";
+import { cn } from "@/utils/cn";
 
 export const Stack = () => {
   const { state, issuer } = useGameContext();
@@ -48,16 +49,21 @@ export const Stack = () => {
   }, [state.stack.length]);
 
   return (
-    <div className="flex h-86 w-60 flex-col gap-2 rounded-xl bg-stone-900 p-4 transform-3d">
+    <div className="flex h-86 w-60 flex-col gap-2 rounded-xl bg-stone-900 p-4 inset-shadow-sm inset-shadow-stone-950/30 transform-3d">
       <div
         ref={scrollViewRef}
-        className="grid grow place-content-start overflow-auto text-sm">
+        className={cn(
+          "grow place-content-start gap-4 overflow-auto text-sm",
+          state.stack.length > 0 ? "grid" : "flex place-items-center",
+        )}>
         {state.stack.map((element, index) => (
           <StackElement key={index} element={element} />
         ))}
         {state.stack.length === 0 && (
           <div className="flex text-center">
-            <p className="text-stone-500">Nothing is on the stack</p>
+            <p className="font-time-fcuk text-sm leading-normal text-stone-600">
+              NOTHING ON THE STACK YET...
+            </p>
           </div>
         )}
       </div>
@@ -80,11 +86,7 @@ export const Stack = () => {
 };
 
 export const StackElement = ({ element }: { element: StackElementType }) => {
-  return (
-    <div className="flex flex-col items-start gap-2 text-white">
-      <StackElementContent element={element} />
-    </div>
-  );
+  return <StackElementContent element={element} />;
 };
 
 const StackElementContent = ({ element }: { element: StackElementType }) => {
@@ -104,7 +106,7 @@ const StackElementContent = ({ element }: { element: StackElementType }) => {
 
 const DiceRollElement = ({ element }: { element: DiceRollJson }) => {
   return (
-    <div className="flex flex-row items-center gap-2 p-2">
+    <div className="flex flex-row items-center gap-4">
       <Dice value={element.diceRoll} className="size-12 text-red-500" />
       <div className="flex flex-col">
         {element.card && (
@@ -126,7 +128,7 @@ const LootCardEffectElement = ({
   element: LootCardOnStackJson;
 }) => {
   return (
-    <div className="flex flex-row items-center gap-2 p-2">
+    <div className="flex flex-row items-center gap-4">
       {element.card && (
         <div className="size-12 shrink-0 overflow-hidden rounded-lg">
           <CardImage
@@ -146,7 +148,7 @@ const LootCardEffectElement = ({
 
 const EffectElement = ({ element }: { element: EffectOnStackJson }) => {
   return (
-    <div className="flex flex-row items-center gap-2 p-2">
+    <div className="flex flex-row items-center gap-4">
       <div className="size-12 shrink-0 overflow-hidden rounded-lg">
         <CardImage card={element.card} className="translate-y-[5%] scale-155" />
       </div>
@@ -162,7 +164,7 @@ const EffectElement = ({ element }: { element: EffectOnStackJson }) => {
 
 const DamageElement = ({ element }: { element: DamageOnStackJson }) => {
   return (
-    <div className="flex flex-row items-center gap-2 p-2">
+    <div className="flex flex-row items-center gap-4">
       <img src={`/heart.png`} className="size-12 shrink-0" />
       <div>
         <p className="text-stone-200">
@@ -176,7 +178,7 @@ const DamageElement = ({ element }: { element: DamageOnStackJson }) => {
 
 const DeathElement = ({ element }: { element: DeathOnStackJson }) => {
   return (
-    <div className="flex flex-row items-center gap-2 p-2">
+    <div className="flex flex-row items-center gap-4">
       <img
         src={`/skull.webp`}
         className="size-12 shrink-0"

@@ -68,10 +68,10 @@ export const UserSettingsProvider = ({
         <Popup onPressBackdrop={() => setIsMenuOpen(false)}>
           <div className="flex flex-col gap-4">
             <div className="flex items-center justify-between">
-              <h1 className="text-3xl font-bold">User settings</h1>
+              <h1 className="font-main text-3xl font-bold">User settings</h1>
               <Button onClick={() => setIsMenuOpen(false)} label="Close" />
             </div>
-            <h2 className="text-2xl font-bold">Zoom resolution</h2>
+            <h2 className="font-main text-2xl font-bold">Zoom resolution</h2>
             <p className="max-w-200 text-sm leading-normal text-stone-300">
               Adjust how much the resolution increases with zooming.
               <br />
@@ -100,7 +100,7 @@ export const UserSettingsProvider = ({
                 />
               ))}
             </div>
-            <h2 className="mt-4 text-2xl font-bold">3D settings</h2>
+            <h2 className="mt-4 font-main text-2xl font-bold">3D settings</h2>
             <p className="max-w-200 text-sm leading-normal text-stone-300">
               With <strong>full 3D</strong>, the cards are rendered as 3D
               objects and with better lighting effects.

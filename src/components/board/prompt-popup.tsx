@@ -64,7 +64,9 @@ export const PromptPopup = ({
   return (
     <Popup onPressBackdrop={onCancel}>
       <div className="flex flex-row justify-between gap-8">
-        <h1 className="text-2xl font-bold">{prompt}</h1>
+        <h1 className="font-alt-stats text-2xl font-bold uppercase">
+          {prompt}
+        </h1>
         {onCancel && <Button onClick={onCancel} label="Cancel" />}
       </div>
 
@@ -176,7 +178,9 @@ export const PlayerOption = ({
     <div className="flex flex-col items-center gap-2">
       <div className="flex flex-row items-center gap-2">
         <Person className="size-6" />
-        <p className="text-center text-lg font-bold">{option.payload.name}</p>
+        <p className="text-center font-main font-bold uppercase">
+          {option.payload.name}
+        </p>
       </div>
       <Card card={option.payload} className="h-64" />
     </div>
@@ -192,7 +196,9 @@ export const MonsterOption = ({
     <div className="flex flex-col items-center gap-2">
       <div className="flex flex-row items-center gap-2">
         <Sword className="size-6" />
-        <p className="text-center text-lg font-bold">{option.payload.name}</p>
+        <p className="text-center font-main font-bold uppercase">
+          {option.payload.name}
+        </p>
       </div>
       <Card card={option.payload} className="h-64" />
     </div>

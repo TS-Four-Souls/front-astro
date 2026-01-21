@@ -26,8 +26,8 @@ export const StartStep = ({ issuer }: StartStepProps) => {
   return (
     <div className="grid h-screen place-content-center place-items-center">
       <div className="flex flex-col gap-8 rounded-lg border-2 border-stone-700 p-8 text-center">
-        <h1 className="text-xl font-bold">Welcome {issuer.id}!</h1>
-        <p className="text-sm text-stone-400">
+        <h1 className="font-main text-3xl font-bold">Welcome {issuer.id}!</h1>
+        <p className="leading-normal text-stone-400">
           When everyone is ready,
           <br />
           click the button below to start the game

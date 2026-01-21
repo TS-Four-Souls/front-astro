@@ -27,27 +27,27 @@ export const Board = () => {
         className="relative h-screen w-screen overflow-hidden bg-stone-800 select-none perspective-[60vmax] perspective-origin-center">
         <div
           ref={boardRef}
-          className="absolute top-1/2 left-1/2 grid h-max w-max -translate-x-1/2 -translate-y-1/2 grid-cols-[auto_1fr_auto] grid-rows-[auto_1fr_auto] p-6 pb-24 transform-3d">
+          className="absolute top-1/2 left-1/2 grid h-max w-max -translate-x-1/2 -translate-y-1/2 grid-cols-[auto_1fr_auto] grid-rows-[auto_1fr_auto] p-6 pb-40 transform-3d">
           <Me />
           {state.players.map((player, index) => {
             let className;
             let horizontal;
             let right;
             if (state.players.length === 1) {
-              className = "col-start-2 row-start-1 mb-24";
+              className = "col-start-2 row-start-1";
               horizontal = true;
             } else if (state.players.length === 2) {
               className = [
-                "col-start-1 row-start-1 row-span-3 mr-24",
-                "col-start-3 row-start-1 row-span-3 ml-24",
+                "col-start-1 row-start-1 row-span-3",
+                "col-start-3 row-start-1 row-span-3",
               ][index];
               horizontal = false;
               right = index === 1;
             } else {
               className = [
-                "col-start-1 row-start-1 row-span-3 mr-24",
-                "col-start-2 row-start-1 mb-24",
-                "col-start-3 row-start-1 row-span-3 ml-24",
+                "col-start-1 row-start-1 row-span-3",
+                "col-start-2 row-start-1",
+                "col-start-3 row-start-1 row-span-3",
               ][index];
               horizontal = index === 1;
               right = index === 2;
@@ -58,10 +58,28 @@ export const Board = () => {
                 key={player.name}
                 className={cn(
                   className,
-                  "flex place-content-center gap-8 transform-3d",
+                  "flex place-content-center place-items-center gap-8 transform-3d",
                   horizontal ? "flex-row" : "flex-col",
-                  right ? "items-end text-right" : "items-start text-left",
                 )}>
+                {player.handSize > 0 && (
+                  <div className="grid place-items-center transform-3d">
+                    <Pile
+                      key={index}
+                      cards={Array.from({ length: player.handSize }).map(
+                        () => CardType.LootCard,
+                      )}
+                      className="col-start-1 row-start-1"
+                      size={120}
+                    />
+                    <p
+                      className={cn(
+                        "col-start-1 row-start-1 translate-z-1 text-center text-6xl font-black text-stone-950 text-shadow-amber-50 text-shadow-lg",
+                        player.handSize >= 10 && "translate-z-2 text-5xl",
+                      )}>
+                      {player.handSize}
+                    </p>
+                  </div>
+                )}
                 <PlayerStats
                   name={player.name}
                   coins={player.coins}
@@ -72,28 +90,21 @@ export const Board = () => {
                 />
                 <div
                   className={cn(
-                    "flex flex-wrap gap-2 transform-3d",
-                    horizontal ? "max-w-275" : "max-h-200",
-                  )}>
+                    "grid gap-2 transform-3d",
+                    horizontal ? "grid-flow-row" : "grid-flow-col",
+                  )}
+                  style={{
+                    gridTemplateColumns: horizontal
+                      ? `repeat(${Math.min(player.inPlay.length, 7)}, 1fr)`
+                      : undefined,
+                    gridTemplateRows: horizontal
+                      ? undefined
+                      : `repeat(${Math.min(player.inPlay.length, 3)}, 1fr)`,
+                  }}>
                   {player.inPlay.map((card) => (
                     <Pile key={card.slug} cards={[card]} />
                   ))}
                 </div>
-                {player.handSize > 0 && (
-                  <div
-                    className={cn(
-                      "grid place-items-center transform-3d",
-                      right ? "place-self-end" : "place-self-start",
-                    )}>
-                    <Pile
-                      key={index}
-                      cards={Array.from({ length: player.handSize }).map(
-                        () => CardType.LootCard,
-                      )}
-                      size={120}
-                    />
-                  </div>
-                )}
               </div>
             );
           })}

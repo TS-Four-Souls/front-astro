@@ -54,7 +54,7 @@ export const Hand = () => {
 
   return (
     <div className="pointer-events-none fixed right-0 bottom-0 left-0 flex place-content-center place-items-center">
-      <div className="pointer-events-auto grid translate-y-3/4 auto-cols-fr grid-flow-col transition-transform duration-500 hover:translate-y-0 hover:blur-none">
+      <div className="pointer-events-auto grid translate-y-1/2 auto-cols-fr grid-flow-col transition-transform duration-500 hover:translate-y-0 hover:blur-none">
         {state.me.hand.map((card, index) => (
           <CardImage
             key={card.slug}
@@ -65,10 +65,15 @@ export const Hand = () => {
                 ? "cursor-pointer hover:-translate-y-10"
                 : "cursor-not-allowed",
             )}
-            tooltip={tooltip("Cannot play this card", state.me.capabilities.useLoot)}
+            tooltip={tooltip(
+              "Cannot play this card",
+              state.me.capabilities.useLoot,
+            )}
             onClick={() =>
-              block("Cannot play this card", state.me.capabilities.useLoot, () =>
-                playCard(index),
+              block(
+                "Cannot play this card",
+                state.me.capabilities.useLoot,
+                () => playCard(index),
               )
             }
           />

@@ -88,24 +88,38 @@ export const PlayerStats = ({
   return (
     <div
       className={cn(
-        "flex flex-col gap-2 rounded-lg p-4 text-white outline-3 outline-transparent transform-3d",
+        "flex flex-col gap-5 rounded-lg p-4 text-white outline-3 outline-transparent transform-3d",
         isCurrentTurn && "outline-stone-700",
         isEngagedInCombat && "outline-red-500/60",
       )}>
-      <div className="flex translate-z-1 items-center gap-2">
-        <h1 className="font-bold">{name}</h1>
+      <div className="flex translate-z-1 place-content-center place-items-center gap-2">
+        <h1 className="text-center font-alt-stats font-bold uppercase">
+          {name}
+        </h1>
         {isMe && (
-          <Gear className="size-4 cursor-pointer" onClick={() => openMenu()} />
+          <Gear className="size-5 cursor-pointer" onClick={() => openMenu()} />
         )}
       </div>
-      <ul className="grid grid-cols-2 gap-x-3 gap-y-1 text-xs">
-        <li>Health: {health}</li>
-        <li>Attack: {attack}</li>
-        <li>Coins: {coins}</li>
-        <li>Souls: {souls}</li>
+      <ul className="grid grid-cols-2 gap-x-10 gap-y-2 text-xs">
+        <li className="flex items-center gap-1">
+          {Array.from({ length: health }).map((_, index) => (
+            <img src="/heart.png" className="size-6" key={index} />
+          ))}
+        </li>
+        <li className="flex items-center gap-1">
+          {Array.from({ length: attack }).map((_, index) => (
+            <img src="/sword.png" className="size-6" key={index} />
+          ))}
+        </li>
+        <li className="flex items-center gap-2">
+          {coins} × <img src="/coin.png" className="size-6" />
+        </li>
+        <li className="flex items-center gap-0">
+          {souls} × <img src="/soul.png" className="size-8" />
+        </li>
       </ul>
       {isMe && (
-        <>
+        <div className="flex flex-col gap-1">
           <Button
             disabled={canEndTurn !== true}
             onClick={() =>
@@ -124,7 +138,7 @@ export const PlayerStats = ({
             label="Reset"
             className="translate-z-1"
           />
-        </>
+        </div>
       )}
     </div>
   );
