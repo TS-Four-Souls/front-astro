@@ -123,6 +123,28 @@ export const Center = ({ state }: CenterProps) => {
     });
   };
 
+  const declarePurchase = () => {
+    socket.emit("declarePurchase", { issuer }, (response) => {
+      if (response.status === 200) {
+        toast("success", "Declared purchase", "You have declared a purchase");
+      } else {
+        toast("error", "Failed to declare purchase", response.error);
+      }
+    });
+  };
+
+  const cancelPurchase = () => {
+    socket.emit("cancelPurchase", { issuer }, (response) => {
+      if (response.status === 200) {
+        toast("success", "Cancelled purchase", "You have cancelled a purchase");
+      } else {
+        toast("error", "Failed to cancel purchase", response.error);
+      }
+    });
+  };
+
+  
+
   const selectMonsterToAttack = (
     index: number | "top",
     replaceIndex?: number,
@@ -225,6 +247,46 @@ export const Center = ({ state }: CenterProps) => {
           />
         </div>
         <div className="flex flex-col gap-8 transform-3d">
+          <div className="flex place-items-center justify-end gap-2">
+        {!state.me.isEngagedInPurchase && (
+          <Button
+            label="Declare purchase"
+            disabled={state.me.capabilities.declarePurchase !== true}
+            onClick={() =>
+              block(
+                "Cannot declare purchase",
+                state.me.capabilities.declarePurchase,
+                declarePurchase,
+              )
+            }
+            tooltip={tooltip(
+              "Cannot declare purchase",
+              state.me.capabilities.declarePurchase,
+            )}
+            className="self-end"
+          />
+        )}
+        {state.me.isEngagedInPurchase && (
+          <Button
+            label="Abandon purchase"
+            disabled={state.me.capabilities.buyTreasure === true}
+            tooltip={tooltip(
+              "Abandon purchase",
+             state.me.capabilities.buyTreasure === true 
+              ? "Cannot abandon purchase while able to buy treasure." : true,
+            )}
+            onClick={() =>
+              block(
+                "Abandon purchase",
+                state.me.capabilities.buyTreasure === true 
+                  ? "Cannot abandon purchase while able to buy treasure." : true,
+                cancelPurchase,
+              )
+            }
+            className="self-end"
+          />
+        )}
+      </div>
           <div className="flex place-items-center gap-2 transform-3d">
             <Pile
               cards={state.treasure.discard}

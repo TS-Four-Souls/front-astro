@@ -138,6 +138,7 @@ export const Me = () => {
         attack={state.me.currentAttackPoints}
         souls={state.me.souls}
         isEngagedInCombat={state.me.isEngagedInCombat}
+        isEngagedInPurchase={state.me.isEngagedInPurchase}
       />
       <div
         className="grid grid-cols-7 gap-2 transform-3d"
