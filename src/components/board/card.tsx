@@ -68,8 +68,7 @@ export const Card = ({
         ...style,
         borderRadius: BORDER_RADIUS,
       }}
-      onClick={onClick}
-      title={tooltip}>
+      onClick={onClick}>
       <CardImage
         card={card}
         className={cn("pointer-events-auto h-full w-full")}
@@ -77,6 +76,7 @@ export const Card = ({
           filter: `brightness(${Math.max(0.2, brightness * brightness)})`,
           borderRadius: enableSides ? "unset" : BORDER_RADIUS,
         }}
+        tooltip={tooltip}
       />
       {enableSides && (
         <>
@@ -131,11 +131,13 @@ export const CardImage = ({
   className,
   onClick,
   style,
+  tooltip,
 }: {
   card: { slug: string } | CardType;
   className?: string;
   onClick?: () => void;
   style?: React.CSSProperties;
+  tooltip?: string;
 }) => {
   const src =
     typeof card === "string"
@@ -148,6 +150,7 @@ export const CardImage = ({
     <img
       src={src}
       alt={alt}
+      title={tooltip}
       className={cn("aspect-750/1024 select-none", className)}
       draggable={false}
       onClick={onClick}

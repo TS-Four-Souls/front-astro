@@ -13,10 +13,11 @@ import { Dice } from "@/icons/dice";
 import { CardImage } from "./card";
 import { useEffect, useRef } from "react";
 import { Button } from "../button";
+import { tooltip } from "@/utils/tooltip";
 
 export const Stack = () => {
   const { state, issuer } = useGameContext();
-  const { toast } = useToastContext();
+  const { toast, block } = useToastContext();
 
   const scrollViewRef = useRef<HTMLDivElement>(null);
 
@@ -61,8 +62,15 @@ export const Stack = () => {
         )}
       </div>
       <Button
-        onClick={resolveStack}
-        disabled={!state.me.capabilities.resolve}
+        onClick={() =>
+          block(
+            "Cannot resolve stack",
+            state.me.capabilities.resolve,
+            resolveStack,
+          )
+        }
+        disabled={state.me.capabilities.resolve !== true}
+        tooltip={tooltip("Cannot resolve stack", state.me.capabilities.resolve)}
         label="Resolve"
         className="translate-z-1"
         theme="onDark"

@@ -5,10 +5,11 @@ import { useToastContext } from "./contexts/toast-context";
 import { usePromptContext } from "./contexts/prompt-context";
 import type { SelectionItem } from "@/shared/api";
 import { cn } from "@/utils/cn";
+import { tooltip } from "@/utils/tooltip";
 
 export const Hand = () => {
   const { state, issuer } = useGameContext();
-  const { toast } = useToastContext();
+  const { toast, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
 
   const playCard = (index: number, selections: SelectionItem[] = []) => {
@@ -60,12 +61,15 @@ export const Hand = () => {
             card={card}
             className={cn(
               "m-1 max-h-[25vh] transition-transform",
-              state.me.capabilities.useLoot
+              state.me.capabilities.useLoot === true
                 ? "cursor-pointer hover:-translate-y-10"
                 : "cursor-not-allowed",
             )}
+            tooltip={tooltip("Cannot play this card", state.me.capabilities.useLoot)}
             onClick={() =>
-              state.me.capabilities.useLoot ? playCard(index) : undefined
+              block("Cannot play this card", state.me.capabilities.useLoot, () =>
+                playCard(index),
+              )
             }
           />
         ))}

@@ -8,6 +8,7 @@ interface ButtonProps {
   label?: string;
   type?: "button" | "submit" | "reset" | undefined;
   theme?: "default" | "onLight" | "onDark";
+  tooltip?: string;
 }
 
 export const Button = ({
@@ -18,6 +19,7 @@ export const Button = ({
   className,
   theme = "default",
   type = undefined,
+  tooltip,
 }: ButtonProps) => {
   return (
     <button
@@ -25,7 +27,7 @@ export const Button = ({
         "rounded-md px-4 py-2 text-white transition-colors",
         onClick &&
           (disabled
-            ? "cursor-not-allowed brightness-80"
+            ? "cursor-not-allowed brightness-40 contrast-60"
             : "cursor-pointer transition-[filter] hover:brightness-120"),
         theme === "default" && "bg-stone-600",
         theme === "onLight" && "bg-stone-500",
@@ -34,7 +36,8 @@ export const Button = ({
         className,
       )}
       onClick={onClick}
-      type={type}>
+      type={type}
+      title={tooltip}>
       {label}
     </button>
   );

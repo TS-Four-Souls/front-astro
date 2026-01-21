@@ -6,6 +6,7 @@ import { useUserSettingsContext } from "./contexts/user-settings-context";
 import { Gear } from "@/icons/gear";
 import { Button } from "../button";
 import { usePromptContext } from "./contexts/prompt-context";
+import { tooltip } from "@/utils/tooltip";
 
 interface PlayerStatsProps {
   name: string;
@@ -26,12 +27,12 @@ export const PlayerStats = ({
 }: PlayerStatsProps) => {
   const { state, issuer } = useGameContext();
   const { openMenu } = useUserSettingsContext();
-  const { toast } = useToastContext();
+  const { toast, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
 
   const isCurrentTurn = state.turn === name;
   const isMe = state.me.name === name;
-  const canEndTurn = isMe && state.me.capabilities?.endTurn;
+  const canEndTurn = isMe && state.me.capabilities.endTurn;
 
   const onEndTurnPress = () => {
     socket.emit("endTurn", { issuer }, (response) => {
@@ -63,6 +64,9 @@ export const PlayerStats = ({
           if (selectedOptions[0].payload === true) {
             onResetPress(true);
           }
+          removePrompt(promptId);
+        },
+        onCancel: () => {
           removePrompt(promptId);
         },
       });
@@ -103,8 +107,15 @@ export const PlayerStats = ({
       {isMe && (
         <>
           <Button
-            onClick={() => onEndTurnPress()}
-            disabled={!canEndTurn}
+            disabled={canEndTurn !== true}
+            onClick={() =>
+              block(
+                "Cannot end turn",
+                state.me.capabilities.endTurn,
+                onEndTurnPress,
+              )
+            }
+            tooltip={tooltip("Cannot end turn", state.me.capabilities.endTurn)}
             label="End turn"
             className="translate-z-1"
           />

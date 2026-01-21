@@ -234,15 +234,35 @@ export const Center = ({ state }: CenterProps) => {
               cards={Array.from({ length: state.treasure.deckSize }).map(
                 () => CardType.TreasureCard,
               )}
-              disabled={!state.me.capabilities.buyTreasure}
-              onClickTopCard={() => purchaseTreasure("top")}
+              disabled={state.me.capabilities.buyTreasure !== true}
+              onClickTopCard={() =>
+                block(
+                  "Cannot buy this card",
+                  state.me.capabilities.buyTreasure,
+                  () => purchaseTreasure("top"),
+                )
+              }
+              tooltip={tooltip(
+                "Cannot buy this card",
+                state.me.capabilities.buyTreasure,
+              )}
             />
             {state.treasure.inPlay.map((card, index) => (
               <Pile
                 key={card.slug}
                 cards={[card]}
-                disabled={!state.me.capabilities.buyTreasure}
-                onClickTopCard={() => purchaseTreasure(index)}
+                disabled={state.me.capabilities.buyTreasure !== true}
+                onClickTopCard={() =>
+                  block(
+                    "Cannot buy this card",
+                    state.me.capabilities.buyTreasure,
+                    () => purchaseTreasure(index),
+                  )
+                }
+                tooltip={tooltip(
+                  "Cannot buy this card",
+                  state.me.capabilities.buyTreasure,
+                )}
               />
             ))}
           </div>
@@ -260,21 +280,22 @@ export const Center = ({ state }: CenterProps) => {
               disabled={state.monsters.capabilities.targetableDeck !== true}
               onClickTopCard={() =>
                 block(
-                  "Failed to select monster to attack",
+                  "Cannot attack this card",
                   state.monsters.capabilities.targetableDeck,
                   () => {
                     selectMonsterToAttack("top");
                   },
                 )
               }
-              tooltip={
-                tooltip("You cannot attack this card", state.monsters.capabilities.targetableDeck)
-              }
+              tooltip={tooltip(
+                "Cannot attack this card",
+                state.monsters.capabilities.targetableDeck,
+              )}
             />
             {state.monsters.inPlay.map((card, index) => {
               const targetable =
                 card.top.stats?.capabilities.targetable ??
-                "This card is not a monster card.";
+                "This is not a monster card.";
               return (
                 <Pile
                   key={card.top.slug}
@@ -286,15 +307,13 @@ export const Center = ({ state }: CenterProps) => {
                         card.top.stats?.isEngagedInCombat ?? false,
                     },
                   ]}
-                  disabled={card.top.stats?.capabilities.targetable !== true}
+                  disabled={targetable !== true}
                   onClickTopCard={() =>
-                    block(
-                      "Failed to select monster to attack",
-                      targetable,
-                      () => selectMonsterToAttack(index),
+                    block("Cannot attack this card", targetable, () =>
+                      selectMonsterToAttack(index),
                     )
                   }
-                  tooltip={tooltip("You cannot attack this card", targetable)}
+                  tooltip={tooltip("Cannot attack this card", targetable)}
                 />
               );
             })}
@@ -305,16 +324,36 @@ export const Center = ({ state }: CenterProps) => {
         {!state.me.isEngagedInCombat && (
           <Button
             label="Declare attack"
-            disabled={!state.me.capabilities.declareAttack}
-            onClick={declareAttack}
+            disabled={state.me.capabilities.declareAttack !== true}
+            onClick={() =>
+              block(
+                "Cannot declare attack",
+                state.me.capabilities.declareAttack,
+                declareAttack,
+              )
+            }
+            tooltip={tooltip(
+              "Cannot declare attack",
+              state.me.capabilities.declareAttack,
+            )}
             className="self-end"
           />
         )}
         {state.me.isEngagedInCombat && (
           <Button
             label="Roll dice"
-            disabled={!state.me.capabilities.rollDice}
-            onClick={rollDice}
+            disabled={state.me.capabilities.rollDice !== true}
+            tooltip={tooltip(
+              "Cannot roll dice",
+              state.me.capabilities.rollDice,
+            )}
+            onClick={() =>
+              block(
+                "Cannot roll dice",
+                state.me.capabilities.rollDice,
+                rollDice,
+              )
+            }
             className="self-end"
           />
         )}

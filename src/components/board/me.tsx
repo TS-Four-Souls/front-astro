@@ -6,10 +6,11 @@ import { usePromptContext } from "./contexts/prompt-context";
 import { socket } from "@/utils/socket";
 import { useToastContext } from "./contexts/toast-context";
 import type { InPlayMeCard, SelectionItem } from "@/shared/api";
+import { tooltip } from "@/utils/tooltip";
 
 export const Me = () => {
   const { state, issuer } = useGameContext();
-  const { toast } = useToastContext();
+  const { toast, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
 
   useEffect(() => {
@@ -47,14 +48,6 @@ export const Me = () => {
   }, [state.me.pendingSelection, addPrompt, removePrompt, issuer, toast]);
 
   const onInPlayCardClick = (card: InPlayMeCard, index: number) => {
-    if (
-      !card.capabilities.activate ||
-      !card.effects ||
-      card.effects.length === 0
-    ) {
-      return;
-    }
-
     const activateCard = (
       effectIndex: number | "tap",
       selections: SelectionItem[] = [],
@@ -131,7 +124,7 @@ export const Me = () => {
           removePrompt(promptId);
         },
       });
-    } else {
+    } else if (card.effects && card.effects.length === 1) {
       activateCard(card.effects[0].index);
     }
   };
@@ -151,10 +144,17 @@ export const Me = () => {
           <Pile
             key={card.slug}
             cards={[card]}
-            onClickTopCard={
-              card.capabilities.activate
-                ? () => onInPlayCardClick(card, index)
-                : undefined
+            disabled={card.capabilities.activate !== true}
+            tooltip={tooltip(
+              "Cannot activate this card",
+              card.capabilities.activate,
+            )}
+            onClickTopCard={() =>
+              block(
+                "Cannot activate this card",
+                card.capabilities.activate,
+                () => onInPlayCardClick(card, index),
+              )
             }
           />
         ))}
