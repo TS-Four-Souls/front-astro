@@ -2,9 +2,4 @@
 - Escape to close popup
 
 - Add missing fonctions:
-  - purchase
-  - give coins
-  - reset
   - debug reset
-
-- Handle couplePlayerHand target selection

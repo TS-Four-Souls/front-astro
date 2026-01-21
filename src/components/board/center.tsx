@@ -225,12 +225,58 @@ export const Center = ({ state }: CenterProps) => {
   };
 
   return (
-    <div className="m-12 flex flex-col gap-4 rounded-xl bg-stone-700/10 p-12 shadow-md inset-shadow-xs inset-shadow-stone-700 transform-3d">
+    <div className="mx-24 my-8 flex flex-col gap-4 rounded-xl bg-stone-700/10 p-12 shadow-md inset-shadow-xs inset-shadow-stone-700 transform-3d">
+      <div className="flex justify-end">
+        {!state.me.isEngagedInPurchase && (
+          <Button
+            label="Declare purchase"
+            disabled={state.me.capabilities.declarePurchase !== true}
+            onClick={() =>
+              block(
+                "Cannot declare purchase",
+                state.me.capabilities.declarePurchase,
+                declarePurchase,
+              )
+            }
+            tooltip={tooltip(
+              "Cannot declare purchase",
+              state.me.capabilities.declarePurchase,
+            )}
+            className="self-end"
+          />
+        )}
+        {state.me.isEngagedInPurchase && (
+          <Button
+            label="Abandon purchase"
+            disabled={state.me.capabilities.buyTreasure === true}
+            tooltip={tooltip(
+              "Abandon purchase",
+              state.me.capabilities.buyTreasure === true
+                ? "Cannot abandon purchase while able to buy treasure."
+                : true,
+            )}
+            onClick={() =>
+              block(
+                "Abandon purchase",
+                state.me.capabilities.buyTreasure === true
+                  ? "Cannot abandon purchase while able to buy treasure."
+                  : true,
+                cancelPurchase,
+              )
+            }
+            className="self-end"
+          />
+        )}
+      </div>
       <div className="flex place-items-center gap-12 transform-3d">
         <Stack />
         <div className="flex shrink-0 flex-col place-items-center gap-2 transform-3d">
           {state.bonusSouls.map((soul) => (
-            <Pile key={soul.slug} cards={[soul]} size={105} />
+            <Pile
+              key={soul.slug}
+              cards={soul.granted ? [] : [soul]}
+              size={105}
+            />
           ))}
         </div>
         <div className="flex flex-col place-items-center gap-2 transform-3d">
@@ -245,48 +291,6 @@ export const Center = ({ state }: CenterProps) => {
           />
         </div>
         <div className="flex flex-col gap-8 transform-3d">
-          <div className="flex place-items-center justify-end gap-2">
-            {!state.me.isEngagedInPurchase && (
-              <Button
-                label="Declare purchase"
-                disabled={state.me.capabilities.declarePurchase !== true}
-                onClick={() =>
-                  block(
-                    "Cannot declare purchase",
-                    state.me.capabilities.declarePurchase,
-                    declarePurchase,
-                  )
-                }
-                tooltip={tooltip(
-                  "Cannot declare purchase",
-                  state.me.capabilities.declarePurchase,
-                )}
-                className="self-end"
-              />
-            )}
-            {state.me.isEngagedInPurchase && (
-              <Button
-                label="Abandon purchase"
-                disabled={state.me.capabilities.buyTreasure === true}
-                tooltip={tooltip(
-                  "Abandon purchase",
-                  state.me.capabilities.buyTreasure === true
-                    ? "Cannot abandon purchase while able to buy treasure."
-                    : true,
-                )}
-                onClick={() =>
-                  block(
-                    "Abandon purchase",
-                    state.me.capabilities.buyTreasure === true
-                      ? "Cannot abandon purchase while able to buy treasure."
-                      : true,
-                    cancelPurchase,
-                  )
-                }
-                className="self-end"
-              />
-            )}
-          </div>
           <div className="flex place-items-center gap-2 transform-3d">
             <Pile
               cards={state.treasure.discard}
@@ -386,7 +390,7 @@ export const Center = ({ state }: CenterProps) => {
           </div>
         </div>
       </div>
-      <div className="flex place-items-center justify-end gap-2">
+      <div className="flex justify-end">
         {!state.me.isEngagedInCombat && (
           <Button
             label="Declare attack"

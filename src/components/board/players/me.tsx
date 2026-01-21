@@ -1,10 +1,10 @@
-import { PlayerStats } from "./player-stats";
-import { Pile } from "./pile";
+import { PlayerStats } from "../player-stats";
+import { Pile } from "../pile";
 import { useEffect } from "react";
-import { useGameContext } from "./contexts/game-context";
-import { usePromptContext } from "./contexts/prompt-context";
+import { useGameContext } from "../contexts/game-context";
+import { usePromptContext } from "../contexts/prompt-context";
 import { socket } from "@/utils/socket";
-import { useToastContext } from "./contexts/toast-context";
+import { useToastContext } from "../contexts/toast-context";
 import type { InPlayMeCard, SelectionItem } from "@/shared/api";
 import { tooltip } from "@/utils/tooltip";
 
@@ -130,7 +130,7 @@ export const Me = () => {
   };
 
   return (
-    <div className="col-start-2 row-start-3 flex place-content-center place-items-center gap-8 transform-3d">
+    <div className="col-start-2 row-start-3 flex flex-col place-content-center place-items-center gap-6 transform-3d">
       <PlayerStats
         name={state.me.name}
         coins={state.me.coins}
@@ -141,7 +141,7 @@ export const Me = () => {
       <div
         className="grid grid-cols-7 gap-2 transform-3d"
         style={{
-          gridTemplateColumns: `repeat(${Math.min(state.me.inPlay.length, 7)}, 1fr)`,
+          gridTemplateColumns: `repeat(${Math.min(state.me.inPlay.length, 8)}, 1fr)`,
         }}>
         {state.me.inPlay.map((card, index) => (
           <Pile

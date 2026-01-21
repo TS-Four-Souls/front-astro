@@ -14,6 +14,7 @@ interface PlayerStatsProps {
   souls: number;
   isEngagedInCombat: boolean;
   isEngagedInPurchase: boolean;
+  className?: string;
 }
 
 export const PlayerStats = ({
@@ -22,6 +23,7 @@ export const PlayerStats = ({
   souls,
   isEngagedInCombat,
   isEngagedInPurchase,
+  className,
 }: PlayerStatsProps) => {
   const { state, issuer } = useGameContext();
   const { openMenu } = useUserSettingsContext();
@@ -130,30 +132,22 @@ export const PlayerStats = ({
   return (
     <div
       className={cn(
-        "flex flex-col gap-5 rounded-lg p-4 text-white outline-3 outline-transparent transform-3d",
+        "flex place-items-center gap-16 rounded-lg p-3 pr-4 pl-6 text-white outline-3 outline-transparent transform-3d",
         isCurrentTurn && "outline-stone-700",
         isEngagedInCombat && "outline-red-500/60",
         isEngagedInPurchase && "outline-yellow-400/87",
+        className,
       )}>
-      <div className="flex translate-z-1 place-content-center place-items-center gap-2">
-        <h1 className="text-center font-alt-stats font-bold uppercase">
-          {name}
-        </h1>
-        {isMe && (
-          <Gear className="size-5 cursor-pointer" onClick={() => openMenu()} />
-        )}
+      <h1 className="text-center font-alt-stats font-bold uppercase">{name}</h1>
+      <div
+        className="flex items-center gap-1"
+        onClick={() => !isMe && onCoinPress()}>
+        <img src="/coin.png" className="size-6 rounded-full shadow-md/50" />:
+        <span className="font-statblock text-4xl">{coins}</span>
       </div>
-      <ul className="flex flex-col place-content-center place-items-center gap-y-2 text-xs">
-        <li
-          className="flex items-center gap-1"
-          onClick={() => !isMe && onCoinPress()}>
-          <img
-            src="/coin.png"
-            className="size-6 rounded-full shadow-md/50"
-          />
-          :<span className="font-statblock text-4xl">{coins}</span>
-        </li>
-        <li className="flex flex-row-reverse items-center">
+
+      {souls > 0 && (
+        <div className="flex flex-row-reverse items-center">
           {alternateSoulSequence(souls)
             .reverse()
             .map((type, index) => {
@@ -168,10 +162,11 @@ export const PlayerStats = ({
                 />
               );
             })}
-        </li>
-      </ul>
+        </div>
+      )}
+
       {isMe && (
-        <div className="flex flex-col gap-1">
+        <div className="flex items-center gap-4">
           <Button
             disabled={canEndTurn !== true}
             onClick={() =>
@@ -189,6 +184,10 @@ export const PlayerStats = ({
             onClick={() => onResetPress()}
             label="Reset"
             className="translate-z-1"
+          />
+          <Gear
+            className="size-5 cursor-pointer"
+            onClick={() => openMenu()}
           />
         </div>
       )}

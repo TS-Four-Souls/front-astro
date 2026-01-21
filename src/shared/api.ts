@@ -83,6 +83,14 @@ const pendingSelectionSchema = z.object({
 });
 export type PendingSelection = z.infer<typeof pendingSelectionSchema>;
 
+const temporaryEffectSchema = z.object({
+  card: IdentifierTypeSchema,
+  issuer: z.string(),
+  targets: z.array(selectionItemSchema),
+  description: z.string(),
+});
+export type temporaryEffect = z.infer<typeof temporaryEffectSchema>;
+
 const capabilitySchema = z.union([z.literal(true), z.string()]);
 export type Capability = z.infer<typeof capabilitySchema>;
 
@@ -93,6 +101,7 @@ const monsterCardSchema = cardSchema.extend({
       attackPoints: z.number(),
       evasionPoints: z.number(),
       isEngagedInCombat: z.boolean(),
+      temporaryEffect: z.array(temporaryEffectSchema),
       capabilities: z.object({
         targetable: capabilitySchema,
       }),
@@ -139,14 +148,6 @@ const targetSelectorResponseSchema = z.object({
 export type TargetSelectorResponse = z.infer<
   typeof targetSelectorResponseSchema
 >;
-
-const temporaryEffectSchema = z.object({
-  card: IdentifierTypeSchema.optional(),
-  issuer: z.string(),
-  targets: z.array(selectionItemSchema),
-  description: z.string(),
-});
-export type temporaryEffect = z.infer<typeof temporaryEffectSchema>;
 
 const lootCardOnStackJsonSchema = z.object({
   type: z.literal("LootCardEffect"),
@@ -233,11 +234,6 @@ const debugLootRequestSchema = issuerSchema.extend({
 });
 const debugGainTreasureRequestSchema = issuerSchema.extend({
   slugs: z.array(z.string()).optional(),
-});
-
-const indexSchema = z.object({
-  issuer: issuerSchema,
-  index: z.number(),
 });
 
 const giveCoinsSchema = z.object({
@@ -392,6 +388,7 @@ const playerSchema = z.object({
   coins: z.number(),
   currentHealthPoints: z.number(),
   currentAttackPoints: z.number(),
+  temporaryEffect: z.array(temporaryEffectSchema),
   remainingLootPlay: z.number(),
   isEngagedInCombat: z.boolean(),
   isEngagedInPurchase: z.boolean(),

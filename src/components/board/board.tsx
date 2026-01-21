@@ -1,13 +1,12 @@
-import { PlayerStats } from "./player-stats";
-import { cn } from "../../utils/cn";
 import { Center } from "./center";
-import { Pile } from "./pile";
 import { useRef } from "react";
 import { useCssOrbitControls } from "./use-css-orbit-controls";
-import { CardType } from "./card";
 import { useGameContext } from "./contexts/game-context";
 import { Hand } from "./hand";
-import { Me } from "./me";
+import { Me } from "./players/me";
+import { TopPlayer } from "./players/topPlayer";
+import { LeftPlayer } from "./players/leftPlayer";
+import { RightPlayer } from "./players/rightPlayer";
 
 export const Board = () => {
   const { state } = useGameContext();
@@ -30,93 +29,25 @@ export const Board = () => {
           className="absolute top-1/2 left-1/2 grid h-max w-max -translate-x-1/2 -translate-y-1/2 grid-cols-[auto_1fr_auto] grid-rows-[auto_1fr_auto] p-6 pb-40 transform-3d">
           <Me />
           {state.players.map((player, index) => {
-            let className;
-            let horizontal;
             if (state.players.length === 1) {
-              className = "col-start-2 row-start-1";
-              horizontal = true;
+              return <TopPlayer player={player} />;
             } else if (state.players.length === 2) {
-              className = [
-                "col-start-1 row-start-1 row-span-3",
-                "col-start-3 row-start-1 row-span-3",
-              ][index];
-              horizontal = false;
+              if (index === 0) {
+                return <LeftPlayer player={player} />;
+              } else if (index === 1) {
+                return <RightPlayer player={player} />;
+              }
             } else {
-              className = [
-                "col-start-1 row-start-1 row-span-3",
-                "col-start-2 row-start-1",
-                "col-start-3 row-start-1 row-span-3",
-              ][index];
-              horizontal = index === 1;
+              if (index === 0) {
+                return <LeftPlayer player={player} />;
+              } else if (index === 1) {
+                return <TopPlayer player={player} />;
+              } else if (index === 2) {
+                return <RightPlayer player={player} />;
+              }
             }
 
-            return (
-              <div
-                key={player.name}
-                className={cn(
-                  className,
-                  "flex place-content-center place-items-center gap-8 transform-3d",
-                  horizontal ? "flex-row" : "flex-col",
-                )}>
-                {player.handSize > 0 && (
-                  <div className="relative place-items-center transform-3d">
-                    <Pile
-                      key={index}
-                      cards={Array.from({ length: player.handSize }).map(
-                        () => CardType.LootCard,
-                      )}
-                      tooltip={`${player.name} has ${player.handSize} cards in their hand.`}
-                      size={120}
-                    />
-                    <p
-                      className={cn(
-                        "absolute bottom-[0.1em] left-1/2 -translate-x-1/2 translate-z-1 text-center font-statblock text-5xl text-stone-950 text-shadow-amber-50 text-shadow-lg",
-                        player.handSize >= 10 && "translate-z-2 text-5xl",
-                      )}>
-                      {player.handSize}
-                    </p>
-                  </div>
-                )}
-                <PlayerStats
-                  name={player.name}
-                  coins={player.coins}
-                  souls={player.souls}
-                  isEngagedInCombat={player.isEngagedInCombat}
-                  isEngagedInPurchase={player.isEngagedInPurchase}
-                />
-                <div
-                  className={cn(
-                    "grid gap-2 transform-3d",
-                    horizontal ? "grid-flow-row" : "grid-flow-col",
-                  )}
-                  style={{
-                    gridTemplateColumns: horizontal
-                      ? `repeat(${Math.min(player.inPlay.length, 7)}, 1fr)`
-                      : undefined,
-                    gridTemplateRows: horizontal
-                      ? undefined
-                      : `repeat(${Math.min(player.inPlay.length, 3)}, 1fr)`,
-                  }}>
-                  {player.inPlay.map((card, index) => (
-                    <Pile
-                      key={card.slug}
-                      cards={[
-                        {
-                          ...card,
-                          stats:
-                            index === 0
-                              ? {
-                                  healthPoints: player.currentHealthPoints,
-                                  attackPoints: player.currentAttackPoints,
-                                }
-                              : undefined,
-                        },
-                      ]}
-                    />
-                  ))}
-                </div>
-              </div>
-            );
+            return null;
           })}
           <div className="col-start-2 row-start-2 flex place-content-center place-items-center transform-3d">
             <Center state={state} />
