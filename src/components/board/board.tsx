@@ -32,7 +32,6 @@ export const Board = () => {
           {state.players.map((player, index) => {
             let className;
             let horizontal;
-            let right;
             if (state.players.length === 1) {
               className = "col-start-2 row-start-1";
               horizontal = true;
@@ -42,7 +41,6 @@ export const Board = () => {
                 "col-start-3 row-start-1 row-span-3",
               ][index];
               horizontal = false;
-              right = index === 1;
             } else {
               className = [
                 "col-start-1 row-start-1 row-span-3",
@@ -50,7 +48,6 @@ export const Board = () => {
                 "col-start-3 row-start-1 row-span-3",
               ][index];
               horizontal = index === 1;
-              right = index === 2;
             }
 
             return (
@@ -62,18 +59,18 @@ export const Board = () => {
                   horizontal ? "flex-row" : "flex-col",
                 )}>
                 {player.handSize > 0 && (
-                  <div className="grid place-items-center transform-3d">
+                  <div className="relative place-items-center transform-3d">
                     <Pile
                       key={index}
                       cards={Array.from({ length: player.handSize }).map(
                         () => CardType.LootCard,
                       )}
-                      className="col-start-1 row-start-1"
+                      tooltip={`${player.name} has ${player.handSize} cards in their hand.`}
                       size={120}
                     />
                     <p
                       className={cn(
-                        "col-start-1 row-start-1 translate-z-1 text-center text-6xl font-black text-stone-950 text-shadow-amber-50 text-shadow-lg",
+                        "absolute bottom-[0.1em] left-1/2 -translate-x-1/2 translate-z-1 text-center font-statblock text-5xl text-stone-950 text-shadow-amber-50 text-shadow-lg",
                         player.handSize >= 10 && "translate-z-2 text-5xl",
                       )}>
                       {player.handSize}
@@ -83,10 +80,9 @@ export const Board = () => {
                 <PlayerStats
                   name={player.name}
                   coins={player.coins}
-                  health={player.currentHealthPoints}
-                  attack={player.currentAttackPoints}
                   souls={player.souls}
                   isEngagedInCombat={player.isEngagedInCombat}
+                  isEngagedInPurchase={player.isEngagedInPurchase}
                 />
                 <div
                   className={cn(
@@ -101,8 +97,22 @@ export const Board = () => {
                       ? undefined
                       : `repeat(${Math.min(player.inPlay.length, 3)}, 1fr)`,
                   }}>
-                  {player.inPlay.map((card) => (
-                    <Pile key={card.slug} cards={[card]} />
+                  {player.inPlay.map((card, index) => (
+                    <Pile
+                      key={card.slug}
+                      cards={[
+                        {
+                          ...card,
+                          stats:
+                            index === 0
+                              ? {
+                                  healthPoints: player.currentHealthPoints,
+                                  attackPoints: player.currentAttackPoints,
+                                }
+                              : undefined,
+                        },
+                      ]}
+                    />
                   ))}
                 </div>
               </div>

@@ -11,8 +11,6 @@ import { tooltip } from "@/utils/tooltip";
 interface PlayerStatsProps {
   name: string;
   coins: number;
-  health: number;
-  attack: number;
   souls: number;
   isEngagedInCombat: boolean;
   isEngagedInPurchase: boolean;
@@ -21,8 +19,6 @@ interface PlayerStatsProps {
 export const PlayerStats = ({
   name,
   coins,
-  health,
-  attack,
   souls,
   isEngagedInCombat,
   isEngagedInPurchase,
@@ -87,6 +83,50 @@ export const PlayerStats = ({
     });
   };
 
+  const onCoinPress = () => {
+    if (state.me.coins === 0) {
+      toast("error", "Cannot give coins", "You have no coins to give");
+      return;
+    }
+
+    const promptId = `coin-prompt-${Date.now()}`;
+    addPrompt<{ type: "number"; payload: number }>({
+      promptId: `coin-prompt-${Date.now()}`,
+      isUnique: false,
+      prompt: "How many coins do you want to give?",
+      options: Array.from({ length: state.me.coins }, (_, index) => ({
+        type: "number",
+        payload: index + 1,
+      })),
+      minCount: 1,
+      maxCount: 1,
+      onSubmit: function (selections): void {
+        socket.emit(
+          "giveCoins",
+          { issuer, coins: selections[0].payload, target: name },
+          (response) => {
+            switch (response.status) {
+              case 200:
+                toast(
+                  "success",
+                  "Coins given",
+                  `Gave ${selections[0].payload} coins to ${name}`,
+                );
+                removePrompt(promptId);
+                break;
+              default:
+                toast("error", "Failed to give coins", response.error);
+                break;
+            }
+          },
+        );
+      },
+      onCancel: () => {
+        removePrompt(promptId);
+      },
+    });
+  };
+
   return (
     <div
       className={cn(
@@ -103,22 +143,31 @@ export const PlayerStats = ({
           <Gear className="size-5 cursor-pointer" onClick={() => openMenu()} />
         )}
       </div>
-      <ul className="grid grid-cols-2 gap-x-10 gap-y-2 text-xs">
-        <li className="flex items-center gap-1">
-          {Array.from({ length: health }).map((_, index) => (
-            <img src="/heart.png" className="size-6" key={index} />
-          ))}
+      <ul className="flex flex-col place-content-center place-items-center gap-y-2 text-xs">
+        <li
+          className="flex items-center gap-1"
+          onClick={() => !isMe && onCoinPress()}>
+          <img
+            src="/coin.png"
+            className="size-6 rounded-full shadow-md/50"
+          />
+          :<span className="font-statblock text-4xl">{coins}</span>
         </li>
-        <li className="flex items-center gap-1">
-          {Array.from({ length: attack }).map((_, index) => (
-            <img src="/sword.png" className="size-6" key={index} />
-          ))}
-        </li>
-        <li className="flex items-center gap-2">
-          {coins} × <img src="/coin.png" className="size-6" />
-        </li>
-        <li className="flex items-center gap-0">
-          {souls} × <img src="/soul.png" className="size-8" />
+        <li className="flex flex-row-reverse items-center">
+          {alternateSoulSequence(souls)
+            .reverse()
+            .map((type, index) => {
+              return (
+                <img
+                  src={`/${type === 1 ? "soul-1" : "soul-2"}.png`}
+                  className={cn(
+                    type === 1 ? "h-6" : "h-8",
+                    souls > 2 && "-ml-3",
+                  )}
+                  key={index}
+                />
+              );
+            })}
         </li>
       </ul>
       {isMe && (
@@ -145,4 +194,21 @@ export const PlayerStats = ({
       )}
     </div>
   );
+};
+
+const alternateSoulSequence = (souls: number): (1 | 2)[] => {
+  const sequence: (1 | 2)[] = [];
+  const sequenceDividedByThree = Math.floor(souls / 3);
+
+  for (let i = 0; i < sequenceDividedByThree; i++) {
+    sequence.push(1, 2);
+  }
+
+  if (souls % 3 === 1) {
+    sequence.push(1);
+  } else if (souls % 3 === 2) {
+    sequence.unshift(2);
+  }
+
+  return sequence;
 };

@@ -4,18 +4,25 @@
 @import "tailwindcss/preflight.css" layer(base);
 @import "tailwindcss/utilities.css" layer(utilities);
 
+.pixelated {
+  image-rendering: pixelated;
+}
+
 @font-face {
   font-family: FourSoulsMain;
   src: url("/fonts/EdmundMcMillen_v2.ttf");
 }
+
 @font-face {
   font-family: FourSoulsStatblock;
   src: url("/fonts/TheEnd_v2.ttf");
 }
+
 @font-face {
   font-family: FourSoulsAltStats;
   src: url("/fonts/Team Meat font.ttf");
 }
+
 @font-face {
   font-family: TimeFcuk;
   src: url("/fonts/PC_Senior.ttf");

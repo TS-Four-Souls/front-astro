@@ -143,8 +143,6 @@ export const Center = ({ state }: CenterProps) => {
     });
   };
 
-  
-
   const selectMonsterToAttack = (
     index: number | "top",
     replaceIndex?: number,
@@ -248,45 +246,47 @@ export const Center = ({ state }: CenterProps) => {
         </div>
         <div className="flex flex-col gap-8 transform-3d">
           <div className="flex place-items-center justify-end gap-2">
-        {!state.me.isEngagedInPurchase && (
-          <Button
-            label="Declare purchase"
-            disabled={state.me.capabilities.declarePurchase !== true}
-            onClick={() =>
-              block(
-                "Cannot declare purchase",
-                state.me.capabilities.declarePurchase,
-                declarePurchase,
-              )
-            }
-            tooltip={tooltip(
-              "Cannot declare purchase",
-              state.me.capabilities.declarePurchase,
+            {!state.me.isEngagedInPurchase && (
+              <Button
+                label="Declare purchase"
+                disabled={state.me.capabilities.declarePurchase !== true}
+                onClick={() =>
+                  block(
+                    "Cannot declare purchase",
+                    state.me.capabilities.declarePurchase,
+                    declarePurchase,
+                  )
+                }
+                tooltip={tooltip(
+                  "Cannot declare purchase",
+                  state.me.capabilities.declarePurchase,
+                )}
+                className="self-end"
+              />
             )}
-            className="self-end"
-          />
-        )}
-        {state.me.isEngagedInPurchase && (
-          <Button
-            label="Abandon purchase"
-            disabled={state.me.capabilities.buyTreasure === true}
-            tooltip={tooltip(
-              "Abandon purchase",
-             state.me.capabilities.buyTreasure === true 
-              ? "Cannot abandon purchase while able to buy treasure." : true,
+            {state.me.isEngagedInPurchase && (
+              <Button
+                label="Abandon purchase"
+                disabled={state.me.capabilities.buyTreasure === true}
+                tooltip={tooltip(
+                  "Abandon purchase",
+                  state.me.capabilities.buyTreasure === true
+                    ? "Cannot abandon purchase while able to buy treasure."
+                    : true,
+                )}
+                onClick={() =>
+                  block(
+                    "Abandon purchase",
+                    state.me.capabilities.buyTreasure === true
+                      ? "Cannot abandon purchase while able to buy treasure."
+                      : true,
+                    cancelPurchase,
+                  )
+                }
+                className="self-end"
+              />
             )}
-            onClick={() =>
-              block(
-                "Abandon purchase",
-                state.me.capabilities.buyTreasure === true 
-                  ? "Cannot abandon purchase while able to buy treasure." : true,
-                cancelPurchase,
-              )
-            }
-            className="self-end"
-          />
-        )}
-      </div>
+          </div>
           <div className="flex place-items-center gap-2 transform-3d">
             <Pile
               cards={state.treasure.discard}
@@ -294,7 +294,10 @@ export const Center = ({ state }: CenterProps) => {
             />
             <Pile
               cards={Array.from({ length: state.treasure.deckSize }).map(
-                (_, index) => (index === state.treasure.deckSize - 1 && state.firstCardTreasureDeck !== undefined) ? state.firstCardTreasureDeck : CardType.TreasureCard,
+                (_, index) =>
+                  index === state.treasure.deckSize - 1
+                    ? (state.firstCardTreasureDeck ?? CardType.TreasureCard)
+                    : CardType.TreasureCard,
               )}
               disabled={state.me.capabilities.buyTreasure !== true}
               onClickTopCard={() =>
@@ -365,6 +368,7 @@ export const Center = ({ state }: CenterProps) => {
                     ...card.covered,
                     {
                       slug: card.top.slug,
+                      stats: card.top.stats,
                       engagedInCombat:
                         card.top.stats?.isEngagedInCombat ?? false,
                     },

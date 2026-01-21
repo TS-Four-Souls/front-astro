@@ -10,7 +10,22 @@ import {
 
 interface PileProps {
   cards: (
-    | { slug: string; charged?: boolean; engagedInCombat?: boolean }
+    | {
+        slug: string;
+        charged?: boolean;
+        engagedInCombat?: boolean;
+        stats?:
+          | {
+              healthPoints: number;
+              attackPoints: number;
+              evasionPoints: number;
+            }
+          | {
+              healthPoints: number;
+              attackPoints: number;
+            }
+          | undefined;
+      }
     | CardType
   )[];
   size?: number;
@@ -101,11 +116,12 @@ export const Pile = ({
                   ${enable3D ? `translateZ(${thickness * (index + 1)}em)` : ""}
                   rotate(${(rng() - 0.5) * 5}deg)
                 `,
-                height: size + "em",
               }}
+              size={size}
               brightness={brightness}
               enableSides={enableSides}
               tooltip={index === array.length - 1 ? tooltip : undefined}
+              stats={typeof card === "string" ? undefined : card.stats}
             />
           );
         })}

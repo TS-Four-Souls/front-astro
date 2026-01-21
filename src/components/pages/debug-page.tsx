@@ -191,6 +191,85 @@ export const DebugPage = () => {
           </div>
         ))}
       </div>
+
+      <h2 className="mt-16 mb-2 text-2xl font-bold">Monster cards</h2>
+      <p className="mb-32 text-sm leading-snug text-stone-500">
+        Monster cards can have their stats rendered on top of the card image.
+      </p>
+      <h3 className="my-12 text-lg font-bold">Health points</h3>
+      <div className="flex flex-row place-content-center gap-8">
+        {[0, 1, 2, 3, 4, 5, 6].map((healthPoints) => (
+          <Pile
+            cards={[
+              {
+                slug: "b2-monstro",
+                stats: { healthPoints, attackPoints: 1, evasionPoints: 4 },
+              },
+            ]}
+            optimizations={{ enable3D: false, enableSides: false, maxCards: 3 }}
+            size={300}
+          />
+        ))}
+      </div>
+      <h3 className="my-12 text-lg font-bold">Evasion points</h3>
+      <div className="flex flex-row place-content-center gap-8">
+        {[0, 1, 2, 3, 4, 5, 6].map((evasionPoints) => (
+          <Pile
+            cards={[
+              {
+                slug: "b2-monstro",
+                stats: { healthPoints: 4, attackPoints: 1, evasionPoints },
+              },
+            ]}
+            optimizations={{ enable3D: false, enableSides: false, maxCards: 3 }}
+            size={300}
+          />
+        ))}
+      </div>
+      <h3 className="my-12 text-lg font-bold">Attack points</h3>
+      <div className="flex flex-row place-content-center gap-8">
+        {[0, 1, 2, 3, 4, 5, 6].map((attackPoints) => (
+          <Pile
+            cards={[
+              {
+                slug: "b2-monstro",
+                stats: { healthPoints: 4, attackPoints, evasionPoints: 4 },
+              },
+            ]}
+            optimizations={{ enable3D: false, enableSides: false, maxCards: 3 }}
+            size={300}
+          />
+        ))}
+      </div>
+
+      <h2 className="mt-16 mb-2 text-2xl font-bold">Character cards</h2>
+      <p className="mb-32 text-sm leading-snug text-stone-500">
+        Character cards can have their stats rendered on top of the card image.
+      </p>
+      <h3 className="my-12 text-lg font-bold">Health points</h3>
+      <div className="flex flex-row place-content-center gap-8">
+        {[0, 1, 2, 3, 4, 5, 6].map((healthPoints) => (
+          <Pile
+            cards={[
+              { slug: "b2-isaac", stats: { healthPoints, attackPoints: 1 } },
+            ]}
+            optimizations={{ enable3D: false, enableSides: false, maxCards: 3 }}
+            size={300}
+          />
+        ))}
+      </div>
+      <h3 className="my-12 text-lg font-bold">Attack points</h3>
+      <div className="flex flex-row place-content-center gap-8">
+        {[0, 1, 2, 3, 4, 5, 6].map((attackPoints) => (
+          <Pile
+            cards={[
+              { slug: "b2-isaac", stats: { healthPoints: 2, attackPoints } },
+            ]}
+            optimizations={{ enable3D: false, enableSides: false, maxCards: 3 }}
+            size={300}
+          />
+        ))}
+      </div>
     </div>
   );
 };

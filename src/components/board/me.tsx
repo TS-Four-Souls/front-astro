@@ -134,8 +134,6 @@ export const Me = () => {
       <PlayerStats
         name={state.me.name}
         coins={state.me.coins}
-        health={state.me.currentHealthPoints}
-        attack={state.me.currentAttackPoints}
         souls={state.me.souls}
         isEngagedInCombat={state.me.isEngagedInCombat}
         isEngagedInPurchase={state.me.isEngagedInPurchase}
@@ -148,7 +146,18 @@ export const Me = () => {
         {state.me.inPlay.map((card, index) => (
           <Pile
             key={card.slug}
-            cards={[card]}
+            cards={[
+              {
+                ...card,
+                stats:
+                  index === 0
+                    ? {
+                        healthPoints: state.me.currentHealthPoints,
+                        attackPoints: state.me.currentAttackPoints,
+                      }
+                    : undefined,
+              },
+            ]}
             disabled={card.capabilities.activate !== true}
             tooltip={tooltip(
               "Cannot activate this card",

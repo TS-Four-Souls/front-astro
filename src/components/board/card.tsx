@@ -19,6 +19,10 @@ interface CardProps {
   enableSides?: boolean;
   onClick?: () => void;
   tooltip?: string;
+  size?: number;
+  stats?:
+    | { healthPoints: number; attackPoints: number; evasionPoints: number }
+    | { healthPoints: number; attackPoints: number };
 }
 
 const RX = `${CARD_RADIUS}%`;
@@ -34,6 +38,8 @@ export const Card = ({
   enableSides = true,
   onClick,
   tooltip,
+  stats,
+  size = 160,
 }: CardProps) => {
   if (!card) {
     return (
@@ -57,6 +63,8 @@ export const Card = ({
 
   const alt = typeof card === "string" ? card : card.slug;
 
+  const statsSize = size * 0.09;
+
   return (
     <div
       className={cn(
@@ -67,6 +75,7 @@ export const Card = ({
       style={{
         ...style,
         borderRadius: BORDER_RADIUS,
+        height: size + "em",
       }}
       onClick={onClick}>
       <CardImage
@@ -78,6 +87,63 @@ export const Card = ({
         }}
         tooltip={tooltip}
       />
+
+      {stats && !("evasionPoints" in stats) && (
+        <div style={{ fontSize: statsSize + "em" }}>
+          <div className="absolute top-[57.3%] right-[28.5%] left-[27.5%]">
+            <img src="/character-card-overlay.png" />
+          </div>
+          <div className="absolute top-[55.7%] left-[40.5%] font-statblock text-black">
+            {stats.healthPoints}
+          </div>
+          <p className="absolute top-[55.7%] left-[62.3%] font-statblock text-black">
+            {stats.attackPoints}
+          </p>
+        </div>
+      )}
+
+      {stats && "evasionPoints" in stats && (
+        <div style={{ fontSize: statsSize + "em" }}>
+          <div className="absolute top-[57.3%] right-[17.1%] left-[17.7%]">
+            <img src="/monster-card-overlay.png" />
+          </div>
+
+          <div className="absolute top-[55.7%] left-[30.5%] font-statblock text-black">
+            {stats.healthPoints}
+          </div>
+          <p className="absolute top-[55.7%] left-[72.6%] font-statblock text-black">
+            {stats.attackPoints}
+          </p>
+          <p
+            className={cn(
+              "absolute font-statblock text-black",
+              stats.evasionPoints === 6 || stats.evasionPoints === 0
+                ? "top-[55.7%] left-[51.9%]"
+                : "top-[55.7%] left-[51.2%]",
+            )}>
+            {stats.evasionPoints}
+          </p>
+          <p
+            className={cn(
+              "absolute top-[58.8%] font-main text-[60%] text-black",
+              stats.evasionPoints === 0 && "hidden",
+              stats.evasionPoints === 1 && "left-[55.5%]",
+              stats.evasionPoints === 2 && "left-[56.5%]",
+              stats.evasionPoints === 3 && "left-[56.5%]",
+              stats.evasionPoints === 4 && "left-[56.0%]",
+              stats.evasionPoints === 5 && "left-[57.0%]",
+              stats.evasionPoints === 6 && "hidden",
+            )}>
+            +
+          </p>
+          {stats.attackPoints === 6 && (
+            <p className="absolute top-[55.7%] left-[77%] font-statblock text-black">
+              !
+            </p>
+          )}
+        </div>
+      )}
+
       {enableSides && (
         <>
           <img
