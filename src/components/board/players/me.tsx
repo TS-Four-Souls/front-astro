@@ -149,7 +149,8 @@ export const Me = () => {
             key={card.slug}
             cards={[
               {
-                ...card,
+                slug: card.slug,
+                charged: card.charged,
                 stats:
                   index === 0
                     ? {

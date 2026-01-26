@@ -28,7 +28,22 @@
   src: url("/fonts/PC_Senior.ttf");
 }
 
+@utility glow-* {  
+  box-shadow: 0 0 --value(--glow-*) 0.1em white;
+}
+
 @theme {
+  --glow-1: 0.01em;
+  --glow-2: 0.02em;
+  --glow-3: 0.05em;
+  --glow-4: 0.1em;
+  --glow-5: 0.2em;
+  --glow-6: 0.5em;
+  --glow-7: 1em;
+  --glow-8: 2em;
+  --glow-9: 5em;
+
+
   --font-main: FourSoulsMain, sans-serif;
   --font-statblock: FourSoulsStatblock, sans-serif;
   --font-alt-stats: FourSoulsAltStats, sans-serif;

@@ -7,12 +7,14 @@ import {
   ZoomResolutionPreset,
   useUserSettingsContext,
 } from "./contexts/user-settings-context";
+import type { TemporaryEffect } from "@/shared/api";
 
 interface PileProps {
   cards: (
     | {
         slug: string;
         charged?: boolean;
+        effects?: TemporaryEffect[];
         engagedInCombat?: boolean;
         stats?:
           | {
@@ -31,6 +33,7 @@ interface PileProps {
   size?: number;
   disabled?: boolean;
   className?: string;
+  topCardClassName?: string;
   onClickTopCard?: () => void;
   tooltip?: string;
   optimizations?: {
@@ -57,6 +60,7 @@ export const Pile = ({
   className,
   tooltip,
   optimizations,
+  topCardClassName,
 }: PileProps) => {
   const size = sizePx / 16;
   const seed = useRef(Math.random().toString());
@@ -110,6 +114,7 @@ export const Pile = ({
                 index === array.length - 1 &&
                   onClickTopCard &&
                   (disabled ? "cursor-not-allowed" : "cursor-pointer"),
+                index === array.length - 1 && topCardClassName,
               )}
               style={{
                 transform: `
@@ -122,6 +127,7 @@ export const Pile = ({
               enableSides={enableSides}
               tooltip={index === array.length - 1 ? tooltip : undefined}
               stats={typeof card === "string" ? undefined : card.stats}
+              effects={typeof card === "string" ? undefined : card.effects}
             />
           );
         })}

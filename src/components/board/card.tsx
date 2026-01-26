@@ -1,5 +1,7 @@
 import { CARD_RADIUS } from "@/constants";
 import { cn } from "../../utils/cn";
+import type { TemporaryEffect } from "@/shared/api";
+import { TemporaryEffectCard } from "./temporary-effect-card";
 
 export enum CardType {
   BonusSoul = "bsoul",
@@ -17,12 +19,13 @@ interface CardProps {
   thickness?: number;
   brightness?: number;
   enableSides?: boolean;
+  effects?: TemporaryEffect[];
   onClick?: () => void;
   tooltip?: string;
   size?: number;
   stats?:
-    | { healthPoints: number; attackPoints: number; evasionPoints: number }
-    | { healthPoints: number; attackPoints: number };
+  | { healthPoints: number; attackPoints: number; evasionPoints: number }
+  | { healthPoints: number; attackPoints: number };
 }
 
 const RX = `${CARD_RADIUS}%`;
@@ -40,6 +43,7 @@ export const Card = ({
   tooltip,
   stats,
   size = 160,
+  effects,
 }: CardProps) => {
   if (!card) {
     return (
@@ -69,7 +73,6 @@ export const Card = ({
     <div
       className={cn(
         "relative aspect-750/1024 select-none transform-3d",
-        !enableSides && "overflow-hidden",
         className,
       )}
       style={{
@@ -87,6 +90,14 @@ export const Card = ({
         }}
         tooltip={tooltip}
       />
+
+      {effects && effects.length > 0 && (
+        <div className="absolute top-[16%] bottom-[45%] right-[2%] transform-3d flex flex-col flex-wrap-reverse gap-1">
+          {effects.map((effect, index) =>
+            <TemporaryEffectCard key={index} effect={effect} size={size * 1.8} className=" glow-5" />
+          )}
+        </div>
+      )}
 
       {stats && !("evasionPoints" in stats) && (
         <div style={{ fontSize: statsSize + "em" }}>
