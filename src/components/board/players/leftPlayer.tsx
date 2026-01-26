@@ -41,6 +41,7 @@ export const LeftPlayer = ({ player }: LeftPlayerProps) => {
           souls={player.souls}
           isEngagedInCombat={player.isEngagedInCombat}
           isEngagedInPurchase={player.isEngagedInPurchase}
+          temporaryEffect={player.temporaryEffect}
           className={"flex-col gap-4 px-6 py-4"}
         />
         {player.handSize > 0 && (

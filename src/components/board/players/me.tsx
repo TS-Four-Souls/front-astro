@@ -137,6 +137,7 @@ export const Me = () => {
         souls={state.me.souls}
         isEngagedInCombat={state.me.isEngagedInCombat}
         isEngagedInPurchase={state.me.isEngagedInPurchase}
+        temporaryEffect={state.me.temporaryEffect}
       />
       <div
         className="grid grid-cols-7 gap-2 transform-3d"

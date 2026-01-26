@@ -192,3 +192,5 @@ const DeathElement = ({ element }: { element: DeathOnStackJson }) => {
     </div>
   );
 };
+
+

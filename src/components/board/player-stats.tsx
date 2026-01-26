@@ -7,6 +7,8 @@ import { Gear } from "@/icons/gear";
 import { Button } from "../button";
 import { usePromptContext } from "./contexts/prompt-context";
 import { tooltip } from "@/utils/tooltip";
+import { TemporaryEffectCard } from "./TemporaryEffectCard";
+import type { temporaryEffect } from "@/shared/api";
 
 interface PlayerStatsProps {
   name: string;
@@ -14,6 +16,7 @@ interface PlayerStatsProps {
   souls: number;
   isEngagedInCombat: boolean;
   isEngagedInPurchase: boolean;
+  temporaryEffect?: temporaryEffect[];
   className?: string;
 }
 
@@ -23,6 +26,7 @@ export const PlayerStats = ({
   souls,
   isEngagedInCombat,
   isEngagedInPurchase,
+  temporaryEffect,
   className,
 }: PlayerStatsProps) => {
   const { state, issuer } = useGameContext();
@@ -138,7 +142,16 @@ export const PlayerStats = ({
         isEngagedInPurchase && "outline-yellow-400/87",
         className,
       )}>
-      <h1 className="text-center font-alt-stats font-bold uppercase">{name}</h1>
+      <div className="flex items-center gap-3 transform-3d">
+        <h1 className="text-center font-alt-stats font-bold uppercase">{name}</h1>
+        {temporaryEffect && temporaryEffect.length > 0 && (
+          <div className="flex items-center gap-1 transform-3d">
+            {temporaryEffect.map((effect, index) => (
+              <TemporaryEffectCard key={index} effect={effect} />
+            ))}
+          </div>
+        )}
+      </div>
       <div
         className="flex items-center gap-1"
         onClick={() => !isMe && onCoinPress()}>
