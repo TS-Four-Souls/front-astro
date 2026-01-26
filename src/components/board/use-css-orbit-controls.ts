@@ -3,6 +3,8 @@ import {
   ZoomResolutionPreset,
   useUserSettingsContext,
 } from "./contexts/user-settings-context";
+import { useHotkeys } from "react-hotkeys-hook";
+import { HotkeyScope } from "@/utils/hotkey";
 
 interface OrbitControlsProps {
   rotateSpeed: number;
@@ -42,6 +44,14 @@ export function useCssOrbitControls(
   { rotateSpeed, zoomSpeed }: OrbitControlsProps,
 ) {
   const { zoomResolutionPreset, enable3D } = useUserSettingsContext();
+
+  useHotkeys(
+    "escape",
+    () => {
+      autoFit();
+    },
+    { scopes: [HotkeyScope.Main] },
+  );
 
   const initialState = {
     rotZ: 0,
@@ -231,19 +241,11 @@ export function useCssOrbitControls(
 
     const onContextMenu = (e: MouseEvent) => e.preventDefault();
 
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.code === "Escape") {
-        e.preventDefault();
-        autoFit();
-      }
-    };
-
     parent.addEventListener("pointerdown", onPointerDown);
     parent.addEventListener("pointermove", onPointerMove);
     parent.addEventListener("pointerup", onPointerUp);
     parent.addEventListener("wheel", onWheel);
     parent.addEventListener("contextmenu", onContextMenu);
-    window.addEventListener("keydown", onKeyDown);
 
     update();
 
@@ -253,7 +255,6 @@ export function useCssOrbitControls(
       parent.removeEventListener("pointerup", onPointerUp);
       parent.removeEventListener("wheel", onWheel);
       parent.removeEventListener("contextmenu", onContextMenu);
-      window.removeEventListener("keydown", onKeyDown);
     };
   }, [
     parentRef,

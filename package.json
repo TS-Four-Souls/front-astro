@@ -14,14 +14,11 @@
   "dependencies": {
     "@astrojs/react": "^4.4.2",
     "@tailwindcss/vite": "^4.1.18",
-    "@types/react": "^19.2.7",
-    "@types/react-dom": "^19.2.3",
     "astro": "^5.16.3",
-    "prettier": "^3.8.0",
-    "prettier-plugin-tailwindcss": "^0.7.2",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-hot-toast": "^2.6.0",
+    "react-hotkeys-hook": "^5.2.3",
     "seedrandom": "^3.0.5",
     "socket.io-client": "^4.8.3",
     "tailwind-merge": "^3.4.0",
@@ -30,7 +27,11 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.6",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
     "@types/seedrandom": "^3.0.8",
+    "prettier": "^3.8.0",
+    "prettier-plugin-tailwindcss": "^0.7.2",
     "typescript": "^5.9.3"
   }
 }

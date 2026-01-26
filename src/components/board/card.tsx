@@ -91,7 +91,7 @@ export const Card = ({
       {stats && !("evasionPoints" in stats) && (
         <div style={{ fontSize: statsSize + "em" }}>
           <div className="absolute top-[57.3%] right-[28.5%] left-[27.5%]">
-            <img src="/character-card-overlay.png" />
+            <img src="/character-card-overlay.png" draggable={false} />
           </div>
           <div className="absolute top-[55.7%] left-[40.5%] font-statblock text-black">
             {stats.healthPoints}
@@ -105,7 +105,7 @@ export const Card = ({
       {stats && "evasionPoints" in stats && (
         <div style={{ fontSize: statsSize + "em" }}>
           <div className="absolute top-[57.3%] right-[17.1%] left-[17.7%]">
-            <img src="/monster-card-overlay.png" />
+            <img src="/monster-card-overlay.png" draggable={false} />
           </div>
 
           <div className="absolute top-[55.7%] left-[30.5%] font-statblock text-black">

@@ -143,7 +143,9 @@ export const PlayerStats = ({
         className,
       )}>
       <div className="flex items-center gap-3 transform-3d">
-        <h1 className="text-center font-alt-stats font-bold uppercase">{name}</h1>
+        <h1 className="text-center font-alt-stats font-bold uppercase">
+          {name}
+        </h1>
         {temporaryEffect && temporaryEffect.length > 0 && (
           <div className="flex items-center gap-1 transform-3d">
             {temporaryEffect.map((effect, index) => (
@@ -198,10 +200,7 @@ export const PlayerStats = ({
             label="Reset"
             className="translate-z-1"
           />
-          <Gear
-            className="size-5 cursor-pointer"
-            onClick={() => openMenu()}
-          />
+          <Gear className="size-5 cursor-pointer" onClick={() => openMenu()} />
         </div>
       )}
     </div>

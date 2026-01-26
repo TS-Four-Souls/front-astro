@@ -1,7 +1,9 @@
 import { Button } from "@/components/button";
 import { Popup } from "@/components/popup";
+import { HotkeyScope } from "@/utils/hotkey";
 import { useLocalStorage } from "@/utils/use-local-storage";
 import { createContext, useContext, useState } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 
 export enum ZoomResolutionPreset {
   HIGH = "high",
@@ -54,6 +56,11 @@ export const UserSettingsProvider = ({
     ThreeDMode.SIMPLE,
   );
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  useHotkeys("escape", () => setIsMenuOpen(false), {
+    enabled: isMenuOpen,
+    scopes: [HotkeyScope.Popup],
+  });
 
   return (
     <UserSettingsContext.Provider

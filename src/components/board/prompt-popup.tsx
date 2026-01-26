@@ -7,6 +7,8 @@ import { Sword } from "@/icons/sword";
 import { StackElement } from "./stack";
 import { Popup } from "../popup";
 import { Button } from "../button";
+import { useHotkeys } from "react-hotkeys-hook";
+import { HotkeyScope } from "@/utils/hotkey";
 
 interface PromptPopupProps<T extends SelectionItem = SelectionItem> {
   /**
@@ -44,6 +46,11 @@ export const PromptPopup = ({
   onCancel,
 }: PromptPopupProps) => {
   const [selectedOptions, setSelectedOptions] = useState<SelectionItem[]>([]);
+
+  useHotkeys("escape", () => onCancel?.(), {
+    enabled: onCancel !== undefined,
+    scopes: [HotkeyScope.Popup],
+  });
 
   const addSelection = (option: SelectionItem) => {
     setSelectedOptions((current) => [...current, option]);
