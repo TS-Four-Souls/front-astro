@@ -1,7 +1,7 @@
 import type { SelectionItem } from "@/shared/api";
 import { cn } from "@/utils/cn";
 import { useState } from "react";
-import { Card, CardImage } from "./card";
+import { CardImage } from "./card";
 import { Person } from "@/icons/person";
 import { Sword } from "@/icons/sword";
 import { StackElement } from "./stack";

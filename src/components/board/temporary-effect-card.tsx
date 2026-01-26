@@ -1,8 +1,8 @@
-import type { temporaryEffect } from "@/shared/api";
+import type { TemporaryEffect } from "@/shared/api";
 import { useState } from "react";
 import { CardImage } from "./card";
 
-const TemporaryEffectCard = ({ effect }: { effect: temporaryEffect }) => {
+const TemporaryEffectCard = ({ effect }: { effect: TemporaryEffect }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (

@@ -7,8 +7,8 @@ import { Gear } from "@/icons/gear";
 import { Button } from "../button";
 import { usePromptContext } from "./contexts/prompt-context";
 import { tooltip } from "@/utils/tooltip";
-import { TemporaryEffectCard } from "./TemporaryEffectCard";
-import type { temporaryEffect } from "@/shared/api";
+import { TemporaryEffectCard } from "./temporary-effect-card";
+import type { TemporaryEffect } from "@/shared/api";
 
 interface PlayerStatsProps {
   name: string;
@@ -16,7 +16,7 @@ interface PlayerStatsProps {
   souls: number;
   isEngagedInCombat: boolean;
   isEngagedInPurchase: boolean;
-  temporaryEffect?: temporaryEffect[];
+  temporaryEffect?: TemporaryEffect[];
   className?: string;
 }
 
