@@ -15,6 +15,7 @@ import { useEffect, useRef } from "react";
 import { Button } from "../button";
 import { tooltip } from "@/utils/tooltip";
 import { cn } from "@/utils/cn";
+import { usePopoverContext } from "./contexts/popover-context";
 
 export const Stack = () => {
   const { state, issuer } = useGameContext();
@@ -49,11 +50,11 @@ export const Stack = () => {
   }, [state.stack.length]);
 
   return (
-    <div className="flex h-86 w-60 flex-col gap-2 rounded-xl bg-stone-900 p-4 inset-shadow-sm inset-shadow-stone-950/30 transform-3d">
+    <div className="flex h-86 w-60 flex-col gap-2 rounded-xl bg-stone-900 p-2 inset-shadow-sm inset-shadow-stone-950/30 transform-3d">
       <div
         ref={scrollViewRef}
         className={cn(
-          "grow place-content-start gap-4 overflow-auto text-sm",
+          "grow place-content-start gap-4 overflow-auto p-2 text-sm",
           state.stack.length > 0 ? "grid" : "flex place-items-center",
         )}>
         {state.stack.map((element, index) => (
@@ -127,10 +128,28 @@ const LootCardEffectElement = ({
 }: {
   element: LootCardOnStackJson;
 }) => {
+  const { setPopover, closePopover } = usePopoverContext();
+
+  const onHover = (e: React.MouseEvent<HTMLDivElement>) => {
+    const card = element.card;
+    if (!card) return;
+
+    const rect = e.currentTarget.getBoundingClientRect();
+    setPopover({
+      anchor: rect,
+      content: (
+        <CardImage card={card} className="w-64" />
+      ),
+    });
+  };
+
   return (
     <div className="flex flex-row items-center gap-4">
       {element.card && (
-        <div className="size-12 shrink-0 overflow-hidden rounded-lg">
+        <div
+          className="size-12 shrink-0 scale-100 overflow-hidden rounded-lg transition-transform hover:scale-110"
+          onMouseEnter={onHover}
+          onMouseLeave={closePopover}>
           <CardImage
             card={element.card}
             className="translate-y-[5%] scale-155"

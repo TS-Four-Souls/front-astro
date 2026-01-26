@@ -370,7 +370,7 @@ export const Center = ({ state }: CenterProps) => {
                   key={card.top.slug}
                   cards={[
                     ...card.covered,
-                    { 
+                    {
                       slug: card.top.slug,
                       stats: card.top.stats,
                       effects: card.top.stats?.temporaryEffect,

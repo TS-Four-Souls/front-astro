@@ -36,7 +36,6 @@ export const TopPlayer = ({ player }: TopPlayerProps) => {
         souls={player.souls}
         isEngagedInCombat={player.isEngagedInCombat}
         isEngagedInPurchase={player.isEngagedInPurchase}
-        temporaryEffect={player.temporaryEffect}
         className={"flex-row gap-12 px-8 py-3"}
       />
       <div
@@ -76,7 +75,10 @@ export const TopPlayer = ({ player }: TopPlayerProps) => {
                 key={card.slug}
                 cards={[
                   {
-                    ...card,
+                    slug: card.slug,
+                    charged: card.charged,
+                    eternal: card.eternal,
+                    effects: index === 0 ? player.temporaryEffect : undefined,
                     stats:
                       index === 0
                         ? {

@@ -24,8 +24,8 @@ interface CardProps {
   tooltip?: string;
   size?: number;
   stats?:
-  | { healthPoints: number; attackPoints: number; evasionPoints: number }
-  | { healthPoints: number; attackPoints: number };
+    | { healthPoints: number; attackPoints: number; evasionPoints: number }
+    | { healthPoints: number; attackPoints: number };
   eternal?: boolean;
 }
 
@@ -95,10 +95,15 @@ export const Card = ({
       />
 
       {effects && effects.length > 0 && (
-        <div className="absolute top-[16%] bottom-[45%] right-[2%] transform-3d flex flex-col flex-wrap-reverse gap-1">
-          {effects.map((effect, index) =>
-            <TemporaryEffectCard key={index} effect={effect} size={size * 1.8} className=" glow-5" />
-          )}
+        <div className="absolute top-[16%] right-[4%] bottom-[45%] flex flex-col flex-wrap-reverse gap-1">
+          {effects.map((effect, index) => (
+            <TemporaryEffectCard
+              key={index}
+              effect={effect}
+              size={size * 1.8}
+              className="glow-5"
+            />
+          ))}
         </div>
       )}
 

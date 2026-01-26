@@ -41,7 +41,6 @@ export const LeftPlayer = ({ player }: LeftPlayerProps) => {
           souls={player.souls}
           isEngagedInCombat={player.isEngagedInCombat}
           isEngagedInPurchase={player.isEngagedInPurchase}
-          temporaryEffect={player.temporaryEffect}
           className={"flex-col gap-4 px-6 py-4"}
         />
         {player.handSize > 0 && (
@@ -82,7 +81,10 @@ export const LeftPlayer = ({ player }: LeftPlayerProps) => {
                 key={card.slug}
                 cards={[
                   {
-                    ...card,
+                    slug: card.slug,
+                    charged: card.charged,
+                    eternal: card.eternal,
+                    effects: index === 0 ? player.temporaryEffect : undefined,
                     stats:
                       index === 0
                         ? {
