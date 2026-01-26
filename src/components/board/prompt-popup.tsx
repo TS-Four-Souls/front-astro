@@ -189,7 +189,7 @@ export const PlayerOption = ({
           {option.payload.name}
         </p>
       </div>
-      <Card card={option.payload} className="h-64" />
+      <CardImage card={option.payload} className="h-64" />
     </div>
   );
 };
@@ -207,7 +207,7 @@ export const MonsterOption = ({
           {option.payload.name}
         </p>
       </div>
-      <Card card={option.payload} className="h-64" />
+      <CardImage card={option.payload} className="h-64" />
     </div>
   );
 };
