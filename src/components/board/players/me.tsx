@@ -151,6 +151,7 @@ export const Me = () => {
               {
                 slug: card.slug,
                 charged: card.charged,
+                eternal: card.eternal,
                 stats:
                   index === 0
                     ? {

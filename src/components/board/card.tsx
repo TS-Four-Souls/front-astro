@@ -26,6 +26,7 @@ interface CardProps {
   stats?:
   | { healthPoints: number; attackPoints: number; evasionPoints: number }
   | { healthPoints: number; attackPoints: number };
+  eternal?: boolean;
 }
 
 const RX = `${CARD_RADIUS}%`;
@@ -44,6 +45,7 @@ export const Card = ({
   stats,
   size = 160,
   effects,
+  eternal,
 }: CardProps) => {
   if (!card) {
     return (
@@ -73,6 +75,7 @@ export const Card = ({
     <div
       className={cn(
         "relative aspect-750/1024 select-none transform-3d",
+        eternal && "glow-6",
         className,
       )}
       style={{
