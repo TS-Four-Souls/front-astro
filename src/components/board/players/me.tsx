@@ -123,6 +123,9 @@ export const Me = () => {
           activateCard(selectedEffect[0].index);
           removePrompt(promptId);
         },
+        onCancel: () => {
+          removePrompt(promptId);
+        },
       });
     } else if (card.effects && card.effects.length === 1) {
       activateCard(card.effects[0].index);
