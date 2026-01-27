@@ -118,7 +118,7 @@ export const Card = ({
             width: size * 0.75 + "em",
             height: size * 0.005 + "em",
           }}>
-          {counter}
+          {counter > 0 ? counter.toString().replaceAll("0", "O") : counter}
         </div>
       )}
 
