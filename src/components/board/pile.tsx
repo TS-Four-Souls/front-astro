@@ -17,6 +17,7 @@ interface PileProps {
         effects?: TemporaryEffect[];
         engagedInCombat?: boolean;
         eternal?: boolean;
+        counter?: number;
         stats?:
           | {
               healthPoints: number;
@@ -100,6 +101,9 @@ export const Pile = ({
           const eternal =
             typeof card === "string" ? false : (card.eternal ?? false);
 
+          const counter =
+            typeof card === "string" ? undefined : card.counter;
+
           return (
             <Card
               onClick={index === array.length - 1 ? onClickTopCard : undefined}
@@ -133,6 +137,7 @@ export const Pile = ({
               stats={typeof card === "string" ? undefined : card.stats}
               effects={typeof card === "string" ? undefined : card.effects}
               eternal={eternal}
+              counter={counter}
             />
           );
         })}

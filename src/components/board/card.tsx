@@ -27,6 +27,7 @@ interface CardProps {
     | { healthPoints: number; attackPoints: number; evasionPoints: number }
     | { healthPoints: number; attackPoints: number };
   eternal?: boolean;
+  counter?: number;
 }
 
 const RX = `${CARD_RADIUS}%`;
@@ -46,7 +47,9 @@ export const Card = ({
   size = 160,
   effects,
   eternal,
+  counter,
 }: CardProps) => {
+  
   if (!card) {
     return (
       <div
@@ -104,6 +107,18 @@ export const Card = ({
               className="glow-5"
             />
           ))}
+        </div>
+      )}
+
+      {counter !== undefined && (
+        <div
+          className="absolute bottom-[3%] left-[5%] flex items-center justify-center rounded-full font-statblock text-black shadow-lg"
+          style={{
+            fontSize: size * 0.09 + "em",
+            width: size * 0.75 + "em",
+            height: size * 0.005 + "em",
+          }}>
+          {counter}
         </div>
       )}
 

@@ -152,6 +152,7 @@ export const Me = () => {
                 charged: card.charged,
                 eternal: card.eternal,
                 effects: index === 0 ? state.me.temporaryEffect : undefined,
+                counter: card.counter,
                 stats:
                   index === 0
                     ? {

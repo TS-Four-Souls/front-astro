@@ -65,6 +65,7 @@ export const RightPlayer = ({ player }: RightPlayerProps) => {
                   charged: card.charged,
                   eternal: card.eternal,
                   effects: index === 0 ? player.temporaryEffect : undefined,
+                  counter: card.counter,
                   stats:
                     index === 0
                       ? {
