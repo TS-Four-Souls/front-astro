@@ -1,6 +1,6 @@
 import { PlayerStats } from "../player-stats";
 import { Pile } from "../pile";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useGameContext } from "../contexts/game-context";
 import { usePromptContext } from "../contexts/prompt-context";
 import { socket } from "@/utils/socket";
@@ -10,8 +10,35 @@ import { tooltip } from "@/utils/tooltip";
 
 export const Me = () => {
   const { state, issuer } = useGameContext();
-  const { toast, block } = useToastContext();
+  const { toast, dismiss, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
+
+  const pendingSelections = useRef<Map<string, string>>(new Map());
+
+  useEffect(() => {
+    console.log("state", state);
+    console.log("pendingSelections", pendingSelections.current);
+    for (const player of state.players) {
+      if (player.pendingSelection) {
+        if (pendingSelections.current.has(player.name)) {
+          continue;
+        }
+        const toastId = toast(
+          "info",
+          `${player.name} is busy`,
+          "Please wait for them to finish their selection",
+          { duration: Infinity },
+        );
+        pendingSelections.current.set(player.name, toastId);
+      } else {
+        const toastId = pendingSelections.current.get(player.name);
+        if (toastId) {
+          dismiss(toastId);
+          pendingSelections.current.delete(player.name);
+        }
+      }
+    }
+  }, [state.players, toast, dismiss]);
 
   useEffect(() => {
     const pendingSelection = state.me.pendingSelection;

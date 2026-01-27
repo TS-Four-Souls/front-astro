@@ -1,6 +1,6 @@
 import { cn } from "@/utils/cn";
 import { createContext, useContext } from "react";
-import toastLib, { Toaster } from "react-hot-toast";
+import toastLib, { Toaster, type ToastOptions } from "react-hot-toast";
 
 type ToastType = "info" | "error" | "success";
 
@@ -49,7 +49,13 @@ const Icon = ({ type, className }: { type: ToastType; className?: string }) => {
 };
 
 interface ToastContextProps {
-  toast: (type: ToastType, title: string, message: string) => void;
+  toast: (
+    type: ToastType,
+    title: string,
+    message: string,
+    options?: ToastOptions,
+  ) => string;
+  dismiss: (toastId: string) => void;
   /**
    * Block the action if the message is not true.
    * @param title - The title of the toast.
@@ -60,33 +66,46 @@ interface ToastContextProps {
 }
 
 const ToastContext = createContext<ToastContextProps>({
-  toast: () => {},
+  toast: () => "",
+  dismiss: () => {},
   block: () => {},
 });
 
 export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
-  const addToast = (type: ToastType, title: string, message: string) => {
-    toastLib.custom((t) => (
-      <div
-        className={cn(
-          "relative flex items-center gap-4 overflow-hidden rounded-lg bg-stone-600 p-4 pr-8 text-white",
-          t.visible ? "animate-in-right" : "animate-out-right",
-        )}>
-        <Icon type={type} className="size-8 shrink-0" />
-        <div className="flex flex-col gap-1">
-          <h1 className="text-lg font-bold">{title}</h1>
-          <p className="text-sm">{message}</p>
-        </div>
+  const addToast = (
+    type: ToastType,
+    title: string,
+    message: string,
+    options?: ToastOptions,
+  ) => {
+    return toastLib.custom(
+      (t) => (
         <div
           className={cn(
-            "pointer-events-none absolute inset-0 touch-none",
-            type === "error" && "bg-red-600/20",
-            type === "success" && "bg-green-600/20",
-            type === "info" && "bg-blue-600/20",
-          )}
-        />
-      </div>
-    ));
+            "relative flex items-center gap-4 overflow-hidden rounded-lg bg-stone-600 p-4 pr-8 text-white",
+            t.visible ? "animate-in-right" : "animate-out-right",
+          )}>
+          <Icon type={type} className="size-8 shrink-0" />
+          <div className="flex flex-col gap-1">
+            <h1 className="text-lg font-bold">{title}</h1>
+            <p className="text-sm">{message}</p>
+          </div>
+          <div
+            className={cn(
+              "pointer-events-none absolute inset-0 touch-none",
+              type === "error" && "bg-red-600/20",
+              type === "success" && "bg-green-600/20",
+              type === "info" && "bg-blue-600/20",
+            )}
+          />
+        </div>
+      ),
+      options,
+    );
+  };
+
+  const dismiss = (toastId: string) => {
+    toastLib.dismiss(toastId);
   };
 
   const block = (
@@ -101,7 +120,7 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <ToastContext.Provider value={{ toast: addToast, block }}>
+    <ToastContext.Provider value={{ toast: addToast, dismiss, block }}>
       {children}
       <Toaster position="top-right" />
     </ToastContext.Provider>
