@@ -7,8 +7,6 @@ import { Gear } from "@/icons/gear";
 import { Button } from "../button";
 import { usePromptContext } from "./contexts/prompt-context";
 import { tooltip } from "@/utils/tooltip";
-import { TemporaryEffectCard } from "./temporary-effect-card";
-import type { TemporaryEffect } from "@/shared/api";
 
 interface PlayerStatsProps {
   name: string;

@@ -49,7 +49,6 @@ export const Card = ({
   eternal,
   counter,
 }: CardProps) => {
-  
   if (!card) {
     return (
       <div

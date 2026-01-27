@@ -1,5 +1,4 @@
 import type { TemporaryEffect } from "@/shared/api";
-import { useState } from "react";
 import { CardImage } from "./card";
 import { cn } from "@/utils/cn";
 import { usePopoverContext } from "./contexts/popover-context";

@@ -101,8 +101,7 @@ export const Pile = ({
           const eternal =
             typeof card === "string" ? false : (card.eternal ?? false);
 
-          const counter =
-            typeof card === "string" ? undefined : card.counter;
+          const counter = typeof card === "string" ? undefined : card.counter;
 
           return (
             <Card
