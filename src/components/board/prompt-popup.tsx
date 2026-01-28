@@ -83,15 +83,19 @@ export const PromptPopup = ({
           displayRow ? "flex-col" : "flex-row justify-center",
         )}>
         {options.map((option, index) => {
-          const isSelected = selectedOptions.includes(option);
+          const selectionIndex = selectedOptions.findIndex((o) => o === option);
           const canAddMore = selectedOptions.length < maxCount;
           const isSingularSelection = maxCount === 1;
+
+          const isSelected = selectionIndex >= 0;
+          const isIndexVisible = isSelected && maxCount > 1;
 
           return (
             <PromptOption
               key={index}
               option={option}
               isSelected={isSelected}
+              selectionIndex={isIndexVisible ? selectionIndex + 1 : undefined}
               onPress={
                 isSelected
                   ? () => removeSelection(option)
@@ -126,24 +130,31 @@ export const PromptPopup = ({
 interface PromptOptionProps {
   option: SelectionItem;
   isSelected: boolean;
+  selectionIndex: number | undefined;
   onPress?: () => void;
 }
 
 export const PromptOption = ({
   option,
   isSelected,
+  selectionIndex,
   onPress,
 }: PromptOptionProps) => {
   return (
     <div
       className={cn(
-        "flex w-max flex-row place-items-center gap-2 rounded-md border-2 border-stone-500 p-2 select-none",
+        "relative flex w-max flex-row place-items-center gap-2 rounded-md border-2 border-stone-500 p-2 select-none",
         isSelected
           ? "border-stone-300 bg-stone-300 text-stone-900"
           : "bg-stone-600",
         onPress && "cursor-pointer",
       )}
       onClick={onPress}>
+      {selectionIndex && (
+        <div className="absolute top-0 right-0 flex size-12 items-center justify-center rounded-xl border-4 border-stone-300 bg-stone-800 text-sm font-bold text-stone-200">
+          {selectionIndex}
+        </div>
+      )}
       <GenericOption option={option} />
     </div>
   );

@@ -16,6 +16,7 @@ const fakeStack: StackElementType[] = [
   {
     type: "diceRoll",
     diceRoll: 3,
+    modifier: 1,
     id: 2,
     targets: [
       { type: "player", payload: { name: "Player 1", slug: "player-1" } },

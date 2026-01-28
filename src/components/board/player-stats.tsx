@@ -8,7 +8,6 @@ import { Button } from "../button";
 import { usePromptContext } from "./contexts/prompt-context";
 import { tooltip } from "@/utils/tooltip";
 import { usePopoverContext } from "./contexts/popover-context";
-import { Card } from "./card";
 import type { Card as CardType } from "@/shared/api";
 import { useRef } from "react";
 import { CardImage } from "./card";
@@ -158,16 +157,18 @@ export const PlayerStats = ({
       {souls > 0 && (
         <div
           ref={soulSequenceRef}
-          className="flex flex-row-reverse items-center cursor-pointer transform-3d translate-z-1"
+          className="flex translate-z-1 cursor-pointer flex-row-reverse items-center transform-3d"
           onMouseEnter={() => {
             if (soulSequenceRef.current && soulCards.length > 0) {
               const rect = soulSequenceRef.current.getBoundingClientRect();
               setPopover({
                 anchor: rect,
                 content: (
-                  <div className="flex gap-4 max-w-[600px]">
+                  <div className="flex max-w-[600px] gap-4">
                     {soulCards.map((card, index) => (
-                      <CardImage card={card} className="w-64"
+                      <CardImage
+                        card={card}
+                        className="w-64"
                         key={index}
                         tooltip={card.name}
                       />

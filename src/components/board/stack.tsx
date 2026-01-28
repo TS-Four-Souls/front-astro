@@ -55,7 +55,7 @@ export const Stack = () => {
       <div
         ref={scrollViewRef}
         className={cn(
-          "grow place-content-start gap-4 overflow-auto p-2 text-sm translate-z-1",
+          "grow translate-z-1 place-content-start gap-4 overflow-auto p-2 text-sm",
           state.stack.length > 0 ? "grid" : "flex place-items-center",
         )}>
         {state.stack.map((element, index) => (
@@ -123,7 +123,8 @@ const DiceRollElement = ({ element }: { element: DiceRollJson }) => {
           <div className="mt-3 flex max-w-64 flex-wrap place-content-center gap-1 text-center leading-tight text-stone-400">
             <span>{element.issuer.name} rolled a</span>
             <span className="font-bold whitespace-pre-line text-stone-300">
-              {element.diceRoll} {element.modifier !== 0 ? `(+${element.modifier})` : ""}
+              {element.diceRoll}
+              {element.modifier !== 0 ? ` (+${element.modifier})` : ""}
             </span>
             <span>for</span>
             <span className="font-bold whitespace-pre-line text-stone-300">
@@ -147,7 +148,8 @@ const DiceRollElement = ({ element }: { element: DiceRollJson }) => {
         </p>
 
         <p className="text-stone-200">
-          {element.issuer.name} rolled a {element.diceRoll} {element.modifier !== 0 ? `(+${element.modifier})` : ""}
+          {element.issuer.name} rolled a {element.diceRoll}{" "}
+          {element.modifier !== 0 ? `(+${element.modifier})` : ""}
         </p>
       </div>
     </div>
