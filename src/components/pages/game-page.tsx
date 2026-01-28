@@ -3,13 +3,15 @@ import { JoinForm } from "../onboarding/join-form";
 import { StartStep } from "../onboarding/start-step";
 import { Board } from "../board/board";
 import { socket } from "@/utils/socket";
-import type { DetailedState, Issuer } from "@/shared/api";
+import type { DetailedState, GameParametersJson, Issuer } from "@/shared/api";
 import { GameProvider } from "../board/contexts/game-context";
 import { Loading } from "../onboarding/loading";
 import { useLocalStorage } from "@/utils/use-local-storage";
 
 export const GamePage = () => {
   const [issuer, setIssuer] = useLocalStorage<Issuer | null>("issuer", null);
+  const [gameParameters, setGameParameters] =
+    useState<GameParametersJson | null>(null);
   const [hasStarted, setHasStarted] = useState(false);
   const [state, setState] = useState<DetailedState | null>(null);
 
@@ -36,6 +38,10 @@ export const GamePage = () => {
       setState(state);
     }
 
+    function onGameParametersChanged(gameParameters: GameParametersJson) {
+      setGameParameters(gameParameters);
+    }
+
     function onAnyOutgoing(event: string, ...args: any[]) {
       console.log("[🔌 Socket] Outgoing event", event, args);
     }
@@ -53,6 +59,7 @@ export const GamePage = () => {
     socket.on("disconnect", onDisconnect);
     socket.on("on:game:start", onGameStart);
     socket.on("on:game:changed", onGameChanged);
+    socket.on("on:game:parameters:changed", onGameParametersChanged);
     socket.on("on:game:reset", onGameReset);
     socket.onAnyOutgoing(onAnyOutgoing);
     socket.onAny(onAnyIncoming);
@@ -63,6 +70,7 @@ export const GamePage = () => {
       socket.off("disconnect", onDisconnect);
       socket.off("on:game:start", onGameStart);
       socket.off("on:game:changed", onGameChanged);
+      socket.off("on:game:parameters:changed", onGameParametersChanged);
       socket.off("on:game:reset", onGameReset);
       socket.offAnyOutgoing(onAnyOutgoing);
       socket.offAny(onAnyIncoming);
@@ -77,10 +85,15 @@ export const GamePage = () => {
     }
     setTryingToRejoin(true);
     socket.emit("rejoin", issuer, (response) => {
+      console.log("[🔌 Socket] Rejoin response", response);
       if (response.status === 200) {
+        setGameParameters(response.gameParameters);
         if (response.gameState) {
           setHasStarted(true);
           setState(response.gameState);
+        } else {
+          setHasStarted(false);
+          setState(null);
         }
       } else {
         setIssuer(null);
@@ -89,12 +102,19 @@ export const GamePage = () => {
     });
   }, []);
 
+  const onJoin = (issuer: Issuer, gameParameters: GameParametersJson) => {
+    setIssuer(issuer);
+    setGameParameters(gameParameters);
+  };
+
+  console.log({ issuer, gameParameters, hasStarted, state });
+
   if (tryingToRejoin === null || tryingToRejoin === true) {
     return <Loading />;
   } else if (!issuer) {
-    return <JoinForm onJoin={setIssuer} />;
-  } else if (!hasStarted) {
-    return <StartStep issuer={issuer} />;
+    return <JoinForm onJoin={onJoin} />;
+  } else if (!hasStarted && gameParameters) {
+    return <StartStep issuer={issuer} gameParameters={gameParameters} />;
   } else if (state) {
     return (
       <GameProvider state={state} issuer={issuer}>

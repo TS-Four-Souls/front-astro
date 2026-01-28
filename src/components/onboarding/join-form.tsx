@@ -1,11 +1,11 @@
-import type { Issuer } from "@/shared/api";
+import type { GameParametersJson, Issuer } from "@/shared/api";
 import { socket } from "@/utils/socket";
 import { useLocalStorage } from "@/utils/use-local-storage";
 import { useToastContext } from "../board/contexts/toast-context";
 import { Button } from "../button";
 
 interface JoinFormProps {
-  onJoin: (issuer: Issuer) => void;
+  onJoin: (issuer: Issuer, gameParameters: GameParametersJson) => void;
 }
 
 export const JoinForm = ({ onJoin }: JoinFormProps) => {
@@ -17,7 +17,10 @@ export const JoinForm = ({ onJoin }: JoinFormProps) => {
     socket.emit("join", name, (response) => {
       switch (response.status) {
         case 200:
-          onJoin({ id: name, secret: response.secret });
+          onJoin(
+            { id: name, secret: response.secret },
+            response.gameParameters,
+          );
           break;
         case 400:
         default:
@@ -42,7 +45,7 @@ export const JoinForm = ({ onJoin }: JoinFormProps) => {
             required
             className="rounded-md border-2 border-stone-700 bg-stone-800 px-4 py-2 text-white focus:ring-2 focus:ring-stone-500 focus:outline-none"
           />
-          <Button type="submit" label="Join" />
+          <Button type="submit" label="Join" onClick={() => {}} />
         </form>
       </div>
     </div>
