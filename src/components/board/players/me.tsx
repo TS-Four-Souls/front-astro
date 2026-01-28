@@ -165,6 +165,7 @@ export const Me = () => {
         name={state.me.name}
         coins={state.me.coins}
         souls={state.me.souls}
+        soulCards={state.me.soulCards}
         isEngagedInCombat={state.me.isEngagedInCombat}
         isEngagedInPurchase={state.me.isEngagedInPurchase}
       />

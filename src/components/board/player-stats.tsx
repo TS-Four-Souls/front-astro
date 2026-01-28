@@ -7,11 +7,17 @@ import { Gear } from "@/icons/gear";
 import { Button } from "../button";
 import { usePromptContext } from "./contexts/prompt-context";
 import { tooltip } from "@/utils/tooltip";
+import { usePopoverContext } from "./contexts/popover-context";
+import { Card } from "./card";
+import type { Card as CardType } from "@/shared/api";
+import { useRef } from "react";
+import { CardImage } from "./card";
 
 interface PlayerStatsProps {
   name: string;
   coins: number;
   souls: number;
+  soulCards: CardType[];
   isEngagedInCombat: boolean;
   isEngagedInPurchase: boolean;
   className?: string;
@@ -21,6 +27,7 @@ export const PlayerStats = ({
   name,
   coins,
   souls,
+  soulCards,
   isEngagedInCombat,
   isEngagedInPurchase,
   className,
@@ -29,6 +36,8 @@ export const PlayerStats = ({
   const { openMenu } = useUserSettingsContext();
   const { toast, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
+  const { setPopover, closePopover } = usePopoverContext();
+  const soulSequenceRef = useRef<HTMLDivElement>(null);
 
   const isCurrentTurn = state.turn === name;
   const isMe = state.me.name === name;
@@ -147,7 +156,30 @@ export const PlayerStats = ({
       </div>
 
       {souls > 0 && (
-        <div className="flex flex-row-reverse items-center">
+        <div
+          ref={soulSequenceRef}
+          className="flex flex-row-reverse items-center cursor-pointer transform-3d translate-z-1"
+          onMouseEnter={() => {
+            if (soulSequenceRef.current && soulCards.length > 0) {
+              const rect = soulSequenceRef.current.getBoundingClientRect();
+              setPopover({
+                anchor: rect,
+                content: (
+                  <div className="flex gap-4 max-w-[600px]">
+                    {soulCards.map((card, index) => (
+                      <CardImage card={card} className="w-64"
+                        key={index}
+                        tooltip={card.name}
+                      />
+                    ))}
+                  </div>
+                ),
+              });
+            }
+          }}
+          onMouseLeave={() => {
+            closePopover();
+          }}>
           {alternateSoulSequence(souls)
             .reverse()
             .map((type, index) => {

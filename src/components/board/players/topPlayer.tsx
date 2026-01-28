@@ -34,6 +34,7 @@ export const TopPlayer = ({ player }: TopPlayerProps) => {
         name={player.name}
         coins={player.coins}
         souls={player.souls}
+        soulCards={player.soulCards}
         isEngagedInCombat={player.isEngagedInCombat}
         isEngagedInPurchase={player.isEngagedInPurchase}
         className={"flex-row gap-12 px-8 py-3"}

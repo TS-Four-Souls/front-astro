@@ -39,6 +39,7 @@ export const LeftPlayer = ({ player }: LeftPlayerProps) => {
           name={player.name}
           coins={player.coins}
           souls={player.souls}
+          soulCards={player.soulCards}
           isEngagedInCombat={player.isEngagedInCombat}
           isEngagedInPurchase={player.isEngagedInPurchase}
           className={"flex-col gap-4 px-6 py-4"}
