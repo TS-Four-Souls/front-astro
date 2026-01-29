@@ -66,8 +66,8 @@ export const Card = ({
 
   const src =
     typeof card === "string"
-      ? `http://localhost:4321/images/back/${card}.webp`
-      : `http://localhost:4321/images/front/${card.slug}.webp`;
+      ? `${import.meta.env.SELF_BASE_URL}/images/back/${card}.webp`
+      : `${import.meta.env.SELF_BASE_URL}/images/front/${card.slug}.webp`;
 
   const alt = typeof card === "string" ? card : card.slug;
 
@@ -240,8 +240,8 @@ export const CardImage = ({
 }) => {
   const src =
     typeof card === "string"
-      ? `http://localhost:4321/images/back/${card}.webp`
-      : `http://localhost:4321/images/front/${card.slug}.webp`;
+      ? `${import.meta.env.SELF_BASE_URL}/images/back/${card}.webp`
+      : `${import.meta.env.SELF_BASE_URL}/images/front/${card.slug}.webp`;
 
   const alt = typeof card === "string" ? card : card.slug;
 
