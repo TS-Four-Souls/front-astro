@@ -1,7 +1,7 @@
 import { defineConfig, envField } from "astro/config";
 import react from "@astrojs/react";
-
 import tailwindcss from "@tailwindcss/vite";
+import node from "@astrojs/node";
 
 export default defineConfig({
   integrations: [react()],
@@ -16,4 +16,8 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
+
+  adapter: node({
+    mode: "standalone",
+  }),
 });
