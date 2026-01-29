@@ -2,6 +2,7 @@ import { CARD_RADIUS } from "@/constants";
 import { cn } from "../../utils/cn";
 import type { TemporaryEffect } from "@/shared/api";
 import { TemporaryEffectCard } from "./temporary-effect-card";
+import { SELF_BASE_URL } from "astro:env/client";
 
 export enum CardType {
   BonusSoul = "bsoul",
@@ -66,8 +67,8 @@ export const Card = ({
 
   const src =
     typeof card === "string"
-      ? `${import.meta.env.SELF_BASE_URL}/images/back/${card}.webp`
-      : `${import.meta.env.SELF_BASE_URL}/images/front/${card.slug}.webp`;
+      ? `${SELF_BASE_URL}/images/back/${card}.webp`
+      : `${SELF_BASE_URL}/images/front/${card.slug}.webp`;
 
   const alt = typeof card === "string" ? card : card.slug;
 
@@ -240,8 +241,8 @@ export const CardImage = ({
 }) => {
   const src =
     typeof card === "string"
-      ? `${import.meta.env.SELF_BASE_URL}/images/back/${card}.webp`
-      : `${import.meta.env.SELF_BASE_URL}/images/front/${card.slug}.webp`;
+      ? `${SELF_BASE_URL}/images/back/${card}.webp`
+      : `${SELF_BASE_URL}/images/front/${card.slug}.webp`;
 
   const alt = typeof card === "string" ? card : card.slug;
 
