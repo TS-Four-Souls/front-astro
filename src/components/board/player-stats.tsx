@@ -168,7 +168,7 @@ export const PlayerStats = ({
               setPopover({
                 anchor: rect,
                 content: (
-                  <div className="flex flex-nowrap gap-4">
+                  <div className="flex flex-nowrap gap-4 w-max">
                     {soulCards.map((card, index) => (
                       <CardImage
                         card={card}
