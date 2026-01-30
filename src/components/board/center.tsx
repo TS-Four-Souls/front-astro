@@ -225,8 +225,8 @@ export const Center = ({ state }: CenterProps) => {
   };
 
   return (
-    <div className="mx-24 my-8 flex flex-col gap-4 rounded-xl bg-stone-700/10 p-12 shadow-md inset-shadow-xs inset-shadow-stone-700 transform-3d">
-      <div className="flex justify-end">
+    <div className="mx-24 my-8 flex flex-col gap-4 rounded-xl bg-stone-700/10 p-12 shadow-md inset-shadow-xs inset-shadow-stone-700 transform-3d translate-z-1">
+      <div className="flex justify-end translate-z-1">
         {!state.me.isEngagedInPurchase && (
           <Button
             label="Declare purchase"
@@ -391,7 +391,7 @@ export const Center = ({ state }: CenterProps) => {
           </div>
         </div>
       </div>
-      <div className="flex justify-end">
+      <div className="flex justify-end translate-z-1">
         {!state.me.isEngagedInCombat && (
           <Button
             label="Declare attack"
