@@ -31,6 +31,72 @@ export const Center = ({ state }: CenterProps) => {
     });
   };
 
+  const viewLootDiscard = () => {
+    if (state.loot.discard.length === 0) {
+      toast("info", "Loot discard", "The loot discard pile is empty");
+      return;
+    }
+    const promptId = `view-loot-discard-${Date.now()}`;
+    addPrompt({
+      promptId,
+      isUnique: false,
+      prompt: "Loot discard pile",
+      options: state.loot.discard.toReversed().map((card) => ({
+        type: "card",
+        payload: card,
+      })),
+      minCount: 0,
+      maxCount: 0,
+      onSubmit: () => {
+        removePrompt(promptId);
+      },
+    });
+  };
+
+  const viewTreasureDiscard = () => {
+    if (state.treasure.discard.length === 0) {
+      toast("info", "Treasure discard", "The treasure discard pile is empty");
+      return;
+    }
+    const promptId = `view-treasure-discard-${Date.now()}`;
+    addPrompt({
+      promptId,
+      isUnique: false,
+      prompt: "Treasure discard pile",
+      options: state.treasure.discard.toReversed().map((card) => ({
+        type: "card",
+        payload: card,
+      })),
+      minCount: 0,
+      maxCount: 0,
+      onSubmit: () => {
+        removePrompt(promptId);
+      },
+    });
+  };
+
+  const viewMonsterDiscard = () => {
+    if (state.monsters.discard.length === 0) {
+      toast("info", "Monster discard", "The monster discard pile is empty");
+      return;
+    }
+    const promptId = `view-monster-discard-${Date.now()}`;
+    addPrompt({
+      promptId,
+      isUnique: false,
+      prompt: "Monster discard pile",
+      options: state.monsters.discard.toReversed().map((card) => ({
+        type: "card",
+        payload: card,
+      })),
+      minCount: 0,
+      maxCount: 0,
+      onSubmit: () => {
+        removePrompt(promptId);
+      },
+    });
+  };
+
   const debugGainLoot = () => {
     socket.emit("debugListLoot", issuer, (response) => {
       if (response.status === 200) {
@@ -287,14 +353,14 @@ export const Center = ({ state }: CenterProps) => {
           />
           <Pile
             cards={state.loot.discard}
-            onClickTopCard={CHEAT_MODE ? debugGainLoot : undefined}
+            onClickTopCard={viewLootDiscard}
           />
         </div>
         <div className="flex flex-col gap-8 transform-3d">
           <div className="flex place-items-center gap-2 transform-3d">
             <Pile
               cards={state.treasure.discard}
-              onClickTopCard={CHEAT_MODE ? debugGainTreasure : undefined}
+              onClickTopCard={viewTreasureDiscard}
             />
             <Pile
               cards={Array.from({ length: state.treasure.deckSize }).map(
@@ -341,6 +407,7 @@ export const Center = ({ state }: CenterProps) => {
                 slug: card.slug,
                 face: "front",
               }))}
+              onClickTopCard={viewMonsterDiscard}
             />
             <Pile
               cards={Array.from({ length: state.monsters.deckSize }).map(
