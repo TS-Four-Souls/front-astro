@@ -1,20 +1,30 @@
 import { socket } from "@/utils/socket";
-import type { GameParametersJson, Issuer, Requests } from "@/shared/api";
+import type { Requests, Room } from "@/shared/api";
 import { useToastContext } from "../board/contexts/toast-context";
 import { Button } from "../button";
 
 interface StartStepProps {
-  issuer: Issuer;
-  gameParameters: GameParametersJson;
+  room: Room;
 }
 
-export const StartStep = ({ issuer, gameParameters }: StartStepProps) => {
+export const StartStep = ({ room }: StartStepProps) => {
+  const { issuer, gameParameters, players } = room;
   const { toast } = useToastContext();
 
   const onChangeGameParameter = (request: Requests.SetGameParameter) => {
     socket.emit("setGameParameter", request, (response) => {
       switch (response.status) {
         case 200:
+          break;
+      }
+    });
+  };
+
+    const onResetPress = () => {
+    socket.emit("reset", null, (response) => {
+      switch (response.status) {
+        case 200:
+          toast("success", "Reset", "The game has been reset");
           break;
       }
     });
@@ -34,9 +44,22 @@ export const StartStep = ({ issuer, gameParameters }: StartStepProps) => {
   };
 
   return (
-    <div className="grid h-screen place-content-center place-items-center gap-8">
+    <div className="grid min-h-screen p-12 place-content-center place-items-center gap-8 overflow-y-auto">
+      <div>
+        <Button type="button" label="Reset ongoing game" onClick={onResetPress} />
+      </div>
       <div className="flex flex-col gap-8 rounded-lg border-2 border-stone-700 p-8 text-center">
         <h1 className="font-main text-3xl font-bold">Welcome {issuer.id}!</h1>
+        <div>
+          <p className="leading-normal text-stone-400">
+            Players:
+          </p>
+          <ol>
+            {players.map((player) => (
+              <li key={player}>{player}</li>
+            ))}
+          </ol>
+        </div>
         <p className="leading-normal text-stone-400">
           When everyone is ready,
           <br />

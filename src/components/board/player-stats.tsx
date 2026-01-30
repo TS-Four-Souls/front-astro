@@ -83,7 +83,7 @@ export const PlayerStats = ({
     socket.emit("reset", null, (response) => {
       switch (response.status) {
         case 200:
-          toast("success", "Reset", "Game reset");
+          toast("success", "Reset", "The game has been reset");
           break;
         default:
         case 400:
