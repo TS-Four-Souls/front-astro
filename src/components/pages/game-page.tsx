@@ -3,19 +3,13 @@ import { JoinForm } from "../onboarding/join-form";
 import { StartStep } from "../onboarding/start-step";
 import { Board } from "../board/board";
 import { socket } from "@/utils/socket";
-import type { DetailedState, GameParametersJson, Issuer } from "@/shared/api";
+import { schemas, type Room } from "@/shared/api";
 import { GameProvider } from "../board/contexts/game-context";
 import { Loading } from "../onboarding/loading";
-import { useLocalStorage } from "@/utils/use-local-storage";
 
 export const GamePage = () => {
-  const [issuer, setIssuer] = useLocalStorage<Issuer | null>("issuer", null);
-  const [gameParameters, setGameParameters] =
-    useState<GameParametersJson | null>(null);
-  const [hasStarted, setHasStarted] = useState(false);
-  const [state, setState] = useState<DetailedState | null>(null);
-
-  const [tryingToRejoin, setTryingToRejoin] = useState<boolean | null>(null);
+  const [room, setRoom] = useState<Room | null>(null);
+  const [tryingToRejoin, setTryingToRejoin] = useState<boolean>(true);
 
   useEffect(() => {
     function onConnect() {
@@ -30,16 +24,9 @@ export const GamePage = () => {
       console.log("[🔌 Socket] Disconnected from socket");
     }
 
-    function onGameStart() {
-      setHasStarted(true);
-    }
-
-    function onGameChanged(state: DetailedState) {
-      setState(state);
-    }
-
-    function onGameParametersChanged(gameParameters: GameParametersJson) {
-      setGameParameters(gameParameters);
+    function onRoomChanged(room: Room | null) {
+      console.log("[🔌 Socket] Room changed", room);
+      setRoom(room);
     }
 
     function onAnyOutgoing(event: string, ...args: any[]) {
@@ -50,17 +37,10 @@ export const GamePage = () => {
       console.log("[🔌 Socket] Incoming event", event, args);
     }
 
-    function onGameReset() {
-      window.location.reload();
-    }
-
     socket.on("connect", onConnect);
     socket.on("connect_error", onConnectError);
     socket.on("disconnect", onDisconnect);
-    socket.on("on:game:start", onGameStart);
-    socket.on("on:game:changed", onGameChanged);
-    socket.on("on:game:parameters:changed", onGameParametersChanged);
-    socket.on("on:game:reset", onGameReset);
+    socket.on("on:room:changed", onRoomChanged);
     socket.onAnyOutgoing(onAnyOutgoing);
     socket.onAny(onAnyIncoming);
 
@@ -68,10 +48,7 @@ export const GamePage = () => {
       socket.off("connect", onConnect);
       socket.off("connect_error", onConnectError);
       socket.off("disconnect", onDisconnect);
-      socket.off("on:game:start", onGameStart);
-      socket.off("on:game:changed", onGameChanged);
-      socket.off("on:game:parameters:changed", onGameParametersChanged);
-      socket.off("on:game:reset", onGameReset);
+      socket.off("on:room:changed", onRoomChanged);
       socket.offAnyOutgoing(onAnyOutgoing);
       socket.offAny(onAnyIncoming);
     };
@@ -79,49 +56,39 @@ export const GamePage = () => {
 
   // Retrieve the secret from local storage
   useEffect(() => {
-    if (!issuer) {
+    // Read the secret from local storage
+    try {
+      const textLocalStorageIssuer = localStorage.getItem("issuer") ?? "";
+      const objectLocalStorageIssuer = JSON.parse(textLocalStorageIssuer);
+      const localStorageIssuer = schemas.issuer.parse(objectLocalStorageIssuer);
+      socket.emit("rejoin", localStorageIssuer, (response) => {
+        console.log("[🔌 Socket] Rejoin response", response);
+        setTryingToRejoin(false);
+      });
+    } catch (error) {
+      console.log("[🔌 Socket] Invalid issuer", error);
       setTryingToRejoin(false);
       return;
     }
-    setTryingToRejoin(true);
-    socket.emit("rejoin", issuer, (response) => {
-      console.log("[🔌 Socket] Rejoin response", response);
-      if (response.status === 200) {
-        setGameParameters(response.gameParameters);
-        if (response.gameState) {
-          setHasStarted(true);
-          setState(response.gameState);
-        } else {
-          setHasStarted(false);
-          setState(null);
-        }
-      } else {
-        setIssuer(null);
-      }
-      setTryingToRejoin(false);
-    });
   }, []);
 
-  const onJoin = (issuer: Issuer, gameParameters: GameParametersJson) => {
-    setIssuer(issuer);
-    setGameParameters(gameParameters);
-  };
+  useEffect(() => {
+    if (room) {
+      localStorage.setItem("issuer", JSON.stringify(room.issuer));
+    }
+  }, [room?.issuer]);
 
-  console.log({ issuer, gameParameters, hasStarted, state });
-
-  if (tryingToRejoin === null || tryingToRejoin === true) {
+  if (tryingToRejoin) {
     return <Loading />;
-  } else if (!issuer) {
-    return <JoinForm onJoin={onJoin} />;
-  } else if (!hasStarted && gameParameters) {
-    return <StartStep issuer={issuer} gameParameters={gameParameters} />;
-  } else if (state) {
+  } else if (!room) {
+    return <JoinForm />;
+  } else if (!room.gameState) {
+    return <StartStep room={room} />;
+  } else if (room.gameState) {
     return (
-      <GameProvider state={state} issuer={issuer}>
+      <GameProvider state={room.gameState} issuer={room.issuer}>
         <Board />
       </GameProvider>
     );
-  } else {
-    return <Loading />;
   }
 };

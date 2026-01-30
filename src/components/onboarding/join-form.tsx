@@ -1,26 +1,17 @@
-import type { GameParametersJson, Issuer } from "@/shared/api";
 import { socket } from "@/utils/socket";
 import { useLocalStorage } from "@/utils/use-local-storage";
 import { useToastContext } from "../board/contexts/toast-context";
 import { Button } from "../button";
 
-interface JoinFormProps {
-  onJoin: (issuer: Issuer, gameParameters: GameParametersJson) => void;
-}
-
-export const JoinForm = ({ onJoin }: JoinFormProps) => {
+export const JoinForm = () => {
   const [name, setName] = useLocalStorage<string>("name", "");
   const { toast } = useToastContext();
 
-  const joinGame = async (e: React.FormEvent<HTMLFormElement>) => {
+  const joinGame: React.SubmitEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     socket.emit("join", name, (response) => {
       switch (response.status) {
         case 200:
-          onJoin(
-            { id: name, secret: response.secret },
-            response.gameParameters,
-          );
           break;
         case 400:
         default:
@@ -30,8 +21,21 @@ export const JoinForm = ({ onJoin }: JoinFormProps) => {
     });
   };
 
+  const onResetPress = () => {
+    socket.emit("reset", null, (response) => {
+      switch (response.status) {
+        case 200:
+          toast("success", "Reset", "The game has been reset");
+          break;
+      }
+    });
+  };
+
   return (
-    <div className="grid h-screen place-content-center place-items-center">
+    <div className="grid h-screen place-content-center place-items-center gap-8">
+      <div>
+        <Button type="button" label="Reset ongoing game" onClick={onResetPress} />
+      </div>
       <div className="flex flex-col gap-8 rounded-lg border-2 border-stone-700 p-8 text-center">
         <h1 className="font-main text-3xl font-bold">Join the game</h1>
         <form onSubmit={joinGame} className="flex flex-col gap-4">
@@ -45,7 +49,7 @@ export const JoinForm = ({ onJoin }: JoinFormProps) => {
             required
             className="rounded-md border-2 border-stone-700 bg-stone-800 px-4 py-2 text-white focus:ring-2 focus:ring-stone-500 focus:outline-none"
           />
-          <Button type="submit" label="Join" onClick={() => {}} />
+          <Button type="submit" label="Join" onClick={() => { }} />
         </form>
       </div>
     </div>

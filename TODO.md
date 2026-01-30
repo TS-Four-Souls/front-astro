@@ -1,9 +1,5 @@
-- List players joined before starting
-- Block multiple loot card in one turn
 - Dismiss popover when element diseapear
-- Bum-bo! doesn't work
-- Hover on souls should display the soul cards
 - Declare attack seem to be disabled after declaring attack on top deck on a card that says "you may attack another this turn"
 - Look at player hand, mom's eye, ask "Choose a player" which is now clear and then selection is just string and not cards
 - Secret room -> weird behavior, it looks like I couldn't resolve its effect
-- 
+- Max zoom level is a little wrong on MacBook 1/2 screen, the user can go through the board
