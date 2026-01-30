@@ -267,6 +267,7 @@ const gameParametersSchema = z.object({
   lootOnStart: z.number(),
   coinsOnStart: z.number(),
   shopPrice: z.number(),
+  lootPlayPerTurn: z.number(),
   nbPlayerCardRestriction: z.boolean(),
 });
 export type GameParametersJson = z.infer<typeof gameParametersSchema>;
@@ -410,6 +411,7 @@ const setGameParameterRequestSchema = z.discriminatedUnion("parameter", [
       "lootOnStart",
       "coinsOnStart",
       "shopPrice",
+      "lootPlayPerTurn"
     ]),
     value: z.number(),
     issuer: issuerSchema,

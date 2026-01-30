@@ -109,12 +109,23 @@ export const StartStep = ({ issuer, gameParameters }: StartStepProps) => {
                 onChangeGameParameter({ parameter: "shopPrice", value, issuer });
               }}
             />
-            <p className="text-stone-400">Number of player card restriction</p>
+            <p className="text-stone-400">Include card with number of player restriction</p>
             <BooleanInput
               value={gameParameters.nbPlayerCardRestriction}
               onChange={(value) => {
                 onChangeGameParameter({
                   parameter: "nbPlayerCardRestriction",
+                  value,
+                  issuer,
+                });
+              }}
+            />
+            <p className="text-stone-400">Number of loot play per turn</p>
+            <NumericInput
+              value={gameParameters.lootPlayPerTurn}
+              onChange={(value) => {
+                onChangeGameParameter({
+                  parameter: "lootPlayPerTurn",
                   value,
                   issuer,
                 });
