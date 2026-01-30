@@ -108,9 +108,13 @@ export const PlayerStats = ({
         type: "number",
         payload: index + 1,
       })),
-      minCount: 1,
+      minCount: 0,
       maxCount: 1,
       onSubmit: function (selections): void {
+        if(selections.length === 0) {
+          removePrompt(promptId);
+          return;
+        }
         socket.emit(
           "giveCoins",
           { issuer, coins: selections[0].payload, target: name },
@@ -148,7 +152,7 @@ export const PlayerStats = ({
       )}>
       <h1 className="text-center font-alt-stats font-bold uppercase">{name}</h1>
       <div
-        className="flex items-center gap-1"
+        className="flex items-center gap-1 cursor-pointer"
         onClick={() => !isMe && onCoinPress()}>
         <img src="/coin.png" className="size-6 rounded-full shadow-md/50" />:
         <span className="font-statblock text-4xl">{coins}</span>
