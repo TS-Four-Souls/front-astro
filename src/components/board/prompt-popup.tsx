@@ -37,20 +37,15 @@ interface PromptPopupProps<T extends SelectionItem = SelectionItem> {
    */
   onCancel?: () => void;
 }
-export const PromptPopup = ({
-  prompt,
-  options,
-  minCount,
-  maxCount,
-  onSubmit,
-  onCancel,
-}: PromptPopupProps) => {
+export const PromptPopup = (props: PromptPopupProps) => {
+  const {
+    prompt,
+    options,
+    minCount,
+    maxCount,
+    onSubmit,
+  } = props;
   const [selectedOptions, setSelectedOptions] = useState<SelectionItem[]>([]);
-
-  useHotkeys("escape", () => onCancel?.(), {
-    enabled: onCancel !== undefined,
-    scopes: [HotkeyScope.Popup],
-  });
 
   const addSelection = (option: SelectionItem) => {
     setSelectedOptions((current) => [...current, option]);
@@ -68,13 +63,20 @@ export const PromptPopup = ({
     (option) => option.type === "couplePlayerHand",
   );
 
+  const isInformational = maxCount === 0;
+  const onCancel = props.onCancel ?? isInformational ? () => onSubmit([]) : undefined;
+  useHotkeys("escape", () => onCancel?.(), {
+    enabled: onCancel !== undefined,
+    scopes: [HotkeyScope.Popup],
+  });
+  
   return (
     <Popup onPressBackdrop={onCancel}>
       <div className="flex flex-row justify-between gap-8">
         <h1 className="font-alt-stats text-2xl font-bold uppercase">
           {prompt}
         </h1>
-        {onCancel && <Button onClick={onCancel} label="Cancel" />}
+        {onCancel && <Button onClick={onCancel} label={isInformational ? "Close" : "Cancel"} />}
       </div>
 
       <div
@@ -114,15 +116,18 @@ export const PromptPopup = ({
           </div>
         )}
       </div>
-
-      <Button
-        onClick={() => onSubmit(selectedOptions)}
-        disabled={
-          selectedOptions.length < minCount || selectedOptions.length > maxCount
-        }
-        label="Submit"
-        theme="onLight"
-      />
+      {
+        !isInformational && (
+          <Button
+            onClick={() => onSubmit(selectedOptions)}
+            disabled={
+              selectedOptions.length < minCount || selectedOptions.length > maxCount
+            }
+            label="Submit"
+            theme="onLight"
+          />
+        )
+      }
     </Popup>
   );
 };
