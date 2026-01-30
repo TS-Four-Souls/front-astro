@@ -64,12 +64,12 @@ export const PromptPopup = (props: PromptPopupProps) => {
   );
 
   const isInformational = maxCount === 0;
-  const onCancel = props.onCancel ?? isInformational ? () => onSubmit([]) : undefined;
+  const onCancel = props.onCancel ?? (isInformational ? () => onSubmit([]) : undefined);
   useHotkeys("escape", () => onCancel?.(), {
     enabled: onCancel !== undefined,
     scopes: [HotkeyScope.Popup],
   });
-  
+
   return (
     <Popup onPressBackdrop={onCancel}>
       <div className="flex flex-row justify-between gap-8">
