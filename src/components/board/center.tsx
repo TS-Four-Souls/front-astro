@@ -5,7 +5,6 @@ import { Stack } from "./stack";
 import { socket } from "@/utils/socket";
 import { useGameContext } from "./contexts/game-context";
 import { useToastContext } from "./contexts/toast-context";
-import { Button } from "../button";
 import { usePromptContext } from "./contexts/prompt-context";
 import { tooltip } from "@/utils/tooltip";
 
@@ -96,36 +95,6 @@ export const Center = ({ state }: CenterProps) => {
     });
   };
 
-  const declareAttack = () => {
-    socket.emit("declareAttack", { issuer }, (response) => {
-      if (response.status === 200) {
-        toast("success", "Declared attack", "You have declared an attack");
-      } else {
-        toast("error", "Failed to declare attack", response.error);
-      }
-    });
-  };
-
-  const declarePurchase = () => {
-    socket.emit("declarePurchase", { issuer }, (response) => {
-      if (response.status === 200) {
-        toast("success", "Declared purchase", "You have declared a purchase");
-      } else {
-        toast("error", "Failed to declare purchase", response.error);
-      }
-    });
-  };
-
-  const cancelPurchase = () => {
-    socket.emit("cancelPurchase", { issuer }, (response) => {
-      if (response.status === 200) {
-        toast("success", "Cancelled purchase", "You have cancelled a purchase");
-      } else {
-        toast("error", "Failed to cancel purchase", response.error);
-      }
-    });
-  };
-
   const selectMonsterToAttack = (
     index: number | "top",
     replaceIndex?: number,
@@ -197,101 +166,58 @@ export const Center = ({ state }: CenterProps) => {
     });
   };
 
-  const rollDice = () => {
-    socket.emit("attackRoll", issuer, (response) => {
-      if (response.status === 200) {
-        toast("success", "Rolled dice", "You have rolled a dice");
-      } else {
-        toast("error", "Failed to roll dice", response.error);
-      }
-    });
-  };
-
   return (
-    <div className="mx-24 my-8 flex flex-col gap-4 rounded-xl bg-stone-700/10 p-12 shadow-md inset-shadow-xs inset-shadow-stone-700 transform-3d translate-z-1">
-      <div className="flex justify-end translate-z-1">
-        {!state.me.isEngagedInPurchase && (
-          <Button
-            label="Declare purchase"
-            disabled={state.me.capabilities.declarePurchase !== true}
-            onClick={() =>
-              block(
-                "Cannot declare purchase",
-                state.me.capabilities.declarePurchase,
-                declarePurchase,
-              )
-            }
-            tooltip={tooltip(
-              "Cannot declare purchase",
-              state.me.capabilities.declarePurchase,
-            )}
-            className="self-end"
-          />
-        )}
-        {state.me.isEngagedInPurchase && (
-          <Button
-            label="Abandon purchase"
-            disabled={state.me.capabilities.buyTreasure === true}
-            tooltip={tooltip(
-              "Abandon purchase",
-              state.me.capabilities.buyTreasure === true
-                ? "Cannot abandon purchase while able to buy treasure."
-                : true,
-            )}
-            onClick={() =>
-              block(
-                "Abandon purchase",
-                state.me.capabilities.buyTreasure === true
-                  ? "Cannot abandon purchase while able to buy treasure."
-                  : true,
-                cancelPurchase,
-              )
-            }
-            className="self-end"
-          />
-        )}
+    <div className="flex translate-z-1 place-items-center gap-12 rounded-xl bg-stone-700/10 p-8 shadow-md inset-shadow-xs inset-shadow-stone-700 transform-3d">
+      <Stack />
+      <div className="flex shrink-0 flex-col place-items-center gap-2 transform-3d">
+        {state.bonusSouls.map((soul) => (
+          <Pile key={soul.slug} cards={soul.granted ? [] : [soul]} size={105} />
+        ))}
       </div>
-      <div className="flex place-items-center gap-12 transform-3d">
-        <Stack />
-        <div className="flex shrink-0 flex-col place-items-center gap-2 transform-3d">
-          {state.bonusSouls.map((soul) => (
-            <Pile
-              key={soul.slug}
-              cards={soul.granted ? [] : [soul]}
-              size={105}
-            />
-          ))}
-        </div>
-        <div className="flex flex-col place-items-center gap-2 transform-3d">
+      <div className="flex flex-col place-items-center gap-2 transform-3d">
+        <Pile
+          cards={Array.from({ length: state.loot.deckSize }).map(
+            () => CardType.LootCard,
+          )}
+        />
+        <Pile cards={state.loot.discard} onClickTopCard={viewLootDiscard} />
+      </div>
+      <div className="flex flex-col gap-6 transform-3d">
+        <div className="flex place-items-center gap-2 transform-3d">
           <Pile
-            cards={Array.from({ length: state.loot.deckSize }).map(
-              () => CardType.LootCard,
+            cards={state.treasure.discard}
+            onClickTopCard={viewTreasureDiscard}
+          />
+          <Pile
+            cards={Array.from({ length: state.treasure.deckSize }).map(
+              (_, index) =>
+                index === state.treasure.deckSize - 1
+                  ? (state.firstCardTreasureDeck ?? CardType.TreasureCard)
+                  : CardType.TreasureCard,
+            )}
+            disabled={state.me.capabilities.buyTreasure !== true}
+            onClickTopCard={() =>
+              block(
+                "Cannot buy this card",
+                state.me.capabilities.buyTreasure,
+                () => purchaseTreasure("top"),
+              )
+            }
+            tooltip={tooltip(
+              "Cannot buy this card",
+              state.me.capabilities.buyTreasure,
             )}
           />
-          <Pile
-            cards={state.loot.discard}
-            onClickTopCard={viewLootDiscard}
-          />
-        </div>
-        <div className="flex flex-col gap-8 transform-3d">
-          <div className="flex place-items-center gap-2 transform-3d">
+          {state.treasure.inPlay.map((card, index) => (
             <Pile
-              cards={state.treasure.discard}
-              onClickTopCard={viewTreasureDiscard}
-            />
-            <Pile
-              cards={Array.from({ length: state.treasure.deckSize }).map(
-                (_, index) =>
-                  index === state.treasure.deckSize - 1
-                    ? (state.firstCardTreasureDeck ?? CardType.TreasureCard)
-                    : CardType.TreasureCard,
-              )}
+              key={card.slug}
+              cards={[card]}
               disabled={state.me.capabilities.buyTreasure !== true}
               onClickTopCard={() =>
                 block(
                   "Cannot buy this card",
                   state.me.capabilities.buyTreasure,
-                  () => purchaseTreasure("top"),
+                  () => purchaseTreasure(index),
                 )
               }
               tooltip={tooltip(
@@ -299,119 +225,62 @@ export const Center = ({ state }: CenterProps) => {
                 state.me.capabilities.buyTreasure,
               )}
             />
-            {state.treasure.inPlay.map((card, index) => (
-              <Pile
-                key={card.slug}
-                cards={[card]}
-                disabled={state.me.capabilities.buyTreasure !== true}
-                onClickTopCard={() =>
-                  block(
-                    "Cannot buy this card",
-                    state.me.capabilities.buyTreasure,
-                    () => purchaseTreasure(index),
-                  )
-                }
-                tooltip={tooltip(
-                  "Cannot buy this card",
-                  state.me.capabilities.buyTreasure,
-                )}
-              />
-            ))}
-          </div>
-          <div className="flex place-items-center gap-2 transform-3d">
-            <Pile
-              cards={state.monsters.discard.map((card) => ({
-                slug: card.slug,
-                face: "front",
-              }))}
-              onClickTopCard={viewMonsterDiscard}
-            />
-            <Pile
-              cards={Array.from({ length: state.monsters.deckSize }).map(
-                () => CardType.MonsterCard,
-              )}
-              disabled={state.monsters.capabilities.targetableDeck !== true}
-              onClickTopCard={() =>
-                block(
-                  "Cannot attack this card",
-                  state.monsters.capabilities.targetableDeck,
-                  () => {
-                    selectMonsterToAttack("top");
-                  },
-                )
-              }
-              tooltip={tooltip(
+          ))}
+        </div>
+        <div className="flex place-items-center gap-2 transform-3d">
+          <Pile
+            cards={state.monsters.discard.map((card) => ({
+              slug: card.slug,
+              face: "front",
+            }))}
+            onClickTopCard={viewMonsterDiscard}
+          />
+          <Pile
+            cards={Array.from({ length: state.monsters.deckSize }).map(
+              () => CardType.MonsterCard,
+            )}
+            disabled={state.monsters.capabilities.targetableDeck !== true}
+            onClickTopCard={() =>
+              block(
                 "Cannot attack this card",
                 state.monsters.capabilities.targetableDeck,
-              )}
-            />
-            {state.monsters.inPlay.map((card, index) => {
-              const targetable =
-                card.top.stats?.capabilities.targetable ??
-                "This is not a monster card.";
-              return (
-                <Pile
-                  key={card.top.slug}
-                  cards={[
-                    ...card.covered,
-                    {
-                      slug: card.top.slug,
-                      stats: card.top.stats,
-                      effects: card.top.stats?.temporaryEffect,
-                      engagedInCombat:
-                        card.top.stats?.isEngagedInCombat ?? false,
-                    },
-                  ]}
-                  disabled={targetable !== true}
-                  onClickTopCard={() =>
-                    block("Cannot attack this card", targetable, () =>
-                      selectMonsterToAttack(index),
-                    )
-                  }
-                  tooltip={tooltip("Cannot attack this card", targetable)}
-                />
-              );
-            })}
-          </div>
+                () => {
+                  selectMonsterToAttack("top");
+                },
+              )
+            }
+            tooltip={tooltip(
+              "Cannot attack this card",
+              state.monsters.capabilities.targetableDeck,
+            )}
+          />
+          {state.monsters.inPlay.map((card, index) => {
+            const targetable =
+              card.top.stats?.capabilities.targetable ??
+              "This is not a monster card.";
+            return (
+              <Pile
+                key={card.top.slug}
+                cards={[
+                  ...card.covered,
+                  {
+                    slug: card.top.slug,
+                    stats: card.top.stats,
+                    effects: card.top.stats?.temporaryEffect,
+                    engagedInCombat: card.top.stats?.isEngagedInCombat ?? false,
+                  },
+                ]}
+                disabled={targetable !== true}
+                onClickTopCard={() =>
+                  block("Cannot attack this card", targetable, () =>
+                    selectMonsterToAttack(index),
+                  )
+                }
+                tooltip={tooltip("Cannot attack this card", targetable)}
+              />
+            );
+          })}
         </div>
-      </div>
-      <div className="flex justify-end translate-z-1">
-        {!state.me.isEngagedInCombat && (
-          <Button
-            label="Declare attack"
-            disabled={state.me.capabilities.declareAttack !== true}
-            onClick={() =>
-              block(
-                "Cannot declare attack",
-                state.me.capabilities.declareAttack,
-                declareAttack,
-              )
-            }
-            tooltip={tooltip(
-              "Cannot declare attack",
-              state.me.capabilities.declareAttack,
-            )}
-            className="self-end"
-          />
-        )}
-        {state.me.isEngagedInCombat && (
-          <Button
-            label="Roll dice"
-            disabled={state.me.capabilities.rollDice !== true}
-            tooltip={tooltip(
-              "Cannot roll dice",
-              state.me.capabilities.rollDice,
-            )}
-            onClick={() =>
-              block(
-                "Cannot roll dice",
-                state.me.capabilities.rollDice,
-                rollDice,
-              )
-            }
-            className="self-end"
-          />
-        )}
       </div>
     </div>
   );

@@ -20,7 +20,7 @@ export const StartStep = ({ room }: StartStepProps) => {
     });
   };
 
-    const onResetPress = () => {
+  const onResetPress = () => {
     socket.emit("reset", null, (response) => {
       switch (response.status) {
         case 200:
@@ -44,16 +44,18 @@ export const StartStep = ({ room }: StartStepProps) => {
   };
 
   return (
-    <div className="grid min-h-screen p-12 place-content-center place-items-center gap-8 overflow-y-auto">
+    <div className="grid min-h-screen place-content-center place-items-center gap-8 overflow-y-auto p-12">
       <div>
-        <Button type="button" label="Reset ongoing game" onClick={onResetPress} />
+        <Button
+          type="button"
+          label="Reset ongoing game"
+          onClick={onResetPress}
+        />
       </div>
       <div className="flex flex-col gap-8 rounded-lg border-2 border-stone-700 p-8 text-center">
         <h1 className="font-main text-3xl font-bold">Welcome {issuer.id}!</h1>
         <div>
-          <p className="leading-normal text-stone-400">
-            Players:
-          </p>
+          <p className="leading-normal text-stone-400">Players:</p>
           <ol>
             {players.map((player) => (
               <li key={player}>{player}</li>
@@ -70,7 +72,7 @@ export const StartStep = ({ room }: StartStepProps) => {
       <div className="rounded-lg border-2 border-stone-700 p-8">
         <details>
           <summary className="text-2xl font-bold">Game parameters</summary>
-          <div className="grid grid-cols-[auto_auto] items-center gap-8 mt-8">
+          <div className="mt-8 grid grid-cols-[auto_auto] items-center gap-8">
             <p className="text-stone-400">Number of items in shop</p>
             <NumericInput
               value={gameParameters.nbItemsInShop}
@@ -86,7 +88,11 @@ export const StartStep = ({ room }: StartStepProps) => {
             <NumericInput
               value={gameParameters.nbEncounters}
               onChange={(value) => {
-                onChangeGameParameter({ parameter: "nbEncounters", value, issuer });
+                onChangeGameParameter({
+                  parameter: "nbEncounters",
+                  value,
+                  issuer,
+                });
               }}
             />
             <p className="text-stone-400">Death penalty coins</p>
@@ -115,24 +121,38 @@ export const StartStep = ({ room }: StartStepProps) => {
             <NumericInput
               value={gameParameters.lootOnStart}
               onChange={(value) => {
-                onChangeGameParameter({ parameter: "lootOnStart", value, issuer });
+                onChangeGameParameter({
+                  parameter: "lootOnStart",
+                  value,
+                  issuer,
+                });
               }}
             />
             <p className="text-stone-400">Coins on start</p>
             <NumericInput
               value={gameParameters.coinsOnStart}
               onChange={(value) => {
-                onChangeGameParameter({ parameter: "coinsOnStart", value, issuer });
+                onChangeGameParameter({
+                  parameter: "coinsOnStart",
+                  value,
+                  issuer,
+                });
               }}
             />
             <p className="text-stone-400">Shop price</p>
             <NumericInput
               value={gameParameters.shopPrice}
               onChange={(value) => {
-                onChangeGameParameter({ parameter: "shopPrice", value, issuer });
+                onChangeGameParameter({
+                  parameter: "shopPrice",
+                  value,
+                  issuer,
+                });
               }}
             />
-            <p className="text-stone-400">Include card with number of player restriction</p>
+            <p className="text-stone-400">
+              Include card with number of player restriction
+            </p>
             <BooleanInput
               value={gameParameters.nbPlayerCardRestriction}
               onChange={(value) => {
@@ -169,7 +189,7 @@ const NumericInput = ({
   onChange: (value: number) => void;
 }) => {
   return (
-    <div className="flex items-center gap-2 justify-end">
+    <div className="flex items-center justify-end gap-2">
       <Button onClick={() => onChange(value - 1)} label="-" />
       <p className="min-w-6 text-center">{value}</p>
       <Button onClick={() => onChange(value + 1)} label="+" />
@@ -185,7 +205,7 @@ const BooleanInput = ({
   onChange: (value: boolean) => void;
 }) => {
   return (
-    <div className="flex items-center gap-2 justify-end">
+    <div className="flex items-center justify-end gap-2">
       <Button onClick={() => onChange(!value)} label={value ? "Yes" : "No"} />
     </div>
   );

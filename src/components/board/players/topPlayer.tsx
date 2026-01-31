@@ -14,8 +14,9 @@ export const TopPlayer = ({ player }: TopPlayerProps) => {
   // Create an array of arrays of 8 elements each, fill with undefined if needed
   const grid = Array.from(
     { length: Math.ceil(player.inPlay.length / MAX_COLUMNS) },
-    () => Array(MAX_COLUMNS).fill(undefined),
+    () => Array(Math.min(player.inPlay.length, MAX_COLUMNS)).fill(undefined),
   );
+
   // Fill the grid with the cards
   for (let i = 0; i < player.inPlay.length; i++) {
     grid[Math.floor(i / MAX_COLUMNS)][i % MAX_COLUMNS] = player.inPlay[i];
@@ -28,7 +29,7 @@ export const TopPlayer = ({ player }: TopPlayerProps) => {
     <div
       key={player.name}
       className={
-        "col-start-2 row-start-1 flex flex-col-reverse place-content-center place-items-center gap-8 transform-3d"
+        "col-start-2 row-start-1 flex flex-col-reverse place-content-center place-items-center gap-6 transform-3d"
       }>
       <PlayerStats
         name={player.name}

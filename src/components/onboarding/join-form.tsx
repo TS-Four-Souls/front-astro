@@ -34,7 +34,11 @@ export const JoinForm = () => {
   return (
     <div className="grid h-screen place-content-center place-items-center gap-8">
       <div>
-        <Button type="button" label="Reset ongoing game" onClick={onResetPress} />
+        <Button
+          type="button"
+          label="Reset ongoing game"
+          onClick={onResetPress}
+        />
       </div>
       <div className="flex flex-col gap-8 rounded-lg border-2 border-stone-700 p-8 text-center">
         <h1 className="font-main text-3xl font-bold">Join the game</h1>
@@ -49,7 +53,7 @@ export const JoinForm = () => {
             required
             className="rounded-md border-2 border-stone-700 bg-stone-800 px-4 py-2 text-white focus:ring-2 focus:ring-stone-500 focus:outline-none"
           />
-          <Button type="submit" label="Join" onClick={() => { }} />
+          <Button type="submit" label="Join" onClick={() => {}} />
         </form>
       </div>
     </div>

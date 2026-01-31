@@ -1,5 +1,10 @@
 - Dismiss popover when element diseapear
-- Declare attack seem to be disabled after declaring attack on top deck on a card that says "you may attack another this turn"
-- Look at player hand, mom's eye, ask "Choose a player" which is now clear and then selection is just string and not cards
-- Secret room -> weird behavior, it looks like I couldn't resolve its effect
 - Max zoom level is a little wrong on MacBook 1/2 screen, the user can go through the board
+- Preview side panel optional
+- View the covered monster cards
+- show pile of monsters
+- show attack requirements
+- space bar to resolve stack, enter to skip turn, numbers on selection
+- zoom someimes is weird ?
+- I like the UI, it works well for 4 players, containing all necessary information, but for 2 players it should be bigger
+- User stats on other than the character card, when multiple line of inplay

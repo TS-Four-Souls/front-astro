@@ -42,6 +42,46 @@ export const PlayerStats = ({
   const isMe = state.me.name === name;
   const canEndTurn = isMe && state.me.capabilities.endTurn;
 
+  const declareAttack = () => {
+    socket.emit("declareAttack", { issuer }, (response) => {
+      if (response.status === 200) {
+        toast("success", "Declared attack", "You have declared an attack");
+      } else {
+        toast("error", "Failed to declare attack", response.error);
+      }
+    });
+  };
+
+  const rollDice = () => {
+    socket.emit("attackRoll", issuer, (response) => {
+      if (response.status === 200) {
+        toast("success", "Rolled dice", "You have rolled a dice");
+      } else {
+        toast("error", "Failed to roll dice", response.error);
+      }
+    });
+  };
+
+  const declarePurchase = () => {
+    socket.emit("declarePurchase", { issuer }, (response) => {
+      if (response.status === 200) {
+        toast("success", "Declared purchase", "You have declared a purchase");
+      } else {
+        toast("error", "Failed to declare purchase", response.error);
+      }
+    });
+  };
+
+  const cancelPurchase = () => {
+    socket.emit("cancelPurchase", { issuer }, (response) => {
+      if (response.status === 200) {
+        toast("success", "Cancelled purchase", "You have cancelled a purchase");
+      } else {
+        toast("error", "Failed to cancel purchase", response.error);
+      }
+    });
+  };
+
   const onEndTurnPress = () => {
     socket.emit("endTurn", { issuer }, (response) => {
       switch (response.status) {
@@ -111,7 +151,7 @@ export const PlayerStats = ({
       minCount: 0,
       maxCount: 1,
       onSubmit: function (selections): void {
-        if(selections.length === 0) {
+        if (selections.length === 0) {
           removePrompt(promptId);
           return;
         }
@@ -152,7 +192,7 @@ export const PlayerStats = ({
       )}>
       <h1 className="text-center font-alt-stats font-bold uppercase">{name}</h1>
       <div
-        className="flex items-center gap-1 cursor-pointer"
+        className="flex cursor-pointer items-center gap-1"
         onClick={() => !isMe && onCoinPress()}>
         <img src="/coin.png" className="size-6 rounded-full shadow-md/50" />:
         <span className="font-statblock text-4xl">{coins}</span>
@@ -168,7 +208,7 @@ export const PlayerStats = ({
               setPopover({
                 anchor: rect,
                 content: (
-                  <div className="flex flex-nowrap gap-4 w-max">
+                  <div className="flex w-max flex-nowrap gap-4">
                     {soulCards.map((card, index) => (
                       <CardImage
                         card={card}
@@ -222,6 +262,82 @@ export const PlayerStats = ({
             label="Reset"
             className="translate-z-1"
           />
+          {!state.me.isEngagedInPurchase && (
+            <Button
+              label="Declare purchase"
+              disabled={state.me.capabilities.declarePurchase !== true}
+              onClick={() =>
+                block(
+                  "Cannot declare purchase",
+                  state.me.capabilities.declarePurchase,
+                  declarePurchase,
+                )
+              }
+              tooltip={tooltip(
+                "Cannot declare purchase",
+                state.me.capabilities.declarePurchase,
+              )}
+              className="self-end"
+            />
+          )}
+          {state.me.isEngagedInPurchase && (
+            <Button
+              label="Abandon purchase"
+              disabled={state.me.capabilities.buyTreasure === true}
+              tooltip={tooltip(
+                "Abandon purchase",
+                state.me.capabilities.buyTreasure === true
+                  ? "Cannot abandon purchase while able to buy treasure."
+                  : true,
+              )}
+              onClick={() =>
+                block(
+                  "Abandon purchase",
+                  state.me.capabilities.buyTreasure === true
+                    ? "Cannot abandon purchase while able to buy treasure."
+                    : true,
+                  cancelPurchase,
+                )
+              }
+              className="self-end"
+            />
+          )}
+          {!state.me.isEngagedInCombat && (
+            <Button
+              label="Declare attack"
+              disabled={state.me.capabilities.declareAttack !== true}
+              onClick={() =>
+                block(
+                  "Cannot declare attack",
+                  state.me.capabilities.declareAttack,
+                  declareAttack,
+                )
+              }
+              tooltip={tooltip(
+                "Cannot declare attack",
+                state.me.capabilities.declareAttack,
+              )}
+              className="self-end"
+            />
+          )}
+          {state.me.isEngagedInCombat && (
+            <Button
+              label="Roll dice"
+              disabled={state.me.capabilities.rollDice !== true}
+              tooltip={tooltip(
+                "Cannot roll dice",
+                state.me.capabilities.rollDice,
+              )}
+              onClick={() =>
+                block(
+                  "Cannot roll dice",
+                  state.me.capabilities.rollDice,
+                  rollDice,
+                )
+              }
+              className="self-end"
+            />
+          )}
           <Gear className="size-5 cursor-pointer" onClick={() => openMenu()} />
         </div>
       )}

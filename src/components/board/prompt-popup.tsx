@@ -38,13 +38,7 @@ interface PromptPopupProps<T extends SelectionItem = SelectionItem> {
   onCancel?: () => void;
 }
 export const PromptPopup = (props: PromptPopupProps) => {
-  const {
-    prompt,
-    options,
-    minCount,
-    maxCount,
-    onSubmit,
-  } = props;
+  const { prompt, options, minCount, maxCount, onSubmit } = props;
   const [selectedOptions, setSelectedOptions] = useState<SelectionItem[]>([]);
 
   const addSelection = (option: SelectionItem) => {
@@ -64,7 +58,8 @@ export const PromptPopup = (props: PromptPopupProps) => {
   );
 
   const isInformational = maxCount === 0;
-  const onCancel = props.onCancel ?? (isInformational ? () => onSubmit([]) : undefined);
+  const onCancel =
+    props.onCancel ?? (isInformational ? () => onSubmit([]) : undefined);
   useHotkeys("escape", () => onCancel?.(), {
     enabled: onCancel !== undefined,
     scopes: [HotkeyScope.Popup],
@@ -76,7 +71,12 @@ export const PromptPopup = (props: PromptPopupProps) => {
         <h1 className="font-alt-stats text-2xl font-bold uppercase">
           {prompt}
         </h1>
-        {onCancel && <Button onClick={onCancel} label={isInformational ? "Close" : "Cancel"} />}
+        {onCancel && (
+          <Button
+            onClick={onCancel}
+            label={isInformational ? "Close" : "Cancel"}
+          />
+        )}
       </div>
 
       <div
@@ -116,18 +116,17 @@ export const PromptPopup = (props: PromptPopupProps) => {
           </div>
         )}
       </div>
-      {
-        !isInformational && (
-          <Button
-            onClick={() => onSubmit(selectedOptions)}
-            disabled={
-              selectedOptions.length < minCount || selectedOptions.length > maxCount
-            }
-            label="Submit"
-            theme="onLight"
-          />
-        )
-      }
+      {!isInformational && (
+        <Button
+          onClick={() => onSubmit(selectedOptions)}
+          disabled={
+            selectedOptions.length < minCount ||
+            selectedOptions.length > maxCount
+          }
+          label="Submit"
+          theme="onLight"
+        />
+      )}
     </Popup>
   );
 };

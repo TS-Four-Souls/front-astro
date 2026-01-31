@@ -7,6 +7,7 @@ import { Me } from "./players/me";
 import { TopPlayer } from "./players/topPlayer";
 import { LeftPlayer } from "./players/leftPlayer";
 import { RightPlayer } from "./players/rightPlayer";
+import { cn } from "@/utils/cn";
 
 export const Board = () => {
   const { state } = useGameContext();
@@ -26,7 +27,10 @@ export const Board = () => {
         className="relative h-screen w-screen overflow-hidden bg-stone-800 select-none perspective-[60vmax] perspective-origin-center">
         <div
           ref={boardRef}
-          className="absolute top-1/2 left-1/2 grid h-max w-max -translate-x-1/2 -translate-y-1/2 grid-cols-[auto_1fr_auto] grid-rows-[auto_1fr_auto] p-6 pb-40 transform-3d">
+          className={cn(
+            "absolute top-1/2 left-1/2 grid h-max w-max -translate-x-1/2 -translate-y-1/2 grid-cols-[auto_1fr_auto] grid-rows-[auto_1fr_auto] gap-4 p-6 pb-40 transform-3d",
+            state.players.length === 1 && "gap-x-0",
+          )}>
           <Me />
           {state.players.map((player, index) => {
             if (state.players.length === 1) {

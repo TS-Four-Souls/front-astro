@@ -371,7 +371,7 @@ const setGameParameterRequestSchema = z.discriminatedUnion("parameter", [
       "lootOnStart",
       "coinsOnStart",
       "shopPrice",
-      "lootPlayPerTurn"
+      "lootPlayPerTurn",
     ]),
     value: z.number(),
     issuer: issuerSchema,
