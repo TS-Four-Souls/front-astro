@@ -35,7 +35,10 @@ export const Button = ({
         active ? "bg-stone-300 text-stone-900" : "",
         className,
       )}
-      onClick={onClick}
+      onClick={(e) => {
+        onClick?.();
+        e.currentTarget.blur();
+      }}
       type={type}
       title={tooltip}>
       {label}

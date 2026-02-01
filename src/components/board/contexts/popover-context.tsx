@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { Popover } from "../popover";
 
 interface Popover {
@@ -40,5 +40,11 @@ export const PopoverProvider = ({
 };
 
 export const usePopoverContext = () => {
-  return useContext(PopoverContext);
+  const { setPopover, closePopover } = useContext(PopoverContext);
+  
+  useEffect(() => {
+    return closePopover;
+  }, []);
+
+  return { setPopover, closePopover };
 };
