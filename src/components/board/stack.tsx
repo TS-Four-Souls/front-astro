@@ -17,6 +17,8 @@ import { tooltip } from "@/utils/tooltip";
 import { cn } from "@/utils/cn";
 import { usePopoverContext } from "./contexts/popover-context";
 import { receiverName, selectionToText } from "@/utils/selection-text";
+import { useHotkeys } from "react-hotkeys-hook";
+import { HotkeyScope } from "@/utils/hotkey";
 
 export const Stack = () => {
   const { state, issuer } = useGameContext();
@@ -36,6 +38,8 @@ export const Stack = () => {
       }
     });
   };
+
+  useHotkeys("space", resolveStack, { scopes: [HotkeyScope.Main] });
 
   useEffect(() => {
     const scrollView = scrollViewRef.current;
