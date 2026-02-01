@@ -257,20 +257,61 @@ const attackMonsterSchema = z.union([
   }),
 ]);
 
+const booleanGameParameterSchema = z.object({
+  text: z.string(),
+  value: z.boolean(),
+});
+
+const numberGameParameterSchema = z.object({
+  text: z.string(),
+  value: z.number(),
+});
+
 const gameParametersSchema = z.object({
-  nbItemsInShop: z.number(),
-  nbEncounters: z.number(),
-  deathPenaltyCoins: z.number(),
-  deathPenaltyItem: z.number(),
-  deathPenaltyLoot: z.number(),
-  treasuresOnStart: z.number(),
-  lootOnStart: z.number(),
-  coinsOnStart: z.number(),
-  shopPrice: z.number(),
-  lootPlayPerTurn: z.number(),
-  nbPlayerCardRestriction: z.boolean(),
+  nbItemsInShop: numberGameParameterSchema,
+  nbEncounters: numberGameParameterSchema,
+  deathPenaltyCoins: numberGameParameterSchema,
+  deathPenaltyItem: numberGameParameterSchema,
+  deathPenaltyLoot: numberGameParameterSchema,
+  treasuresOnStart: numberGameParameterSchema,
+  lootOnStart: numberGameParameterSchema,
+  coinsOnStart: numberGameParameterSchema,
+  shopPrice: numberGameParameterSchema,
+  maxHandSize: numberGameParameterSchema,
+  allowCoinDonation: booleanGameParameterSchema,
+  lootPlayPerTurn: numberGameParameterSchema,
+  nbPlayerCardRestriction: booleanGameParameterSchema,
 });
 export type GameParametersJson = z.infer<typeof gameParametersSchema>;
+
+// Utility types to extract keys based on parameter value type
+export type NumberParameterKeys = {
+  [K in keyof GameParametersJson]: GameParametersJson[K]["value"] extends number
+    ? K
+    : never;
+}[keyof GameParametersJson];
+
+export type BooleanParameterKeys = {
+  [K in keyof GameParametersJson]: GameParametersJson[K]["value"] extends boolean
+    ? K
+    : never;
+}[keyof GameParametersJson];
+
+export function isBooleanParameterKey(
+  key: keyof GameParametersJson,
+): key is BooleanParameterKeys {
+  return gameParametersSchema.shape[key] === booleanGameParameterSchema;
+}
+
+export function isNumberParameterKey(
+  key: keyof GameParametersJson,
+): key is NumberParameterKeys {
+  return gameParametersSchema.shape[key] === numberGameParameterSchema;
+}
+
+export function isParameterKey(key: string): key is keyof GameParametersJson {
+  return key in gameParametersSchema.shape;
+}
 
 const joinRequestSchema = z.string();
 
@@ -350,6 +391,12 @@ const purchaseSchema = z.object({
   index: z.union([z.number(), z.literal("top")]),
 });
 
+const attackRequirementSchema = z.object({
+  monster: z.union([cardSchema, z.literal("top")]),
+  source: cardSchema,
+});
+
+export type AttackRequirement = z.infer<typeof attackRequirementSchema>;
 const cardActivationSchema = z.object({
   issuer: issuerSchema,
   index: z.number(),
@@ -361,23 +408,26 @@ const nextTurnRequestSchema = startRequestSchema;
 
 const setGameParameterRequestSchema = z.discriminatedUnion("parameter", [
   z.object({
-    parameter: z.enum([
-      "nbItemsInShop",
-      "nbEncounters",
-      "deathPenaltyCoins",
-      "deathPenaltyItem",
-      "deathPenaltyLoot",
-      "treasuresOnStart",
-      "lootOnStart",
-      "coinsOnStart",
-      "shopPrice",
-      "lootPlayPerTurn",
-    ]),
+    parameter: z.enum(
+      Object.keys(gameParametersSchema.shape).filter(
+        (key) =>
+          gameParametersSchema.shape[
+            key as keyof typeof gameParametersSchema.shape
+          ] === numberGameParameterSchema,
+      ) as [NumberParameterKeys, ...NumberParameterKeys[]],
+    ),
     value: z.number(),
     issuer: issuerSchema,
   }),
   z.object({
-    parameter: z.enum(["nbPlayerCardRestriction"]),
+    parameter: z.enum(
+      Object.keys(gameParametersSchema.shape).filter(
+        (key) =>
+          gameParametersSchema.shape[
+            key as keyof typeof gameParametersSchema.shape
+          ] === booleanGameParameterSchema,
+      ) as [BooleanParameterKeys, ...BooleanParameterKeys[]],
+    ),
     value: z.boolean(),
     issuer: issuerSchema,
   }),
@@ -398,6 +448,7 @@ const playerSchema = z.object({
   temporaryEffect: z.array(temporaryEffectSchema),
   remainingLootPlay: z.number(),
   isEngagedInCombat: z.boolean(),
+  attackRequirements: z.array(attackRequirementSchema),
   isEngagedInPurchase: z.boolean(),
   pendingSelection: z.boolean(),
 });

@@ -1,7 +1,9 @@
+import { Fragment } from "react";
 import { socket } from "@/utils/socket";
 import type { Requests, Room } from "@/shared/api";
 import { useToastContext } from "../board/contexts/toast-context";
 import { Button } from "../button";
+import { isBooleanParameterKey, isParameterKey } from "@/shared/api";
 
 interface StartStepProps {
   room: Room;
@@ -73,107 +75,38 @@ export const StartStep = ({ room }: StartStepProps) => {
         <details>
           <summary className="text-2xl font-bold">Game parameters</summary>
           <div className="mt-8 grid grid-cols-[auto_auto] items-center gap-8">
-            <p className="text-stone-400">Number of items in shop</p>
-            <NumericInput
-              value={gameParameters.nbItemsInShop}
-              onChange={(value) => {
-                onChangeGameParameter({
-                  parameter: "nbItemsInShop",
-                  value,
-                  issuer,
-                });
-              }}
-            />
-            <p className="text-stone-400">Number of encounters</p>
-            <NumericInput
-              value={gameParameters.nbEncounters}
-              onChange={(value) => {
-                onChangeGameParameter({
-                  parameter: "nbEncounters",
-                  value,
-                  issuer,
-                });
-              }}
-            />
-            <p className="text-stone-400">Death penalty coins</p>
-            <NumericInput
-              value={gameParameters.deathPenaltyCoins}
-              onChange={(value) => {
-                onChangeGameParameter({
-                  parameter: "deathPenaltyCoins",
-                  value,
-                  issuer,
-                });
-              }}
-            />
-            <p className="text-stone-400">Treasures on start</p>
-            <NumericInput
-              value={gameParameters.treasuresOnStart}
-              onChange={(value) => {
-                onChangeGameParameter({
-                  parameter: "treasuresOnStart",
-                  value,
-                  issuer,
-                });
-              }}
-            />
-            <p className="text-stone-400">Loot on start</p>
-            <NumericInput
-              value={gameParameters.lootOnStart}
-              onChange={(value) => {
-                onChangeGameParameter({
-                  parameter: "lootOnStart",
-                  value,
-                  issuer,
-                });
-              }}
-            />
-            <p className="text-stone-400">Coins on start</p>
-            <NumericInput
-              value={gameParameters.coinsOnStart}
-              onChange={(value) => {
-                onChangeGameParameter({
-                  parameter: "coinsOnStart",
-                  value,
-                  issuer,
-                });
-              }}
-            />
-            <p className="text-stone-400">Shop price</p>
-            <NumericInput
-              value={gameParameters.shopPrice}
-              onChange={(value) => {
-                onChangeGameParameter({
-                  parameter: "shopPrice",
-                  value,
-                  issuer,
-                });
-              }}
-            />
-            <p className="text-stone-400">
-              Include card with number of player restriction
-            </p>
-            <BooleanInput
-              value={gameParameters.nbPlayerCardRestriction}
-              onChange={(value) => {
-                onChangeGameParameter({
-                  parameter: "nbPlayerCardRestriction",
-                  value,
-                  issuer,
-                });
-              }}
-            />
-            <p className="text-stone-400">Number of loot play per turn</p>
-            <NumericInput
-              value={gameParameters.lootPlayPerTurn}
-              onChange={(value) => {
-                onChangeGameParameter({
-                  parameter: "lootPlayPerTurn",
-                  value,
-                  issuer,
-                });
-              }}
-            />
+            {Object.keys(gameParameters)
+              .filter(isParameterKey)
+              .map((parameter) => (
+                <Fragment key={parameter}>
+                  <p className="text-stone-400">
+                    {gameParameters[parameter].text}
+                  </p>
+                  {isBooleanParameterKey(parameter) ? (
+                    <BooleanInput
+                      value={gameParameters[parameter].value}
+                      onChange={(value) => {
+                        onChangeGameParameter({
+                          parameter: parameter,
+                          value,
+                          issuer,
+                        });
+                      }}
+                    />
+                  ) : (
+                    <NumericInput
+                      value={gameParameters[parameter].value}
+                      onChange={(value) => {
+                        onChangeGameParameter({
+                          parameter: parameter,
+                          value,
+                          issuer,
+                        });
+                      }}
+                    />
+                  )}
+                </Fragment>
+              ))}
           </div>
         </details>
       </div>
