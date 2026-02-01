@@ -1,10 +1,5 @@
-- Dismiss popover when element diseapear
 - Max zoom level is a little wrong on MacBook 1/2 screen, the user can go through the board
 - Preview side panel optional
-- View the covered monster cards
-- show pile of monsters
-- show attack requirements
-- space bar to resolve stack, enter to skip turn, numbers on selection
+- Enter to skip turn, numbers on selection
 - zoom someimes is weird ?
 - I like the UI, it works well for 4 players, containing all necessary information, but for 2 players it should be bigger
-- User stats on other than the character card, when multiple line of inplay
