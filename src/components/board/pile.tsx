@@ -8,6 +8,7 @@ import {
   useUserSettingsContext,
 } from "./contexts/user-settings-context";
 import type { TemporaryEffect } from "@/shared/api";
+import { usePopoverContext } from "./contexts/popover-context";
 
 type CardMetadata = {
   isRequiredAttack?: boolean;
@@ -54,6 +55,7 @@ interface PileProps {
     enableSides: boolean;
     enable3D: boolean;
   };
+  onHoverPopover?: () => React.ReactNode;
 }
 
 const BRIGHTNESS_MIN = 0.3;
@@ -74,10 +76,22 @@ export const Pile = ({
   tooltip,
   optimizations,
   topCardClassName,
+  onHoverPopover,
 }: PileProps) => {
   const size = sizePx / 16;
   const seed = useRef(Math.random().toString());
   const rng = seedrandom(seed.current);
+
+  const { setPopover, closePopover } = usePopoverContext();
+
+  const onMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (onHoverPopover) {
+      setPopover({
+        anchor: e.currentTarget.getBoundingClientRect(),
+        content: onHoverPopover(),
+      });
+    }
+  };
 
   const userSettings = useUserSettingsContext();
 
@@ -155,6 +169,12 @@ export const Pile = ({
               effects={typeof card === "string" ? undefined : card.effects}
               eternal={eternal}
               counter={counter}
+              onMouseEnter={
+                index === array.length - 1 ? onMouseEnter : undefined
+              }
+              onMouseLeave={
+                index === array.length - 1 ? closePopover : undefined
+              }
             />
           );
         })}

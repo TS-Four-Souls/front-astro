@@ -1,6 +1,6 @@
 import type { Card, DetailedState } from "@/shared/api";
 import { Pile } from "./pile";
-import { CardType } from "./card";
+import { CardImage, CardType } from "./card";
 import { Stack } from "./stack";
 import { socket } from "@/utils/socket";
 import { useGameContext } from "./contexts/game-context";
@@ -166,6 +166,10 @@ export const Center = ({ state }: CenterProps) => {
     });
   };
 
+  const monsterDeckAttackRequirement = state.me.attackRequirements.find(
+    (requirement) => requirement.monster === "top",
+  );
+
   return (
     <div className="flex translate-z-1 place-items-center gap-12 rounded-xl bg-stone-700/10 p-8 shadow-md inset-shadow-xs inset-shadow-stone-700 transform-3d">
       <Stack />
@@ -247,6 +251,22 @@ export const Center = ({ state }: CenterProps) => {
               }),
             )}
             disabled={state.monsters.capabilities.targetableDeck !== true}
+            onHoverPopover={
+              monsterDeckAttackRequirement
+                ? () => (
+                    <>
+                      <CardImage
+                        card={monsterDeckAttackRequirement.source}
+                        className="w-64"
+                      />
+                      <p className="mt-3 max-w-64 text-center leading-tight text-stone-400">
+                        You are required to attack the top of the monster deck
+                        this turn.
+                      </p>
+                    </>
+                  )
+                : undefined
+            }
             onClickTopCard={() =>
               block(
                 "Cannot attack this card",
@@ -265,6 +285,12 @@ export const Center = ({ state }: CenterProps) => {
             const targetable =
               card.top.stats?.capabilities.targetable ??
               "This is not a monster card.";
+
+            const attackRequirement = state.me.attackRequirements.find(
+              (requirement) =>
+                requirement.monster !== "top" &&
+                requirement.monster.slug === card.top.slug,
+            );
             return (
               <Pile
                 key={card.top.slug}
@@ -275,12 +301,25 @@ export const Center = ({ state }: CenterProps) => {
                     stats: card.top.stats,
                     effects: card.top.stats?.temporaryEffect,
                     engagedInCombat: card.top.stats?.isEngagedInCombat ?? false,
-                    isRequiredAttack: state.me.attackRequirements.some(
-                      (requirement) => requirement.monster === card.top.slug,
-                    ),
+                    isRequiredAttack: attackRequirement !== undefined,
                   },
                 ]}
                 disabled={targetable !== true}
+                onHoverPopover={
+                  attackRequirement
+                    ? () => (
+                        <>
+                          <CardImage
+                            card={attackRequirement.source}
+                            className="w-64"
+                          />
+                          <p className="mt-3 max-w-64 text-center leading-tight text-stone-400">
+                            You are required to attack this monster this turn.
+                          </p>
+                        </>
+                      )
+                    : undefined
+                }
                 onClickTopCard={() =>
                   block("Cannot attack this card", targetable, () =>
                     selectMonsterToAttack(index),

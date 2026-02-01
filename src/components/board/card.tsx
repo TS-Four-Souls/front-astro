@@ -29,6 +29,8 @@ interface CardProps {
     | { healthPoints: number; attackPoints: number };
   eternal?: boolean;
   counter?: number;
+  onMouseEnter?: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onMouseLeave?: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 
 const RX = `${CARD_RADIUS}%`;
@@ -49,6 +51,8 @@ export const Card = ({
   effects,
   eternal,
   counter,
+  onMouseEnter,
+  onMouseLeave,
 }: CardProps) => {
   if (!card) {
     return (
@@ -86,7 +90,9 @@ export const Card = ({
         borderRadius: BORDER_RADIUS,
         height: size + "em",
       }}
-      onClick={onClick}>
+      onClick={onClick}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}>
       <CardImage
         card={card}
         className={cn("pointer-events-auto h-full w-full")}
