@@ -9,28 +9,39 @@ import {
 } from "./contexts/user-settings-context";
 import type { TemporaryEffect } from "@/shared/api";
 
+type CardMetadata = {
+  isRequiredAttack?: boolean;
+  charged?: boolean;
+  eternal?: boolean;
+  engagedInCombat?: boolean;
+  counter?: number;
+  stats?:
+    | {
+        healthPoints: number;
+        attackPoints: number;
+        evasionPoints: number;
+      }
+    | {
+        healthPoints: number;
+        attackPoints: number;
+      }
+    | undefined;
+  effects?: TemporaryEffect[];
+};
+
 interface PileProps {
   cards: (
-    | {
-        slug: string;
-        charged?: boolean;
-        effects?: TemporaryEffect[];
-        engagedInCombat?: boolean;
-        eternal?: boolean;
-        counter?: number;
-        stats?:
-          | {
-              healthPoints: number;
-              attackPoints: number;
-              evasionPoints: number;
-            }
-          | {
-              healthPoints: number;
-              attackPoints: number;
-            }
-          | undefined;
-      }
     | CardType
+    | (CardMetadata &
+        (
+          | {
+              slug: string;
+              charged?: boolean;
+            }
+          | {
+              type: CardType;
+            }
+        ))
   )[];
   size?: number;
   disabled?: boolean;
@@ -103,16 +114,23 @@ export const Pile = ({
 
           const counter = typeof card === "string" ? undefined : card.counter;
 
+          const isRequiredAttack =
+            typeof card === "object" ? card.isRequiredAttack : false;
+
           return (
             <Card
               onClick={index === array.length - 1 ? onClickTopCard : undefined}
               thickness={thickness}
               key={index}
-              card={card}
+              card={
+                typeof card === "object" && "type" in card ? card.type : card
+              }
               className={cn(
                 "col-start-1 row-start-1",
                 !charged && "brightness-50 contrast-90",
                 engagedInCombat && "outline-[0.2em] outline-red-500/60",
+                isRequiredAttack &&
+                  "outline-[0.2em] outline-red-500/60 outline-dashed",
                 cards.length > 0 && index === 0 && "shadow-lg/20",
                 cards.length > 5 && index === 3 && "shadow-lg/20",
                 cards.length > 10 && index === 2 && "shadow-xl/30",

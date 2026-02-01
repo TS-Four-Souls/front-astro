@@ -237,7 +237,14 @@ export const Center = ({ state }: CenterProps) => {
           />
           <Pile
             cards={Array.from({ length: state.monsters.deckSize }).map(
-              () => CardType.MonsterCard,
+              (_, index) => ({
+                type: CardType.MonsterCard,
+                isRequiredAttack:
+                  index === state.monsters.deckSize - 1 &&
+                  state.me.attackRequirements.some(
+                    (requirement) => requirement.monster === "top",
+                  ),
+              }),
             )}
             disabled={state.monsters.capabilities.targetableDeck !== true}
             onClickTopCard={() =>
@@ -268,6 +275,9 @@ export const Center = ({ state }: CenterProps) => {
                     stats: card.top.stats,
                     effects: card.top.stats?.temporaryEffect,
                     engagedInCombat: card.top.stats?.isEngagedInCombat ?? false,
+                    isRequiredAttack: state.me.attackRequirements.some(
+                      (requirement) => requirement.monster === card.top.slug,
+                    ),
                   },
                 ]}
                 disabled={targetable !== true}
