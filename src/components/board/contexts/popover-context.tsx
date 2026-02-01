@@ -41,7 +41,7 @@ export const PopoverProvider = ({
 
 export const usePopoverContext = () => {
   const { setPopover, closePopover } = useContext(PopoverContext);
-  
+
   useEffect(() => {
     return closePopover;
   }, []);

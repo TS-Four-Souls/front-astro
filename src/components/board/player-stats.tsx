@@ -2,7 +2,6 @@ import { cn } from "@/utils/cn";
 import { useGameContext } from "./contexts/game-context";
 import { socket } from "@/utils/socket";
 import { useToastContext } from "./contexts/toast-context";
-import { useUserSettingsContext } from "./contexts/user-settings-context";
 import { Gear } from "@/icons/gear";
 import { Button } from "../button";
 import { usePromptContext } from "./contexts/prompt-context";
@@ -11,6 +10,7 @@ import { usePopoverContext } from "./contexts/popover-context";
 import type { Card as CardType } from "@/shared/api";
 import { useRef } from "react";
 import { CardImage } from "./card";
+import { useMainMenuContext } from "./contexts/main-menu-context";
 
 interface PlayerStatsProps {
   name: string;
@@ -32,10 +32,10 @@ export const PlayerStats = ({
   className,
 }: PlayerStatsProps) => {
   const { state, issuer } = useGameContext();
-  const { openMenu } = useUserSettingsContext();
   const { toast, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
   const { setPopover, closePopover } = usePopoverContext();
+  const { openMenu } = useMainMenuContext();
   const soulSequenceRef = useRef<HTMLDivElement>(null);
 
   const isCurrentTurn = state.turn === name;
@@ -90,44 +90,6 @@ export const PlayerStats = ({
         default:
         case 400:
           toast("error", "Failed to end turn", response.error);
-          break;
-      }
-    });
-  };
-
-  const onResetPress = (confirmed?: true) => {
-    if (confirmed === undefined) {
-      const promptId = `reset-confirm-${Date.now()}`;
-      addPrompt({
-        promptId,
-        isUnique: true,
-        prompt: "Are you sure you want to reset the game?",
-        options: [
-          { type: "boolean", payload: true },
-          { type: "boolean", payload: false },
-        ],
-        minCount: 1,
-        maxCount: 1,
-        onSubmit: (selectedOptions) => {
-          if (selectedOptions[0].payload === true) {
-            onResetPress(true);
-          }
-          removePrompt(promptId);
-        },
-        onCancel: () => {
-          removePrompt(promptId);
-        },
-      });
-      return;
-    }
-    socket.emit("reset", null, (response) => {
-      switch (response.status) {
-        case 200:
-          toast("success", "Reset", "The game has been reset");
-          break;
-        default:
-        case 400:
-          toast("error", "Failed to reset", response.error);
           break;
       }
     });
@@ -255,11 +217,6 @@ export const PlayerStats = ({
             }
             tooltip={tooltip("Cannot end turn", state.me.capabilities.endTurn)}
             label="End turn"
-            className="translate-z-1"
-          />
-          <Button
-            onClick={() => onResetPress()}
-            label="Reset"
             className="translate-z-1"
           />
           {!state.me.isEngagedInPurchase && (

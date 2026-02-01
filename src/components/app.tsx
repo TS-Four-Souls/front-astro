@@ -14,8 +14,8 @@ interface AppProps {
 export const App = ({ page }: AppProps) => {
   return (
     <div className="min-h-screen w-screen overflow-hidden bg-stone-800 text-white">
-      <PopoverProvider>
-        <HotkeysProvider initiallyActiveScopes={[HotkeyScope.Main]}>
+      <HotkeysProvider initiallyActiveScopes={[HotkeyScope.Main]}>
+        <PopoverProvider>
           <UserSettingsProvider>
             <ToastProvider>
               <PromptProvider>
@@ -23,8 +23,8 @@ export const App = ({ page }: AppProps) => {
               </PromptProvider>
             </ToastProvider>
           </UserSettingsProvider>
-        </HotkeysProvider>
-      </PopoverProvider>
+        </PopoverProvider>
+      </HotkeysProvider>
     </div>
   );
 };

@@ -6,6 +6,7 @@ import { socket } from "@/utils/socket";
 import { schemas, type Room } from "@/shared/api";
 import { GameProvider } from "../board/contexts/game-context";
 import { Loading } from "../onboarding/loading";
+import { MainMenuProvider } from "../board/contexts/main-menu-context";
 
 export const GamePage = () => {
   const [room, setRoom] = useState<Room | null>(null);
@@ -87,7 +88,9 @@ export const GamePage = () => {
   } else if (room.gameState) {
     return (
       <GameProvider state={room.gameState} issuer={room.issuer}>
-        <Board />
+        <MainMenuProvider>
+          <Board />
+        </MainMenuProvider>
       </GameProvider>
     );
   }
