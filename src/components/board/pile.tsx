@@ -49,6 +49,7 @@ interface PileProps {
   className?: string;
   topCardClassName?: string;
   onClickTopCard?: () => void;
+  onPileDetailsClick?: () => void;
   tooltip?: string;
   optimizations?: {
     maxCards: number;
@@ -72,6 +73,7 @@ export const Pile = ({
   size: sizePx = 160,
   disabled,
   onClickTopCard,
+  onPileDetailsClick,
   className,
   tooltip,
   optimizations,
@@ -150,11 +152,9 @@ export const Pile = ({
                 cards.length > 10 && index === 2 && "shadow-xl/30",
                 cards.length > 40 && index === 1 && "shadow-2xl/30",
                 cards.length > 80 && index === 0 && "shadow-3xl/30",
-                index === array.length - 1 &&
-                  onClickTopCard &&
-                  (disabled ? "cursor-not-allowed" : "cursor-pointer"),
                 index === array.length - 1 && topCardClassName,
               )}
+              disabled={index === array.length - 1 && disabled}
               style={{
                 transform: `
                   ${enable3D ? `translateZ(${thickness * (index + 1)}em)` : ""}
@@ -175,12 +175,16 @@ export const Pile = ({
               onMouseLeave={
                 index === array.length - 1 ? closePopover : undefined
               }
+              onPileDetailsClick={
+                index === array.length - 1 ? onPileDetailsClick : undefined
+              }
             />
           );
         })}
       {cards.length === 0 && (
         <Card
           onClick={onClickTopCard}
+          disabled={disabled}
           style={{ height: size + "em" }}
           tooltip={tooltip}
         />

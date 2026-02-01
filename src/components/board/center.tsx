@@ -29,61 +29,13 @@ export const Center = ({ state }: CenterProps) => {
     });
   };
 
-  const viewLootDiscard = () => {
-    if (state.loot.discard.length === 0) {
-      toast("info", "Loot discard", "The loot discard pile is empty");
-      return;
-    }
-    const promptId = `view-loot-discard-${Date.now()}`;
+  const displayPileDetails = (cards: Card[]) => {
+    const promptId = `pile-details-${Date.now()}`;
     addPrompt({
       promptId,
       isUnique: false,
-      prompt: "Loot discard pile",
-      options: state.loot.discard.toReversed().map((card) => ({
-        type: "card",
-        payload: card,
-      })),
-      minCount: 0,
-      maxCount: 0,
-      onSubmit: () => {
-        removePrompt(promptId);
-      },
-    });
-  };
-
-  const viewTreasureDiscard = () => {
-    if (state.treasure.discard.length === 0) {
-      toast("info", "Treasure discard", "The treasure discard pile is empty");
-      return;
-    }
-    const promptId = `view-treasure-discard-${Date.now()}`;
-    addPrompt({
-      promptId,
-      isUnique: false,
-      prompt: "Treasure discard pile",
-      options: state.treasure.discard.toReversed().map((card) => ({
-        type: "card",
-        payload: card,
-      })),
-      minCount: 0,
-      maxCount: 0,
-      onSubmit: () => {
-        removePrompt(promptId);
-      },
-    });
-  };
-
-  const viewMonsterDiscard = () => {
-    if (state.monsters.discard.length === 0) {
-      toast("info", "Monster discard", "The monster discard pile is empty");
-      return;
-    }
-    const promptId = `view-monster-discard-${Date.now()}`;
-    addPrompt({
-      promptId,
-      isUnique: false,
-      prompt: "Monster discard pile",
-      options: state.monsters.discard.toReversed().map((card) => ({
+      prompt: "Pile details",
+      options: cards.map((card) => ({
         type: "card",
         payload: card,
       })),
@@ -184,13 +136,44 @@ export const Center = ({ state }: CenterProps) => {
             () => CardType.LootCard,
           )}
         />
-        <Pile cards={state.loot.discard} onClickTopCard={viewLootDiscard} />
+        <Pile
+          cards={state.loot.discard}
+          onClickTopCard={() =>
+            block(
+              "Cannot view loot discard",
+              state.loot.discard.length === 0
+                ? "The loot discard pile is empty"
+                : true,
+              () => displayPileDetails(state.loot.discard.toReversed()),
+            )
+          }
+          onPileDetailsClick={
+            state.loot.discard.length > 1
+              ? () => displayPileDetails(state.loot.discard.toReversed())
+              : undefined
+          }
+          disabled={state.loot.discard.length === 0}
+        />
       </div>
       <div className="flex flex-col gap-6 transform-3d">
         <div className="flex place-items-center gap-2 transform-3d">
           <Pile
             cards={state.treasure.discard}
-            onClickTopCard={viewTreasureDiscard}
+            onClickTopCard={() =>
+              block(
+                "Cannot view treasure discard",
+                state.treasure.discard.length === 0
+                  ? "The treasure discard pile is empty"
+                  : true,
+                () => displayPileDetails(state.treasure.discard.toReversed()),
+              )
+            }
+            disabled={state.treasure.discard.length === 0}
+            onPileDetailsClick={
+              state.treasure.discard.length > 1
+                ? () => displayPileDetails(state.treasure.discard.toReversed())
+                : undefined
+            }
           />
           <Pile
             cards={Array.from({ length: state.treasure.deckSize }).map(
@@ -237,7 +220,21 @@ export const Center = ({ state }: CenterProps) => {
               slug: card.slug,
               face: "front",
             }))}
-            onClickTopCard={viewMonsterDiscard}
+            onPileDetailsClick={
+              state.monsters.discard.length > 1
+                ? () => displayPileDetails(state.monsters.discard.toReversed())
+                : undefined
+            }
+            disabled={state.monsters.discard.length === 0}
+            onClickTopCard={() =>
+              block(
+                "Cannot view monster discard",
+                state.monsters.discard.length === 0
+                  ? "The monster discard pile is empty"
+                  : true,
+                () => displayPileDetails(state.monsters.discard.toReversed()),
+              )
+            }
           />
           <Pile
             cards={Array.from({ length: state.monsters.deckSize }).map(
@@ -324,6 +321,16 @@ export const Center = ({ state }: CenterProps) => {
                   block("Cannot attack this card", targetable, () =>
                     selectMonsterToAttack(index),
                   )
+                }
+                onPileDetailsClick={
+                  card.covered.length > 0
+                    ? () => {
+                        displayPileDetails([
+                          card.top,
+                          ...card.covered.toReversed(),
+                        ]);
+                      }
+                    : undefined
                 }
                 tooltip={tooltip("Cannot attack this card", targetable)}
               />

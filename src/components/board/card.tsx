@@ -3,6 +3,7 @@ import { cn } from "../../utils/cn";
 import type { TemporaryEffect } from "@/shared/api";
 import { TemporaryEffectCard } from "./temporary-effect-card";
 import { SELF_BASE_URL } from "astro:env/client";
+import { PileIndicator } from "@/icons/pile-indicator";
 
 export enum CardType {
   BonusSoul = "bsoul",
@@ -21,7 +22,9 @@ interface CardProps {
   brightness?: number;
   enableSides?: boolean;
   effects?: TemporaryEffect[];
+  onPileDetailsClick?: () => void;
   onClick?: () => void;
+  disabled?: boolean;
   tooltip?: string;
   size?: number;
   stats?:
@@ -45,6 +48,8 @@ export const Card = ({
   brightness = 1,
   enableSides = true,
   onClick,
+  onPileDetailsClick,
+  disabled,
   tooltip,
   stats,
   size = 160,
@@ -59,7 +64,7 @@ export const Card = ({
       <div
         className={cn(
           "aspect-750/1024 h-40 rounded-md shadow-sm inset-shadow-sm shadow-stone-700 inset-shadow-stone-900",
-          onClick && "cursor-pointer",
+          onClick && (disabled ? "cursor-not-allowed" : "cursor-pointer"),
           className,
         )}
         style={{ ...style, borderRadius: BORDER_RADIUS }}
@@ -90,18 +95,29 @@ export const Card = ({
         borderRadius: BORDER_RADIUS,
         height: size + "em",
       }}
-      onClick={onClick}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}>
       <CardImage
         card={card}
-        className={cn("pointer-events-auto h-full w-full")}
+        onClick={onClick}
+        className={cn(
+          "h-full w-full",
+          onClick && (disabled ? "cursor-not-allowed" : "cursor-pointer"),
+        )}
         style={{
           filter: `brightness(${Math.max(0.2, brightness * brightness)})`,
           borderRadius: enableSides ? "unset" : BORDER_RADIUS,
         }}
         tooltip={tooltip}
       />
+
+      {onPileDetailsClick && (
+        <div
+          className="absolute bottom-0.5 left-0.5 cursor-pointer rounded-md bg-stone-700 p-0.5"
+          onClick={onPileDetailsClick}>
+          <PileIndicator className="h-3 w-3" />
+        </div>
+      )}
 
       {effects && effects.length > 0 && (
         <div className="absolute top-[16%] right-[4%] bottom-[45%] flex flex-col flex-wrap-reverse gap-1">
@@ -130,7 +146,7 @@ export const Card = ({
 
       {stats && !("evasionPoints" in stats) && (
         <div style={{ fontSize: statsSize + "em" }}>
-          <div className="absolute top-[57.3%] right-[28.5%] left-[27.5%]">
+          <div className="pointer-events-none absolute top-[57.3%] right-[28.5%] left-[27.5%]">
             <img src="/character-card-overlay.png" draggable={false} />
           </div>
           <div className="absolute top-[55.7%] left-[40.5%] font-statblock text-black">
@@ -144,7 +160,7 @@ export const Card = ({
 
       {stats && "evasionPoints" in stats && (
         <div style={{ fontSize: statsSize + "em" }}>
-          <div className="absolute top-[57.3%] right-[17.1%] left-[17.7%]">
+          <div className="pointer-events-none absolute top-[57.3%] right-[17.1%] left-[17.7%]">
             <img src="/monster-card-overlay.png" draggable={false} />
           </div>
 
