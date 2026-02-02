@@ -1,18 +1,19 @@
 import { socket } from "@/utils/socket";
-import { CardImage } from "./card";
 import { useGameContext } from "./contexts/game-context";
 import { useToastContext } from "./contexts/toast-context";
 import { usePromptContext } from "./contexts/prompt-context";
 import type { SelectionItem } from "@/shared/api";
 import { cn } from "@/utils/cn";
 import { tooltip } from "@/utils/tooltip";
+import { Pile } from "./pile";
 
 export const Hand = () => {
-  const { state, issuer } = useGameContext();
+  const { state, issuer, isHandUp, setIsHandUp } = useGameContext();
   const { toast, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
 
   const playCard = (index: number, selections: SelectionItem[] = []) => {
+    setIsHandUp(false);
     socket.emit(
       "playCard",
       { issuer, index, effectIndex: "tap", targetChoices: selections },
@@ -52,13 +53,23 @@ export const Hand = () => {
     );
   };
 
+  const targetableCards = state.me.hand
+    .filter((_, index) => isHandUp && index < 8)
+    .map((card) => card.slug);
+
   return (
     <div className="pointer-events-none fixed right-0 bottom-0 left-0 flex place-content-center place-items-center">
-      <div className="pointer-events-auto grid translate-y-1/2 auto-cols-fr grid-flow-col transition-transform duration-500 hover:translate-y-0 hover:blur-none">
+      <div
+        className={cn(
+          "pointer-events-auto grid translate-y-1/2 auto-cols-fr grid-flow-col transition-transform duration-500",
+          isHandUp && "translate-y-0",
+        )}
+        onMouseEnter={() => setIsHandUp(true)}
+        onMouseLeave={() => setIsHandUp(false)}>
         {state.me.hand.map((card, index) => (
-          <CardImage
+          <Pile
             key={card.slug}
-            card={card}
+            cards={[{ slug: card.slug }]}
             className={cn(
               "m-1 max-h-[25vh] transition-transform",
               state.me.capabilities.useLoot === true
@@ -69,13 +80,21 @@ export const Hand = () => {
               "Cannot play this card",
               state.me.capabilities.useLoot,
             )}
-            onClick={() =>
+            onClickTopCardHotkey={
+              targetableCards.includes(card.slug)
+                ? `${targetableCards.indexOf(card.slug) + 1},shift+${targetableCards.indexOf(card.slug) + 1}`
+                : undefined
+            }
+            disabled={state.me.capabilities.useLoot !== true}
+            onClickTopCard={() =>
               block(
                 "Cannot play this card",
                 state.me.capabilities.useLoot,
                 () => playCard(index),
               )
             }
+            size={350}
+            enableRandomRotation={false}
           />
         ))}
       </div>

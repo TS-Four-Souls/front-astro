@@ -11,20 +11,18 @@ interface AppProps {
   page: "debug" | "game";
 }
 
-export const App = ({ page }: AppProps) => {
-  return (
-    <div className="min-h-screen w-screen overflow-hidden bg-stone-800 text-white">
-      <HotkeysProvider initiallyActiveScopes={[HotkeyScope.Main]}>
-        <PopoverProvider>
-          <UserSettingsProvider>
-            <ToastProvider>
-              <PromptProvider>
-                {page === "debug" ? <DebugPage /> : <GamePage />}
-              </PromptProvider>
-            </ToastProvider>
-          </UserSettingsProvider>
-        </PopoverProvider>
-      </HotkeysProvider>
-    </div>
-  );
-};
+export const App = ({ page }: AppProps) => (
+  <div className="min-h-screen w-screen overflow-hidden bg-stone-800 text-white">
+    <HotkeysProvider initiallyActiveScopes={[HotkeyScope.Main]}>
+      <PopoverProvider>
+        <UserSettingsProvider>
+          <ToastProvider>
+            <PromptProvider>
+              {page === "debug" ? <DebugPage /> : <GamePage />}
+            </PromptProvider>
+          </ToastProvider>
+        </UserSettingsProvider>
+      </PopoverProvider>
+    </HotkeysProvider>
+  </div>
+);

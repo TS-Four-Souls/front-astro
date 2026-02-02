@@ -122,6 +122,17 @@ export const Center = ({ state }: CenterProps) => {
     (requirement) => requirement.monster === "top",
   );
 
+  const targetableMonsters = [
+    ...(state.monsters.capabilities.targetableDeck === true ? ["top"] : []),
+    ...state.monsters.inPlay
+      .filter((card) => card.top.stats?.capabilities.targetable === true)
+      .map((card) => card.top.slug),
+  ];
+
+  const targetableTreasures = state.me.isEngagedInPurchase
+    ? ["top", ...state.treasure.inPlay.map((card) => card.slug)]
+    : [];
+
   return (
     <div className="flex translate-z-1 place-items-center gap-12 rounded-xl bg-stone-700/10 p-8 shadow-md inset-shadow-xs inset-shadow-stone-700 transform-3d">
       <Stack />
@@ -182,6 +193,11 @@ export const Center = ({ state }: CenterProps) => {
                   ? (state.firstCardTreasureDeck ?? CardType.TreasureCard)
                   : CardType.TreasureCard,
             )}
+            onClickTopCardHotkey={
+              targetableTreasures.includes("top")
+                ? `${targetableTreasures.indexOf("top") + 1}`
+                : undefined
+            }
             disabled={state.me.capabilities.buyTreasure !== true}
             onClickTopCard={() =>
               block(
@@ -200,6 +216,11 @@ export const Center = ({ state }: CenterProps) => {
               key={card.slug}
               cards={[card]}
               disabled={state.me.capabilities.buyTreasure !== true}
+              onClickTopCardHotkey={
+                targetableTreasures.includes(card.slug)
+                  ? `${targetableTreasures.indexOf(card.slug) + 1}`
+                  : undefined
+              }
               onClickTopCard={() =>
                 block(
                   "Cannot buy this card",
@@ -264,6 +285,11 @@ export const Center = ({ state }: CenterProps) => {
                   )
                 : undefined
             }
+            onClickTopCardHotkey={
+              targetableMonsters.includes("top")
+                ? `${targetableMonsters.indexOf("top") + 1}`
+                : undefined
+            }
             onClickTopCard={() =>
               block(
                 "Cannot attack this card",
@@ -315,6 +341,11 @@ export const Center = ({ state }: CenterProps) => {
                           </p>
                         </>
                       )
+                    : undefined
+                }
+                onClickTopCardHotkey={
+                  targetableMonsters.includes(card.top.slug)
+                    ? `${targetableMonsters.indexOf(card.top.slug) + 1}`
                     : undefined
                 }
                 onClickTopCard={() =>

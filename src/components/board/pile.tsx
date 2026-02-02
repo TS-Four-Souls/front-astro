@@ -9,6 +9,8 @@ import {
 } from "./contexts/user-settings-context";
 import type { TemporaryEffect } from "@/shared/api";
 import { usePopoverContext } from "./contexts/popover-context";
+import { HotkeyScope, shouldUseKey } from "@/utils/hotkey";
+import { useHotkeys } from "react-hotkeys-hook";
 
 type CardMetadata = {
   isRequiredAttack?: boolean;
@@ -49,6 +51,7 @@ interface PileProps {
   className?: string;
   topCardClassName?: string;
   onClickTopCard?: () => void;
+  onClickTopCardHotkey?: string;
   onPileDetailsClick?: () => void;
   tooltip?: string;
   optimizations?: {
@@ -57,6 +60,7 @@ interface PileProps {
     enable3D: boolean;
   };
   onHoverPopover?: () => React.ReactNode;
+  enableRandomRotation?: boolean;
 }
 
 const BRIGHTNESS_MIN = 0.3;
@@ -73,16 +77,24 @@ export const Pile = ({
   size: sizePx = 160,
   disabled,
   onClickTopCard,
+  onClickTopCardHotkey,
   onPileDetailsClick,
   className,
   tooltip,
   optimizations,
   topCardClassName,
   onHoverPopover,
+  enableRandomRotation = true,
 }: PileProps) => {
   const size = sizePx / 16;
   const seed = useRef(Math.random().toString());
   const rng = seedrandom(seed.current);
+
+  useHotkeys(onClickTopCardHotkey ?? "enter", () => onClickTopCard?.(), {
+    enabled: onClickTopCardHotkey !== undefined && onClickTopCard !== undefined,
+    scopes: [HotkeyScope.Main],
+    useKey: shouldUseKey(onClickTopCardHotkey ?? ""),
+  });
 
   const { setPopover, closePopover } = usePopoverContext();
 
@@ -158,7 +170,7 @@ export const Pile = ({
               style={{
                 transform: `
                   ${enable3D ? `translateZ(${thickness * (index + 1)}em)` : ""}
-                  rotate(${(rng() - 0.5) * 5}deg)
+                  ${enableRandomRotation ? `rotate(${(rng() - 0.5) * 5}deg)` : ""}
                 `,
               }}
               size={size}
@@ -177,6 +189,9 @@ export const Pile = ({
               }
               onPileDetailsClick={
                 index === array.length - 1 ? onPileDetailsClick : undefined
+              }
+              hotkey={
+                index === array.length - 1 ? onClickTopCardHotkey : undefined
               }
             />
           );

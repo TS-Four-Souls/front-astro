@@ -208,6 +208,7 @@ export const PlayerStats = ({
         <div className="flex items-center gap-4">
           <Button
             disabled={canEndTurn !== true}
+            hotkey="e"
             onClick={() =>
               block(
                 "Cannot end turn",
@@ -223,6 +224,7 @@ export const PlayerStats = ({
             <Button
               label="Declare purchase"
               disabled={state.me.capabilities.declarePurchase !== true}
+              hotkey="p"
               onClick={() =>
                 block(
                   "Cannot declare purchase",
@@ -234,7 +236,6 @@ export const PlayerStats = ({
                 "Cannot declare purchase",
                 state.me.capabilities.declarePurchase,
               )}
-              className="self-end"
             />
           )}
           {state.me.isEngagedInPurchase && (
@@ -247,6 +248,7 @@ export const PlayerStats = ({
                   ? "Cannot abandon purchase while able to buy treasure."
                   : true,
               )}
+              hotkey="p"
               onClick={() =>
                 block(
                   "Abandon purchase",
@@ -256,13 +258,13 @@ export const PlayerStats = ({
                   cancelPurchase,
                 )
               }
-              className="self-end"
             />
           )}
           {!state.me.isEngagedInCombat && (
             <Button
               label="Declare attack"
               disabled={state.me.capabilities.declareAttack !== true}
+              hotkey="a"
               onClick={() =>
                 block(
                   "Cannot declare attack",
@@ -274,7 +276,6 @@ export const PlayerStats = ({
                 "Cannot declare attack",
                 state.me.capabilities.declareAttack,
               )}
-              className="self-end"
             />
           )}
           {state.me.isEngagedInCombat && (
@@ -285,6 +286,7 @@ export const PlayerStats = ({
                 "Cannot roll dice",
                 state.me.capabilities.rollDice,
               )}
+              hotkey="a"
               onClick={() =>
                 block(
                   "Cannot roll dice",
@@ -292,7 +294,6 @@ export const PlayerStats = ({
                   rollDice,
                 )
               }
-              className="self-end"
             />
           )}
           <Gear className="size-5 cursor-pointer" onClick={() => openMenu()} />

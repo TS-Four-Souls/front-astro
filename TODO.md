@@ -1,5 +1,7 @@
 - Max zoom level is a little wrong on MacBook 1/2 screen, the user can go through the board
 - Preview side panel optional
-- Enter to skip turn, numbers on selection
 - zoom someimes is weird ?
 - I like the UI, it works well for 4 players, containing all necessary information, but for 2 players it should be bigger
+- Consider can donate coin capabilities
+- Consider the number of loot cards over the limit
+- Search bar in cheat menus for easy lookup

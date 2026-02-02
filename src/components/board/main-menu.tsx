@@ -3,10 +3,9 @@ import { usePromptContext } from "./contexts/prompt-context";
 import { useToastContext } from "./contexts/toast-context";
 import { Button } from "../button";
 import { useMainMenuContext } from "./contexts/main-menu-context";
-import { HotkeyScope } from "@/utils/hotkey";
-import { useHotkeys } from "react-hotkeys-hook";
 import { useUserSettingsContext } from "./contexts/user-settings-context";
 import { useGameContext } from "./contexts/game-context";
+import { HotkeyScope } from "@/utils/hotkey";
 
 export const MainMenu = () => {
   const { addPrompt, removePrompt } = usePromptContext();
@@ -14,10 +13,6 @@ export const MainMenu = () => {
   const { closeMenu: closeMainMenu } = useMainMenuContext();
   const { openMenu: openUserSettingsMenu } = useUserSettingsContext();
   const { issuer } = useGameContext();
-
-  useHotkeys("escape", closeMainMenu, {
-    scopes: [HotkeyScope.Popup],
-  });
 
   const onResetPress = (confirmed?: true) => {
     if (confirmed === undefined) {
@@ -151,25 +146,42 @@ export const MainMenu = () => {
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <h1 className="font-main text-3xl font-bold">Main menu</h1>
-        <Button onClick={closeMainMenu} label="Close" />
+        <Button
+          hotkey="escape"
+          hotkeyScope={[HotkeyScope.Popup]}
+          onClick={closeMainMenu}
+          label="Close"
+        />
       </div>
       <Button
-        onClick={openUserSettingsMenu}
+        onClick={() => {
+          closeMainMenu();
+          openUserSettingsMenu();
+        }}
         label="Graphics"
         className="translate-z-1"
       />
       <Button
-        onClick={debugGainLoot}
+        onClick={() => {
+          closeMainMenu();
+          debugGainLoot();
+        }}
         label="[CHEAT] Loot"
         className="translate-z-1"
       />
       <Button
-        onClick={debugGainTreasure}
+        onClick={() => {
+          closeMainMenu();
+          debugGainTreasure();
+        }}
         label="[CHEAT] Gain treasure"
         className="translate-z-1"
       />
       <Button
-        onClick={onResetPress}
+        onClick={() => {
+          closeMainMenu();
+          onResetPress();
+        }}
         label="Quit game"
         className="translate-z-1"
       />

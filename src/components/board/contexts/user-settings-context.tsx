@@ -3,7 +3,6 @@ import { Popup } from "@/components/popup";
 import { HotkeyScope } from "@/utils/hotkey";
 import { useLocalStorage } from "@/utils/use-local-storage";
 import { createContext, useContext, useState } from "react";
-import { useHotkeys } from "react-hotkeys-hook";
 
 export enum ZoomResolutionPreset {
   HIGH = "high",
@@ -57,11 +56,6 @@ export const UserSettingsProvider = ({
   );
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  useHotkeys("escape", () => setIsMenuOpen(false), {
-    enabled: isMenuOpen,
-    scopes: [HotkeyScope.Popup],
-  });
-
   return (
     <UserSettingsContext.Provider
       value={{
@@ -76,7 +70,12 @@ export const UserSettingsProvider = ({
           <div className="flex flex-col gap-4">
             <div className="flex items-center justify-between">
               <h1 className="font-main text-3xl font-bold">User settings</h1>
-              <Button onClick={() => setIsMenuOpen(false)} label="Close" />
+              <Button
+                hotkey="escape"
+                hotkeyScope={[HotkeyScope.Popup]}
+                onClick={() => setIsMenuOpen(false)}
+                label="Close"
+              />
             </div>
             <h2 className="font-main text-2xl font-bold">Zoom resolution</h2>
             <p className="max-w-200 text-sm leading-normal text-stone-300">

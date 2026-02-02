@@ -21,6 +21,7 @@ interface CardProps {
   thickness?: number;
   brightness?: number;
   enableSides?: boolean;
+  hotkey?: string;
   effects?: TemporaryEffect[];
   onPileDetailsClick?: () => void;
   onClick?: () => void;
@@ -48,6 +49,7 @@ export const Card = ({
   brightness = 1,
   enableSides = true,
   onClick,
+  hotkey,
   onPileDetailsClick,
   disabled,
   tooltip,
@@ -110,6 +112,15 @@ export const Card = ({
         }}
         tooltip={tooltip}
       />
+
+      {hotkey && (
+        <div className="absolute top-[1.5%] left-[2%] flex aspect-square w-[15%] place-items-center overflow-hidden rounded-sm bg-stone-700 outline-[0.1em] -outline-offset-[0.1em]">
+          <img
+            src={`/input-prompts/keyboard_${hotkey.split(",")[0]}_outline.svg`}
+            className="scale-150"
+          />
+        </div>
+      )}
 
       {onPileDetailsClick && (
         <div

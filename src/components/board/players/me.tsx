@@ -9,7 +9,7 @@ import type { InPlayMeCard, SelectionItem } from "@/shared/api";
 import { tooltip } from "@/utils/tooltip";
 
 export const Me = () => {
-  const { state, issuer } = useGameContext();
+  const { state, issuer, isHandUp } = useGameContext();
   const { toast, dismiss, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
 
@@ -159,6 +159,21 @@ export const Me = () => {
     }
   };
 
+  const targetableCards = state.me.inPlay
+    .filter(
+      (card, index) =>
+        !isHandUp &&
+        index < 8 &&
+        card.effects &&
+        card.effects.length > 0 &&
+        !state.me.isEngagedInPurchase &&
+        state.monsters.capabilities.targetableDeck !== true &&
+        !state.monsters.inPlay.some(
+          (c) => c.top.stats?.capabilities.targetable === true,
+        ),
+    )
+    .map((card) => card.slug);
+
   return (
     <div className="col-start-2 row-start-3 flex flex-col place-content-center place-items-center gap-6 transform-3d">
       <PlayerStats
@@ -170,13 +185,18 @@ export const Me = () => {
         isEngagedInPurchase={state.me.isEngagedInPurchase}
       />
       <div
-        className="grid grid-cols-7 gap-2 transform-3d"
+        className="grid gap-2 transform-3d"
         style={{
           gridTemplateColumns: `repeat(${Math.min(state.me.inPlay.length, 8)}, 1fr)`,
         }}>
         {state.me.inPlay.map((card, index) => (
           <Pile
             key={card.slug}
+            onClickTopCardHotkey={
+              targetableCards.includes(card.slug)
+                ? `${targetableCards.indexOf(card.slug) + 1}`
+                : undefined
+            }
             cards={[
               {
                 slug: card.slug,

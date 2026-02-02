@@ -60,10 +60,6 @@ export const PromptPopup = (props: PromptPopupProps) => {
   const isInformational = maxCount === 0;
   const onCancel =
     props.onCancel ?? (isInformational ? () => onSubmit([]) : undefined);
-  useHotkeys("escape", () => onCancel?.(), {
-    enabled: onCancel !== undefined,
-    scopes: [HotkeyScope.Popup],
-  });
 
   return (
     <Popup onPressBackdrop={onCancel}>
@@ -74,6 +70,8 @@ export const PromptPopup = (props: PromptPopupProps) => {
         {onCancel && (
           <Button
             onClick={onCancel}
+            hotkey="escape"
+            hotkeyScope={[HotkeyScope.Popup]}
             label={isInformational ? "Close" : "Cancel"}
           />
         )}
@@ -92,12 +90,15 @@ export const PromptPopup = (props: PromptPopupProps) => {
           const isSelected = selectionIndex >= 0;
           const isIndexVisible = isSelected && maxCount > 1;
 
+          const hotkey = index < 9 ? `${index + 1}` : undefined;
+
           return (
             <PromptOption
               key={index}
               option={option}
               isSelected={isSelected}
               selectionIndex={isIndexVisible ? selectionIndex + 1 : undefined}
+              hotkey={hotkey}
               onPress={
                 isSelected
                   ? () => removeSelection(option)
@@ -123,8 +124,10 @@ export const PromptPopup = (props: PromptPopupProps) => {
             selectedOptions.length < minCount ||
             selectedOptions.length > maxCount
           }
-          label="Submit"
           theme="onLight"
+          hotkey="enter"
+          hotkeyScope={[HotkeyScope.Popup]}
+          label="Submit"
         />
       )}
     </Popup>
@@ -135,6 +138,7 @@ interface PromptOptionProps {
   option: SelectionItem;
   isSelected: boolean;
   selectionIndex: number | undefined;
+  hotkey?: string;
   onPress?: () => void;
 }
 
@@ -142,8 +146,14 @@ export const PromptOption = ({
   option,
   isSelected,
   selectionIndex,
+  hotkey,
   onPress,
 }: PromptOptionProps) => {
+  useHotkeys(hotkey ?? "enter", () => onPress?.(), {
+    scopes: [HotkeyScope.Popup],
+    enabled: onPress !== undefined,
+  });
+
   return (
     <div
       className={cn(
@@ -154,6 +164,14 @@ export const PromptOption = ({
         onPress && "cursor-pointer",
       )}
       onClick={onPress}>
+      {hotkey && (
+        <div className="absolute top-0 left-0 flex aspect-square w-[15%] place-items-center overflow-hidden rounded-sm bg-stone-700 outline-[0.1em] -outline-offset-[0.1em] outline-stone-200">
+          <img
+            src={`/input-prompts/keyboard_${hotkey.split(",")[0]}_outline.svg`}
+            className="scale-170"
+          />
+        </div>
+      )}
       {selectionIndex && (
         <div className="absolute top-0 right-0 flex size-12 items-center justify-center rounded-xl border-4 border-stone-300 bg-stone-800 text-sm font-bold text-stone-200">
           {selectionIndex}
