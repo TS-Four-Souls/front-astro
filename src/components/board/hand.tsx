@@ -75,10 +75,14 @@ export const Hand = () => {
                 ? "cursor-pointer hover:-translate-y-10"
                 : "cursor-not-allowed",
             )}
-            tooltip={isHandUp ? {
-              capable: state.me.capabilities.useLoot,
-              title: "Cannot play this card",
-            } : undefined}
+            tooltip={
+              isHandUp
+                ? {
+                    capable: state.me.capabilities.useLoot,
+                    title: "Cannot play this card",
+                  }
+                : undefined
+            }
             onClickTopCardHotkey={
               targetableCards.includes(card.slug)
                 ? `${targetableCards.indexOf(card.slug) + 1},shift+${targetableCards.indexOf(card.slug) + 1}`

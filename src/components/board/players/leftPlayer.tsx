@@ -58,7 +58,7 @@ export const LeftPlayer = ({ player }: LeftPlayerProps) => {
             />
             <p
               className={cn(
-                "absolute bottom-[0.1em] left-1/2 -translate-x-1/2 translate-z-1 text-center font-statblock text-5xl text-stone-950 text-shadow-amber-50 text-shadow-lg pointer-events-none",
+                "pointer-events-none absolute bottom-[0.1em] left-1/2 -translate-x-1/2 translate-z-1 text-center font-statblock text-5xl text-stone-950 text-shadow-amber-50 text-shadow-lg",
                 player.handSize >= 10 && "translate-z-2 text-5xl",
               )}>
               {player.handSize}

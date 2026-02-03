@@ -165,7 +165,7 @@ export const PromptOption = ({
       )}
       onClick={onPress}>
       {hotkey && (
-        <div className="absolute top-0 left-0 flex aspect-square w-[15%] place-items-center overflow-hidden rounded-sm bg-stone-700 outline-[0.1em] -outline-offset-[0.1em] outline-stone-200">
+        <div className="absolute top-0 left-0 flex aspect-square w-6 place-items-center overflow-hidden rounded-sm bg-stone-700 outline-[0.1em] -outline-offset-[0.1em] outline-stone-200">
           <img
             src={`/input-prompts/keyboard_${hotkey.split(",")[0]}_outline.svg`}
             className="scale-170"

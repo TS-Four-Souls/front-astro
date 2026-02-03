@@ -2,6 +2,4 @@
 - Preview side panel optional
 - zoom someimes is weird ?
 - I like the UI, it works well for 4 players, containing all necessary information, but for 2 players it should be bigger
-- Consider can donate coin capabilities
-- Consider the number of loot cards over the limit
 - Search bar in cheat menus for easy lookup

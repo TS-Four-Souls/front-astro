@@ -410,10 +410,12 @@ const nextTurnRequestSchema = startRequestSchema;
 const setGameParameterRequestSchema = z.discriminatedUnion("parameter", [
   z.object({
     parameter: z.enum(
-      
       Object.keys(gameParametersSchema.shape).filter(
-        (key) => gameParametersSchema.shape[key as keyof typeof gameParametersSchema.shape] === numberGameParameterSchema
-      ) as [NumberParameterKeys, ...NumberParameterKeys[]]
+        (key) =>
+          gameParametersSchema.shape[
+            key as keyof typeof gameParametersSchema.shape
+          ] === numberGameParameterSchema,
+      ) as [NumberParameterKeys, ...NumberParameterKeys[]],
     ),
     value: z.number(),
     issuer: issuerSchema,
@@ -421,8 +423,11 @@ const setGameParameterRequestSchema = z.discriminatedUnion("parameter", [
   z.object({
     parameter: z.enum(
       Object.keys(gameParametersSchema.shape).filter(
-        (key) => gameParametersSchema.shape[key as keyof typeof gameParametersSchema.shape] === booleanGameParameterSchema
-      ) as [BooleanParameterKeys, ...BooleanParameterKeys[]]
+        (key) =>
+          gameParametersSchema.shape[
+            key as keyof typeof gameParametersSchema.shape
+          ] === booleanGameParameterSchema,
+      ) as [BooleanParameterKeys, ...BooleanParameterKeys[]],
     ),
     value: z.boolean(),
     issuer: issuerSchema,

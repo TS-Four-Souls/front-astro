@@ -10,6 +10,7 @@ import type { Card as CardType } from "@/shared/api";
 import { useRef } from "react";
 import { CardImage } from "./card";
 import { useMainMenuContext } from "./contexts/main-menu-context";
+import { useTooltip } from "./use-tooltip";
 
 interface PlayerStatsProps {
   name: string;
@@ -142,6 +143,19 @@ export const PlayerStats = ({
     });
   };
 
+  const { setTooltip: setCoinTooltip, closeTooltip: closeCoinTooltip } = useTooltip(
+    state.me.capabilities.canDonateCoins === true
+      ? {
+          enabled: true,
+          title: "Donate coins",
+          content: "You can donate coins to this player.",
+        }
+      : {
+          title: "Cannot donate coins",
+          capable: state.me.capabilities.canDonateCoins,
+        },
+  );
+
   return (
     <div
       className={cn(
@@ -153,8 +167,23 @@ export const PlayerStats = ({
       )}>
       <h1 className="text-center font-alt-stats font-bold uppercase">{name}</h1>
       <div
-        className="flex cursor-pointer items-center gap-1"
-        onClick={() => !isMe && onCoinPress()}>
+        onMouseEnter={setCoinTooltip}
+        onMouseLeave={closeCoinTooltip}
+        className={cn(
+          "flex cursor-pointer items-center gap-1",
+          !isMe &&
+            (state.me.capabilities.canDonateCoins === true
+              ? "cursor-pointer"
+              : "cursor-not-allowed"),
+        )}
+        onClick={() =>
+          !isMe &&
+          block(
+            "Cannot donate coins",
+            state.me.capabilities.canDonateCoins,
+            onCoinPress,
+          )
+        }>
         <img src="/coin.png" className="size-6 rounded-full shadow-md/50" />:
         <span className="font-statblock text-4xl">{coins}</span>
       </div>
@@ -216,16 +245,20 @@ export const PlayerStats = ({
               )
             }
             tooltip={
-              state.me.capabilities.endTurn === true ? {
-                enabled: state.me.numberOfCardsOverMaxHandSize > 0,
-                title: "Excess loot cards",
-                content: "You have " + state.me.numberOfCardsOverMaxHandSize + " cards over the max hand size.",
-                type: "warning",
-              } :
-              {
-                title: "Cannot end turn",
-                capable: state.me.capabilities.endTurn,
-              }
+              state.me.capabilities.endTurn === true
+                ? {
+                    enabled: state.me.numberOfCardsOverMaxHandSize > 0,
+                    title: "Excess loot cards",
+                    content:
+                      "You have " +
+                      state.me.numberOfCardsOverMaxHandSize +
+                      " cards over the max hand size.",
+                    type: "warning",
+                  }
+                : {
+                    title: "Cannot end turn",
+                    capable: state.me.capabilities.endTurn,
+                  }
             }
             label="End turn"
             className="translate-z-1"

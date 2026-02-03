@@ -184,10 +184,18 @@ export const Pile = ({
               eternal={eternal}
               counter={counter}
               onMouseEnter={
-                index === array.length - 1 ? onHoverPopover ? onMouseEnter : setTooltip : undefined
+                index === array.length - 1
+                  ? onHoverPopover
+                    ? onMouseEnter
+                    : setTooltip
+                  : undefined
               }
               onMouseLeave={
-                index === array.length - 1 ? onHoverPopover ? closePopover : closeTooltip : undefined
+                index === array.length - 1
+                  ? onHoverPopover
+                    ? closePopover
+                    : closeTooltip
+                  : undefined
               }
               onPileDetailsClick={
                 index === array.length - 1 ? onPileDetailsClick : undefined

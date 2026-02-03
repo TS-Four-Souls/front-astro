@@ -35,7 +35,11 @@ export const PopoverProvider = ({
   return (
     <PopoverContext.Provider value={{ setPopover, closePopover }}>
       {children}
-      {popover && <Popover anchor={popover.anchor} className={popover.className}>{popover.content}</Popover>}
+      {popover && (
+        <Popover anchor={popover.anchor} className={popover.className}>
+          {popover.content}
+        </Popover>
+      )}
     </PopoverContext.Provider>
   );
 };
