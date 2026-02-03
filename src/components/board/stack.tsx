@@ -13,7 +13,6 @@ import { Dice } from "@/icons/dice";
 import { CardImage } from "./card";
 import { useEffect, useRef } from "react";
 import { Button } from "../button";
-import { tooltip } from "@/utils/tooltip";
 import { cn } from "@/utils/cn";
 import { usePopoverContext } from "./contexts/popover-context";
 import { receiverName, selectionToText } from "@/utils/selection-text";
@@ -79,7 +78,10 @@ export const Stack = () => {
           )
         }
         disabled={state.me.capabilities.resolve !== true}
-        tooltip={tooltip("Cannot resolve stack", state.me.capabilities.resolve)}
+        tooltip={{
+          title: "Cannot resolve stack",
+          capable: state.me.capabilities.resolve,
+        }}
         label="Resolve"
         className="translate-z-1"
         theme="onDark"

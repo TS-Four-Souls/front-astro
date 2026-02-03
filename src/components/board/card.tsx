@@ -26,7 +26,6 @@ interface CardProps {
   onPileDetailsClick?: () => void;
   onClick?: () => void;
   disabled?: boolean;
-  tooltip?: string;
   size?: number;
   stats?:
     | { healthPoints: number; attackPoints: number; evasionPoints: number }
@@ -52,7 +51,6 @@ export const Card = ({
   hotkey,
   onPileDetailsClick,
   disabled,
-  tooltip,
   stats,
   size = 160,
   effects,
@@ -70,7 +68,6 @@ export const Card = ({
           className,
         )}
         style={{ ...style, borderRadius: BORDER_RADIUS }}
-        title={tooltip}
         onClick={onClick}
       />
     );
@@ -110,7 +107,6 @@ export const Card = ({
           filter: `brightness(${Math.max(0.2, brightness * brightness)})`,
           borderRadius: enableSides ? "unset" : BORDER_RADIUS,
         }}
-        tooltip={tooltip}
       />
 
       {hotkey && (

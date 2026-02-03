@@ -4,7 +4,6 @@ import { useToastContext } from "./contexts/toast-context";
 import { usePromptContext } from "./contexts/prompt-context";
 import type { SelectionItem } from "@/shared/api";
 import { cn } from "@/utils/cn";
-import { tooltip } from "@/utils/tooltip";
 import { Pile } from "./pile";
 
 export const Hand = () => {
@@ -76,10 +75,10 @@ export const Hand = () => {
                 ? "cursor-pointer hover:-translate-y-10"
                 : "cursor-not-allowed",
             )}
-            tooltip={tooltip(
-              "Cannot play this card",
-              state.me.capabilities.useLoot,
-            )}
+            tooltip={isHandUp ? {
+              capable: state.me.capabilities.useLoot,
+              title: "Cannot play this card",
+            } : undefined}
             onClickTopCardHotkey={
               targetableCards.includes(card.slug)
                 ? `${targetableCards.indexOf(card.slug) + 1},shift+${targetableCards.indexOf(card.slug) + 1}`

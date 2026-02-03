@@ -209,6 +209,7 @@ const stackElementSchema: z.ZodType<StackElement> = z.lazy(() =>
     effectOnStackJsonSchema,
   ]),
 );
+export type StackElementJson = z.infer<typeof stackElementSchema>;
 
 const selectionItemTypeSchema = z.union([
   z.literal("card"),
@@ -409,12 +410,10 @@ const nextTurnRequestSchema = startRequestSchema;
 const setGameParameterRequestSchema = z.discriminatedUnion("parameter", [
   z.object({
     parameter: z.enum(
+      
       Object.keys(gameParametersSchema.shape).filter(
-        (key) =>
-          gameParametersSchema.shape[
-            key as keyof typeof gameParametersSchema.shape
-          ] === numberGameParameterSchema,
-      ) as [NumberParameterKeys, ...NumberParameterKeys[]],
+        (key) => gameParametersSchema.shape[key as keyof typeof gameParametersSchema.shape] === numberGameParameterSchema
+      ) as [NumberParameterKeys, ...NumberParameterKeys[]]
     ),
     value: z.number(),
     issuer: issuerSchema,
@@ -422,11 +421,8 @@ const setGameParameterRequestSchema = z.discriminatedUnion("parameter", [
   z.object({
     parameter: z.enum(
       Object.keys(gameParametersSchema.shape).filter(
-        (key) =>
-          gameParametersSchema.shape[
-            key as keyof typeof gameParametersSchema.shape
-          ] === booleanGameParameterSchema,
-      ) as [BooleanParameterKeys, ...BooleanParameterKeys[]],
+        (key) => gameParametersSchema.shape[key as keyof typeof gameParametersSchema.shape] === booleanGameParameterSchema
+      ) as [BooleanParameterKeys, ...BooleanParameterKeys[]]
     ),
     value: z.boolean(),
     issuer: issuerSchema,
@@ -457,6 +453,7 @@ export type Player = z.infer<typeof playerSchema>;
 const playerMeSchema = playerSchema.extend({
   hand: z.array(cardSchema),
   inPlay: z.array(inPlayMeCardSchema),
+  numberOfCardsOverMaxHandSize: z.number(),
   capabilities: z.object({
     endTurn: capabilitySchema,
     declareAttack: capabilitySchema,
@@ -465,6 +462,7 @@ const playerMeSchema = playerSchema.extend({
     buyTreasure: capabilitySchema,
     useLoot: capabilitySchema,
     resolve: capabilitySchema,
+    canDonateCoins: capabilitySchema,
   }),
   pendingSelection: pendingSelectionSchema.optional(),
 });

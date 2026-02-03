@@ -1,6 +1,7 @@
 import { cn } from "@/utils/cn";
 import { HotkeyScope, shouldUseKey } from "@/utils/hotkey";
 import { useHotkeys } from "react-hotkeys-hook";
+import { type Tooltip, useTooltip } from "./board/use-tooltip";
 
 interface ButtonProps {
   onClick?: () => void;
@@ -12,7 +13,7 @@ interface ButtonProps {
   hotkeyScope?: HotkeyScope[];
   type?: "button" | "submit" | "reset" | undefined;
   theme?: "default" | "onLight" | "onDark";
-  tooltip?: string;
+  tooltip?: Tooltip;
 }
 
 export const Button = ({
@@ -33,6 +34,8 @@ export const Button = ({
     useKey: shouldUseKey(hotkey ?? ""),
   });
 
+  const { setTooltip, closeTooltip } = useTooltip(tooltip);
+
   return (
     <button
       className={cn(
@@ -52,7 +55,8 @@ export const Button = ({
         e.currentTarget.blur();
       }}
       type={type}
-      title={tooltip}>
+      onMouseEnter={setTooltip}
+      onMouseLeave={closeTooltip}>
       {hotkey && (
         <img
           src={`/input-prompts/keyboard_${hotkey.split(",")[0]}_outline.svg`}

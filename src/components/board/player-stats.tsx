@@ -5,7 +5,6 @@ import { useToastContext } from "./contexts/toast-context";
 import { Gear } from "@/icons/gear";
 import { Button } from "../button";
 import { usePromptContext } from "./contexts/prompt-context";
-import { tooltip } from "@/utils/tooltip";
 import { usePopoverContext } from "./contexts/popover-context";
 import type { Card as CardType } from "@/shared/api";
 import { useRef } from "react";
@@ -216,7 +215,18 @@ export const PlayerStats = ({
                 onEndTurnPress,
               )
             }
-            tooltip={tooltip("Cannot end turn", state.me.capabilities.endTurn)}
+            tooltip={
+              state.me.capabilities.endTurn === true ? {
+                enabled: state.me.numberOfCardsOverMaxHandSize > 0,
+                title: "Excess loot cards",
+                content: "You have " + state.me.numberOfCardsOverMaxHandSize + " cards over the max hand size.",
+                type: "warning",
+              } :
+              {
+                title: "Cannot end turn",
+                capable: state.me.capabilities.endTurn,
+              }
+            }
             label="End turn"
             className="translate-z-1"
           />
@@ -232,22 +242,20 @@ export const PlayerStats = ({
                   declarePurchase,
                 )
               }
-              tooltip={tooltip(
-                "Cannot declare purchase",
-                state.me.capabilities.declarePurchase,
-              )}
+              tooltip={{
+                title: "Cannot declare purchase",
+                capable: state.me.capabilities.declarePurchase,
+              }}
             />
           )}
           {state.me.isEngagedInPurchase && (
             <Button
               label="Abandon purchase"
               disabled={state.me.capabilities.buyTreasure === true}
-              tooltip={tooltip(
-                "Abandon purchase",
-                state.me.capabilities.buyTreasure === true
-                  ? "Cannot abandon purchase while able to buy treasure."
-                  : true,
-              )}
+              tooltip={{
+                title: "Cannot abandon purchase while able to buy treasure.",
+                capable: state.me.capabilities.buyTreasure,
+              }}
               hotkey="p"
               onClick={() =>
                 block(
@@ -272,20 +280,20 @@ export const PlayerStats = ({
                   declareAttack,
                 )
               }
-              tooltip={tooltip(
-                "Cannot declare attack",
-                state.me.capabilities.declareAttack,
-              )}
+              tooltip={{
+                title: "Cannot declare attack",
+                capable: state.me.capabilities.declareAttack,
+              }}
             />
           )}
           {state.me.isEngagedInCombat && (
             <Button
               label="Roll dice"
               disabled={state.me.capabilities.rollDice !== true}
-              tooltip={tooltip(
-                "Cannot roll dice",
-                state.me.capabilities.rollDice,
-              )}
+              tooltip={{
+                title: "Cannot roll dice",
+                capable: state.me.capabilities.rollDice,
+              }}
               hotkey="a"
               onClick={() =>
                 block(

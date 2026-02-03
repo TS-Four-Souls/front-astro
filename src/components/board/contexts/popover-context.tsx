@@ -9,6 +9,7 @@ interface Popover {
     height: number;
   };
   content: React.ReactNode;
+  className?: string;
 }
 
 interface PopoverContextProps {
@@ -34,7 +35,7 @@ export const PopoverProvider = ({
   return (
     <PopoverContext.Provider value={{ setPopover, closePopover }}>
       {children}
-      {popover && <Popover anchor={popover.anchor}>{popover.content}</Popover>}
+      {popover && <Popover anchor={popover.anchor} className={popover.className}>{popover.content}</Popover>}
     </PopoverContext.Provider>
   );
 };

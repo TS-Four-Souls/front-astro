@@ -35,12 +35,15 @@ export const RightPlayer = ({ player }: RightPlayerProps) => {
               cards={Array.from({ length: player.handSize }).map(
                 () => CardType.LootCard,
               )}
-              tooltip={`${player.name} has ${player.handSize} cards in their hand.`}
+              tooltip={{
+                enabled: true,
+                content: `${player.name} has ${player.handSize} cards in their hand.`,
+              }}
               size={120}
             />
             <p
               className={cn(
-                "absolute bottom-[0.1em] left-1/2 -translate-x-1/2 translate-z-1 text-center font-statblock text-5xl text-stone-950 text-shadow-amber-50 text-shadow-lg",
+                "absolute bottom-[0.1em] left-1/2 -translate-x-1/2 translate-z-1 text-center font-statblock text-5xl text-stone-950 text-shadow-amber-50 text-shadow-lg pointer-events-none",
                 player.handSize >= 10 && "translate-z-2 text-5xl",
               )}>
               {player.handSize}

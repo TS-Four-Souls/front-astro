@@ -6,7 +6,6 @@ import { socket } from "@/utils/socket";
 import { useGameContext } from "./contexts/game-context";
 import { useToastContext } from "./contexts/toast-context";
 import { usePromptContext } from "./contexts/prompt-context";
-import { tooltip } from "@/utils/tooltip";
 
 interface CenterProps {
   state: DetailedState;
@@ -206,10 +205,10 @@ export const Center = ({ state }: CenterProps) => {
                 () => purchaseTreasure("top"),
               )
             }
-            tooltip={tooltip(
-              "Cannot buy this card",
-              state.me.capabilities.buyTreasure,
-            )}
+            tooltip={{
+              capable: state.me.capabilities.buyTreasure,
+              title: "Cannot buy this card",
+            }}
           />
           {state.treasure.inPlay.map((card, index) => (
             <Pile
@@ -228,10 +227,10 @@ export const Center = ({ state }: CenterProps) => {
                   () => purchaseTreasure(index),
                 )
               }
-              tooltip={tooltip(
-                "Cannot buy this card",
-                state.me.capabilities.buyTreasure,
-              )}
+              tooltip={{
+                capable: state.me.capabilities.buyTreasure,
+                title: "Cannot buy this card",
+              }}
             />
           ))}
         </div>
@@ -299,10 +298,10 @@ export const Center = ({ state }: CenterProps) => {
                 },
               )
             }
-            tooltip={tooltip(
-              "Cannot attack this card",
-              state.monsters.capabilities.targetableDeck,
-            )}
+            tooltip={{
+              capable: state.monsters.capabilities.targetableDeck,
+              title: "Cannot attack this card",
+            }}
           />
           {state.monsters.inPlay.map((card, index) => {
             const targetable =
@@ -363,7 +362,10 @@ export const Center = ({ state }: CenterProps) => {
                       }
                     : undefined
                 }
-                tooltip={tooltip("Cannot attack this card", targetable)}
+                tooltip={{
+                  capable: targetable,
+                  title: "Cannot attack this card",
+                }}
               />
             );
           })}

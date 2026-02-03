@@ -6,7 +6,6 @@ import { usePromptContext } from "../contexts/prompt-context";
 import { socket } from "@/utils/socket";
 import { useToastContext } from "../contexts/toast-context";
 import type { InPlayMeCard, SelectionItem } from "@/shared/api";
-import { tooltip } from "@/utils/tooltip";
 
 export const Me = () => {
   const { state, issuer, isHandUp } = useGameContext();
@@ -214,10 +213,10 @@ export const Me = () => {
               },
             ]}
             disabled={card.capabilities.activate !== true}
-            tooltip={tooltip(
-              "Cannot activate this card",
-              card.capabilities.activate,
-            )}
+            tooltip={{
+              capable: card.capabilities.activate,
+              title: "Cannot activate this card",
+            }}
             onClickTopCard={() =>
               block(
                 "Cannot activate this card",

@@ -11,6 +11,8 @@ import type { TemporaryEffect } from "@/shared/api";
 import { usePopoverContext } from "./contexts/popover-context";
 import { HotkeyScope, shouldUseKey } from "@/utils/hotkey";
 import { useHotkeys } from "react-hotkeys-hook";
+import type { Tooltip } from "./use-tooltip";
+import { useTooltip } from "./use-tooltip";
 
 type CardMetadata = {
   isRequiredAttack?: boolean;
@@ -53,13 +55,13 @@ interface PileProps {
   onClickTopCard?: () => void;
   onClickTopCardHotkey?: string;
   onPileDetailsClick?: () => void;
-  tooltip?: string;
   optimizations?: {
     maxCards: number;
     enableSides: boolean;
     enable3D: boolean;
   };
   onHoverPopover?: () => React.ReactNode;
+  tooltip?: Tooltip;
   enableRandomRotation?: boolean;
 }
 
@@ -97,6 +99,7 @@ export const Pile = ({
   });
 
   const { setPopover, closePopover } = usePopoverContext();
+  const { setTooltip, closeTooltip } = useTooltip(tooltip);
 
   const onMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
     if (onHoverPopover) {
@@ -176,16 +179,15 @@ export const Pile = ({
               size={size}
               brightness={brightness}
               enableSides={enableSides}
-              tooltip={index === array.length - 1 ? tooltip : undefined}
               stats={typeof card === "string" ? undefined : card.stats}
               effects={typeof card === "string" ? undefined : card.effects}
               eternal={eternal}
               counter={counter}
               onMouseEnter={
-                index === array.length - 1 ? onMouseEnter : undefined
+                index === array.length - 1 ? onHoverPopover ? onMouseEnter : setTooltip : undefined
               }
               onMouseLeave={
-                index === array.length - 1 ? closePopover : undefined
+                index === array.length - 1 ? onHoverPopover ? closePopover : closeTooltip : undefined
               }
               onPileDetailsClick={
                 index === array.length - 1 ? onPileDetailsClick : undefined
@@ -201,7 +203,6 @@ export const Pile = ({
           onClick={onClickTopCard}
           disabled={disabled}
           style={{ height: size + "em" }}
-          tooltip={tooltip}
         />
       )}
     </div>
