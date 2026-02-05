@@ -143,18 +143,19 @@ export const PlayerStats = ({
     });
   };
 
-  const { setTooltip: setCoinTooltip, closeTooltip: closeCoinTooltip } = useTooltip(
-    state.me.capabilities.canDonateCoins === true
-      ? {
-          enabled: true,
-          title: "Donate coins",
-          content: "You can donate coins to this player.",
-        }
-      : {
-          title: "Cannot donate coins",
-          capable: state.me.capabilities.canDonateCoins,
-        },
-  );
+  const { setTooltip: setCoinTooltip, closeTooltip: closeCoinTooltip } =
+    useTooltip(
+      state.me.capabilities.canDonateCoins === true
+        ? {
+            enabled: true,
+            title: "Donate coins",
+            content: "You can donate coins to this player.",
+          }
+        : {
+            title: "Cannot donate coins",
+            capable: state.me.capabilities.canDonateCoins,
+          },
+    );
 
   return (
     <div

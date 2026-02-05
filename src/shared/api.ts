@@ -513,6 +513,11 @@ const roomSchema = z.object({
 });
 export type Room = z.infer<typeof roomSchema>;
 
+const isGameOngoingResponseSchema = z.object({
+  gameOngoing: z.boolean(),
+});
+export type IsGameOngoingResponse = z.infer<typeof isGameOngoingResponseSchema>;
+
 export const schemas = {
   issuer: issuerSchema,
   room: roomSchema,
@@ -590,6 +595,7 @@ export namespace Responses {
   export type DebugGainTreasure = BasicResponse;
   export type DebugReset = BasicResponse;
   export type GiveCoins = BasicResponse;
+  export type IsGameOngoing = IsGameOngoingResponse;
 }
 
 export interface ServerToClientEvents {
@@ -702,5 +708,9 @@ export interface ClientToServerEvents {
   setGameParameter: (
     request: Requests.SetGameParameter,
     callback: (response: Responses.SetGameParameter) => void,
+  ) => void;
+
+  isGameOngoing: (
+    callback: (response: Responses.IsGameOngoing) => void,
   ) => void;
 }

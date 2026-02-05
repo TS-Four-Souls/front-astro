@@ -4,6 +4,45 @@
 @import "tailwindcss/preflight.css" layer(base);
 @import "tailwindcss/utilities.css" layer(utilities);
 
+.planetarium {
+  background-image:
+    url(/background/FourSoulsBackgroundStarLayer05.png),
+    url(/background/FourSoulsBackgroundStarLayer04.png),
+    url(/background/FourSoulsBackgroundStarLayer03.png),
+    url(/background/FourSoulsBackgroundStarLayer02.png),
+    url(/background/FourSoulsBackgroundStarLayer01.png),
+    url(/background/FourSoulsBackground.png);
+  animation: planetariumBackground 120s linear infinite;
+  background-size:
+    600px 400px,
+    600px 400px,
+    600px 400px,
+    600px 400px,
+    600px 400px,
+    1200px 800px;
+}
+
+@keyframes planetariumBackground {
+  from {
+    background-position:
+      0% 0%,
+      0% 0%,
+      0% 0%,
+      0% 0%,
+      0% 0%,
+      0% 0%;
+  }
+  to {
+    background-position:
+      -7200px 4800px,
+      -6000px 4000px,
+      -4800px 3200px,
+      -3600px 2400px,
+      -2400px 1600px,
+      -1200px 800px;
+  }
+}
+
 .pixelated {
   image-rendering: pixelated;
 }
