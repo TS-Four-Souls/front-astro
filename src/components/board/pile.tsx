@@ -63,6 +63,7 @@ interface PileProps {
   onHoverPopover?: () => React.ReactNode;
   tooltip?: Tooltip;
   enableRandomRotation?: boolean;
+  style?: React.CSSProperties;
 }
 
 const BRIGHTNESS_MIN = 0.3;
@@ -87,6 +88,7 @@ export const Pile = ({
   topCardClassName,
   onHoverPopover,
   enableRandomRotation = true,
+  style,
 }: PileProps) => {
   const size = sizePx / 16;
   const seed = useRef(Math.random().toString());
@@ -122,7 +124,7 @@ export const Pile = ({
   return (
     <div
       className={cn("grid shrink-0 transform-3d", className)}
-      style={{ height: size + "em" }}>
+      style={{ height: size + "em", ...style }}>
       {cards
         .filter((_, index) => index >= cards.length - maxCards)
         .map((card, index, array) => {
