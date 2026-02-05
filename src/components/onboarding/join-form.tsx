@@ -16,8 +16,7 @@ export const JoinForm = () => {
     });
   }, []);
 
-  const joinGame: React.SubmitEventHandler<HTMLFormElement> = (e) => {
-    e.preventDefault();
+  const joinGame = () => {
     socket.emit("join", name, (response) => {
       switch (response.status) {
         case 200:
@@ -70,11 +69,16 @@ export const JoinForm = () => {
           </div>
         ) : (
           <div className="flex flex-col gap-8 rounded-lg border-2 border-stone-700 p-8 text-center">
-            <h1 className="font-main text-3xl font-bold">Join the game</h1>
-            <form onSubmit={joinGame} className="flex flex-col gap-4">
+            <h1 className="font-main text-3xl font-bold">Welcome!</h1>
+            <div className="flex flex-col gap-4">
               <input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    joinGame();
+                  }
+                }}
                 type="text"
                 placeholder="Enter your name..."
                 autoComplete="off"
@@ -82,8 +86,8 @@ export const JoinForm = () => {
                 required
                 className="rounded-md border-2 border-stone-700 bg-stone-800 px-4 py-2 text-white focus:ring-2 focus:ring-stone-500 focus:outline-none"
               />
-              <Button type="submit" label="Join" onClick={() => {}} />
-            </form>
+              <Button label="Join" onClick={joinGame} hotkey="enter" />
+            </div>
           </div>
         )}
       </div>

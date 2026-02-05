@@ -85,6 +85,7 @@ export const StartStep = ({ room }: StartStepProps) => {
                 </p>
                 <Button
                   onClick={requestStart}
+                  hotkey="enter"
                   label="Let's go!"
                   className="mt-4 px-32 py-4 font-alt-stats text-xl font-bold"
                 />
