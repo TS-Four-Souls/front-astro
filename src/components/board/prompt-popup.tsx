@@ -149,9 +149,9 @@ export const PromptOption = ({
   hotkey,
   onPress,
 }: PromptOptionProps) => {
-  useHotkeys(hotkey ?? "enter", () => onPress?.(), {
+  useHotkeys(hotkey ?? "", () => onPress?.(), {
     scopes: [HotkeyScope.Popup],
-    enabled: onPress !== undefined,
+    enabled: onPress !== undefined && !!hotkey,
   });
 
   return (
