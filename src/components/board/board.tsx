@@ -8,6 +8,7 @@ import { TopPlayer } from "./players/topPlayer";
 import { LeftPlayer } from "./players/leftPlayer";
 import { RightPlayer } from "./players/rightPlayer";
 import { cn } from "@/utils/cn";
+import { HistoryProvider } from "./contexts/history-context";
 
 export const Board = () => {
   const { state } = useGameContext();
@@ -21,7 +22,7 @@ export const Board = () => {
   });
 
   return (
-    <>
+    <HistoryProvider>
       <div
         ref={parentRef}
         className="relative h-screen w-screen overflow-hidden bg-stone-800 select-none perspective-[60vmax] perspective-origin-center">
@@ -59,6 +60,6 @@ export const Board = () => {
         </div>
       </div>
       <Hand />
-    </>
+    </HistoryProvider>
   );
 };

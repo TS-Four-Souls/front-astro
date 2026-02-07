@@ -2,6 +2,7 @@ import type { Card, DetailedState } from "@/shared/api";
 import { Pile } from "./pile";
 import { CardImage, CardType } from "./card";
 import { Stack } from "./stack";
+import { History } from "./history";
 import { socket } from "@/utils/socket";
 import { useGameContext } from "./contexts/game-context";
 import { useToastContext } from "./contexts/toast-context";
@@ -133,8 +134,9 @@ export const Center = ({ state }: CenterProps) => {
     : [];
 
   return (
-    <div className="flex translate-z-1 place-items-center gap-12 rounded-xl bg-stone-700/10 p-8 shadow-md inset-shadow-xs inset-shadow-stone-700 transform-3d">
+    <div className="flex translate-z-1 place-items-center gap-6 rounded-xl bg-stone-700/10 p-8 shadow-md inset-shadow-xs inset-shadow-stone-700 transform-3d">
       <Stack />
+      <History />
       <div className="flex shrink-0 flex-col place-items-center gap-2 transform-3d">
         {state.bonusSouls.map((soul) => (
           <Pile key={soul.slug} cards={soul.granted ? [] : [soul]} size={105} />

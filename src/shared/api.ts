@@ -502,6 +502,8 @@ const detailedStateSchema = z.object({
   turn: z.string(),
   stack: z.array(z.lazy(() => stackElementSchema)),
   firstCardTreasureDeck: cardSchema.optional(),
+  history: z.array(stackElementSchema),
+
 });
 export type DetailedState = z.infer<typeof detailedStateSchema>;
 
