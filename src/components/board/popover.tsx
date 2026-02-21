@@ -22,7 +22,7 @@ export const Popover = ({ children, anchor, className }: PopoverProps) => {
   return (
     <div
       className={cn(
-        "pointer-events-none fixed -translate-x-1/2 -translate-y-full opacity-0 transition-opacity delay-100 duration-200",
+        "pointer-events-none fixed -translate-x-1/2 -translate-y-full opacity-0 transition-opacity delay-100 duration-200 w-max",
         isVisible && "opacity-100",
       )}
       style={{
