@@ -8,7 +8,7 @@ import type {
   DamageOnStackJson,
   DeathOnStackJson,
 } from "@/shared/api";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { cn } from "@/utils/cn";
 import { Dice } from "@/icons/dice";
 import { CardImage } from "./card";
@@ -69,7 +69,9 @@ const HistoryIcon = ({ element }: { element: StackElementType }) => {
               <span>{diceElement.issuer.name} rolled a</span>
               <span className="font-bold whitespace-pre-line text-stone-300">
                 {diceElement.diceRoll}
-                {diceElement.modifier !== 0 ? ` (+${diceElement.modifier})` : ""}
+                {diceElement.modifier !== 0
+                  ? ` (+${diceElement.modifier})`
+                  : ""}
               </span>
               <span>for</span>
               <span className="font-bold whitespace-pre-line text-stone-300">
@@ -259,26 +261,33 @@ export const History = () => {
   const { state } = useGameContext();
   const { isOpen } = useHistoryContext();
   const [isHovered, setIsHovered] = useState(false);
-  const historyRef = useRef<HTMLDivElement>(null);
+  const scrollViewRef = useRef<HTMLDivElement>(null);
 
   // Show history in reverse order (newest first)
   const reversedHistory = [...state.history].reverse();
   const displayedHistory = reversedHistory.slice(0, 30);
 
-  // Always prevent scroll events from propagating to the board zoom controls
-  const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
-    e.stopPropagation();
-  };
-
   if (!isOpen) return null;
+
+  useEffect(() => {
+    const scrollView = scrollViewRef.current;
+    if (!scrollView) return;
+
+    // Measure if the scroll view is overflowing
+    const isOverflowing = scrollView.scrollHeight > scrollView.clientHeight;
+    if (isOverflowing) {
+      scrollView.classList.add("scroll-priority");
+    } else {
+      scrollView.classList.remove("scroll-priority");
+    }
+  }, [state.stack.length]);
 
   return (
     <div
-      ref={historyRef}
-      className="scroll-priority relative flex h-86 w-14 flex-col items-center gap-1.5 overflow-y-auto overflow-x-visible rounded-lg bg-stone-900/50 px-2 py-1.5 transition-colors duration-300 transform-3d hover:bg-stone-900/90"
+      ref={scrollViewRef}
+      className="relative flex h-86 w-14 flex-col items-center gap-1.5 overflow-y-auto rounded-lg bg-stone-900 p-2 transition-colors duration-300 transform-3d"
       onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      onWheel={handleWheel}>
+      onMouseLeave={() => setIsHovered(false)}>
       {displayedHistory.map((element, index) => (
         <HistoryIcon key={index} element={element} />
       ))}
