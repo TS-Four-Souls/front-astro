@@ -127,11 +127,13 @@ export const Center = ({ state }: CenterProps) => {
     ...state.monsters.inPlay
       .filter((card) => card.top.stats?.capabilities.targetable === true)
       .map((card) => card.top.slug),
-  ];
+  ].slice(0, 9);
 
-  const targetableTreasures = state.me.isEngagedInPurchase
-    ? ["top", ...state.treasure.inPlay.map((card) => card.slug)]
-    : [];
+  const targetableTreasures = (
+    state.me.isEngagedInPurchase
+      ? ["top", ...state.treasure.inPlay.map((card) => card.slug)]
+      : []
+  ).slice(0, 9);
 
   return (
     <div className="flex translate-z-1 place-items-center gap-6 rounded-xl bg-stone-700/10 p-8 shadow-md inset-shadow-xs inset-shadow-stone-700 transform-3d">

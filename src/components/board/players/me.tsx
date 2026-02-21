@@ -160,9 +160,8 @@ export const Me = () => {
 
   const targetableCards = state.me.inPlay
     .filter(
-      (card, index) =>
+      (card) =>
         !isHandUp &&
-        index < 8 &&
         card.effects &&
         card.effects.length > 0 &&
         !state.me.isEngagedInPurchase &&
@@ -171,7 +170,8 @@ export const Me = () => {
           (c) => c.top.stats?.capabilities.targetable === true,
         ),
     )
-    .map((card) => card.slug);
+    .map((card) => card.slug)
+    .slice(0, 9);
 
   return (
     <div className="col-start-2 row-start-3 flex flex-col place-content-center place-items-center gap-6 transform-3d">

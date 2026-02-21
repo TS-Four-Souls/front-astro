@@ -25,7 +25,7 @@ export const Board = () => {
     <HistoryProvider>
       <div
         ref={parentRef}
-        className="relative h-screen w-screen overflow-hidden bg-stone-800 select-none perspective-[60vmax] perspective-origin-center">
+        className="relative h-screen w-screen overflow-hidden select-none perspective-[60vmax] perspective-origin-center">
         <div
           ref={boardRef}
           className={cn(
