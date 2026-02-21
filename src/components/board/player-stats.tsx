@@ -143,9 +143,13 @@ export const PlayerStats = ({
     });
   };
 
+  const canDonateCoins = isMe
+    ? "You can't donate coins to yourself"
+    : state.me.capabilities.canDonateCoins;
+
   const { setTooltip: setCoinTooltip, closeTooltip: closeCoinTooltip } =
     useTooltip(
-      state.me.capabilities.canDonateCoins === true
+      canDonateCoins === true
         ? {
             enabled: true,
             title: "Donate coins",
@@ -153,7 +157,7 @@ export const PlayerStats = ({
           }
         : {
             title: "Cannot donate coins",
-            capable: state.me.capabilities.canDonateCoins,
+            capable: canDonateCoins,
           },
     );
 
@@ -172,18 +176,10 @@ export const PlayerStats = ({
         onMouseLeave={closeCoinTooltip}
         className={cn(
           "flex cursor-pointer items-center gap-1",
-          !isMe &&
-            (state.me.capabilities.canDonateCoins === true
-              ? "cursor-pointer"
-              : "cursor-not-allowed"),
+          canDonateCoins === true ? "cursor-pointer" : "cursor-not-allowed",
         )}
         onClick={() =>
-          !isMe &&
-          block(
-            "Cannot donate coins",
-            state.me.capabilities.canDonateCoins,
-            onCoinPress,
-          )
+          block("Cannot donate coins", canDonateCoins, onCoinPress)
         }>
         <img src="/coin.png" className="size-6 rounded-full shadow-md/50" />:
         <span className="font-statblock text-4xl">{coins}</span>

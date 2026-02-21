@@ -3,5 +3,4 @@
 - zoom someimes is weird ?
 - I like the UI, it works well for 4 players, containing all necessary information, but for 2 players it should be bigger
 - Search bar in cheat menus for easy lookup
-- Donate to myself
 - Can activate loot card right after activating first one without tooltip
