@@ -160,7 +160,7 @@ export const PlayerStats = ({
   return (
     <div
       className={cn(
-        "flex place-items-center gap-16 rounded-lg p-3 pr-4 pl-6 text-white outline-3 outline-transparent transform-3d",
+        "flex place-items-center gap-16 rounded-lg p-3 pr-4 pl-6 text-white outline-[0.25em] outline-transparent transform-3d",
         isCurrentTurn && "outline-stone-700",
         isEngagedInCombat && "outline-red-500/60",
         isEngagedInPurchase && "outline-yellow-400/87",

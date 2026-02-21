@@ -5,5 +5,3 @@
 - Search bar in cheat menus for easy lookup
 - Donate to myself
 - Can activate loot card right after activating first one without tooltip
-- Draggable false sur les images historic
-- Border sur playerstats+ historic devrait être em

@@ -200,7 +200,7 @@ const HistoryIcon = ({ element }: { element: StackElementType }) => {
           <Dice
             value={(element as DiceRollJson).diceRoll}
             className={cn(
-              "size-10 rounded-xl border-2 bg-stone-800/50 p-0.5 text-red-500",
+              "size-10 rounded-xl border-[0.2em] bg-stone-800/50 p-0.5 text-red-500",
               borderColor,
             )}
           />
@@ -214,7 +214,7 @@ const HistoryIcon = ({ element }: { element: StackElementType }) => {
         return (
           <div
             className={cn(
-              "size-10 overflow-hidden rounded-xl border-2 bg-stone-800/50",
+              "size-10 overflow-hidden rounded-xl border-[0.2em] bg-stone-800/50",
               borderColor,
             )}>
             <CardImage card={card} className="translate-y-[5%] scale-155" />
