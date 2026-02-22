@@ -11,8 +11,8 @@ interface GameContextProps {
 }
 
 const GameContext = createContext<GameContextProps>({
-  state: {} as DetailedState,
-  issuer: {} as Issuer,
+  state: undefined as unknown as DetailedState,
+  issuer: undefined as unknown as Issuer,
   isHandUp: false,
   setIsHandUp: () => {},
 });

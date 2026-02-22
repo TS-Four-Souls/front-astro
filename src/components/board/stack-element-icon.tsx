@@ -1,5 +1,5 @@
 import { useGameContext } from "./contexts/game-context";
-import type { StackElement } from "@/shared/api";
+import type { DetailedState, StackElement } from "@/shared/api";
 import { cn } from "@/utils/cn";
 import { Dice } from "@/icons/dice";
 import { CardImage } from "./card";
@@ -157,8 +157,9 @@ interface IconProps {
 }
 
 const Icon = ({ element }: IconProps) => {
-  const { state } = useGameContext();
-  const borderColor = getBorderColor(element, state.me.name);
+  const gameContext = useGameContext();
+  const state = gameContext.state as DetailedState | undefined;
+  const borderColor = getBorderColor(element, state?.me.name);
 
   switch (element.type) {
     case "diceRoll":
@@ -217,7 +218,7 @@ const Icon = ({ element }: IconProps) => {
   }
 };
 
-const getBorderColor = (element: StackElement, currentPlayerName: string) => {
+const getBorderColor = (element: StackElement, currentPlayerName?: string) => {
   let issuerEntity;
 
   switch (element.type) {
@@ -242,5 +243,9 @@ const getBorderColor = (element: StackElement, currentPlayerName: string) => {
     return "border-blue-600";
   }
 
-  return "border-red-600";
+  if (currentPlayerName) {
+    return "border-red-600";
+  }
+
+  return "border-stone-700";
 };

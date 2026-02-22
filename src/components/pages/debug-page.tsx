@@ -1,7 +1,54 @@
 import { Pile } from "../board/pile";
 import { CardType } from "../board/card";
 import { useToastContext } from "../board/contexts/toast-context";
+import type { StackElement as StackElementType } from "@/shared/api";
+import { StackElement } from "../board/stack";
 import { Button } from "../button";
+
+const fakeStack: StackElementType[] = [
+  {
+    type: "LootCardEffect",
+    card: { name: "Dice Shard", slug: "b2-dice_shard" },
+    id: 1,
+    targets: [],
+    issuer: { name: "Sylvain", slug: "player-1", type: "player" },
+  },
+  {
+    type: "diceRoll",
+    diceRoll: 3,
+    modifier: 1,
+    id: 2,
+    targets: [
+      { type: "player", payload: { name: "Player 1", slug: "player-1" } },
+    ],
+    issuer: { name: "John", slug: "player-1", type: "player" },
+  },
+  {
+    type: "damage",
+    from: { name: "Sam", slug: "player-1", type: "player" },
+    receiver: { name: "Anna", slug: "player-2", type: "player" },
+    damage: 3,
+    source: { name: "Dice Shard", slug: "b2-dice_shard" },
+    id: 3,
+  },
+  {
+    type: "death",
+    receiver: { name: "Joe", slug: "player-2", type: "player" },
+    from: { name: "Marc", slug: "player-1", type: "player" },
+    source: { name: "Dice Shard", slug: "b2-dice_shard" },
+    id: 4,
+  },
+  {
+    type: "effect",
+    card: { name: "Dice Shard", slug: "b2-dice_shard" },
+    effect: "Each time this deals combat damage to a player, they lose 2¢.",
+    targets: [
+      { type: "player", payload: { name: "Player 1", slug: "player-1" } },
+    ],
+    issuer: { name: "Sylvain", slug: "player-1", type: "player" },
+    id: 5,
+  },
+];
 
 export const DebugPage = () => {
   const { toast } = useToastContext();
@@ -9,6 +56,15 @@ export const DebugPage = () => {
   return (
     <div className="p-4 pb-64">
       <h1 className="mb-4 text-4xl font-bold">Debug Page</h1>
+
+      <h2 className="mb-2 text-2xl font-bold">Stack</h2>
+      <div className="scroll-priority flex h-86 w-60 flex-col gap-2 bg-stone-900 p-2">
+        <div className="grid grow place-content-start overflow-auto rounded-xl text-sm">
+          {fakeStack.map((element, index) => (
+            <StackElement key={index} element={element} />
+          ))}
+        </div>
+      </div>
 
       <h2 className="mt-16 mb-2 text-2xl font-bold">Toasts</h2>
       <div className="flex flex-row gap-2">
