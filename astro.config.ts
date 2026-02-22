@@ -10,6 +10,7 @@ export default defineConfig({
     schema: {
       BASE_URL: envField.string({ context: "client", access: "public" }),
       SELF_BASE_URL: envField.string({ context: "client", access: "public" }),
+      SERVER_API_KEY: envField.string({ context: "client", access: "public" }),
     },
   },
 
