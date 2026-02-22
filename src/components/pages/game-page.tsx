@@ -10,6 +10,7 @@ import { MainMenuProvider } from "../board/contexts/main-menu-context";
 import { RoomOptions } from "../onboarding/room-options";
 import { RoomJoinForm } from "../onboarding/room-join-form";
 import { OnboardingLayout } from "../onboarding-layout";
+import { storage } from "@/utils/storage";
 
 export const GamePage = () => {
   const [room, setRoom] = useState<Room | null>(null);
@@ -31,7 +32,7 @@ export const GamePage = () => {
       console.log("[🔌 Socket] Room changed", room);
       setRoom(room);
       if (room?.room.state === "joined") {
-        localStorage.setItem("issuer", JSON.stringify(room.room.issuer));
+        storage.setItem("issuer", JSON.stringify(room.room.issuer));
       }
     }
 
@@ -46,9 +47,9 @@ export const GamePage = () => {
     function onUserAssigned(userId: string | null) {
       console.log("[🔌 Socket] User assigned", userId);
       if (userId) {
-        localStorage.setItem("userId", userId);
+        storage.setItem("userId", userId);
       } else {
-        localStorage.removeItem("userId");
+        storage.removeItem("userId");
       }
     }
 
@@ -98,10 +99,10 @@ export const OnboardingPages = ({ room }: OnboardingPagesProps) => {
 
   // Retrieve the secret from local storage
   useEffect(() => {
-    const userId = localStorage.getItem("userId");
+    const userId = storage.getItem("userId");
     if (userId) {
       try {
-        const textLocalStorageIssuer = localStorage.getItem("issuer") ?? "";
+        const textLocalStorageIssuer = storage.getItem("issuer") ?? "";
         const objectLocalStorageIssuer = JSON.parse(textLocalStorageIssuer);
         const localStorageIssuer = schemas.issuer.parse(
           objectLocalStorageIssuer,
