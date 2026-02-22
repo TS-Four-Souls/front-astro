@@ -316,7 +316,10 @@ export function isParameterKey(key: string): key is keyof GameParametersJson {
 
 const joinRequestSchema = z.string();
 
-const rejoinRequestSchema = issuerSchema;
+const rejoinRequestSchema = z.object({
+  userId: z.string(),
+  issuer: issuerSchema.optional(),
+});
 
 const startRequestSchema = z.object({
   issuer: issuerSchema,
@@ -503,22 +506,42 @@ const detailedStateSchema = z.object({
   stack: z.array(z.lazy(() => stackElementSchema)),
   firstCardTreasureDeck: cardSchema.optional(),
   history: z.array(stackElementSchema),
-
 });
 export type DetailedState = z.infer<typeof detailedStateSchema>;
 
 const roomSchema = z.object({
-  issuer: issuerSchema,
-  players: z.array(z.string()),
-  gameParameters: gameParametersSchema,
+  room: z.discriminatedUnion("state", [
+    z.object({
+      id: z.string(),
+      state: z.literal("joined"),
+      issuer: issuerSchema,
+      players: z.array(z.string()),
+      gameParameters: gameParametersSchema,
+    }),
+    z.object({
+      id: z.string(),
+      state: z.literal("created"),
+    }),
+  ]),
   gameState: detailedStateSchema.optional(),
 });
 export type Room = z.infer<typeof roomSchema>;
 
-const isGameOngoingResponseSchema = z.object({
-  gameOngoing: z.boolean(),
-});
+const isGameOngoingResponseSchema = z.union([
+  z.object({
+    status: z.literal(200),
+    gameOngoing: z.boolean(),
+  }),
+  z.object({
+    status: z.literal(400),
+    error: z.string(),
+  }),
+]);
 export type IsGameOngoingResponse = z.infer<typeof isGameOngoingResponseSchema>;
+
+const joinRoomRequestSchema = z.object({
+  roomId: z.string(),
+});
 
 export const schemas = {
   issuer: issuerSchema,
@@ -536,7 +559,6 @@ export const schemas = {
   debugListLootRequest: issuerSchema,
   debugListTreasureRequest: issuerSchema,
   debugGainTreasureRequest: debugGainTreasureRequestSchema,
-  debugResetRequest: startRequestSchema,
   resolveRequest: resolveRequestSchema,
   submitSelectionRequest: submitSelectionSchema,
   playCardRequest: cardActivationSchema,
@@ -545,6 +567,7 @@ export const schemas = {
   purchaseRequest: purchaseSchema,
   giveCoinsRequest: giveCoinsSchema,
   setGameParameterRequest: setGameParameterRequestSchema,
+  joinRoomRequest: joinRoomRequestSchema,
 };
 
 export namespace Requests {
@@ -571,7 +594,7 @@ export namespace Requests {
   export type DebugGainTreasure = z.infer<
     typeof debugGainTreasureRequestSchema
   >;
-  export type DebugReset = z.infer<typeof startRequestSchema>;
+  export type JoinRoom = z.infer<typeof joinRoomRequestSchema>;
 }
 
 export namespace Responses {
@@ -595,13 +618,17 @@ export namespace Responses {
   export type DebugListLoot = DebugListLootResponse;
   export type DebugListTreasure = DebugListTreasureResponse;
   export type DebugGainTreasure = BasicResponse;
-  export type DebugReset = BasicResponse;
   export type GiveCoins = BasicResponse;
   export type IsGameOngoing = IsGameOngoingResponse;
+  export type CreateRoom = BasicResponse;
+  export type JoinRoom = BasicResponse;
+  export type JoinAsUser = BasicResponse;
+  export type LeaveRoom = BasicResponse;
 }
 
 export interface ServerToClientEvents {
   "on:room:changed": (room: Room | null) => void;
+  "on:user:assigned": (userId: string | null) => void;
 }
 
 export interface ClientToServerEvents {
@@ -609,14 +636,17 @@ export interface ClientToServerEvents {
     request: Requests.Join,
     callback: (response: Responses.Join) => void,
   ) => void;
+
   rejoin: (
     request: Requests.Rejoin,
     callback: (response: Responses.Rejoin) => void,
   ) => void;
+
   start: (
     request: Requests.Start,
     callback: (response: Responses.Start) => void,
   ) => void;
+
   reset: (
     request: Requests.Reset,
     callback: (response: Responses.Reset) => void,
@@ -687,11 +717,6 @@ export interface ClientToServerEvents {
     callback: (response: Responses.DebugGainTreasure) => void,
   ) => void;
 
-  debugReset: (
-    request: Requests.DebugReset,
-    callback: (response: Responses.DebugReset) => void,
-  ) => void;
-
   giveCoins: (
     request: Requests.GiveCoins,
     callback: (response: Responses.GiveCoins) => void,
@@ -715,4 +740,13 @@ export interface ClientToServerEvents {
   isGameOngoing: (
     callback: (response: Responses.IsGameOngoing) => void,
   ) => void;
+
+  createRoom: (callback: (response: Responses.CreateRoom) => void) => void;
+
+  joinRoom: (
+    request: Requests.JoinRoom,
+    callback: (response: Responses.JoinRoom) => void,
+  ) => void;
+
+  leaveRoom: (callback: (response: Responses.LeaveRoom) => void) => void;
 }

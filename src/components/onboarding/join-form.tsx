@@ -12,7 +12,14 @@ export const JoinForm = () => {
 
   useEffect(() => {
     socket.emit("isGameOngoing", (response) => {
-      setGameOngoing(response.gameOngoing);
+      switch (response.status) {
+        case 200:
+          setGameOngoing(response.gameOngoing);
+          break;
+        case 400:
+          toast("error", "Failed to check if game is ongoing", response.error);
+          break;
+      }
     });
   }, []);
 
@@ -40,56 +47,67 @@ export const JoinForm = () => {
     });
   };
 
-  return (
-    <div className="flex h-screen gap-8">
-      <div className="planetarium flex flex-2 flex-col">
-        <div className="flex flex-1 place-content-center place-items-center">
-          <img src="/logo.png" alt="Logo" className="mb-16a w-[30vw]" />
-        </div>
-        <p className="mx-16 mb-4 text-center font-alt-stats text-blue-200/60">
-          This is an unofficial, fan-made website and is not affiliated with
-          <br /> or endorsed by Maestro Media and Edmund McMillen.
+  const onLeaveRoomPress = () => {
+    socket.emit("leaveRoom", (response) => {
+      switch (response.status) {
+        case 200:
+          break;
+        case 400:
+          toast("error", "Failed to leave room", response.error);
+          break;
+      }
+    });
+  };
+
+  if (gameOngoing) {
+    return (
+      <div className="flex flex-col gap-4 rounded-lg border-2 border-stone-700 p-8 text-center">
+        <h1 className="font-main text-3xl font-bold">Game ongoing</h1>
+        <p>
+          A game is already ongoing.
+          <br />
+          You can reset it to start a new one or leave the room.
         </p>
+        <Button
+          type="button"
+          label="Reset game"
+          className="mt-4"
+          onClick={onResetPress}
+          hotkey="enter"
+        />
+        <Button
+          type="button"
+          label="Leave"
+          onClick={onLeaveRoomPress}
+          hotkey="escape"
+        />
       </div>
-      <div className="flex flex-1 flex-col place-content-center place-items-center gap-8">
-        {gameOngoing ? (
-          <div className="flex flex-col gap-4 rounded-lg border-2 border-stone-700 p-8 text-center">
-            <h1 className="font-main text-3xl font-bold">Game ongoing</h1>
-            <p>
-              A game is already ongoing.
-              <br />
-              You can reset it to start a new one.
-            </p>
-            <Button
-              type="button"
-              label="Reset game"
-              className="mt-4"
-              onClick={onResetPress}
-            />
-          </div>
-        ) : (
-          <div className="flex flex-col gap-8 rounded-lg border-2 border-stone-700 p-8 text-center">
-            <h1 className="font-main text-3xl font-bold">Welcome!</h1>
-            <div className="flex flex-col gap-4">
-              <input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    joinGame();
-                  }
-                }}
-                type="text"
-                placeholder="Enter your name..."
-                autoComplete="off"
-                minLength={1}
-                required
-                className="rounded-md border-2 border-stone-700 bg-stone-800 px-4 py-2 text-white focus:ring-2 focus:ring-stone-500 focus:outline-none"
-              />
-              <Button label="Join" onClick={joinGame} hotkey="enter" />
-            </div>
-          </div>
-        )}
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-8 rounded-lg border-2 border-stone-700 bg-stone-800/60 p-8 text-center backdrop-blur-md">
+      <h1 className="font-main text-3xl font-bold">Welcome!</h1>
+      <div className="flex flex-col gap-4">
+        <input
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              joinGame();
+            } else if (e.key === "Escape") {
+              onLeaveRoomPress();
+            }
+          }}
+          type="text"
+          placeholder="Enter your name..."
+          autoComplete="off"
+          minLength={1}
+          required
+          className="rounded-md border-2 border-stone-700 bg-stone-800 px-4 py-2 text-white focus:ring-2 focus:ring-stone-500 focus:outline-none"
+        />
+        <Button label="Join" onClick={joinGame} hotkey="enter" />
+        <Button label="Leave" onClick={onLeaveRoomPress} hotkey="escape" />
       </div>
     </div>
   );

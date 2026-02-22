@@ -7,10 +7,12 @@ import { schemas, type Room } from "@/shared/api";
 import { GameProvider } from "../board/contexts/game-context";
 import { Loading } from "../onboarding/loading";
 import { MainMenuProvider } from "../board/contexts/main-menu-context";
+import { RoomOptions } from "../onboarding/room-options";
+import { RoomJoinForm } from "../onboarding/room-join-form";
+import { OnboardingLayout } from "../onboarding-layout";
 
 export const GamePage = () => {
   const [room, setRoom] = useState<Room | null>(null);
-  const [tryingToRejoin, setTryingToRejoin] = useState<boolean>(true);
 
   useEffect(() => {
     function onConnect() {
@@ -28,6 +30,9 @@ export const GamePage = () => {
     function onRoomChanged(room: Room | null) {
       console.log("[🔌 Socket] Room changed", room);
       setRoom(room);
+      if (room?.room.state === "joined") {
+        localStorage.setItem("issuer", JSON.stringify(room.room.issuer));
+      }
     }
 
     function onAnyOutgoing(event: string, ...args: any[]) {
@@ -38,10 +43,20 @@ export const GamePage = () => {
       console.log("[🔌 Socket] Incoming event", event, args);
     }
 
+    function onUserAssigned(userId: string | null) {
+      console.log("[🔌 Socket] User assigned", userId);
+      if (userId) {
+        localStorage.setItem("userId", userId);
+      } else {
+        localStorage.removeItem("userId");
+      }
+    }
+
     socket.on("connect", onConnect);
     socket.on("connect_error", onConnectError);
     socket.on("disconnect", onDisconnect);
     socket.on("on:room:changed", onRoomChanged);
+    socket.on("on:user:assigned", onUserAssigned);
     socket.onAnyOutgoing(onAnyOutgoing);
     socket.onAny(onAnyIncoming);
 
@@ -50,48 +65,103 @@ export const GamePage = () => {
       socket.off("connect_error", onConnectError);
       socket.off("disconnect", onDisconnect);
       socket.off("on:room:changed", onRoomChanged);
+      socket.off("on:user:assigned", onUserAssigned);
       socket.offAnyOutgoing(onAnyOutgoing);
       socket.offAny(onAnyIncoming);
     };
   }, []);
 
-  // Retrieve the secret from local storage
-  useEffect(() => {
-    // Read the secret from local storage
-    try {
-      const textLocalStorageIssuer = localStorage.getItem("issuer") ?? "";
-      const objectLocalStorageIssuer = JSON.parse(textLocalStorageIssuer);
-      const localStorageIssuer = schemas.issuer.parse(objectLocalStorageIssuer);
-      socket.emit("rejoin", localStorageIssuer, (response) => {
-        console.log("[🔌 Socket] Rejoin response", response);
-        setTryingToRejoin(false);
-      });
-    } catch (error) {
-      console.log("[🔌 Socket] Invalid issuer", error);
-      setTryingToRejoin(false);
-      return;
-    }
-  }, []);
-
-  useEffect(() => {
-    if (room) {
-      localStorage.setItem("issuer", JSON.stringify(room.issuer));
-    }
-  }, [room?.issuer]);
-
-  if (tryingToRejoin) {
-    return <Loading />;
-  } else if (!room) {
-    return <JoinForm />;
-  } else if (!room.gameState) {
-    return <StartStep room={room} />;
-  } else if (room.gameState) {
+  if (room?.room.state === "joined" && room.gameState) {
     return (
-      <GameProvider state={room.gameState} issuer={room.issuer}>
+      <GameProvider state={room.gameState} issuer={room.room.issuer}>
         <MainMenuProvider>
           <Board />
         </MainMenuProvider>
       </GameProvider>
     );
+  }
+
+  return (
+    <OnboardingLayout headerMode={room?.room.state === "joined"}>
+      <OnboardingPages room={room} />
+    </OnboardingLayout>
+  );
+};
+
+interface OnboardingPagesProps {
+  room: Room | null;
+}
+
+export const OnboardingPages = ({ room }: OnboardingPagesProps) => {
+  const [tryingToRejoin, setTryingToRejoin] = useState<boolean>(true);
+  const [joiningRoom, setJoiningRoom] = useState<boolean>(false);
+
+  // Retrieve the secret from local storage
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    if (userId) {
+      try {
+        const textLocalStorageIssuer = localStorage.getItem("issuer") ?? "";
+        const objectLocalStorageIssuer = JSON.parse(textLocalStorageIssuer);
+        const localStorageIssuer = schemas.issuer.parse(
+          objectLocalStorageIssuer,
+        );
+
+        socket.emit(
+          "rejoin",
+          { userId, issuer: localStorageIssuer },
+          (response) => {
+            console.log("[🔌 Socket] Join as user response", response);
+            setTryingToRejoin(false);
+          },
+        );
+        return;
+      } catch (error) {
+        console.log("[🔌 Socket] Invalid issuer", error);
+      }
+
+      socket.emit("rejoin", { userId }, (response) => {
+        switch (response.status) {
+          case 200:
+            console.log("[🔌 Socket] Joined as user", userId);
+            break;
+          case 400:
+          default:
+            console.log("[🔌 Socket] Failed to join as user", response.error);
+            break;
+        }
+      });
+    }
+    setTryingToRejoin(false);
+  }, []);
+
+  const createRoom = () => {
+    socket.emit("createRoom", (response) => {
+      console.log("[🔌 Socket] Create room response", response);
+    });
+  };
+
+  if (tryingToRejoin) {
+    return <Loading />;
+  } else if (!room && !joiningRoom) {
+    return (
+      <RoomOptions
+        onCreateRoom={createRoom}
+        onJoinRoom={() => {
+          setJoiningRoom(true);
+        }}
+      />
+    );
+  } else if (!room && joiningRoom) {
+    return (
+      <RoomJoinForm
+        onSuccess={() => setJoiningRoom(false)}
+        onCancel={() => setJoiningRoom(false)}
+      />
+    );
+  } else if (room && room.room.state === "created") {
+    return <JoinForm />;
+  } else if (room && room.room.state === "joined" && !room.gameState) {
+    return <StartStep room={room.room} />;
   }
 };
