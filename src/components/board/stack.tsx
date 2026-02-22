@@ -9,13 +9,11 @@ import type {
   LootCardOnStackJson,
   StackElement as StackElementType,
 } from "@/shared/api";
-import { Dice } from "@/icons/dice";
-import { CardImage } from "./card";
 import { useEffect, useRef } from "react";
 import { Button } from "../button";
 import { cn } from "@/utils/cn";
-import { usePopoverContext } from "./contexts/popover-context";
-import { receiverName, selectionToText } from "@/utils/selection-text";
+import { receiverName } from "@/utils/selection-text";
+import { StackElementIcon } from "./stack-element-icon";
 
 export const Stack = () => {
   const { state, issuer } = useGameContext();
@@ -110,41 +108,9 @@ const StackElementContent = ({ element }: { element: StackElementType }) => {
 };
 
 const DiceRollElement = ({ element }: { element: DiceRollJson }) => {
-  const { setPopover, closePopover } = usePopoverContext();
-
-  const onHover = (e: React.MouseEvent<HTMLDivElement>) => {
-    const card = element.card;
-    if (!card) return;
-
-    const rect = e.currentTarget.getBoundingClientRect();
-
-    setPopover({
-      anchor: rect,
-      content: (
-        <>
-          <CardImage card={card} className="w-64" />
-          <div className="mt-3 flex max-w-64 flex-wrap place-content-center gap-1 text-center leading-tight text-stone-400">
-            <span>{element.issuer.name} rolled a</span>
-            <span className="font-bold whitespace-pre-line text-stone-300">
-              {element.diceRoll}
-              {element.modifier !== 0 ? ` (+${element.modifier})` : ""}
-            </span>
-            <span>for</span>
-            <span className="font-bold whitespace-pre-line text-stone-300">
-              {element.card?.name ?? "an attack roll"}
-            </span>
-          </div>
-        </>
-      ),
-    });
-  };
-
   return (
-    <div
-      className="flex flex-row items-center gap-4"
-      onMouseEnter={onHover}
-      onMouseLeave={closePopover}>
-      <Dice value={element.diceRoll} className="size-12 text-red-500" />
+    <div className="flex flex-row items-center gap-4">
+      <StackElementIcon element={element} />
       <div className="flex flex-col">
         <p className="text-2xs leading-6 text-stone-500">
           {element.card?.name ?? "Attack roll"}
@@ -164,43 +130,9 @@ const LootCardEffectElement = ({
 }: {
   element: LootCardOnStackJson;
 }) => {
-  const { setPopover, closePopover } = usePopoverContext();
-
-  const onHover = (e: React.MouseEvent<HTMLDivElement>) => {
-    const card = element.card;
-    if (!card) return;
-
-    const rect = e.currentTarget.getBoundingClientRect();
-    const selectionText = element.targets
-      .map((target) => selectionToText(target))
-      .join("\n");
-
-    setPopover({
-      anchor: rect,
-      content: (
-        <>
-          <CardImage card={card} className="w-64" />
-          {selectionText.length > 0 && (
-            <div className="mt-3 flex max-w-64 flex-col gap-2 text-center leading-tight text-stone-400">
-              <span>{element.issuer.name} used this card on</span>
-              <span className="font-bold whitespace-pre-line text-stone-300">
-                {selectionText}
-              </span>
-            </div>
-          )}
-        </>
-      ),
-    });
-  };
-
   return (
     <div className="flex flex-row items-center gap-4">
-      <div
-        className="size-12 shrink-0 scale-100 overflow-hidden rounded-lg transition-transform hover:scale-110"
-        onMouseEnter={onHover}
-        onMouseLeave={closePopover}>
-        <CardImage card={element.card} className="translate-y-[5%] scale-155" />
-      </div>
+      <StackElementIcon element={element} />
       <div>
         <p className="text-stone-200">
           {element.issuer.name} used {element.card.name}
@@ -211,46 +143,9 @@ const LootCardEffectElement = ({
 };
 
 const EffectElement = ({ element }: { element: EffectOnStackJson }) => {
-  const { setPopover, closePopover } = usePopoverContext();
-
-  const onHover = (e: React.MouseEvent<HTMLDivElement>) => {
-    const card = element.card;
-    if (!card) return;
-
-    const rect = e.currentTarget.getBoundingClientRect();
-    const selectionText = element.targets
-      .map((target) => selectionToText(target))
-      .join("\n");
-    setPopover({
-      anchor: rect,
-      content: (
-        <>
-          <CardImage card={card} className="w-64" />
-          <div className="mt-3 flex max-w-64 flex-col gap-2 text-center leading-tight text-stone-400">
-            <span>{element.issuer.name} selected</span>
-            <span className="font-bold text-stone-300">{element.effect}</span>
-            {selectionText.length > 0 && (
-              <>
-                <span>on</span>
-                <span className="font-bold whitespace-pre-line text-stone-300">
-                  {selectionText}
-                </span>
-              </>
-            )}
-          </div>
-        </>
-      ),
-    });
-  };
-
   return (
     <div className="flex flex-row items-center gap-4">
-      <div
-        className="size-12 shrink-0 scale-100 overflow-hidden rounded-lg transition-transform hover:scale-110"
-        onMouseEnter={onHover}
-        onMouseLeave={closePopover}>
-        <CardImage card={element.card} className="translate-y-[5%] scale-155" />
-      </div>
+      <StackElementIcon element={element} />
       <div>
         <p className="text-xs leading-6 text-stone-500">
           {element.issuer.name}
@@ -262,47 +157,9 @@ const EffectElement = ({ element }: { element: EffectOnStackJson }) => {
 };
 
 const DamageElement = ({ element }: { element: DamageOnStackJson }) => {
-  const { setPopover, closePopover } = usePopoverContext();
-
-  const onHover = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    setPopover({
-      anchor: rect,
-      content: (
-        <>
-          {"slug" in element.source && (
-            <CardImage card={element.source} className="w-64" />
-          )}
-          <div className="mt-3 max-w-64 text-center leading-tight text-stone-400">
-            <span className="font-bold text-stone-300">
-              {element.from.name}
-            </span>{" "}
-            dealt{" "}
-            <span className="font-bold text-stone-300">{element.damage}</span>{" "}
-            damage to{" "}
-            <span className="font-bold text-stone-300">
-              {receiverName(element)}
-            </span>{" "}
-            using{" "}
-            <span className="font-bold text-stone-300">
-              {"slug" in element.source
-                ? element.source.name
-                : "an attack roll"}
-            </span>
-          </div>
-        </>
-      ),
-    });
-  };
-
   return (
     <div className="flex flex-row items-center gap-4">
-      <img
-        src={`/heart.png`}
-        className="size-12 shrink-0"
-        onMouseEnter={onHover}
-        onMouseLeave={closePopover}
-      />
+      <StackElementIcon element={element} />
       <div>
         <p className="text-stone-200">
           {element.from.name} dealt {element.damage} damage to{" "}
@@ -314,46 +171,9 @@ const DamageElement = ({ element }: { element: DamageOnStackJson }) => {
 };
 
 const DeathElement = ({ element }: { element: DeathOnStackJson }) => {
-  const { setPopover, closePopover } = usePopoverContext();
-
-  const onHover = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    setPopover({
-      anchor: rect,
-      content: (
-        <>
-          {"slug" in element.source && (
-            <CardImage card={element.source} className="w-64" />
-          )}
-          <div className="mt-3 max-w-64 text-center leading-tight text-stone-400">
-            <span className="font-bold text-stone-300">
-              {element.from.name}
-            </span>{" "}
-            killed{" "}
-            <span className="font-bold text-stone-300">
-              {receiverName(element)}
-            </span>{" "}
-            using{" "}
-            <span className="font-bold text-stone-300">
-              {"slug" in element.source
-                ? element.source.name
-                : "an attack roll"}
-            </span>
-          </div>
-        </>
-      ),
-    });
-  };
-
   return (
     <div className="flex flex-row items-center gap-4">
-      <img
-        src={`/skull.webp`}
-        className="size-12 shrink-0"
-        style={{ imageRendering: "pixelated" }}
-        onMouseEnter={onHover}
-        onMouseLeave={closePopover}
-      />
+      <StackElementIcon element={element} />
       <div>
         <p className="text-stone-200">
           {element.from.name} killed {receiverName(element)}
