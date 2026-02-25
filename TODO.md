@@ -4,3 +4,13 @@
 - I like the UI, it works well for 4 players, containing all necessary information, but for 2 players it should be bigger
 - Search bar in cheat menus for easy lookup
 - Can activate loot card right after activating first one without tooltip
+
+- texture plateau
+- resolve + stack plus visible
+- macos gesture to go back that interfere with panning
+- macos hand cards are cut at the bottom
+- macos zoom is super slow
+- players can go too far away from the board
+- uniformized the icons
+- history icons don't have a shrink-0
+- get a zoomed view of the card when hovering it.

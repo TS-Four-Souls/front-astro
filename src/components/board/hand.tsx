@@ -52,6 +52,8 @@ export const Hand = () => {
     );
   };
 
+  const cardSize = 350;
+
   const targetableCards = state.me.hand
     .filter((_, index) => isHandUp && index < 8)
     .map((card) => card.slug);
@@ -70,7 +72,7 @@ export const Hand = () => {
             key={card.slug}
             cards={[{ slug: card.slug }]}
             className={cn(
-              "m-1 max-h-[25vh] transition-transform",
+              "m-1 transition-transform",
               state.me.capabilities.useLoot === true
                 ? "cursor-pointer hover:-translate-y-10"
                 : "cursor-not-allowed",
@@ -96,7 +98,7 @@ export const Hand = () => {
                 () => playCard(index),
               )
             }
-            size={350}
+            size={cardSize}
             enableRandomRotation={false}
           />
         ))}
