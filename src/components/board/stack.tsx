@@ -52,7 +52,7 @@ export const Stack = () => {
       <div
         ref={scrollViewRef}
         className={cn(
-          "grow translate-z-1 place-content-start gap-4 overflow-auto p-2 text-sm",
+          "no-scrollbar grow translate-z-1 place-content-start gap-4 overflow-auto p-2 text-sm",
           state.stack.length > 0 ? "grid" : "flex place-items-center",
         )}>
         {state.stack.map((element, index) => (

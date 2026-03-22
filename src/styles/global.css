@@ -71,6 +71,18 @@
   box-shadow: 0 0 --value(--glow-*) 0.1em white;
 }
 
+@layer utilities {
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+}
+
 @theme {
   --glow-1: 0.01em;
   --glow-2: 0.02em;
