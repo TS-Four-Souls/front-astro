@@ -170,12 +170,14 @@ export const PlayerStats = ({
         isEngagedInPurchase && "outline-yellow-400/87",
         className,
       )}>
-      <h1 className="text-center font-alt-stats font-bold uppercase">{name}</h1>
+      <h1 className="translate-z-1 text-center font-alt-stats font-bold uppercase">
+        {name}
+      </h1>
       <div
         onMouseEnter={setCoinTooltip}
         onMouseLeave={closeCoinTooltip}
         className={cn(
-          "flex cursor-pointer items-center gap-1",
+          "flex translate-z-1 cursor-pointer items-center gap-1",
           canDonateCoins === true ? "cursor-pointer" : "cursor-not-allowed",
         )}
         onClick={() =>
@@ -230,7 +232,7 @@ export const PlayerStats = ({
       )}
 
       {isMe && (
-        <div className="flex items-center gap-4">
+        <div className="flex translate-z-1 items-center gap-4">
           <Button
             disabled={canEndTurn !== true}
             hotkey="e"
