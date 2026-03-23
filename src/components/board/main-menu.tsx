@@ -142,6 +142,51 @@ export const MainMenu = () => {
     });
   };
 
+  const debugRemoveCard = () => {
+    socket.emit("debugListCardsICanRemove", issuer, (response) => {
+      if (response.status === 200) {
+        const promptId = `debug-list-cards-i-can-remove-${Date.now()}`;
+        addPrompt({
+          promptId,
+          isUnique: false,
+          prompt: "Select cards to remove",
+          options: response.cards.map((card) => ({
+            type: "card",
+            payload: card,
+          })),
+          minCount: 1,
+          maxCount: 50,
+          onSubmit: (selections) => {
+            socket.emit(
+              "debugRemoveCards",
+              {
+                ...issuer,
+                slugs: selections.map((selection) => selection.payload.slug),
+              },
+              (response) => {
+                if (response.status === 200) {
+                  toast(
+                    "success",
+                    "CHEAT MODE",
+                    "You've removed the selected cards",
+                  );
+                } else {
+                  toast("error", "CHEAT MODE", response.error);
+                }
+              },
+            );
+            removePrompt(promptId);
+          },
+          onCancel: () => {
+            removePrompt(promptId);
+          },
+        });
+      } else {
+        toast("error", "CHEAT MODE", response.error);
+      }
+    });
+  };
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
@@ -175,6 +220,14 @@ export const MainMenu = () => {
           debugGainTreasure();
         }}
         label="[CHEAT] Gain treasure"
+        className="translate-z-1"
+      />
+      <Button
+        onClick={() => {
+          closeMainMenu();
+          debugRemoveCard();
+        }}
+        label="[CHEAT] Remove card"
         className="translate-z-1"
       />
       <Button

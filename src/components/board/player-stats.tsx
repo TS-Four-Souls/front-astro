@@ -143,13 +143,9 @@ export const PlayerStats = ({
     });
   };
 
-  const canDonateCoins = isMe
-    ? "You can't donate coins to yourself"
-    : state.me.capabilities.canDonateCoins;
-
   const { setTooltip: setCoinTooltip, closeTooltip: closeCoinTooltip } =
     useTooltip(
-      canDonateCoins === true
+      state.me.capabilities.canDonateCoins === true
         ? {
             enabled: true,
             title: "Donate coins",
@@ -157,14 +153,14 @@ export const PlayerStats = ({
           }
         : {
             title: "Cannot donate coins",
-            capable: canDonateCoins,
+            capable: state.me.capabilities.canDonateCoins,
           },
     );
 
   return (
     <div
       className={cn(
-        "flex place-items-center gap-16 rounded-lg p-3 pr-4 pl-6 text-white outline-[0.25em] outline-transparent transform-3d",
+        "flex place-items-center gap-16 rounded-lg p-3 pr-4 pl-6 text-white outline-3 outline-transparent transform-3d",
         isCurrentTurn && "outline-stone-700",
         isEngagedInCombat && "outline-red-500/60",
         isEngagedInPurchase && "outline-yellow-400/87",
@@ -177,11 +173,19 @@ export const PlayerStats = ({
         onMouseEnter={setCoinTooltip}
         onMouseLeave={closeCoinTooltip}
         className={cn(
-          "flex translate-z-1 cursor-pointer items-center gap-1",
-          canDonateCoins === true ? "cursor-pointer" : "cursor-not-allowed",
+          "flex cursor-pointer items-center gap-1",
+          !isMe &&
+            (state.me.capabilities.canDonateCoins === true
+              ? "cursor-pointer"
+              : "cursor-not-allowed"),
         )}
         onClick={() =>
-          block("Cannot donate coins", canDonateCoins, onCoinPress)
+          !isMe &&
+          block(
+            "Cannot donate coins",
+            state.me.capabilities.canDonateCoins,
+            onCoinPress,
+          )
         }>
         <img src="/coin.png" className="size-6 rounded-full shadow-md/50" />:
         <span className="font-statblock text-4xl">{coins}</span>
