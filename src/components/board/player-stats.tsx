@@ -7,7 +7,7 @@ import { Button } from "../button";
 import { usePromptContext } from "./contexts/prompt-context";
 import { usePopoverContext } from "./contexts/popover-context";
 import type { Card as CardType } from "@/shared/api";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CardImage } from "./card";
 import { useMainMenuContext } from "./contexts/main-menu-context";
 import { useTooltip } from "./use-tooltip";
@@ -156,12 +156,21 @@ export const PlayerStats = ({
             capable: state.me.capabilities.canDonateCoins,
           },
     );
-
+  const [isGlowing, setIsGlowing] = useState(false);
+  useEffect(() => {
+    setIsGlowing(isCurrentTurn);
+    const timeout = setTimeout(() => {
+      setIsGlowing(false);
+    }, 1500);
+    return () => clearTimeout(timeout);
+  }, [isCurrentTurn]);
+  
   return (
     <div
       className={cn(
-        "flex place-items-center gap-16 rounded-lg p-3 pr-4 pl-6 text-white outline-3 outline-transparent transform-3d",
+        "flex place-items-center gap-16 rounded-lg p-3 pr-4 pl-6 text-white outline-[0.2em] outline-transparent transform-3d transition-shadow duration-500",
         isCurrentTurn && "outline-stone-700",
+        isGlowing && "glow-8",
         isEngagedInCombat && "outline-red-500/60",
         isEngagedInPurchase && "outline-yellow-400/87",
         className,
