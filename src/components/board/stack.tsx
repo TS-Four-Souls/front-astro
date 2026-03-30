@@ -9,7 +9,7 @@ import type {
   LootCardOnStackJson,
   StackElement as StackElementType,
 } from "@/shared/api";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "../button";
 import { cn } from "@/utils/cn";
 import { receiverName } from "@/utils/selection-text";
@@ -19,7 +19,11 @@ export const Stack = () => {
   const { state, issuer } = useGameContext();
   const { toast, block } = useToastContext();
 
+  const containerRef = useRef<HTMLDivElement>(null);
   const scrollViewRef = useRef<HTMLDivElement>(null);
+  const [selectedStackElementId, setSelectedStackElementId] = useState<
+    number | null
+  >(null);
 
   const resolveStack = () => {
     socket.emit("resolve", { issuer }, (response) => {
@@ -47,17 +51,132 @@ export const Stack = () => {
     }
   }, [state.stack.length]);
 
+  useEffect(() => {
+    if (selectedStackElementId === null) {
+      return;
+    }
+
+    if (!state.stack.some((element) => element.id === selectedStackElementId)) {
+      setSelectedStackElementId(null);
+    }
+  }, [state.stack, selectedStackElementId]);
+
+  useEffect(() => {
+    if (selectedStackElementId === null) {
+      return;
+    }
+
+    const onPointerDown = (event: PointerEvent) => {
+      const target = event.target;
+      if (!(target instanceof Element)) {
+        return;
+      }
+
+      if (target.closest('[data-insertion-bar="true"]')) {
+        return;
+      }
+
+      setSelectedStackElementId(null);
+    };
+
+    document.addEventListener("pointerdown", onPointerDown);
+
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+    };
+  }, [selectedStackElementId]);
+
+  const onStackElementClick = (element: StackElementType) => {
+    if (selectedStackElementId === null && element.reordering) {
+      setSelectedStackElementId(element.id);
+      return;
+    }
+
+    if (selectedStackElementId === element.id) {
+      setSelectedStackElementId(null);
+      return;
+    }
+
+    moveStackElementBefore(element.id);
+  };
+
+  const moveStackElementBefore = (targetStackId: number | "start") => {
+    if (selectedStackElementId === null) {
+      return;
+    }
+
+    const elementToMoveStackId = selectedStackElementId;
+    setSelectedStackElementId(null);
+
+    socket.emit(
+      "insertStackElementBefore",
+      { issuer, elementToMoveStackId, targetStackId },
+      (response) => {
+        switch (response.status) {
+          case 200:
+            toast("success", "Stack updated", "Stack element moved");
+            break;
+          case 400:
+          default:
+            toast("error", "Failed to move stack element", response.error);
+            break;
+        }
+      },
+    );
+  };
+
   return (
-    <div className="flex h-86 w-60 flex-col gap-2 rounded-xl bg-stone-900 p-2 inset-shadow-sm inset-shadow-stone-950/30 transform-3d">
+    <div
+      ref={containerRef}
+      className="flex h-86 w-60 flex-col gap-2 rounded-xl bg-stone-900 p-2 inset-shadow-sm inset-shadow-stone-950/30 transform-3d">
       <div
         ref={scrollViewRef}
         className={cn(
-          "no-scrollbar grow translate-z-1 place-content-start gap-4 overflow-auto p-2 text-sm",
-          state.stack.length > 0 ? "grid" : "flex place-items-center",
+          "no-scrollbar grow translate-z-1 place-content-start overflow-auto p-2 text-sm",
+          state.stack.length > 0
+            ? "grid grid-cols-1 items-stretch"
+            : "flex place-items-center",
         )}>
-        {state.stack.map((element, index) => (
-          <StackElement key={index} element={element} />
-        ))}
+        {state.stack.map((element, index) => { 
+          const targetGroupId: string | undefined = state.stack.find((e) => e.id === selectedStackElementId)?.reordering?.groupId;
+          const isElementInSameGroup = element.reordering?.groupId === targetGroupId;
+          const isNotFirst = index > 0;
+          const isPreviousElementDifferentGroup = index > 0 && state.stack[index - 1].reordering?.groupId !== targetGroupId;
+          const isFirstElementAndSameGroup = index === 0 && isElementInSameGroup;
+          const isFirstOfGroup = isFirstElementAndSameGroup || (isNotFirst && isElementInSameGroup && isPreviousElementDifferentGroup);
+          return (
+          <div
+            key={element.id}
+            className={cn(
+              "relative w-full",
+              index < state.stack.length - 1 && "mb-4",
+            )}>
+            {isFirstOfGroup && selectedStackElementId !== null && (
+              <InsertionBar
+                className="-top-2"
+                // label="Insert at top"
+                onClick={() => moveStackElementBefore("start")}
+              />
+            )}
+            <StackElement
+              element={element}
+              onClick={
+                selectedStackElementId === null ||
+                selectedStackElementId === element.id
+                  ? () => onStackElementClick(element)
+                  : undefined
+              }
+              isSelected={selectedStackElementId === element.id}
+            />
+            {selectedStackElementId !== null && isElementInSameGroup && (
+              <InsertionBar
+                className="top-full translate-y-2"
+                onClick={() => moveStackElementBefore(state.stack[index].id)}
+                // label="Insert at top"
+              />
+            )}
+          </div>
+        )})}
         {state.stack.length === 0 && (
           <div className="flex text-center">
             <p className="font-time-fcuk text-sm leading-normal text-stone-600">
@@ -88,8 +207,29 @@ export const Stack = () => {
   );
 };
 
-export const StackElement = ({ element }: { element: StackElementType }) => {
-  return <StackElementContent element={element} />;
+export const StackElement = ({
+  element,
+  onClick,
+  isSelected = false,
+  className,
+}: {
+  element: StackElementType;
+  onClick?: () => void;
+  isSelected?: boolean;
+  className?: string;
+}) => {
+  return (
+    <div
+      onClick={onClick}
+      className={cn(
+        "w-full rounded-lg transition-colors",
+        onClick && "cursor-pointer hover:bg-stone-800/45",
+        isSelected && "bg-blue-500/15 ring-1 ring-blue-500/60",
+        className,
+      )}>
+      <StackElementContent element={element} />
+    </div>
+  );
 };
 
 const StackElementContent = ({ element }: { element: StackElementType }) => {
@@ -105,6 +245,64 @@ const StackElementContent = ({ element }: { element: StackElementType }) => {
     case "death":
       return <DeathElement element={element} />;
   }
+};
+const InsertionStartBar = ({
+  onClick,
+  label,
+  className,
+  selectedStackElementId,
+  stack,
+  index,
+}: {
+  onClick: () => void;
+  label?: string;
+  className?: string;
+  selectedStackElementId: number | null;
+  stack: StackElementType[];
+  index: number;
+}) => {
+  const selectedElement = stack.find((e) => e.id === selectedStackElementId);
+  const targetGroupId: string | undefined = selectedElement?.reordering?.groupId;
+  const isElementInSameGroup = stack[index].reordering?.groupId === targetGroupId;
+  const isNotFirst = index > 0;
+  const isPreviousElementDifferentGroup = index > 0 && stack[index - 1].reordering?.groupId !== targetGroupId;
+  const isFirstElementAndSameGroup = index === 0 && isElementInSameGroup;
+  const isFirstOfGroup = isFirstElementAndSameGroup || (isNotFirst && isElementInSameGroup && isPreviousElementDifferentGroup);
+
+  if(targetGroupId !== undefined && isFirstOfGroup )
+    return (
+      <InsertionBar onClick={onClick} label={label} className={className} />
+    );
+};
+const InsertionBar = ({
+  onClick,
+  label,
+  className,
+}: {
+  onClick: () => void;
+  label?: string;
+  className?: string;
+}) => {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      data-insertion-bar="true"
+      className={cn(
+        "group absolute inset-x-0 z-20 h-0 w-full cursor-pointer translate-z-1",
+        className,
+      )}
+      aria-label={label ?? "Insert stack element here"}>
+      <span className="peer absolute -top-7 right-0 left-10 z-20 h-14" />
+      <span className="peer absolute -top-2 right-0 left-0 z-2 h-4" />
+      <span className="absolute inset-x-2 top-0 z-20 -translate-y-1/10 border-t border-dashed border-blue-400/70 peer-hover:border-solid" />
+      {label && (
+        <span className="absolute top-0 left-1/2 z-20 -translate-x-1/2 -translate-y-1/2 rounded bg-stone-900/90 px-1 py-0.5 text-[10px] text-blue-300 opacity-0 transition-opacity group-hover:opacity-100">
+          {label}
+        </span>
+      )}
+    </button>
+  );
 };
 
 const DiceRollElement = ({ element }: { element: DiceRollJson }) => {
