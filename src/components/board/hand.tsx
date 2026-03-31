@@ -5,11 +5,28 @@ import { usePromptContext } from "./contexts/prompt-context";
 import type { SelectionItem } from "@/shared/api";
 import { cn } from "@/utils/cn";
 import { Pile } from "./pile";
+import {
+  boardSelectionTargetId,
+  useBoardSelectionContext,
+} from "./contexts/board-selection-context";
+import { startHybridSelectionFlow } from "./selection-flow";
+import { HotkeyScope } from "@/utils/hotkey";
+import { getSelectionClassName } from "./selection-class";
 
 export const Hand = () => {
   const { state, issuer, isHandUp, setIsHandUp } = useGameContext();
   const { toast, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
+  const {
+    canStartBoardSelection,
+    tryStartBoardSelection,
+    clearBoardSelection,
+    cancelBoardSelection,
+    getTargetSelectionState,
+    getTargetSelectionHotkey,
+    selectTarget,
+    activeRequestId,
+  } = useBoardSelectionContext();
 
   const playCard = (index: number, selections: SelectionItem[] = []) => {
     setIsHandUp(false);
@@ -25,22 +42,24 @@ export const Hand = () => {
               toast("error", "Cannot play this card", "No options available");
             } else {
               const promptId = `card-play-${index}-${selections.length}`;
-              addPrompt({
-                promptId,
-                isUnique: false,
+              const options = response.response.options;
+              const minCount = response.response.asMany ? 0 : response.response.count;
+              const maxCount = response.response.count;
+
+              startHybridSelectionFlow({
+                requestId: promptId,
                 prompt: response.response.description,
-                options: response.response.options,
-                minCount: response.response.asMany
-                  ? 0
-                  : response.response.count,
-                maxCount: response.response.count,
+                options,
+                minCount,
+                maxCount,
                 onSubmit: (additionalSelections) => {
                   playCard(index, [...selections, ...additionalSelections]);
-                  removePrompt(promptId);
                 },
-                onCancel: () => {
-                  removePrompt(promptId);
-                },
+                addPrompt,
+                removePrompt,
+                clearBoardSelection,
+                canStartBoardSelection,
+                tryStartBoardSelection,
               });
             }
             break;
@@ -52,7 +71,7 @@ export const Hand = () => {
     );
   };
 
-  const cardSize = 350;
+  const cardSize = isHandUp ? 350 : 320;
 
   const targetableCards = state.me.hand
     .filter((_, index) => isHandUp && index < 8)
@@ -62,18 +81,26 @@ export const Hand = () => {
     <div className="pointer-events-none fixed right-0 bottom-0 left-0 flex place-content-center place-items-center">
       <div
         className={cn(
-          "pointer-events-auto grid translate-y-1/2 auto-cols-fr grid-flow-col transition-transform duration-500",
-          isHandUp && "translate-y-0",
+          "pointer-events-auto grid auto-cols-fr grid-flow-col transition-transform duration-500",
+          isHandUp ? "translate-y-0" : "translate-y-[35%]",
         )}
         onMouseEnter={() => setIsHandUp(true)}
         onMouseLeave={() => setIsHandUp(false)}>
         {state.me.hand.map((card, index) => (
+          (() => {
+            const targetId = boardSelectionTargetId.meHand(index, card.slug);
+            const selectionState = getTargetSelectionState(targetId);
+            const selectionHotkey = getTargetSelectionHotkey(targetId);
+
+            return (
           <Pile
             key={card.slug}
             cards={[{ slug: card.slug }]}
             className={cn(
               "m-1 transition-transform",
-              state.me.capabilities.useLoot === true
+              selectionState.selectable
+                ? "cursor-pointer hover:-translate-y-10"
+                : state.me.capabilities.useLoot === true
                 ? "cursor-pointer hover:-translate-y-10"
                 : "cursor-not-allowed",
             )}
@@ -86,21 +113,43 @@ export const Hand = () => {
                 : undefined
             }
             onClickTopCardHotkey={
-              targetableCards.includes(card.slug)
+              selectionHotkey
+                ? selectionHotkey
+                : activeRequestId
+                  ? undefined
+                : targetableCards.includes(card.slug)
                 ? `${targetableCards.indexOf(card.slug) + 1},shift+${targetableCards.indexOf(card.slug) + 1}`
                 : undefined
             }
-            disabled={state.me.capabilities.useLoot !== true}
-            onClickTopCard={() =>
-              block(
-                "Cannot play this card",
-                state.me.capabilities.useLoot,
-                () => playCard(index),
-              )
+            onClickTopCardHotkeyScope={
+              selectionHotkey ? [HotkeyScope.Selection] : [HotkeyScope.Main]
             }
+            disabled={
+              selectionState.selectable
+                ? false
+                : state.me.capabilities.useLoot !== true
+            }
+            onClickTopCard={() =>
+              selectionState.selectable
+                ? selectTarget(targetId)
+                : activeRequestId
+                  ? cancelBoardSelection()
+                : block(
+                    "Cannot play this card",
+                    state.me.capabilities.useLoot,
+                    () => playCard(index),
+                  )
+            }
+            topCardClassName={getSelectionClassName(selectionState, {
+              selectedClassName:
+                "-translate-y-10 scale-[1.03] outline-[0.2em] outline-green-300 glow-5",
+              selectableClassName: "outline-[0.2em] outline-green-500/80",
+            })}
             size={cardSize}
             enableRandomRotation={false}
           />
+            );
+          })()
         ))}
       </div>
     </div>

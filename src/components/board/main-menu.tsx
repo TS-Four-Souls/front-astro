@@ -237,6 +237,8 @@ export const MainMenu = () => {
           closeMainMenu();
           openUserSettingsMenu();
         }}
+        hotkey="1"
+        hotkeyScope={[HotkeyScope.Popup]}
         label="Graphics"
         className="translate-z-1"
       />
@@ -245,6 +247,8 @@ export const MainMenu = () => {
           closeMainMenu();
           debugGainLoot();
         }}
+        hotkey="2"
+        hotkeyScope={[HotkeyScope.Popup]}
         label="[CHEAT] Loot"
         className="translate-z-1"
       />
@@ -253,6 +257,8 @@ export const MainMenu = () => {
           closeMainMenu();
           debugGainTreasure();
         }}
+        hotkey="3"
+        hotkeyScope={[HotkeyScope.Popup]}
         label="[CHEAT] Gain treasure"
         className="translate-z-1"
       />
@@ -261,6 +267,8 @@ export const MainMenu = () => {
           closeMainMenu();
           debugRemoveCard();
         }}
+        hotkey="4"
+        hotkeyScope={[HotkeyScope.Popup]}
         label="[CHEAT] Remove card"
         className="translate-z-1"
       />
@@ -269,6 +277,8 @@ export const MainMenu = () => {
           closeMainMenu();
           onSaveGamePress();
         }}
+        hotkey="5"
+        hotkeyScope={[HotkeyScope.Popup]}
         label="Save game"
         className="translate-z-1"
       />
@@ -277,6 +287,8 @@ export const MainMenu = () => {
           closeMainMenu();
           onResetPress();
         }}
+        hotkey="6"
+        hotkeyScope={[HotkeyScope.Popup]}
         label="Quit game"
         className="translate-z-1"
       />

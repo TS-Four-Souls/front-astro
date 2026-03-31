@@ -1,22 +1,44 @@
 import { PlayerStats } from "../player-stats";
 import { Pile } from "../pile";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useGameContext } from "../contexts/game-context";
 import { usePromptContext } from "../contexts/prompt-context";
 import { socket } from "@/utils/socket";
 import { useToastContext } from "../contexts/toast-context";
 import type { InPlayMeCard, SelectionItem } from "@/shared/api";
+import {
+  boardSelectionTargetId,
+  useBoardSelectionContext,
+} from "../contexts/board-selection-context";
+import { startHybridSelectionFlow } from "../selection-flow";
+import { HotkeyScope } from "@/utils/hotkey";
+import {
+  getSelectionClassName,
+  resolveActiveSelectionTarget,
+} from "../selection-class";
 
 export const Me = () => {
   const { state, issuer, isHandUp } = useGameContext();
   const { toast, dismiss, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
+  const {
+    canStartBoardSelection,
+    tryStartBoardSelection,
+    clearBoardSelection,
+    cancelBoardSelection,
+    getTargetSelectionState,
+    getTargetSelectionHotkey,
+    selectTarget,
+    activeRequestId,
+  } = useBoardSelectionContext();
+  const [selectionMode, setSelectionMode] = useState<"board" | "menu">("board");
+  const [selectionModeRequestId, setSelectionModeRequestId] = useState<string | null>(
+    null,
+  );
 
   const pendingSelections = useRef<Map<string, string>>(new Map());
 
   useEffect(() => {
-    console.log("state", state);
-    console.log("pendingSelections", pendingSelections.current);
     for (const player of state.players) {
       if (player.pendingSelection) {
         if (pendingSelections.current.has(player.name)) {
@@ -40,38 +62,96 @@ export const Me = () => {
   }, [state.players, toast, dismiss]);
 
   useEffect(() => {
+    // Reset mode when a new pending-selection request arrives.
+    // Defaulting to board mode keeps interactions fast when direct targets exist.
+    const requestId = state.me.pendingSelection?.requestId ?? null;
+    if (requestId !== selectionModeRequestId) {
+      setSelectionModeRequestId(requestId);
+      setSelectionMode("board");
+    }
+  }, [state.me.pendingSelection?.requestId, selectionModeRequestId]);
+
+  useEffect(() => {
     const pendingSelection = state.me.pendingSelection;
-    if (pendingSelection) {
-      addPrompt({
-        promptId: pendingSelection.requestId,
-        isUnique: true,
+    if (!pendingSelection) {
+      if (activeRequestId && selectionModeRequestId === activeRequestId) {
+        clearBoardSelection();
+      }
+      return;
+    }
+
+    const onSubmitSelection = (selectedOptions: SelectionItem[]) => {
+      socket.emit(
+        "submitSelection",
+        {
+          issuer,
+          requestId: pendingSelection.requestId,
+          selections: selectedOptions,
+        },
+        (response) => {
+          switch (response.status) {
+            case 200:
+              clearBoardSelection();
+              removePrompt(pendingSelection.requestId);
+              break;
+            case 400:
+              toast("error", "Failed to submit selection", response.error);
+              break;
+          }
+        },
+      );
+    };
+
+    const boardSelectionAvailable = canStartBoardSelection({
+      options: pendingSelection.options,
+    });
+
+    const shouldUseBoardSelection = boardSelectionAvailable && selectionMode === "board";
+
+    if (shouldUseBoardSelection) {
+      const startBoardSelection = tryStartBoardSelection({
+        requestId: pendingSelection.requestId,
         prompt: pendingSelection.description,
         options: pendingSelection.options,
         minCount: pendingSelection.asMany ? 0 : pendingSelection.count,
         maxCount: pendingSelection.count,
-        onSubmit: (selectedOptions) => {
-          socket.emit(
-            "submitSelection",
-            {
-              issuer,
-              requestId: pendingSelection.requestId,
-              selections: selectedOptions,
-            },
-            (response) => {
-              switch (response.status) {
-                case 200:
-                  removePrompt(pendingSelection.requestId);
-                  break;
-                case 400:
-                  toast("error", "Failed to submit selection", response.error);
-                  break;
-              }
-            },
-          );
-        },
+        onSubmit: onSubmitSelection,
+        onSwitchToMenu: () => setSelectionMode("menu"),
       });
+
+      if (startBoardSelection) {
+        removePrompt(pendingSelection.requestId);
+        return;
+      }
     }
-  }, [state.me.pendingSelection, addPrompt, removePrompt, issuer, toast]);
+
+    clearBoardSelection();
+
+    addPrompt({
+      promptId: pendingSelection.requestId,
+      isUnique: true,
+      prompt: pendingSelection.description,
+      options: pendingSelection.options,
+      minCount: pendingSelection.asMany ? 0 : pendingSelection.count,
+      maxCount: pendingSelection.count,
+      onSubmit: onSubmitSelection,
+      onSwitchToBoardSelection: boardSelectionAvailable
+        ? () => setSelectionMode("board")
+        : undefined,
+    });
+  }, [
+    state.me.pendingSelection,
+    addPrompt,
+    removePrompt,
+    issuer,
+    toast,
+    canStartBoardSelection,
+    tryStartBoardSelection,
+    clearBoardSelection,
+    activeRequestId,
+    selectionModeRequestId,
+    selectionMode,
+  ]);
 
   const onInPlayCardClick = (card: InPlayMeCard, index: number) => {
     const activateCard = (
@@ -94,25 +174,27 @@ export const Me = () => {
                 toast("error", "Cannot play this card", "No options available");
               } else {
                 const promptId = `card-activation-${card.slug}-${index}-${effectIndex}-${selections.length}`;
-                addPrompt({
-                  promptId,
-                  isUnique: false,
+                const options = response.response.options;
+                const minCount = response.response.asMany ? 0 : response.response.count;
+                const maxCount = response.response.count;
+
+                startHybridSelectionFlow({
+                  requestId: promptId,
                   prompt: response.response.description,
-                  options: response.response.options,
-                  minCount: response.response.asMany
-                    ? 0
-                    : response.response.count,
-                  maxCount: response.response.count,
+                  options,
+                  minCount,
+                  maxCount,
                   onSubmit: (additionalSelections) => {
                     activateCard(effectIndex, [
                       ...selections,
                       ...additionalSelections,
                     ]);
-                    removePrompt(promptId);
                   },
-                  onCancel: () => {
-                    removePrompt(promptId);
-                  },
+                  addPrompt,
+                  removePrompt,
+                  clearBoardSelection,
+                  canStartBoardSelection,
+                  tryStartBoardSelection,
                 });
               }
               break;
@@ -189,12 +271,34 @@ export const Me = () => {
           gridTemplateColumns: `repeat(${Math.min(state.me.inPlay.length, 8)}, 1fr)`,
         }}>
         {state.me.inPlay.map((card, index) => (
+          (() => {
+            const cardTargetId = boardSelectionTargetId.meInPlay(index, card.slug);
+            const entityTargetId =
+              index === 0
+                ? boardSelectionTargetId.playerEntity(state.me.name, card.slug)
+                : undefined;
+
+            const { targetId, selectionState, selectionHotkey } =
+              resolveActiveSelectionTarget({
+                targetIds: [cardTargetId, entityTargetId],
+                fallbackTargetId: cardTargetId,
+                getTargetSelectionState,
+                getTargetSelectionHotkey,
+              });
+
+            return (
           <Pile
             key={card.slug}
             onClickTopCardHotkey={
-              targetableCards.includes(card.slug)
-                ? `${targetableCards.indexOf(card.slug) + 1}`
-                : undefined
+              selectionHotkey ??
+              (activeRequestId
+                ? undefined
+                : targetableCards.includes(card.slug)
+                  ? `${targetableCards.indexOf(card.slug) + 1}`
+                  : undefined)
+            }
+            onClickTopCardHotkeyScope={
+              selectionHotkey ? [HotkeyScope.Selection] : [HotkeyScope.Main]
             }
             cards={[
               {
@@ -212,19 +316,28 @@ export const Me = () => {
                     : undefined,
               },
             ]}
-            disabled={card.capabilities.activate !== true}
+            disabled={
+              selectionState.selectable ? false : card.capabilities.activate !== true
+            }
             tooltip={{
               capable: card.capabilities.activate,
               title: "Cannot activate this card",
             }}
+            topCardClassName={getSelectionClassName(selectionState)}
             onClickTopCard={() =>
-              block(
-                "Cannot activate this card",
-                card.capabilities.activate,
-                () => onInPlayCardClick(card, index),
-              )
+              selectionState.selectable
+                ? selectTarget(targetId)
+                : activeRequestId
+                  ? cancelBoardSelection()
+                : block(
+                    "Cannot activate this card",
+                    card.capabilities.activate,
+                    () => onInPlayCardClick(card, index),
+                  )
             }
           />
+            );
+          })()
         ))}
       </div>
     </div>

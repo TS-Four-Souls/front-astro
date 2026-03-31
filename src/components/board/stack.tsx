@@ -14,10 +14,21 @@ import { Button } from "../button";
 import { cn } from "@/utils/cn";
 import { receiverName } from "@/utils/selection-text";
 import { StackElementIcon } from "./stack-element-icon";
+import { useBoardSelectionContext } from "./contexts/board-selection-context";
+import { boardSelectionTargetId } from "./contexts/board-selection-context";
+import { useHotkeys } from "react-hotkeys-hook";
+import { HotkeyScope } from "@/utils/hotkey";
 
 export const Stack = () => {
   const { state, issuer } = useGameContext();
   const { toast, block } = useToastContext();
+  const {
+    activeRequestId,
+    getTargetSelectionState,
+    getTargetSelectionHotkey,
+    selectTarget,
+    cancelBoardSelection,
+  } = useBoardSelectionContext();
 
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollViewRef = useRef<HTMLDivElement>(null);
@@ -155,23 +166,40 @@ export const Stack = () => {
               <InsertionBar
                 className="-top-2"
                 // label="Insert at top"
-                onClick={() => moveStackElementBefore("start")}
+                onClick={() => !activeRequestId && moveStackElementBefore("start")}
               />
             )}
+            {(() => {
+              const targetId = boardSelectionTargetId.stackElement(element.id);
+              const selectionState = getTargetSelectionState(targetId);
+              const selectionHotkey = getTargetSelectionHotkey(targetId);
+
+              return (
             <StackElement
               element={element}
+              hotkey={selectionHotkey}
               onClick={
-                selectedStackElementId === null ||
-                selectedStackElementId === element.id
-                  ? () => onStackElementClick(element)
-                  : undefined
+                selectionState.selectable
+                  ? () => selectTarget(targetId)
+                  : activeRequestId
+                    ? () => cancelBoardSelection()
+                    : selectedStackElementId === null ||
+                        selectedStackElementId === element.id
+                      ? () => onStackElementClick(element)
+                      : undefined
               }
-              isSelected={selectedStackElementId === element.id}
+              isSelected={
+                selectionState.selected || selectedStackElementId === element.id
+              }
             />
+              );
+            })()}
             {selectedStackElementId !== null && isElementInSameGroup && (
               <InsertionBar
                 className="top-full translate-y-2"
-                onClick={() => moveStackElementBefore(state.stack[index].id)}
+                onClick={() =>
+                  !activeRequestId && moveStackElementBefore(state.stack[index].id)
+                }
                 // label="Insert at top"
               />
             )}
@@ -186,7 +214,7 @@ export const Stack = () => {
         )}
       </div>
       <Button
-        hotkey="space"
+        hotkey={activeRequestId ? undefined : "space"}
         onClick={() =>
           block(
             "Cannot resolve stack",
@@ -209,24 +237,39 @@ export const Stack = () => {
 
 export const StackElement = ({
   element,
+  hotkey,
   onClick,
   isSelected = false,
   className,
 }: {
   element: StackElementType;
+  hotkey?: string;
   onClick?: () => void;
   isSelected?: boolean;
   className?: string;
 }) => {
+  useHotkeys(hotkey ?? "", () => onClick?.(), {
+    scopes: [HotkeyScope.Selection],
+    enabled: hotkey !== undefined && onClick !== undefined,
+  });
+
   return (
     <div
       onClick={onClick}
       className={cn(
-        "w-full rounded-lg transition-colors",
+        "relative w-full rounded-lg transition-colors",
         onClick && "cursor-pointer hover:bg-stone-800/45",
         isSelected && "bg-blue-500/15 ring-1 ring-blue-500/60",
         className,
       )}>
+      {hotkey && (
+        <div className="absolute top-0 left-0 z-10 flex aspect-square w-5 place-items-center overflow-hidden rounded-sm bg-stone-700 outline-[0.1em] -outline-offset-[0.1em] outline-stone-200">
+          <img
+            src={`/input-prompts/keyboard_${hotkey}_outline.svg`}
+            className="scale-170"
+          />
+        </div>
+      )}
       <StackElementContent element={element} />
     </div>
   );
@@ -246,34 +289,7 @@ const StackElementContent = ({ element }: { element: StackElementType }) => {
       return <DeathElement element={element} />;
   }
 };
-const InsertionStartBar = ({
-  onClick,
-  label,
-  className,
-  selectedStackElementId,
-  stack,
-  index,
-}: {
-  onClick: () => void;
-  label?: string;
-  className?: string;
-  selectedStackElementId: number | null;
-  stack: StackElementType[];
-  index: number;
-}) => {
-  const selectedElement = stack.find((e) => e.id === selectedStackElementId);
-  const targetGroupId: string | undefined = selectedElement?.reordering?.groupId;
-  const isElementInSameGroup = stack[index].reordering?.groupId === targetGroupId;
-  const isNotFirst = index > 0;
-  const isPreviousElementDifferentGroup = index > 0 && stack[index - 1].reordering?.groupId !== targetGroupId;
-  const isFirstElementAndSameGroup = index === 0 && isElementInSameGroup;
-  const isFirstOfGroup = isFirstElementAndSameGroup || (isNotFirst && isElementInSameGroup && isPreviousElementDifferentGroup);
 
-  if(targetGroupId !== undefined && isFirstOfGroup )
-    return (
-      <InsertionBar onClick={onClick} label={label} className={className} />
-    );
-};
 const InsertionBar = ({
   onClick,
   label,

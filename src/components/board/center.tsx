@@ -7,6 +7,12 @@ import { socket } from "@/utils/socket";
 import { useGameContext } from "./contexts/game-context";
 import { useToastContext } from "./contexts/toast-context";
 import { usePromptContext } from "./contexts/prompt-context";
+import {
+  boardSelectionTargetId,
+  useBoardSelectionContext,
+} from "./contexts/board-selection-context";
+import { HotkeyScope } from "@/utils/hotkey";
+import { getSelectionClassName } from "./selection-class";
 
 interface CenterProps {
   state: DetailedState;
@@ -16,6 +22,13 @@ export const Center = ({ state }: CenterProps) => {
   const { issuer } = useGameContext();
   const { toast, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
+  const {
+    getTargetSelectionState,
+    getTargetSelectionHotkey,
+    selectTarget,
+    cancelBoardSelection,
+    activeRequestId,
+  } = useBoardSelectionContext();
 
   const purchaseTreasure = (index: number | "top") => {
     socket.emit("purchase", { issuer, index }, (response) => {
@@ -135,6 +148,94 @@ export const Center = ({ state }: CenterProps) => {
       : []
   ).slice(0, 9);
 
+  const topLootDiscardSlug = state.loot.discard.at(-1)?.slug;
+  const topTreasureDiscardSlug = state.treasure.discard.at(-1)?.slug;
+  const topMonsterDiscardSlug = state.monsters.discard.at(-1)?.slug;
+  const topTreasureDeckSlug = state.firstCardTreasureDeck?.slug;
+
+  const emptySelectionState = {
+    selectable: false,
+    selected: false,
+    selectionOrder: undefined,
+  };
+
+  const getSelectionState = (targetId?: string) => {
+    if (!targetId) {
+      return emptySelectionState;
+    }
+
+    return getTargetSelectionState(targetId);
+  };
+
+  const getSelectionTopCardClassName = (targetId?: string) => {
+    return getSelectionClassName(getSelectionState(targetId));
+  };
+
+  const isTargetSelectable = (targetId?: string) => {
+    return getSelectionState(targetId).selectable;
+  };
+
+  const isTargetSelected = (targetId?: string) => {
+    return getSelectionState(targetId).selected;
+  };
+
+  const getSelectionHotkey = (targetId?: string) => {
+    if (!targetId) {
+      return undefined;
+    }
+
+    return getTargetSelectionHotkey(targetId);
+  };
+
+  const topLootDiscardTargetId = topLootDiscardSlug
+    ? boardSelectionTargetId.lootDiscardTop(topLootDiscardSlug)
+    : undefined;
+  const topTreasureDiscardTargetId = topTreasureDiscardSlug
+    ? boardSelectionTargetId.treasureDiscardTop(topTreasureDiscardSlug)
+    : undefined;
+  const topMonsterDiscardTargetId = topMonsterDiscardSlug
+    ? boardSelectionTargetId.monsterDiscardTop(topMonsterDiscardSlug)
+    : undefined;
+
+  const topLootDiscardSelection = getSelectionState(topLootDiscardTargetId);
+  const topTreasureDiscardSelection = getSelectionState(
+    topTreasureDiscardTargetId,
+  );
+  const topMonsterDiscardSelection = getSelectionState(topMonsterDiscardTargetId);
+  const resolveActiveTarget = (targetIds: Array<string | undefined>) => {
+    const normalizedTargetIds = targetIds.filter(
+      (targetId): targetId is string => targetId !== undefined,
+    );
+
+    const selectedTargetId = normalizedTargetIds.find((targetId) =>
+      isTargetSelected(targetId),
+    );
+
+    const selectableTargetId = normalizedTargetIds.find((targetId) =>
+      isTargetSelectable(targetId),
+    );
+
+    return selectedTargetId ?? selectableTargetId;
+  };
+
+  const lootDeckTargetId = resolveActiveTarget([boardSelectionTargetId.lootDeck]);
+  const treasureDeckTargetId = resolveActiveTarget([
+    topTreasureDeckSlug
+      ? boardSelectionTargetId.treasureDeckTop(topTreasureDeckSlug)
+      : undefined,
+    boardSelectionTargetId.treasureDeck,
+  ]);
+  const monsterDeckTargetId = resolveActiveTarget([boardSelectionTargetId.monsterDeck]);
+
+  const onNonSelectablePress = (fallback: () => void) => {
+    if (activeRequestId) {
+      cancelBoardSelection();
+      return;
+    }
+
+    fallback();
+  };
+
   return (
     <div className="flex translate-z-1 place-items-center gap-6 rounded-xl bg-stone-700/10 p-8 shadow-md inset-shadow-xs inset-shadow-stone-700 transform-3d">
       <Stack />
@@ -149,17 +250,34 @@ export const Center = ({ state }: CenterProps) => {
           cards={Array.from({ length: state.loot.deckSize }).map(
             () => CardType.LootCard,
           )}
+          onClickTopCardHotkeyScope={
+            lootDeckTargetId ? [HotkeyScope.Selection] : [HotkeyScope.Main]
+          }
+          onClickTopCardHotkey={
+            lootDeckTargetId ? getSelectionHotkey(lootDeckTargetId) : undefined
+          }
+          onClickTopCard={() =>
+            lootDeckTargetId ? selectTarget(lootDeckTargetId) : undefined
+          }
+          topCardClassName={getSelectionTopCardClassName(lootDeckTargetId)}
         />
         <Pile
           cards={state.loot.discard}
+          onClickTopCardHotkeyScope={[HotkeyScope.Selection]}
+          onClickTopCardHotkey={
+            getSelectionHotkey(topLootDiscardTargetId)
+          }
           onClickTopCard={() =>
-            block(
-              "Cannot view loot discard",
-              state.loot.discard.length === 0
-                ? "The loot discard pile is empty"
-                : true,
-              () => displayPileDetails(state.loot.discard.toReversed()),
-            )
+            topLootDiscardSlug && topLootDiscardSelection.selectable
+              ? selectTarget(boardSelectionTargetId.lootDiscardTop(topLootDiscardSlug))
+              : onNonSelectablePress(() =>
+                  block(
+                  "Cannot view loot discard",
+                  state.loot.discard.length === 0
+                    ? "The loot discard pile is empty"
+                    : true,
+                  () => displayPileDetails(state.loot.discard.toReversed()),
+                  ))
           }
           onPileDetailsClick={
             state.loot.discard.length > 1
@@ -167,26 +285,47 @@ export const Center = ({ state }: CenterProps) => {
               : undefined
           }
           disabled={state.loot.discard.length === 0}
+          topCardClassName={
+            getSelectionTopCardClassName(topLootDiscardTargetId)
+          }
         />
       </div>
       <div className="flex flex-col gap-6 transform-3d">
         <div className="flex place-items-center gap-2 transform-3d">
           <Pile
             cards={state.treasure.discard}
-            onClickTopCard={() =>
-              block(
-                "Cannot view treasure discard",
-                state.treasure.discard.length === 0
-                  ? "The treasure discard pile is empty"
-                  : true,
-                () => displayPileDetails(state.treasure.discard.toReversed()),
-              )
+            onClickTopCardHotkeyScope={[HotkeyScope.Selection]}
+            onClickTopCardHotkey={
+              getSelectionHotkey(topTreasureDiscardTargetId)
             }
-            disabled={state.treasure.discard.length === 0}
+            onClickTopCard={() =>
+              topTreasureDiscardSlug && topTreasureDiscardSelection.selectable
+                ? selectTarget(
+                    boardSelectionTargetId.treasureDiscardTop(
+                      topTreasureDiscardSlug,
+                    ),
+                  )
+                : onNonSelectablePress(() =>
+                    block(
+                    "Cannot view treasure discard",
+                    state.treasure.discard.length === 0
+                      ? "The treasure discard pile is empty"
+                      : true,
+                    () => displayPileDetails(state.treasure.discard.toReversed()),
+                    ))
+            }
+            disabled={
+              topTreasureDiscardSelection.selectable
+                ? false
+                : state.treasure.discard.length === 0
+            }
             onPileDetailsClick={
               state.treasure.discard.length > 1
                 ? () => displayPileDetails(state.treasure.discard.toReversed())
                 : undefined
+            }
+            topCardClassName={
+              getSelectionTopCardClassName(topTreasureDiscardTargetId)
             }
           />
           <Pile
@@ -196,46 +335,92 @@ export const Center = ({ state }: CenterProps) => {
                   ? (state.firstCardTreasureDeck ?? CardType.TreasureCard)
                   : CardType.TreasureCard,
             )}
-            onClickTopCardHotkey={
-              targetableTreasures.includes("top")
-                ? `${targetableTreasures.indexOf("top") + 1}`
-                : undefined
+            onClickTopCardHotkeyScope={
+              treasureDeckTargetId
+                ? [HotkeyScope.Selection]
+                : [HotkeyScope.Main]
             }
-            disabled={state.me.capabilities.buyTreasure !== true}
+            onClickTopCardHotkey={
+              (treasureDeckTargetId
+                ? getSelectionHotkey(treasureDeckTargetId)
+                : undefined) ??
+              (activeRequestId
+                ? undefined
+                : targetableTreasures.includes("top")
+                  ? `${targetableTreasures.indexOf("top") + 1}`
+                  : undefined)
+            }
+            disabled={
+              (treasureDeckTargetId
+                ? isTargetSelectable(treasureDeckTargetId)
+                : false)
+                ? false
+                : state.me.capabilities.buyTreasure !== true
+            }
             onClickTopCard={() =>
-              block(
-                "Cannot buy this card",
-                state.me.capabilities.buyTreasure,
-                () => purchaseTreasure("top"),
-              )
+              treasureDeckTargetId &&
+              isTargetSelectable(treasureDeckTargetId)
+                ? selectTarget(treasureDeckTargetId)
+                : onNonSelectablePress(() =>
+                    block(
+                    "Cannot buy this card",
+                    state.me.capabilities.buyTreasure,
+                    () => purchaseTreasure("top"),
+                    ))
             }
             tooltip={{
               capable: state.me.capabilities.buyTreasure,
               title: "Cannot buy this card",
             }}
+            topCardClassName={getSelectionTopCardClassName(treasureDeckTargetId)}
           />
           {state.treasure.inPlay.map((card, index) => (
+            (() => {
+              const targetId = boardSelectionTargetId.treasureInPlay(
+                index,
+                card.slug,
+              );
+              const selectionState = getTargetSelectionState(targetId);
+              return (
             <Pile
               key={card.slug}
               cards={[card]}
-              disabled={state.me.capabilities.buyTreasure !== true}
+              onClickTopCardHotkeyScope={
+                getTargetSelectionHotkey(targetId)
+                  ? [HotkeyScope.Selection]
+                  : [HotkeyScope.Main]
+              }
+              disabled={
+                selectionState.selectable
+                  ? false
+                  : state.me.capabilities.buyTreasure !== true
+              }
               onClickTopCardHotkey={
-                targetableTreasures.includes(card.slug)
-                  ? `${targetableTreasures.indexOf(card.slug) + 1}`
-                  : undefined
+                getTargetSelectionHotkey(targetId) ??
+                (activeRequestId
+                  ? undefined
+                  : targetableTreasures.includes(card.slug)
+                    ? `${targetableTreasures.indexOf(card.slug) + 1}`
+                    : undefined)
               }
               onClickTopCard={() =>
-                block(
-                  "Cannot buy this card",
-                  state.me.capabilities.buyTreasure,
-                  () => purchaseTreasure(index),
-                )
+                selectionState.selectable
+                  ? selectTarget(targetId)
+                  : onNonSelectablePress(() =>
+                      block(
+                      "Cannot buy this card",
+                      state.me.capabilities.buyTreasure,
+                      () => purchaseTreasure(index),
+                      ))
               }
               tooltip={{
                 capable: state.me.capabilities.buyTreasure,
                 title: "Cannot buy this card",
               }}
+              topCardClassName={getSelectionClassName(selectionState)}
             />
+              );
+            })()
           ))}
         </div>
         <div className="flex place-items-center gap-2 transform-3d">
@@ -244,20 +429,36 @@ export const Center = ({ state }: CenterProps) => {
               slug: card.slug,
               face: "front",
             }))}
+            onClickTopCardHotkeyScope={[HotkeyScope.Selection]}
+            onClickTopCardHotkey={
+              getSelectionHotkey(topMonsterDiscardTargetId)
+            }
             onPileDetailsClick={
               state.monsters.discard.length > 1
                 ? () => displayPileDetails(state.monsters.discard.toReversed())
                 : undefined
             }
-            disabled={state.monsters.discard.length === 0}
+            disabled={
+              topMonsterDiscardSelection.selectable
+                ? false
+                : state.monsters.discard.length === 0
+            }
             onClickTopCard={() =>
-              block(
-                "Cannot view monster discard",
-                state.monsters.discard.length === 0
-                  ? "The monster discard pile is empty"
-                  : true,
-                () => displayPileDetails(state.monsters.discard.toReversed()),
-              )
+              topMonsterDiscardSlug && topMonsterDiscardSelection.selectable
+                ? selectTarget(
+                    boardSelectionTargetId.monsterDiscardTop(topMonsterDiscardSlug),
+                  )
+                : onNonSelectablePress(() =>
+                    block(
+                    "Cannot view monster discard",
+                    state.monsters.discard.length === 0
+                      ? "The monster discard pile is empty"
+                      : true,
+                    () => displayPileDetails(state.monsters.discard.toReversed()),
+                    ))
+            }
+            topCardClassName={
+              getSelectionTopCardClassName(topMonsterDiscardTargetId)
             }
           />
           <Pile
@@ -288,24 +489,37 @@ export const Center = ({ state }: CenterProps) => {
                   )
                 : undefined
             }
+            onClickTopCardHotkeyScope={
+              monsterDeckTargetId ? [HotkeyScope.Selection] : [HotkeyScope.Main]
+            }
             onClickTopCardHotkey={
-              targetableMonsters.includes("top")
-                ? `${targetableMonsters.indexOf("top") + 1}`
-                : undefined
+              (monsterDeckTargetId
+                ? getSelectionHotkey(monsterDeckTargetId)
+                : undefined) ??
+              (activeRequestId
+                ? undefined
+                : targetableMonsters.includes("top")
+                  ? `${targetableMonsters.indexOf("top") + 1}`
+                  : undefined)
             }
             onClickTopCard={() =>
-              block(
-                "Cannot attack this card",
-                state.monsters.capabilities.targetableDeck,
-                () => {
-                  selectMonsterToAttack("top");
-                },
-              )
+              monsterDeckTargetId &&
+              isTargetSelectable(monsterDeckTargetId)
+                ? selectTarget(monsterDeckTargetId)
+                : onNonSelectablePress(() =>
+                    block(
+                      "Cannot attack this card",
+                      state.monsters.capabilities.targetableDeck,
+                      () => {
+                        selectMonsterToAttack("top");
+                      },
+                    ))
             }
             tooltip={{
               capable: state.monsters.capabilities.targetableDeck,
               title: "Cannot attack this card",
             }}
+            topCardClassName={getSelectionTopCardClassName(monsterDeckTargetId)}
           />
           {state.monsters.inPlay.map((card, index) => {
             const targetable =
@@ -318,8 +532,24 @@ export const Center = ({ state }: CenterProps) => {
                 requirement.monster.slug === card.top.slug,
             );
             return (
+              (() => {
+                const cardTargetId = boardSelectionTargetId.monsterInPlay(
+                  index,
+                  card.top.slug,
+                );
+                const entityTargetId = boardSelectionTargetId.monsterEntity(
+                  card.top.slug,
+                );
+                const targetId = resolveActiveTarget([cardTargetId, entityTargetId]);
+                const selectionState = getSelectionState(targetId);
+                return (
               <Pile
                 key={card.top.slug}
+                onClickTopCardHotkeyScope={
+                  targetId && getTargetSelectionHotkey(targetId)
+                    ? [HotkeyScope.Selection]
+                    : [HotkeyScope.Main]
+                }
                 cards={[
                   ...card.covered,
                   {
@@ -330,7 +560,7 @@ export const Center = ({ state }: CenterProps) => {
                     isRequiredAttack: attackRequirement !== undefined,
                   },
                 ]}
-                disabled={targetable !== true}
+                disabled={selectionState.selectable ? false : targetable !== true}
                 onHoverPopover={
                   attackRequirement
                     ? () => (
@@ -347,14 +577,20 @@ export const Center = ({ state }: CenterProps) => {
                     : undefined
                 }
                 onClickTopCardHotkey={
-                  targetableMonsters.includes(card.top.slug)
-                    ? `${targetableMonsters.indexOf(card.top.slug) + 1}`
-                    : undefined
+                  (targetId ? getTargetSelectionHotkey(targetId) : undefined) ??
+                  (activeRequestId
+                    ? undefined
+                    : targetableMonsters.includes(card.top.slug)
+                      ? `${targetableMonsters.indexOf(card.top.slug) + 1}`
+                      : undefined)
                 }
                 onClickTopCard={() =>
-                  block("Cannot attack this card", targetable, () =>
-                    selectMonsterToAttack(index),
-                  )
+                  selectionState.selectable && targetId
+                    ? selectTarget(targetId)
+                    : onNonSelectablePress(() =>
+                        block("Cannot attack this card", targetable, () =>
+                          selectMonsterToAttack(index),
+                        ))
                 }
                 onPileDetailsClick={
                   card.covered.length > 0
@@ -370,7 +606,10 @@ export const Center = ({ state }: CenterProps) => {
                   capable: targetable,
                   title: "Cannot attack this card",
                 }}
+                topCardClassName={getSelectionClassName(selectionState)}
               />
+                );
+              })()
             );
           })}
         </div>

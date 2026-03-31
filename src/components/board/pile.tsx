@@ -54,6 +54,7 @@ interface PileProps {
   topCardClassName?: string;
   onClickTopCard?: () => void;
   onClickTopCardHotkey?: string;
+  onClickTopCardHotkeyScope?: HotkeyScope[];
   onPileDetailsClick?: () => void;
   optimizations?: {
     maxCards: number;
@@ -81,6 +82,7 @@ export const Pile = ({
   disabled,
   onClickTopCard,
   onClickTopCardHotkey,
+  onClickTopCardHotkeyScope = [HotkeyScope.Main],
   onPileDetailsClick,
   className,
   tooltip,
@@ -96,7 +98,7 @@ export const Pile = ({
 
   useHotkeys(onClickTopCardHotkey ?? "enter", () => onClickTopCard?.(), {
     enabled: onClickTopCardHotkey !== undefined && onClickTopCard !== undefined,
-    scopes: [HotkeyScope.Main],
+    scopes: onClickTopCardHotkeyScope,
     useKey: shouldUseKey(onClickTopCardHotkey ?? ""),
   });
 

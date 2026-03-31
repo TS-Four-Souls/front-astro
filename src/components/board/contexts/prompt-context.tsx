@@ -33,6 +33,10 @@ interface Prompt<T extends SelectionItem = SelectionItem> {
    * If not provided, we consider the prompt is not cancellable
    */
   onCancel?: () => void;
+  /**
+   * Optional callback to switch from menu selection to board selection
+   */
+  onSwitchToBoardSelection?: () => void;
 }
 
 interface PromptContextProps {
