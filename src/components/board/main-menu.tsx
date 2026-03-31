@@ -52,6 +52,40 @@ export const MainMenu = () => {
     });
   };
 
+  const onSaveGamePress = () => {
+    socket.emit("getGameLogs", issuer, (response) => {
+      if (response.status === 200) {
+        const now = new Date();
+        const datePart = [
+          now.getFullYear(),
+          String(now.getMonth() + 1).padStart(2, "0"),
+          String(now.getDate()).padStart(2, "0"),
+        ].join("-");
+        const timePart = [
+          String(now.getHours()).padStart(2, "0"),
+          String(now.getMinutes()).padStart(2, "0"),
+          String(now.getSeconds()).padStart(2, "0"),
+        ].join("-");
+        const filename = `four-souls_save_${datePart}_${timePart}.log`;
+
+        const blob = new Blob([response.logs], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+
+        toast("success", "Save game", `Saved as ${filename}`);
+      } else {
+        toast("error", "Save game", response.error);
+      }
+    });
+  };
+
+
   const debugGainLoot = () => {
     socket.emit("debugListLoot", issuer, (response) => {
       if (response.status === 200) {
@@ -228,6 +262,14 @@ export const MainMenu = () => {
           debugRemoveCard();
         }}
         label="[CHEAT] Remove card"
+        className="translate-z-1"
+      />
+      <Button
+        onClick={() => {
+          closeMainMenu();
+          onSaveGamePress();
+        }}
+        label="Save game"
         className="translate-z-1"
       />
       <Button
