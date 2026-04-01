@@ -104,6 +104,7 @@ export const JoinForm = () => {
           autoComplete="off"
           minLength={1}
           required
+          autoFocus
           className="rounded-md border-2 border-stone-700 bg-stone-800 px-4 py-2 text-white focus:ring-2 focus:ring-stone-500 focus:outline-none"
         />
         <Button label="Join" onClick={joinGame} hotkey="enter" />

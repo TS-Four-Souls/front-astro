@@ -149,7 +149,9 @@ export const OnboardingPages = ({ room }: OnboardingPagesProps) => {
       <RoomOptions
         onCreateRoom={createRoom}
         onJoinRoom={() => {
-          setJoiningRoom(true);
+          setTimeout(() => {
+            setJoiningRoom(true);
+          }, 30);
         }}
       />
     );
