@@ -187,8 +187,12 @@ export const PlayerStats = ({
             onCoinPress,
           )
         }>
-        <img src="/coin.png" className="size-6 rounded-full shadow-md/50" />:
-        <span className="font-statblock text-4xl">{coins}</span>
+        <img
+          src="/coin.png"
+          className="size-6 rounded-full shadow-md/50"
+          draggable={false}
+        />
+        :<span className="font-statblock text-4xl">{coins}</span>
       </div>
 
       {souls > 0 && (
@@ -228,6 +232,7 @@ export const PlayerStats = ({
                     type === 1 ? "h-6" : "h-8",
                     souls > 2 && "-ml-3",
                   )}
+                  draggable={false}
                   key={index}
                 />
               );
