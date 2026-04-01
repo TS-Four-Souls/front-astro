@@ -83,7 +83,10 @@ export const TopPlayer = ({ player }: TopPlayerProps) => {
                     slug: card.slug,
                     charged: card.charged,
                     eternal: card.eternal,
-                    effects: index === 0 ? player.temporaryEffect : undefined,
+                    effects:
+                      player.inPlay[0].slug === card.slug
+                        ? player.temporaryEffect
+                        : undefined,
                     counter: card.counter,
                     stats:
                       player.inPlay[0].slug === card.slug
