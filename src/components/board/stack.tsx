@@ -14,21 +14,10 @@ import { Button } from "../button";
 import { cn } from "@/utils/cn";
 import { receiverName } from "@/utils/selection-text";
 import { StackElementIcon } from "./stack-element-icon";
-import { useBoardSelectionContext } from "./contexts/board-selection-context";
-import { boardSelectionTargetId } from "./contexts/board-selection-context";
-import { useHotkeys } from "react-hotkeys-hook";
-import { HotkeyScope } from "@/utils/hotkey";
 
 export const Stack = () => {
   const { state, issuer } = useGameContext();
   const { toast, block } = useToastContext();
-  const {
-    activeRequestId,
-    getTargetSelectionState,
-    getTargetSelectionHotkey,
-    selectTarget,
-    cancelBoardSelection,
-  } = useBoardSelectionContext();
 
   const scrollViewRef = useRef<HTMLDivElement>(null);
   const [selectedStackElementId, setSelectedStackElementId] = useState<
@@ -154,38 +143,22 @@ export const Stack = () => {
                 selectedStackElementId !== null &&
                 !isSelectedElement && (
                   <InsertionBar
-                    onClick={() =>
-                      !activeRequestId && moveStackElementBefore("start")
-                    }
+                    onClick={() => moveStackElementBefore("start")}
                     label="Move here"
                   />
                 )}
               {(() => {
-                const targetId = boardSelectionTargetId.stackElement(
-                  element.id,
-                );
-                const selectionState = getTargetSelectionState(targetId);
-                const selectionHotkey = getTargetSelectionHotkey(targetId);
-
                 return (
                   <StackElement
                     element={element}
-                    hotkey={selectionHotkey}
                     onClick={
-                      selectionState.selectable
-                        ? () => selectTarget(targetId)
-                        : activeRequestId
-                          ? () => cancelBoardSelection()
-                          : (selectedStackElementId === null ||
-                                selectedStackElementId === element.id) &&
-                              element.reordering
-                            ? () => onStackElementClick(element)
-                            : undefined
+                      (selectedStackElementId === null ||
+                        selectedStackElementId === element.id) &&
+                      element.reordering
+                        ? () => onStackElementClick(element)
+                        : undefined
                     }
-                    isSelected={
-                      selectionState.selected ||
-                      selectedStackElementId === element.id
-                    }
+                    isSelected={selectedStackElementId === element.id}
                   />
                 );
               })()}
@@ -195,7 +168,6 @@ export const Stack = () => {
                 !isNextElementSelectedElement && (
                   <InsertionBar
                     onClick={() =>
-                      !activeRequestId &&
                       moveStackElementBefore(state.stack[index].id)
                     }
                     label="Move here"
@@ -213,7 +185,7 @@ export const Stack = () => {
         )}
       </div>
       <Button
-        hotkey={activeRequestId ? undefined : "space"}
+        hotkey="space"
         onClick={() =>
           block(
             "Cannot resolve stack",
@@ -236,40 +208,25 @@ export const Stack = () => {
 
 export const StackElement = ({
   element,
-  hotkey,
   onClick,
   isSelected = false,
   className,
 }: {
   element: StackElementType;
-  hotkey?: string;
   onClick?: () => void;
   isSelected?: boolean;
   className?: string;
 }) => {
-  useHotkeys(hotkey ?? "", () => onClick?.(), {
-    scopes: [HotkeyScope.Selection],
-    enabled: hotkey !== undefined && onClick !== undefined,
-  });
-
   return (
     <div
       onClick={onClick}
       className={cn(
-        "relative w-full rounded-lg p-2 transition-colors",
+        "w-full rounded-lg p-2 transition-colors",
         onClick && "cursor-pointer hover:bg-stone-800/45",
         isSelected &&
           "bg-blue-500/15 ring-1 ring-blue-500/60 hover:bg-blue-500/30",
         className,
       )}>
-      {hotkey && (
-        <div className="absolute top-0 left-0 z-10 flex aspect-square w-5 place-items-center overflow-hidden rounded-sm bg-stone-700 outline-[0.1em] -outline-offset-[0.1em] outline-stone-200">
-          <img
-            src={`/input-prompts/keyboard_${hotkey}_outline.svg`}
-            className="scale-170"
-          />
-        </div>
-      )}
       <StackElementContent element={element} />
     </div>
   );

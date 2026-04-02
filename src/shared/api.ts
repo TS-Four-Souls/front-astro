@@ -576,25 +576,8 @@ const isGameOngoingResponseSchema = z.union([
 ]);
 export type IsGameOngoingResponse = z.infer<typeof isGameOngoingResponseSchema>;
 
-const getGameLogsResponseSchema = z.union([
-  z.object({
-    status: z.literal(200),
-    logs: z.string(),
-  }),
-  z.object({
-    status: z.literal(400),
-    error: z.string(),
-  }),
-]);
-export type GetGameLogsResponse = z.infer<typeof getGameLogsResponseSchema>;
-
 const joinRoomRequestSchema = z.object({
   roomId: z.string(),
-});
-
-const loadGameRequestSchema = z.object({
-  issuer: issuerSchema,
-  logs: z.string(),
 });
 
 export const schemas = {
@@ -625,8 +608,6 @@ export const schemas = {
   giveCoinsRequest: giveCoinsSchema,
   setGameParameterRequest: setGameParameterRequestSchema,
   joinRoomRequest: joinRoomRequestSchema,
-  getGameLogsRequest: issuerSchema,
-  loadGameRequest: loadGameRequestSchema,
 };
 
 export namespace Requests {
@@ -659,8 +640,6 @@ export namespace Requests {
     typeof debugGainTreasureRequestSchema
   >;
   export type JoinRoom = z.infer<typeof joinRoomRequestSchema>;
-  export type GetGameLogs = z.infer<typeof issuerSchema>;
-  export type LoadGame = z.infer<typeof loadGameRequestSchema>;
 }
 
 export namespace Responses {
@@ -693,8 +672,6 @@ export namespace Responses {
   export type JoinRoom = BasicResponse;
   export type JoinAsUser = BasicResponse;
   export type LeaveRoom = BasicResponse;
-  export type GetGameLogs = GetGameLogsResponse;
-  export type LoadGame = BasicResponse;
 }
 
 export interface ServerToClientEvents {
@@ -835,14 +812,4 @@ export interface ClientToServerEvents {
   ) => void;
 
   leaveRoom: (callback: (response: Responses.LeaveRoom) => void) => void;
-
-  getGameLogs: (
-    request: Requests.GetGameLogs,
-    callback: (response: Responses.GetGameLogs) => void,
-  ) => void;
-
-  loadGame: (
-    request: Requests.LoadGame,
-    callback: (response: Responses.LoadGame) => void,
-  ) => void;
 }

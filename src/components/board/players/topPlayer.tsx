@@ -3,15 +3,6 @@ import { PlayerStats } from "../player-stats";
 import { Pile } from "../pile";
 import { cn } from "@/utils/cn";
 import { CardType } from "../card";
-import { HotkeyScope } from "@/utils/hotkey";
-import {
-  boardSelectionTargetId,
-  useBoardSelectionContext,
-} from "../contexts/board-selection-context";
-import {
-  getSelectionClassName,
-  resolveActiveSelectionTarget,
-} from "../selection-class";
 
 interface TopPlayerProps {
   player: Player;
@@ -19,28 +10,7 @@ interface TopPlayerProps {
 
 const MAX_COLUMNS = 8;
 
-const getInPlayStats = (player: Player, cardSlug: string) => {
-  const isCharacterCard = player.inPlay[0]?.slug === cardSlug;
-
-  if (!isCharacterCard) {
-    return undefined;
-  }
-
-  return {
-    healthPoints: player.currentHealthPoints,
-    attackPoints: player.currentAttackPoints,
-  };
-};
-
 export const TopPlayer = ({ player }: TopPlayerProps) => {
-  const {
-    getTargetSelectionState,
-    getTargetSelectionHotkey,
-    selectTarget,
-    cancelBoardSelection,
-    activeRequestId,
-  } = useBoardSelectionContext();
-
   // Create an array of arrays of 8 elements each, fill with undefined if needed
   const grid = Array.from(
     { length: Math.ceil(player.inPlay.length / MAX_COLUMNS) },
@@ -49,15 +19,11 @@ export const TopPlayer = ({ player }: TopPlayerProps) => {
 
   // Fill the grid with the cards
   for (let i = 0; i < player.inPlay.length; i++) {
-    grid[Math.floor(i / MAX_COLUMNS)][i % MAX_COLUMNS] = {
-      card: player.inPlay[i],
-      originalIndex: i,
-    };
+    grid[Math.floor(i / MAX_COLUMNS)][i % MAX_COLUMNS] = player.inPlay[i];
   }
 
   // Turn back into a flat array
   const cards = grid.reverse().flat();
-  const inPlayColumns = Math.min(player.inPlay.length, MAX_COLUMNS);
 
   return (
     <div
@@ -102,59 +68,32 @@ export const TopPlayer = ({ player }: TopPlayerProps) => {
         <div
           className={cn("grid grid-flow-row gap-2 transform-3d")}
           style={{
-            gridTemplateColumns: `repeat(${inPlayColumns}, 1fr)`,
+            gridTemplateColumns: `repeat(${Math.min(player.inPlay.length, MAX_COLUMNS)}, 1fr)`,
           }}>
-          {cards.map((entry, index) => {
-            const card = entry?.card;
+          {cards.map((card, index) => {
             if (card === undefined) {
               return <div key={`empty-${index}`} className="h-full w-full" />;
             }
 
-            const targetId = boardSelectionTargetId.playerInPlay(
-              player.name,
-              entry.originalIndex,
-              card.slug,
-            );
-            const entityTargetId =
-              entry.originalIndex === 0
-                ? boardSelectionTargetId.playerEntity(player.name, card.slug)
-                : undefined;
-
-            const {
-              targetId: activeTargetId,
-              selectionState,
-              selectionHotkey,
-            } = resolveActiveSelectionTarget({
-              targetIds: [targetId, entityTargetId],
-              fallbackTargetId: targetId,
-              getTargetSelectionState,
-              getTargetSelectionHotkey,
-            });
-
-            const topCard = {
-              slug: card.slug,
-              charged: card.charged,
-              eternal: card.eternal,
-              effects: index === 0 ? player.temporaryEffect : undefined,
-              counter: card.counter,
-              stats: getInPlayStats(player, card.slug),
-            };
-
             return (
               <Pile
                 key={card.slug}
-                cards={[topCard]}
-                disabled={selectionState.selectable ? false : undefined}
-                topCardClassName={getSelectionClassName(selectionState)}
-                onClickTopCard={
-                  selectionState.selectable
-                    ? () => selectTarget(activeTargetId)
-                    : activeRequestId
-                      ? () => cancelBoardSelection()
-                      : undefined
-                }
-                onClickTopCardHotkey={selectionHotkey}
-                onClickTopCardHotkeyScope={[HotkeyScope.Selection]}
+                cards={[
+                  {
+                    slug: card.slug,
+                    charged: card.charged,
+                    eternal: card.eternal,
+                    effects: index === 0 ? player.temporaryEffect : undefined,
+                    counter: card.counter,
+                    stats:
+                      player.inPlay[0].slug === card.slug
+                        ? {
+                            healthPoints: player.currentHealthPoints,
+                            attackPoints: player.currentAttackPoints,
+                          }
+                        : undefined,
+                  },
+                ]}
               />
             );
           })}

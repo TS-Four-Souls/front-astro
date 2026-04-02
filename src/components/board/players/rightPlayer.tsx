@@ -3,44 +3,12 @@ import { PlayerStats } from "../player-stats";
 import { cn } from "@/utils/cn";
 import { Pile } from "../pile";
 import { CardType } from "../card";
-import { HotkeyScope } from "@/utils/hotkey";
-import {
-  boardSelectionTargetId,
-  useBoardSelectionContext,
-} from "../contexts/board-selection-context";
-import {
-  getSelectionClassName,
-  resolveActiveSelectionTarget,
-} from "../selection-class";
 
 interface RightPlayerProps {
   player: Player;
 }
 
-const MAX_ROWS = 3;
-
-const getInPlayStats = (player: Player, index: number) => {
-  if (index !== 0) {
-    return undefined;
-  }
-
-  return {
-    healthPoints: player.currentHealthPoints,
-    attackPoints: player.currentAttackPoints,
-  };
-};
-
 export const RightPlayer = ({ player }: RightPlayerProps) => {
-  const {
-    getTargetSelectionState,
-    getTargetSelectionHotkey,
-    selectTarget,
-    cancelBoardSelection,
-    activeRequestId,
-  } = useBoardSelectionContext();
-
-  const inPlayRows = Math.min(player.inPlay.length, MAX_ROWS);
-
   return (
     <div
       key={player.name}
@@ -90,57 +58,29 @@ export const RightPlayer = ({ player }: RightPlayerProps) => {
         <div
           className={cn("grid gap-2 transform-3d", "grid-flow-col")}
           style={{
-            gridTemplateRows: `repeat(${inPlayRows}, 1fr)`,
+            gridTemplateRows: `repeat(${Math.min(player.inPlay.length, 3)}, 1fr)`,
           }}>
-          {player.inPlay.map((card, index) => {
-            const targetId = boardSelectionTargetId.playerInPlay(
-              player.name,
-              index,
-              card.slug,
-            );
-            const entityTargetId =
-              index === 0
-                ? boardSelectionTargetId.playerEntity(player.name, card.slug)
-                : undefined;
-
-            const {
-              targetId: activeTargetId,
-              selectionState,
-              selectionHotkey,
-            } = resolveActiveSelectionTarget({
-              targetIds: [targetId, entityTargetId],
-              fallbackTargetId: targetId,
-              getTargetSelectionState,
-              getTargetSelectionHotkey,
-            });
-
-            const topCard = {
-              slug: card.slug,
-              charged: card.charged,
-              eternal: card.eternal,
-              effects: index === 0 ? player.temporaryEffect : undefined,
-              counter: card.counter,
-              stats: getInPlayStats(player, index),
-            };
-
-            return (
-              <Pile
-                key={card.slug}
-                cards={[topCard]}
-                disabled={selectionState.selectable ? false : undefined}
-                topCardClassName={getSelectionClassName(selectionState)}
-                onClickTopCard={
-                  selectionState.selectable
-                    ? () => selectTarget(activeTargetId)
-                    : activeRequestId
-                      ? () => cancelBoardSelection()
-                      : undefined
-                }
-                onClickTopCardHotkey={selectionHotkey}
-                onClickTopCardHotkeyScope={[HotkeyScope.Selection]}
-              />
-            );
-          })}
+          {player.inPlay.map((card, index) => (
+            <Pile
+              key={card.slug}
+              cards={[
+                {
+                  slug: card.slug,
+                  charged: card.charged,
+                  eternal: card.eternal,
+                  effects: index === 0 ? player.temporaryEffect : undefined,
+                  counter: card.counter,
+                  stats:
+                    index === 0
+                      ? {
+                          healthPoints: player.currentHealthPoints,
+                          attackPoints: player.currentAttackPoints,
+                        }
+                      : undefined,
+                },
+              ]}
+            />
+          ))}
         </div>
       </div>
     </div>

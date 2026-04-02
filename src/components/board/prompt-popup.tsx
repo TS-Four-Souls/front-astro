@@ -36,20 +36,9 @@ interface PromptPopupProps<T extends SelectionItem = SelectionItem> {
    * If not provided, we consider the prompt is not cancellable
    */
   onCancel?: () => void;
-  /**
-   * Optional callback to switch to board selection mode when available
-   */
-  onSwitchToBoardSelection?: () => void;
 }
 export const PromptPopup = (props: PromptPopupProps) => {
-  const {
-    prompt,
-    options,
-    minCount,
-    maxCount,
-    onSubmit,
-    onSwitchToBoardSelection,
-  } = props;
+  const { prompt, options, minCount, maxCount, onSubmit } = props;
   const [selectedOptions, setSelectedOptions] = useState<SelectionItem[]>([]);
 
   const addSelection = (option: SelectionItem) => {
@@ -72,43 +61,20 @@ export const PromptPopup = (props: PromptPopupProps) => {
   const onCancel =
     props.onCancel ?? (isInformational ? () => onSubmit([]) : undefined);
 
-  useHotkeys(
-    "tab",
-    (event) => {
-      event.preventDefault();
-      onSwitchToBoardSelection?.();
-    },
-    {
-      scopes: [HotkeyScope.Popup],
-      enabled: onSwitchToBoardSelection !== undefined,
-      preventDefault: true,
-    },
-  );
-
   return (
     <Popup onPressBackdrop={onCancel}>
       <div className="flex flex-row justify-between gap-8">
         <h1 className="font-alt-stats text-2xl font-bold uppercase">
           {prompt}
         </h1>
-        <div className="flex gap-2">
-          {onSwitchToBoardSelection && (
-            <Button
-              onClick={onSwitchToBoardSelection}
-              hotkey="tab"
-              hotkeyScope={[HotkeyScope.Popup]}
-              label="Use board selection"
-            />
-          )}
-          {onCancel && (
-            <Button
-              onClick={onCancel}
-              hotkey="escape"
-              hotkeyScope={[HotkeyScope.Popup]}
-              label={isInformational ? "Close" : "Cancel"}
-            />
-          )}
-        </div>
+        {onCancel && (
+          <Button
+            onClick={onCancel}
+            hotkey="escape"
+            hotkeyScope={[HotkeyScope.Popup]}
+            label={isInformational ? "Close" : "Cancel"}
+          />
+        )}
       </div>
 
       <div
