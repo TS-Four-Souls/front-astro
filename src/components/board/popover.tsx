@@ -15,9 +15,10 @@ export interface PopoverProps {
 export const Popover = ({ children, anchor, className }: PopoverProps) => {
   const popoverRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
-  const [position, setPosition] = useState<{ top: number; left: number } | null>(
-    null,
-  );
+  const [position, setPosition] = useState<{
+    top: number;
+    left: number;
+  } | null>(null);
 
   useEffect(() => {
     setIsVisible(true);

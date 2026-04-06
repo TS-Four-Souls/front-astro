@@ -62,6 +62,7 @@ export const RightPlayer = ({ player }: RightPlayerProps) => {
           }}>
           {player.inPlay.map((card, index) => (
             <Pile
+              globalId={card.globalId}
               key={card.slug}
               cards={[
                 {

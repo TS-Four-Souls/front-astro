@@ -190,6 +190,7 @@ export const Me = () => {
         }}>
         {state.me.inPlay.map((card, index) => (
           <Pile
+            globalId={card.globalId}
             key={card.slug}
             onClickTopCardHotkey={
               targetableCards.includes(card.slug)

@@ -85,7 +85,6 @@ export const MainMenu = () => {
     });
   };
 
-
   const debugGainLoot = () => {
     socket.emit("debugListLoot", issuer, (response) => {
       if (response.status === 200) {

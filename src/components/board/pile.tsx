@@ -13,6 +13,8 @@ import { HotkeyScope, shouldUseKey } from "@/utils/hotkey";
 import { useHotkeys } from "react-hotkeys-hook";
 import type { Tooltip } from "./use-tooltip";
 import { useTooltip } from "./use-tooltip";
+import { useBoardSelectionContext } from "./contexts/board-selection-context";
+import { useToastContext } from "./contexts/toast-context";
 
 type CardMetadata = {
   isRequiredAttack?: boolean;
@@ -63,6 +65,7 @@ interface PileProps {
   onHoverPopover?: () => React.ReactNode;
   tooltip?: Tooltip;
   enableRandomRotation?: boolean;
+  globalId?: number;
   style?: React.CSSProperties;
 }
 
@@ -79,8 +82,8 @@ export const Pile = ({
   cards,
   size: sizePx = 160,
   disabled,
-  onClickTopCard,
-  onClickTopCardHotkey,
+  onClickTopCard: propsOnClickTopCard,
+  onClickTopCardHotkey: propsOnClickTopCardHotkey,
   onPileDetailsClick,
   className,
   tooltip,
@@ -89,10 +92,41 @@ export const Pile = ({
   onHoverPopover,
   enableRandomRotation = true,
   style,
+  globalId,
 }: PileProps) => {
   const size = sizePx / 16;
   const seed = useRef(Math.random().toString());
   const rng = seedrandom(seed.current);
+
+  const { boardSelectionState, isBoardSelectionActive, toggleSelection } =
+    useBoardSelectionContext();
+
+  const { block } = useToastContext();
+
+  const entityBoardSelectionState =
+    globalId === undefined ? undefined : boardSelectionState?.get(globalId);
+
+  const onClickTopCard = isBoardSelectionActive
+    ? entityBoardSelectionState?.isSelectable
+      ? () => {
+          toggleSelection(entityBoardSelectionState.selectionItem);
+        }
+      : () => {
+          block(
+            "Cannot select this card",
+            "You cannot select this card",
+            () => {
+              console.log("Cannot select this card");
+            },
+          );
+        }
+    : propsOnClickTopCard;
+
+  const onClickTopCardHotkey = isBoardSelectionActive
+    ? entityBoardSelectionState
+      ? `${entityBoardSelectionState.optionIndex + 1}`
+      : undefined
+    : propsOnClickTopCardHotkey;
 
   useHotkeys(onClickTopCardHotkey ?? "enter", () => onClickTopCard?.(), {
     enabled: onClickTopCardHotkey !== undefined && onClickTopCard !== undefined,
@@ -158,12 +192,25 @@ export const Pile = ({
               card={
                 typeof card === "object" && "type" in card ? card.type : card
               }
-              className={cn(
+              containerClassName={cn(
                 "col-start-1 row-start-1",
-                !charged && "brightness-50 contrast-90",
+
                 engagedInCombat && "outline-[0.2em] outline-red-500/60",
                 isRequiredAttack &&
                   "outline-[0.2em] outline-red-500/60 outline-dashed",
+
+                entityBoardSelectionState &&
+                  entityBoardSelectionState.isSelected &&
+                  index === array.length - 1 &&
+                  "outline-[0.2em] outline-blue-500",
+              )}
+              className={cn(
+                !charged && "brightness-50 contrast-90",
+                entityBoardSelectionState &&
+                  entityBoardSelectionState.isSelected &&
+                  index === array.length - 1
+                  ? ""
+                  : eternal && "glow-6",
                 cards.length > 0 && index === 0 && "shadow-lg/20",
                 cards.length > 5 && index === 3 && "shadow-lg/20",
                 cards.length > 10 && index === 2 && "shadow-xl/30",
@@ -171,8 +218,13 @@ export const Pile = ({
                 cards.length > 80 && index === 0 && "shadow-3xl/30",
                 index === array.length - 1 && topCardClassName,
               )}
-              disabled={index === array.length - 1 && disabled}
-              style={{
+              disabled={
+                isBoardSelectionActive
+                  ? entityBoardSelectionState === undefined ||
+                    entityBoardSelectionState.isSelectable === false
+                  : disabled
+              }
+              containerStyle={{
                 transform: `
                   ${enable3D ? `translateZ(${thickness * (index + 1)}em)` : ""}
                   ${enableRandomRotation ? `rotate(${(rng() - 0.5) * 5}deg)` : ""}
@@ -183,7 +235,6 @@ export const Pile = ({
               enableSides={enableSides}
               stats={typeof card === "string" ? undefined : card.stats}
               effects={typeof card === "string" ? undefined : card.effects}
-              eternal={eternal}
               counter={counter}
               onMouseEnter={
                 index === array.length - 1

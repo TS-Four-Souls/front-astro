@@ -1,8 +1,7 @@
 import type { SelectionItem } from "@/shared/api";
 import { createContext, useContext, useRef, useState } from "react";
-import { PromptPopup } from "../prompt-popup";
 
-interface Prompt<T extends SelectionItem = SelectionItem> {
+export interface Prompt<T extends SelectionItem = SelectionItem> {
   promptId: string;
   /**
    * If the prompt is unique, no other prompt with the same promptId can be added
@@ -36,12 +35,14 @@ interface Prompt<T extends SelectionItem = SelectionItem> {
 }
 
 interface PromptContextProps {
+  prompt: Prompt | undefined;
   prompts: Map<string, Prompt>;
   addPrompt<T extends SelectionItem = SelectionItem>(prompt: Prompt<T>): void;
   removePrompt: (promptId: string) => void;
 }
 
 const PromptContext = createContext<PromptContextProps>({
+  prompt: undefined,
   prompts: new Map(),
   addPrompt: () => {},
   removePrompt: () => {},
@@ -88,9 +89,9 @@ export const PromptProvider = ({ children }: { children: React.ReactNode }) => {
   const nextPrompt = prompts.values().next().value;
 
   return (
-    <PromptContext.Provider value={{ prompts, addPrompt, removePrompt }}>
+    <PromptContext.Provider
+      value={{ prompt: nextPrompt, prompts, addPrompt, removePrompt }}>
       {children}
-      {nextPrompt && <PromptPopup {...nextPrompt} />}
     </PromptContext.Provider>
   );
 };

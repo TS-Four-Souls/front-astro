@@ -1,6 +1,7 @@
 export enum HotkeyScope {
   Main = "main",
   Popup = "popup",
+  Selection = "selection",
 }
 
 /** Return true if the hotkey is a single letter */

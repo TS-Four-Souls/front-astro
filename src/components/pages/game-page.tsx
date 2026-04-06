@@ -11,6 +11,7 @@ import { RoomOptions } from "../onboarding/room-options";
 import { RoomJoinForm } from "../onboarding/room-join-form";
 import { OnboardingLayout } from "../onboarding-layout";
 import { storage } from "@/utils/storage";
+import { BoardSelectionProvider } from "../board/contexts/board-selection-context";
 
 export const GamePage = () => {
   const [room, setRoom] = useState<Room | null>(null);
@@ -75,9 +76,11 @@ export const GamePage = () => {
   if (room?.room.state === "joined" && room.gameState) {
     return (
       <GameProvider state={room.gameState} issuer={room.room.issuer}>
-        <MainMenuProvider>
-          <Board />
-        </MainMenuProvider>
+        <BoardSelectionProvider>
+          <MainMenuProvider>
+            <Board />
+          </MainMenuProvider>
+        </BoardSelectionProvider>
       </GameProvider>
     );
   }

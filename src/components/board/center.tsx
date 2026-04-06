@@ -216,6 +216,7 @@ export const Center = ({ state }: CenterProps) => {
           />
           {state.treasure.inPlay.map((card, index) => (
             <Pile
+              globalId={card.globalId}
               key={card.slug}
               cards={[card]}
               disabled={state.me.capabilities.buyTreasure !== true}
@@ -319,6 +320,7 @@ export const Center = ({ state }: CenterProps) => {
             );
             return (
               <Pile
+                globalId={card.top.globalId}
                 key={card.top.slug}
                 cards={[
                   ...card.covered,
