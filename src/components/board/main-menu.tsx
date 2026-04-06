@@ -130,6 +130,16 @@ export const MainMenu = () => {
     });
   };
 
+  const rollback = () => {
+    socket.emit("rollback", null, (response) => {
+      if (response.status === 200) {
+        toast("success", "Rollback", "Rolled back to the previous user action.");
+      } else {
+        toast("error", "Rollback", response.error);
+      }
+    });
+  };
+
   const debugGainTreasure = () => {
     socket.emit("debugListTreasure", issuer, (response) => {
       if (response.status === 200) {
@@ -237,6 +247,16 @@ export const MainMenu = () => {
           openUserSettingsMenu();
         }}
         label="Graphics"
+        className="translate-z-1"
+      />
+      <Button
+        onClick={() => {
+          // closeMainMenu();
+          rollback();
+        }}
+        hotkey="r"
+        hotkeyScope={[HotkeyScope.Popup]}
+        label="Rollback"
         className="translate-z-1"
       />
       <Button
