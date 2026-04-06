@@ -105,7 +105,7 @@ export const MainMenu = () => {
               "debugLoot",
               {
                 ...issuer,
-                slugs: selections.map((selection) => selection.payload.slug),
+                cards: selections.map((selection) => selection.payload),
               },
               (response) => {
                 if (response.status === 200) {
@@ -150,7 +150,7 @@ export const MainMenu = () => {
               "debugGainTreasure",
               {
                 ...issuer,
-                slugs: selections.map((selection) => selection.payload.slug),
+                cards: selections.map((selection) => selection.payload),
               },
               (response) => {
                 if (response.status === 200) {
@@ -195,7 +195,7 @@ export const MainMenu = () => {
               "debugRemoveCards",
               {
                 ...issuer,
-                slugs: selections.map((selection) => selection.payload.slug),
+                cards: selections.map((selection) => selection.payload),
               },
               (response) => {
                 if (response.status === 200) {

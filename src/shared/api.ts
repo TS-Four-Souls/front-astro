@@ -3,6 +3,7 @@ import { z } from "zod";
 export const identifierTypeSchema = z.object({
   name: z.string(),
   slug: z.string(),
+  globalId: z.number(),
 });
 export type IdentifierType = z.infer<typeof identifierTypeSchema>;
 
@@ -26,6 +27,7 @@ export type SelectionItem =
   | { type: "stackElement"; payload: StackElement }
   | { type: "player"; payload: IdentifierType }
   | { type: "monster"; payload: IdentifierType }
+  | { type: "deck"; payload: string }
   | { type: "number"; payload: number }
   | { type: "boolean"; payload: boolean }
   | { type: "string"; payload: string }
@@ -51,6 +53,7 @@ const selectionItemSchema: z.ZodType<SelectionItem> = z.lazy(() =>
     z.object({ type: z.literal("stackElement"), payload: stackElementSchema }),
     z.object({ type: z.literal("player"), payload: identifierTypeSchema }),
     z.object({ type: z.literal("monster"), payload: identifierTypeSchema }),
+    z.object({ type: z.literal("deck"), payload: z.string() }),
     z.object({ type: z.literal("number"), payload: z.number() }),
     z.object({ type: z.literal("boolean"), payload: z.boolean() }),
     z.object({ type: z.literal("string"), payload: z.string() }),
@@ -236,6 +239,7 @@ const selectionItemTypeSchema = z.union([
   z.literal("array"),
   z.literal("object"),
   z.literal("null"),
+  z.literal("deck"),
   z.literal("unknown"),
 ]);
 export type SelectionItemType = z.infer<typeof selectionItemTypeSchema>;
@@ -247,14 +251,14 @@ const issuerSchema = z.object({
 export type Issuer = z.infer<typeof issuerSchema>;
 
 const debugLootRequestSchema = issuerSchema.extend({
-  slugs: z.array(z.string()).optional(),
+  cards: z.array(identifierTypeSchema),
 });
 const debugGainTreasureRequestSchema = issuerSchema.extend({
-  slugs: z.array(z.string()).optional(),
+  cards: z.array(identifierTypeSchema),
 });
 
 const debugRemoveCardsRequestSchema = issuerSchema.extend({
-  slugs: z.array(z.string()).optional(),
+  cards: z.array(identifierTypeSchema),
 });
 
 const giveCoinsSchema = z.object({
@@ -343,6 +347,8 @@ const startRequestSchema = z.object({
 });
 
 const resetRequestSchema = z.literal(null);
+
+const rollbackRequestSchema = z.literal(null);
 
 const basicResponseSchema = z.union([
   z.object({
@@ -576,8 +582,25 @@ const isGameOngoingResponseSchema = z.union([
 ]);
 export type IsGameOngoingResponse = z.infer<typeof isGameOngoingResponseSchema>;
 
+const getGameLogsResponseSchema = z.union([
+  z.object({
+    status: z.literal(200),
+    logs: z.string(),
+  }),
+  z.object({
+    status: z.literal(400),
+    error: z.string(),
+  }),
+]);
+export type GetGameLogsResponse = z.infer<typeof getGameLogsResponseSchema>;
+
 const joinRoomRequestSchema = z.object({
   roomId: z.string(),
+});
+
+const loadGameRequestSchema = z.object({
+  issuer: issuerSchema,
+  logs: z.string(),
 });
 
 export const schemas = {
@@ -587,6 +610,7 @@ export const schemas = {
   rejoinRequest: rejoinRequestSchema,
   startRequest: startRequestSchema,
   resetRequest: resetRequestSchema,
+  rollbackRequest: rollbackRequestSchema,
   declareAttackRequest: declareAttackRequestSchema,
   declarePurchaseRequest: declarePurchaseRequestSchema,
   cancelPurchaseRequest: cancelPurchaseRequestSchema,
@@ -608,6 +632,8 @@ export const schemas = {
   giveCoinsRequest: giveCoinsSchema,
   setGameParameterRequest: setGameParameterRequestSchema,
   joinRoomRequest: joinRoomRequestSchema,
+  getGameLogsRequest: issuerSchema,
+  loadGameRequest: loadGameRequestSchema,
 };
 
 export namespace Requests {
@@ -616,6 +642,7 @@ export namespace Requests {
   export type SetGameParameter = z.infer<typeof setGameParameterRequestSchema>;
   export type Start = z.infer<typeof startRequestSchema>;
   export type Reset = z.infer<typeof resetRequestSchema>;
+  export type Rollback = z.infer<typeof rollbackRequestSchema>;
   export type DeclareAttack = z.infer<typeof declareAttackRequestSchema>;
   export type DeclarePurchase = z.infer<typeof declarePurchaseRequestSchema>;
   export type CancelPurchase = z.infer<typeof cancelPurchaseRequestSchema>;
@@ -640,6 +667,8 @@ export namespace Requests {
     typeof debugGainTreasureRequestSchema
   >;
   export type JoinRoom = z.infer<typeof joinRoomRequestSchema>;
+  export type GetGameLogs = z.infer<typeof issuerSchema>;
+  export type LoadGame = z.infer<typeof loadGameRequestSchema>;
 }
 
 export namespace Responses {
@@ -648,6 +677,7 @@ export namespace Responses {
   export type SetGameParameter = BasicResponse;
   export type Start = BasicResponse;
   export type Reset = BasicResponse;
+  export type Rollback = BasicResponse;
   export type DeclareAttack = BasicResponse;
   export type Resolve = BasicResponse;
   export type SubmitSelection = BasicResponse;
@@ -672,6 +702,8 @@ export namespace Responses {
   export type JoinRoom = BasicResponse;
   export type JoinAsUser = BasicResponse;
   export type LeaveRoom = BasicResponse;
+  export type GetGameLogs = GetGameLogsResponse;
+  export type LoadGame = BasicResponse;
 }
 
 export interface ServerToClientEvents {
@@ -698,6 +730,11 @@ export interface ClientToServerEvents {
   reset: (
     request: Requests.Reset,
     callback: (response: Responses.Reset) => void,
+  ) => void;
+
+  rollback: (
+    request: Requests.Rollback,
+    callback: (response: Responses.Rollback) => void,
   ) => void;
 
   declareAttack: (
@@ -812,4 +849,14 @@ export interface ClientToServerEvents {
   ) => void;
 
   leaveRoom: (callback: (response: Responses.LeaveRoom) => void) => void;
+
+  getGameLogs: (
+    request: Requests.GetGameLogs,
+    callback: (response: Responses.GetGameLogs) => void,
+  ) => void;
+
+  loadGame: (
+    request: Requests.LoadGame,
+    callback: (response: Responses.LoadGame) => void,
+  ) => void;
 }
