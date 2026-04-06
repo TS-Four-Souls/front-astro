@@ -77,6 +77,7 @@ export const TopPlayer = ({ player }: TopPlayerProps) => {
 
             return (
               <Pile
+                globalId={card.globalId}
                 key={card.slug}
                 cards={[
                   {

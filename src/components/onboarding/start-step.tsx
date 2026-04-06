@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useRef } from "react";
 import { socket } from "@/utils/socket";
 import type { Requests, Room } from "@/shared/api";
 import { useToastContext } from "../board/contexts/toast-context";
@@ -13,6 +13,7 @@ interface StartStepProps {
 export const StartStep = ({ room }: StartStepProps) => {
   const { issuer, gameParameters, players } = room;
   const { toast } = useToastContext();
+  const loadGameInputRef = useRef<HTMLInputElement>(null);
 
   const onChangeGameParameter = (request: Requests.SetGameParameter) => {
     socket.emit("setGameParameter", request, (response) => {
@@ -44,6 +45,47 @@ export const StartStep = ({ room }: StartStepProps) => {
           break;
       }
     });
+  };
+
+  const onLoadGamePress = () => {
+    loadGameInputRef.current?.click();
+  };
+
+  const onLoadGameFileSelected = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const logs = reader.result;
+      if (typeof logs !== "string") {
+        toast("error", "Load game", "Could not read selected file");
+        return;
+      }
+
+      socket.emit("loadGame", { issuer, logs }, (response) => {
+        switch (response.status) {
+          case 200:
+            toast("success", "Load game", "Saved game loaded successfully");
+            break;
+          case 400:
+          default:
+            toast("error", "Load game", response.error);
+            break;
+        }
+      });
+    };
+
+    reader.onerror = () => {
+      toast("error", "Load game", "Could not read selected file");
+    };
+
+    reader.readAsText(file);
+    event.target.value = "";
   };
 
   return (
@@ -95,6 +137,18 @@ export const StartStep = ({ room }: StartStepProps) => {
               hotkey="enter"
               label="Let's go!"
               className="h-16 w-120 font-alt-stats text-xl font-bold"
+            />
+            <Button
+              onClick={onLoadGamePress}
+              label="Load game"
+              className="w-120"
+            />
+            <input
+              ref={loadGameInputRef}
+              type="file"
+              accept=".log,text/plain"
+              className="hidden"
+              onChange={onLoadGameFileSelected}
             />
           </div>
         </div>

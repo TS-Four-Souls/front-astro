@@ -17,6 +17,8 @@ export const selectionToText = (selection: SelectionItem) => {
         case "LootCardEffect":
           return `${selection.payload.issuer.name} used ${selection.payload.card.name}`;
       }
+    case "deck":
+      return selection.payload;
     case "player":
       return selection.payload.name;
     case "monster":

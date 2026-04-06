@@ -1,80 +1,69 @@
+import { Button } from "@/components/button";
+import { Popup } from "@/components/popup";
 import type { SelectionItem } from "@/shared/api";
 import { cn } from "@/utils/cn";
-import { useState } from "react";
-import { CardImage } from "./card";
+import { HotkeyScope } from "@/utils/hotkey";
+import { useHotkeys } from "react-hotkeys-hook";
+import { CardImage } from "../card";
 import { Person } from "@/icons/person";
 import { Sword } from "@/icons/sword";
-import { StackElement } from "./stack";
-import { Popup } from "../popup";
-import { Button } from "../button";
-import { useHotkeys } from "react-hotkeys-hook";
-import { HotkeyScope } from "@/utils/hotkey";
+import { StackElement } from "../stack";
 
-interface PromptPopupProps<T extends SelectionItem = SelectionItem> {
-  /**
-   * The prompt to display to the user
-   */
+interface PromptPopupProps {
+  onCancel?: () => void | undefined;
   prompt: string;
-  /**
-   * The options to select from
-   */
-  options: T[];
-  /**
-   * The minimum number of targets to select
-   */
+  options: SelectionItem[];
   minCount: number;
-  /**
-   * The maximum number of targets to select
-   */
   maxCount: number;
-  /**
-   * The function to call when the user submits the prompt
-   */
-  onSubmit: (selections: T[]) => void;
-  /**
-   * If the user cancels the prompt, this function will be called
-   * If not provided, we consider the prompt is not cancellable
-   */
-  onCancel?: () => void;
+  displayRow: boolean;
+  isInformational: boolean;
+  selectedOptions: SelectionItem[];
+  addSelection: (option: SelectionItem) => void;
+  removeSelection: (option: SelectionItem) => void;
+  replaceSelection: (option: SelectionItem) => void;
+  onSubmit: (selections: SelectionItem[]) => void;
+  toggleMode?: () => void | undefined;
 }
-export const PromptPopup = (props: PromptPopupProps) => {
-  const { prompt, options, minCount, maxCount, onSubmit } = props;
-  const [selectedOptions, setSelectedOptions] = useState<SelectionItem[]>([]);
 
-  const addSelection = (option: SelectionItem) => {
-    setSelectedOptions((current) => [...current, option]);
-  };
-
-  const removeSelection = (option: SelectionItem) => {
-    setSelectedOptions((current) => current.filter((o) => o !== option));
-  };
-
-  const replaceSelection = (option: SelectionItem) => {
-    setSelectedOptions([option]);
-  };
-
-  const displayRow = options.some(
-    (option) => option.type === "couplePlayerHand",
-  );
-
-  const isInformational = maxCount === 0;
-  const onCancel =
-    props.onCancel ?? (isInformational ? () => onSubmit([]) : undefined);
-
+export const PromptPopup = ({
+  onCancel,
+  prompt,
+  options,
+  minCount,
+  maxCount,
+  displayRow,
+  isInformational,
+  selectedOptions,
+  addSelection,
+  removeSelection,
+  replaceSelection,
+  onSubmit,
+  toggleMode,
+}: PromptPopupProps) => {
   return (
     <Popup onPressBackdrop={onCancel}>
       <div className="flex flex-row justify-between gap-8">
         <h1 className="font-alt-stats text-2xl font-bold uppercase">
           {prompt}
         </h1>
-        {onCancel && (
-          <Button
-            onClick={onCancel}
-            hotkey="escape"
-            hotkeyScope={[HotkeyScope.Popup]}
-            label={isInformational ? "Close" : "Cancel"}
-          />
-        )}
+        <div className="flex gap-2">
+          {toggleMode && (
+            <Button
+              onClick={toggleMode}
+              hotkey="tab"
+              hotkeyScope={[HotkeyScope.Popup]}
+              label="Use board selection"
+            />
+          )}
+          {onCancel && (
+            <Button
+              onClick={onCancel}
+              hotkey="escape"
+              hotkeyScope={[HotkeyScope.Popup]}
+              label={isInformational ? "Close" : "Cancel"}
+            />
+          )}
+        </div>
       </div>
 
       <div
@@ -158,9 +147,7 @@ export const PromptOption = ({
     <div
       className={cn(
         "relative flex w-max flex-row place-items-center gap-2 rounded-md border-2 border-stone-500 p-2 select-none",
-        isSelected
-          ? "border-stone-300 bg-stone-300 text-stone-900"
-          : "bg-stone-600",
+        isSelected ? "border-blue-600 bg-blue-600" : "bg-stone-600",
         onPress && "cursor-pointer",
       )}
       onClick={onPress}>
@@ -192,6 +179,8 @@ export const GenericOption = ({ option }: { option: SelectionItem }) => {
       return <StringOption option={option} />;
     case "stackElement":
       return <StackElementOption option={option} />;
+    case "deck":
+      return <DeckOption option={option} />;
     case "card":
       return <CardOption option={option} />;
     case "couplePlayerHand":
@@ -242,6 +231,16 @@ export const MonsterOption = ({
       </div>
       <CardImage card={option.payload} className="h-64" />
     </div>
+  );
+};
+
+export const DeckOption = ({
+  option,
+}: {
+  option: Extract<SelectionItem, { type: "deck" }>;
+}) => {
+  return (
+    <p className="w-60 p-4 text-center text-lg font-bold">{option.payload}</p>
   );
 };
 

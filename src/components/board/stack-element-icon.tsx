@@ -159,7 +159,7 @@ interface IconProps {
 const Icon = ({ element }: IconProps) => {
   const gameContext = useGameContext();
   const state = gameContext.state as DetailedState | undefined;
-  const borderColor = getBorderColor(element, state?.me.name);
+  const borderColor = getBorderColor(element, state);
 
   switch (element.type) {
     case "diceRoll":
@@ -218,7 +218,32 @@ const Icon = ({ element }: IconProps) => {
   }
 };
 
-const getBorderColor = (element: StackElement, currentPlayerName?: string) => {
+const PLAYER_BORDER_COLORS = [
+  "border-blue-600",
+  "border-red-600",
+  "border-orange-500",
+  "border-yellow-500",
+] as const;
+
+const getPlayerBorderColor = (playerName: string, state?: DetailedState) => {
+  if (!state) {
+    return "border-stone-700";
+  }
+
+  const orderedDistinctPlayers = [
+    state.me.name,
+    ...state.players.map((player) => player.name),
+  ].filter((name, index, players) => players.indexOf(name) === index);
+
+  const playerIndex = orderedDistinctPlayers.indexOf(playerName);
+  if (playerIndex < 0) {
+    return "border-stone-700";
+  }
+
+  return PLAYER_BORDER_COLORS[playerIndex % PLAYER_BORDER_COLORS.length];
+};
+
+const getBorderColor = (element: StackElement, state?: DetailedState) => {
   let issuerEntity;
 
   switch (element.type) {
@@ -239,13 +264,5 @@ const getBorderColor = (element: StackElement, currentPlayerName?: string) => {
     return "border-stone-700";
   }
 
-  if (issuerEntity.name === currentPlayerName) {
-    return "border-blue-600";
-  }
-
-  if (currentPlayerName) {
-    return "border-red-600";
-  }
-
-  return "border-stone-700";
+  return getPlayerBorderColor(issuerEntity.name, state);
 };

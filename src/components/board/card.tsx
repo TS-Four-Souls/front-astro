@@ -17,6 +17,8 @@ export enum CardType {
 interface CardProps {
   card?: { slug: string } | CardType;
   style?: React.CSSProperties;
+  containerClassName?: string;
+  containerStyle?: React.CSSProperties;
   className?: string;
   thickness?: number;
   brightness?: number;
@@ -30,7 +32,6 @@ interface CardProps {
   stats?:
     | { healthPoints: number; attackPoints: number; evasionPoints: number }
     | { healthPoints: number; attackPoints: number };
-  eternal?: boolean;
   counter?: number;
   onMouseEnter?: (e: React.MouseEvent<HTMLDivElement>) => void;
   onMouseLeave?: (e: React.MouseEvent<HTMLDivElement>) => void;
@@ -42,7 +43,9 @@ const BORDER_RADIUS = `${RX} ${RX} ${RX} ${RX} / ${RY} ${RY} ${RY} ${RY}`;
 
 export const Card = ({
   card,
+  containerStyle,
   style,
+  containerClassName,
   className,
   thickness = 1,
   brightness = 1,
@@ -54,7 +57,6 @@ export const Card = ({
   stats,
   size = 160,
   effects,
-  eternal,
   counter,
   onMouseEnter,
   onMouseLeave,
@@ -86,171 +88,177 @@ export const Card = ({
     <div
       className={cn(
         "relative aspect-750/1024 select-none transform-3d",
-        eternal && "glow-6",
-        className,
+        containerClassName,
       )}
       style={{
-        ...style,
-        borderRadius: BORDER_RADIUS,
+        borderRadius: enableSides ? undefined : BORDER_RADIUS,
         height: size + "em",
-      }}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}>
-      <CardImage
-        card={card}
-        onClick={onClick}
-        className={cn(
-          "h-full w-full",
-          onClick && (disabled ? "cursor-not-allowed" : "cursor-pointer"),
-        )}
+        ...containerStyle,
+      }}>
+      <div
+        className={cn("transform-3d", className)}
         style={{
-          filter: `brightness(${Math.max(0.2, brightness * brightness)})`,
-          borderRadius: enableSides ? "unset" : BORDER_RADIUS,
+          borderRadius: enableSides ? undefined : BORDER_RADIUS,
+          ...style,
         }}
-      />
-
-      {hotkey && (
-        <div className="absolute top-[1.5%] left-[2%] flex aspect-square w-[15%] place-items-center overflow-hidden rounded-sm bg-stone-700 outline-[0.1em] -outline-offset-[0.1em]">
-          <img
-            src={`/input-prompts/keyboard_${hotkey.split(",")[0]}_outline.svg`}
-            className="scale-150"
-          />
-        </div>
-      )}
-
-      {onPileDetailsClick && (
-        <div
-          className="absolute bottom-0.5 left-0.5 cursor-pointer rounded-md bg-stone-700 p-0.5"
-          onClick={onPileDetailsClick}>
-          <PileIndicator className="h-3 w-3" />
-        </div>
-      )}
-
-      {effects && effects.length > 0 && (
-        <div className="absolute top-[16%] right-[4%] bottom-[45%] flex flex-col flex-wrap-reverse gap-1">
-          {effects.map((effect, index) => (
-            <TemporaryEffectCard
-              key={index}
-              effect={effect}
-              size={size * 1.8}
-              className="glow-5"
-            />
-          ))}
-        </div>
-      )}
-
-      {counter !== undefined && (
-        <div
-          className="absolute bottom-[3%] left-[5%] flex items-center justify-center rounded-full font-statblock text-black shadow-lg"
-          style={{
-            fontSize: size * 0.09 + "em",
-            width: size * 0.75 + "em",
-            height: size * 0.005 + "em",
-          }}>
-          {counter > 0 ? counter.toString().replaceAll("0", "O") : counter}
-        </div>
-      )}
-
-      {stats && !("evasionPoints" in stats) && (
-        <div style={{ fontSize: statsSize + "em" }}>
-          <div className="pointer-events-none absolute top-[57.3%] right-[28.5%] left-[27.5%]">
-            <img src="/character-card-overlay.png" draggable={false} />
-          </div>
-          <div className="absolute top-[55.7%] left-[40.5%] font-statblock text-black">
-            {stats.healthPoints}
-          </div>
-          <p className="absolute top-[55.7%] left-[62.3%] font-statblock text-black">
-            {stats.attackPoints}
-          </p>
-        </div>
-      )}
-
-      {stats && "evasionPoints" in stats && (
-        <div style={{ fontSize: statsSize + "em" }}>
-          <div className="pointer-events-none absolute top-[57.3%] right-[17.1%] left-[17.7%]">
-            <img src="/monster-card-overlay.png" draggable={false} />
-          </div>
-
-          <div className="absolute top-[55.7%] left-[30.5%] font-statblock text-black">
-            {stats.healthPoints}
-          </div>
-          <p className="absolute top-[55.7%] left-[72.6%] font-statblock text-black">
-            {stats.attackPoints}
-          </p>
-          <p
-            className={cn(
-              "absolute font-statblock text-black",
-              stats.evasionPoints === 6 || stats.evasionPoints === 0
-                ? "top-[55.7%] left-[51.9%]"
-                : "top-[55.7%] left-[51.2%]",
-            )}>
-            {stats.evasionPoints}
-          </p>
-          <p
-            className={cn(
-              "absolute top-[58.8%] font-main text-[60%] text-black",
-              stats.evasionPoints === 0 && "hidden",
-              stats.evasionPoints === 1 && "left-[55.5%]",
-              stats.evasionPoints === 2 && "left-[56.5%]",
-              stats.evasionPoints === 3 && "left-[56.5%]",
-              stats.evasionPoints === 4 && "left-[56.0%]",
-              stats.evasionPoints === 5 && "left-[57.0%]",
-              stats.evasionPoints === 6 && "hidden",
-            )}>
-            +
-          </p>
-          {stats.attackPoints === 6 && (
-            <p className="absolute top-[55.7%] left-[77%] font-statblock text-black">
-              !
-            </p>
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}>
+        <CardImage
+          card={card}
+          onClick={onClick}
+          className={cn(
+            "h-full w-full",
+            onClick && (disabled ? "cursor-not-allowed" : "cursor-pointer"),
           )}
-        </div>
-      )}
+          style={{
+            filter: `brightness(${Math.max(0.2, brightness * brightness)})`,
+            borderRadius: enableSides ? undefined : BORDER_RADIUS,
+          }}
+        />
 
-      {enableSides && (
-        <>
-          <img
-            src={src}
-            alt={alt}
-            className="absolute top-0 bottom-0 left-0 h-full origin-left rotate-y-90 object-cover object-left brightness-60"
+        {hotkey && (
+          <div className="absolute top-[1.5%] left-[2%] flex aspect-square w-[15%] place-items-center overflow-hidden rounded-sm bg-stone-700 outline-[0.1em] -outline-offset-[0.1em]">
+            <img
+              src={`/input-prompts/keyboard_${hotkey.split(",")[0]}_outline.svg`}
+              className="scale-150"
+            />
+          </div>
+        )}
+
+        {onPileDetailsClick && (
+          <div
+            className="absolute bottom-0.5 left-0.5 cursor-pointer rounded-md bg-stone-700 p-0.5"
+            onClick={onPileDetailsClick}>
+            <PileIndicator className="h-3 w-3" />
+          </div>
+        )}
+
+        {effects && effects.length > 0 && (
+          <div className="absolute top-[16%] right-[4%] bottom-[45%] flex flex-col flex-wrap-reverse gap-1">
+            {effects.map((effect, index) => (
+              <TemporaryEffectCard
+                key={index}
+                effect={effect}
+                size={size * 1.8}
+                className="glow-5"
+              />
+            ))}
+          </div>
+        )}
+
+        {counter !== undefined && (
+          <div
+            className="absolute bottom-[3%] left-[5%] flex items-center justify-center rounded-full font-statblock text-black shadow-lg"
             style={{
-              width: `${thickness}em`,
-              filter: `brightness(${0.4 * brightness + 0.2})`,
-            }}
-            draggable={false}
-          />
-          <img
-            src={src}
-            alt={alt}
-            className="absolute top-0 right-0 bottom-0 h-full origin-right -rotate-y-90 object-cover object-right brightness-70"
-            style={{
-              width: `${thickness}em`,
-              filter: `brightness(${0.8 * brightness + 0.2})`,
-            }}
-            draggable={false}
-          />
-          <img
-            src={src}
-            alt={alt}
-            className="absolute top-0 right-0 left-0 w-full origin-top -rotate-x-90 object-cover object-top brightness-150"
-            style={{
-              height: `${thickness}em`,
-              filter: `brightness(${0.4 * brightness + 1})`,
-            }}
-            draggable={false}
-          />
-          <img
-            src={src}
-            alt={alt}
-            className="absolute right-0 bottom-0 left-0 w-full origin-bottom rotate-x-90 object-cover object-bottom brightness-20"
-            style={{
-              height: `${thickness}em`,
-              filter: `brightness(${0.2 * brightness + 0.1})`,
-            }}
-            draggable={false}
-          />
-        </>
-      )}
+              fontSize: size * 0.09 + "em",
+              width: size * 0.75 + "em",
+              height: size * 0.005 + "em",
+            }}>
+            {counter > 0 ? counter.toString().replaceAll("0", "O") : counter}
+          </div>
+        )}
+
+        {stats && !("evasionPoints" in stats) && (
+          <div style={{ fontSize: statsSize + "em" }}>
+            <div className="pointer-events-none absolute top-[57.3%] right-[28.5%] left-[27.5%]">
+              <img src="/character-card-overlay.png" draggable={false} />
+            </div>
+            <div className="absolute top-[55.7%] left-[40.5%] font-statblock text-black">
+              {stats.healthPoints}
+            </div>
+            <p className="absolute top-[55.7%] left-[62.3%] font-statblock text-black">
+              {stats.attackPoints}
+            </p>
+          </div>
+        )}
+
+        {stats && "evasionPoints" in stats && (
+          <div style={{ fontSize: statsSize + "em" }}>
+            <div className="pointer-events-none absolute top-[57.3%] right-[17.1%] left-[17.7%]">
+              <img src="/monster-card-overlay.png" draggable={false} />
+            </div>
+
+            <div className="absolute top-[55.7%] left-[30.5%] font-statblock text-black">
+              {stats.healthPoints}
+            </div>
+            <p className="absolute top-[55.7%] left-[72.6%] font-statblock text-black">
+              {stats.attackPoints}
+            </p>
+            <p
+              className={cn(
+                "absolute font-statblock text-black",
+                stats.evasionPoints === 6 || stats.evasionPoints === 0
+                  ? "top-[55.7%] left-[51.9%]"
+                  : "top-[55.7%] left-[51.2%]",
+              )}>
+              {stats.evasionPoints}
+            </p>
+            <p
+              className={cn(
+                "absolute top-[58.8%] font-main text-[60%] text-black",
+                stats.evasionPoints === 0 && "hidden",
+                stats.evasionPoints === 1 && "left-[55.5%]",
+                stats.evasionPoints === 2 && "left-[56.5%]",
+                stats.evasionPoints === 3 && "left-[56.5%]",
+                stats.evasionPoints === 4 && "left-[56.0%]",
+                stats.evasionPoints === 5 && "left-[57.0%]",
+                stats.evasionPoints === 6 && "hidden",
+              )}>
+              +
+            </p>
+            {stats.attackPoints === 6 && (
+              <p className="absolute top-[55.7%] left-[77%] font-statblock text-black">
+                !
+              </p>
+            )}
+          </div>
+        )}
+
+        {enableSides && (
+          <>
+            <img
+              src={src}
+              alt={alt}
+              className="absolute top-0 bottom-0 left-0 h-full origin-left rotate-y-90 object-cover object-left brightness-60"
+              style={{
+                width: `${thickness}em`,
+                filter: `brightness(${0.4 * brightness + 0.2})`,
+              }}
+              draggable={false}
+            />
+            <img
+              src={src}
+              alt={alt}
+              className="absolute top-0 right-0 bottom-0 h-full origin-right -rotate-y-90 object-cover object-right brightness-70"
+              style={{
+                width: `${thickness}em`,
+                filter: `brightness(${0.8 * brightness + 0.2})`,
+              }}
+              draggable={false}
+            />
+            <img
+              src={src}
+              alt={alt}
+              className="absolute top-0 right-0 left-0 w-full origin-top -rotate-x-90 object-cover object-top brightness-150"
+              style={{
+                height: `${thickness}em`,
+                filter: `brightness(${0.4 * brightness + 1})`,
+              }}
+              draggable={false}
+            />
+            <img
+              src={src}
+              alt={alt}
+              className="absolute right-0 bottom-0 left-0 w-full origin-bottom rotate-x-90 object-cover object-bottom brightness-20"
+              style={{
+                height: `${thickness}em`,
+                filter: `brightness(${0.2 * brightness + 0.1})`,
+              }}
+              draggable={false}
+            />
+          </>
+        )}
+      </div>
     </div>
   );
 };

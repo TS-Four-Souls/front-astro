@@ -14,3 +14,4 @@
 - uniformized the icons
 - history icons don't have a shrink-0
 - get a zoomed view of the card when hovering it.
+- If new board state, refresh prompt options

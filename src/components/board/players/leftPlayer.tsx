@@ -82,6 +82,7 @@ export const LeftPlayer = ({ player }: LeftPlayerProps) => {
 
             return (
               <Pile
+                globalId={card.globalId}
                 key={card.slug}
                 cards={[
                   {

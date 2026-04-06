@@ -69,6 +69,7 @@ export const Hand = () => {
         onMouseLeave={() => setIsHandUp(false)}>
         {state.me.hand.map((card, index) => (
           <Pile
+            globalId={card.globalId}
             key={card.slug}
             cards={[{ slug: card.slug }]}
             className={cn(
