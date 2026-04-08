@@ -116,6 +116,7 @@ export const StartStep = ({ room }: StartStepProps) => {
                   </p>
                   <Button
                     label="Copy"
+                    hotkey="c"
                     onClick={() => {
                       navigator.clipboard.writeText(room.id);
                     }}
