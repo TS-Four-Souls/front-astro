@@ -124,13 +124,19 @@ export const Pile = ({
 
   const onClickTopCardHotkey = isBoardSelectionActive
     ? entityBoardSelectionState
-      ? `${entityBoardSelectionState.optionIndex + 1}`
+      ? entityBoardSelectionState.optionIndex < 9
+        ? `${entityBoardSelectionState.optionIndex + 1}`
+        : undefined
       : undefined
     : propsOnClickTopCardHotkey;
 
+  const hotkeyScope = isBoardSelectionActive
+    ? HotkeyScope.Selection
+    : HotkeyScope.Main;
+
   useHotkeys(onClickTopCardHotkey ?? "enter", () => onClickTopCard?.(), {
     enabled: onClickTopCardHotkey !== undefined && onClickTopCard !== undefined,
-    scopes: [HotkeyScope.Main],
+    scopes: [hotkeyScope],
     useKey: shouldUseKey(onClickTopCardHotkey ?? ""),
   });
 

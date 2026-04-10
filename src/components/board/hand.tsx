@@ -55,7 +55,7 @@ export const Hand = () => {
   const cardSize = 350;
 
   const targetableCards = state.me.hand
-    .filter((_, index) => isHandUp && index < 8)
+    .filter((_, index) => isHandUp && index < 9)
     .map((card) => card.slug);
 
   return (
