@@ -79,7 +79,7 @@ export const PromptPopup = ({
           const isSelected = selectionIndex >= 0;
           const isIndexVisible = isSelected && maxCount > 1;
 
-          const hotkey = index < 9 ? `${index + 1}` : undefined;
+          const hotkey = index < 10 ? `${(index + 1) % 10}` : undefined;
 
           return (
             <PromptOption

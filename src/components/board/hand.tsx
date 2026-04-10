@@ -55,7 +55,7 @@ export const Hand = () => {
   const cardSize = 350;
 
   const targetableCards = state.me.hand
-    .filter((_, index) => isHandUp && index < 9)
+    .filter((_, index) => isHandUp && index < 10)
     .map((card) => card.slug);
 
   return (
@@ -88,7 +88,7 @@ export const Hand = () => {
             }
             onClickTopCardHotkey={
               targetableCards.includes(card.slug)
-                ? `${targetableCards.indexOf(card.slug) + 1},shift+${targetableCards.indexOf(card.slug) + 1}`
+                ? `${(targetableCards.indexOf(card.slug) + 1)%10},shift+${(targetableCards.indexOf(card.slug) + 1)%10}`
                 : undefined
             }
             disabled={state.me.capabilities.useLoot !== true}
