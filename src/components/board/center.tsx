@@ -7,6 +7,7 @@ import { socket } from "@/utils/socket";
 import { useGameContext } from "./contexts/game-context";
 import { useToastContext } from "./contexts/toast-context";
 import { usePromptContext } from "./contexts/prompt-context";
+import { usePileDetails } from "./use-pile-details";
 
 interface CenterProps {
   state: DetailedState;
@@ -16,7 +17,8 @@ export const Center = ({ state }: CenterProps) => {
   const { issuer } = useGameContext();
   const { toast, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
-
+  const { displayPileDetails } = usePileDetails();
+  
   const purchaseTreasure = (index: number | "top") => {
     socket.emit("purchase", { issuer, index }, (response) => {
       switch (response.status) {
@@ -26,24 +28,6 @@ export const Center = ({ state }: CenterProps) => {
           toast("error", "Failed to purchase", response.error);
           break;
       }
-    });
-  };
-
-  const displayPileDetails = (cards: Card[]) => {
-    const promptId = `pile-details-${Date.now()}`;
-    addPrompt({
-      promptId,
-      isUnique: false,
-      prompt: "Pile details",
-      options: cards.map((card) => ({
-        type: "card",
-        payload: card,
-      })),
-      minCount: 0,
-      maxCount: 0,
-      onSubmit: () => {
-        removePrompt(promptId);
-      },
     });
   };
 

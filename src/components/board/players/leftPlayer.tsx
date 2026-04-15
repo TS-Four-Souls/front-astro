@@ -3,6 +3,7 @@ import { PlayerStats } from "../player-stats";
 import { cn } from "@/utils/cn";
 import { Pile } from "../pile";
 import { CardType } from "../card";
+import { HandPile } from "../hand-pile";
 
 interface LeftPlayerProps {
   player: Player;
@@ -44,27 +45,7 @@ export const LeftPlayer = ({ player }: LeftPlayerProps) => {
           isEngagedInPurchase={player.isEngagedInPurchase}
           className={"flex-col gap-4 px-6 py-4"}
         />
-        {player.handSize > 0 && (
-          <div className="relative place-items-center transform-3d">
-            <Pile
-              cards={Array.from({ length: player.handSize }).map(
-                () => CardType.LootCard,
-              )}
-              tooltip={{
-                enabled: true,
-                content: `${player.name} has ${player.handSize} cards in their hand.`,
-              }}
-              size={120}
-            />
-            <p
-              className={cn(
-                "pointer-events-none absolute bottom-[0.1em] left-1/2 -translate-x-1/2 translate-z-1 text-center font-statblock text-5xl text-stone-950 text-shadow-amber-50 text-shadow-lg",
-                player.handSize >= 10 && "translate-z-2 text-5xl",
-              )}>
-              {player.handSize}
-            </p>
-          </div>
-        )}
+        {player.handSize > 0 && <HandPile player={player} />}
       </div>
       <div
         className={

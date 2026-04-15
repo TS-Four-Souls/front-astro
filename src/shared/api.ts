@@ -383,9 +383,7 @@ const debugListCardsICanRemoveResponseSchema = z.union([
     error: z.string(),
   }),
 ]);
-export type DebugListCardsICanRemoveResponse = z.infer<
-  typeof debugListCardsICanRemoveResponseSchema
->;
+export type DebugListCardsICanRemoveResponse = z.infer<typeof debugListCardsICanRemoveResponseSchema>;
 
 // const debugRemoveCardsResponseSchema = z.union([
 //   z.object({
@@ -488,6 +486,7 @@ export type SetGameParameterRequest = z.infer<
 const playerSchema = z.object({
   name: z.string(),
   handSize: z.number(),
+  hand: z.array(cardSchema).optional(),
   inPlay: z.array(inPlayCardSchema),
   souls: z.number(),
   soulCards: z.array(cardSchema),
@@ -808,7 +807,7 @@ export interface ClientToServerEvents {
     request: Requests.DebugRemoveCards,
     callback: (response: Responses.DebugRemoveCards) => void,
   ) => void;
-
+  
   debugListTreasure: (
     request: Requests.DebugListTreasure,
     callback: (response: Responses.DebugListTreasure) => void,

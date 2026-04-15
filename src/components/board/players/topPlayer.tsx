@@ -1,8 +1,8 @@
-import type { Player } from "@/shared/api";
+import type { InPlayCard, Player } from "@/shared/api";
 import { PlayerStats } from "../player-stats";
 import { Pile } from "../pile";
 import { cn } from "@/utils/cn";
-import { CardType } from "../card";
+import { HandPile } from "../hand-pile";
 
 interface TopPlayerProps {
   player: Player;
@@ -12,7 +12,7 @@ const MAX_COLUMNS = 8;
 
 export const TopPlayer = ({ player }: TopPlayerProps) => {
   // Create an array of arrays of 8 elements each, fill with undefined if needed
-  const grid = Array.from(
+  const grid: InPlayCard[][] = Array.from(
     { length: Math.ceil(player.inPlay.length / MAX_COLUMNS) },
     () => Array(Math.min(player.inPlay.length, MAX_COLUMNS)).fill(undefined),
   );
@@ -44,27 +44,7 @@ export const TopPlayer = ({ player }: TopPlayerProps) => {
         className={
           "flex place-content-center place-items-center gap-8 transform-3d"
         }>
-        {player.handSize > 0 && (
-          <div className="relative place-items-center transform-3d">
-            <Pile
-              cards={Array.from({ length: player.handSize }).map(
-                () => CardType.LootCard,
-              )}
-              tooltip={{
-                enabled: true,
-                content: `${player.name} has ${player.handSize} cards in their hand.`,
-              }}
-              size={120}
-            />
-            <p
-              className={cn(
-                "pointer-events-none absolute bottom-[0.1em] left-1/2 -translate-x-1/2 translate-z-1 text-center font-statblock text-5xl text-stone-950 text-shadow-amber-50 text-shadow-lg",
-                player.handSize >= 10 && "translate-z-2 text-5xl",
-              )}>
-              {player.handSize}
-            </p>
-          </div>
-        )}
+        {player.handSize > 0 && <HandPile player={player} />}
         <div
           className={cn("grid grid-flow-row gap-2 transform-3d")}
           style={{
