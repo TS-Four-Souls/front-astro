@@ -177,11 +177,10 @@ export const Me = () => {
     <div className="col-start-2 row-start-3 flex flex-col place-content-center place-items-center gap-6 transform-3d">
       <PlayerStats
         name={state.me.name}
+        color={state.me.color}
         coins={state.me.coins}
         souls={state.me.souls}
         soulCards={state.me.soulCards}
-        isEngagedInCombat={state.me.isEngagedInCombat}
-        isEngagedInPurchase={state.me.isEngagedInPurchase}
       />
       <div
         className="grid gap-2 transform-3d"
@@ -202,6 +201,8 @@ export const Me = () => {
                 slug: card.slug,
                 charged: card.charged,
                 eternal: card.eternal,
+                engagedInCombat: index === 0 && state.me.isEngagedInCombat,
+                engagedInPurchase: index === 0 && state.me.isEngagedInPurchase,
                 effects: index === 0 ? state.me.temporaryEffect : undefined,
                 counter: card.counter,
                 stats:

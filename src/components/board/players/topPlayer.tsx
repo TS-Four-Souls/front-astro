@@ -33,11 +33,10 @@ export const TopPlayer = ({ player }: TopPlayerProps) => {
       }>
       <PlayerStats
         name={player.name}
+        color={player.color}
         coins={player.coins}
         souls={player.souls}
         soulCards={player.soulCards}
-        isEngagedInCombat={player.isEngagedInCombat}
-        isEngagedInPurchase={player.isEngagedInPurchase}
         className={"flex-row gap-12 px-8 py-3"}
       />
       <div
@@ -64,6 +63,12 @@ export const TopPlayer = ({ player }: TopPlayerProps) => {
                     slug: card.slug,
                     charged: card.charged,
                     eternal: card.eternal,
+                    engagedInCombat:
+                      player.inPlay[0].slug === card.slug &&
+                      player.isEngagedInCombat,
+                    engagedInPurchase:
+                      player.inPlay[0].slug === card.slug &&
+                      player.isEngagedInPurchase,
                     effects:
                       player.inPlay[0].slug === card.slug
                         ? player.temporaryEffect

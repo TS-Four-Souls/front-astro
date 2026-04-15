@@ -21,6 +21,7 @@ type CardMetadata = {
   charged?: boolean;
   eternal?: boolean;
   engagedInCombat?: boolean;
+  engagedInPurchase?: boolean;
   counter?: number;
   stats?:
     | {
@@ -182,6 +183,11 @@ export const Pile = ({
           const engagedInCombat =
             typeof card === "string" ? false : (card.engagedInCombat ?? false);
 
+          const engagedInPurchase =
+            typeof card === "string"
+              ? false
+              : (card.engagedInPurchase ?? false);
+
           const eternal =
             typeof card === "string" ? false : (card.eternal ?? false);
 
@@ -201,22 +207,22 @@ export const Pile = ({
               containerClassName={cn(
                 "col-start-1 row-start-1",
 
-                engagedInCombat && "outline-[0.2em] outline-red-500/60",
+                engagedInCombat &&
+                  "outline-[0.2em] outline-red-500/60 glow-combat",
+                engagedInPurchase &&
+                  "outline-[0.2em] outline-yellow-400/60 glow-purchase",
+
                 isRequiredAttack &&
-                  "outline-[0.2em] outline-red-500/60 outline-dashed",
+                  "outline-[0.2em] outline-red-500/60 outline-dashed glow-combat",
 
                 entityBoardSelectionState &&
                   entityBoardSelectionState.isSelected &&
                   index === array.length - 1 &&
-                  "outline-[0.2em] outline-blue-500",
+                  "outline-[0.2em] outline-blue-500 glow-selection",
               )}
               className={cn(
                 !charged && "brightness-50 contrast-90",
-                entityBoardSelectionState &&
-                  entityBoardSelectionState.isSelected &&
-                  index === array.length - 1
-                  ? ""
-                  : eternal && "glow-6",
+                eternal && "glow-6",
                 cards.length > 0 && index === 0 && "shadow-lg/20",
                 cards.length > 5 && index === 3 && "shadow-lg/20",
                 cards.length > 10 && index === 2 && "shadow-xl/30",

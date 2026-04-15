@@ -14,21 +14,19 @@ import { useTooltip } from "./use-tooltip";
 
 interface PlayerStatsProps {
   name: string;
+  color: string;
   coins: number;
   souls: number;
   soulCards: CardType[];
-  isEngagedInCombat: boolean;
-  isEngagedInPurchase: boolean;
   className?: string;
 }
 
 export const PlayerStats = ({
   name,
+  color,
   coins,
   souls,
   soulCards,
-  isEngagedInCombat,
-  isEngagedInPurchase,
   className,
 }: PlayerStatsProps) => {
   const { state, issuer } = useGameContext();
@@ -164,18 +162,18 @@ export const PlayerStats = ({
     }, 1500);
     return () => clearTimeout(timeout);
   }, [isCurrentTurn]);
-  
+
   return (
     <div
       className={cn(
-        "flex place-items-center gap-16 rounded-lg p-3 pr-4 pl-6 text-white outline-[0.2em] outline-transparent transform-3d transition-shadow duration-500",
+        "flex place-items-center gap-16 rounded-lg p-3 pr-4 pl-6 text-white outline-[0.2em] outline-transparent transition-shadow duration-500 transform-3d",
         isCurrentTurn && "outline-stone-700",
         isGlowing && "glow-8",
-        isEngagedInCombat && "outline-red-500/60",
-        isEngagedInPurchase && "outline-yellow-400/87",
         className,
       )}>
-      <h1 className="translate-z-1 text-center font-alt-stats font-bold uppercase">
+      <h1
+        className="translate-z-1 text-center font-alt-stats font-bold uppercase"
+        style={{ color }}>
         {name}
       </h1>
       <div

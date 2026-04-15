@@ -1,5 +1,4 @@
-import { useGameContext } from "./contexts/game-context";
-import type { DetailedState, StackElement } from "@/shared/api";
+import type { StackElement } from "@/shared/api";
 import { cn } from "@/utils/cn";
 import { Dice } from "@/icons/dice";
 import { CardImage } from "./card";
@@ -42,7 +41,10 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
         <div className="flex flex-col items-center gap-3">
           {element.card && <CardImage card={element.card} className="w-64" />}
           <div className="flex max-w-64 flex-wrap place-content-center gap-1 px-2 text-center leading-tight text-stone-400">
-            <span>{element.issuer.name} rolled a</span>
+            <span>
+              <span className="font-bold" style={{ color: element.issuer.color }}>{element.issuer.name}</span>{" "}
+              rolled a
+            </span>
             <span className="font-bold whitespace-pre-line text-stone-300">
               {element.diceRoll}
               {element.modifier !== 0 ? ` (+${element.modifier})` : ""}
@@ -65,7 +67,14 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
           <CardImage card={element.card} className="w-64" />
           {selectionText.length > 0 && (
             <div className="mt-3 flex max-w-64 flex-col gap-2 text-center leading-tight text-stone-400">
-              <span>{element.issuer.name} used this card on</span>
+              <span>
+                <span
+                  className="font-bold"
+                  style={{ color: element.issuer.color }}>
+                  {element.issuer.name}
+                </span>{" "}
+                used this card on
+              </span>
               <span className="font-bold whitespace-pre-line text-stone-300">
                 {selectionText}
               </span>
@@ -83,7 +92,9 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
         <>
           <CardImage card={element.card} className="w-64" />
           <div className="mt-3 flex max-w-64 flex-col gap-2 text-center leading-tight text-stone-400">
-            <span>{element.issuer.name} selected</span>
+            <span>
+              <span style={{ color: element.issuer.color }} className="font-bold">{element.issuer.name}</span> selected
+            </span>
             <span className="font-bold text-stone-300">{element.effect}</span>
             {selectionText.length > 0 && (
               <>
@@ -105,13 +116,17 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
             <CardImage card={element.source} className="w-64" />
           )}
           <div className="max-w-64 px-2 text-center leading-tight text-stone-400">
-            <span className="font-bold text-stone-300">
+            <span
+              style={{ color: element.from.color }}
+              className="font-bold text-stone-300">
               {element.from.name}
             </span>{" "}
             dealt{" "}
             <span className="font-bold text-stone-300">{element.damage}</span>{" "}
             damage to{" "}
-            <span className="font-bold text-stone-300">
+            <span
+              style={{ color: element.receiver.color }}
+              className="font-bold text-stone-300">
               {receiverName(element)}
             </span>{" "}
             using{" "}
@@ -132,11 +147,15 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
             <CardImage card={element.source} className="w-64" />
           )}
           <div className="max-w-64 px-2 text-center leading-tight text-stone-400">
-            <span className="font-bold text-stone-300">
+            <span
+              style={{ color: element.from.color }}
+              className="font-bold text-stone-300">
               {element.from.name}
             </span>{" "}
             killed{" "}
-            <span className="font-bold text-stone-300">
+            <span
+              style={{ color: element.receiver.color }}
+              className="font-bold text-stone-300">
               {receiverName(element)}
             </span>{" "}
             using{" "}
@@ -157,19 +176,15 @@ interface IconProps {
 }
 
 const Icon = ({ element }: IconProps) => {
-  const gameContext = useGameContext();
-  const state = gameContext.state as DetailedState | undefined;
-  const borderColor = getBorderColor(element, state);
+  const borderColor = getBorderColor(element);
 
   switch (element.type) {
     case "diceRoll":
       return (
         <Dice
           value={element.diceRoll}
-          className={cn(
-            "size-10 rounded-lg border-[0.1em] bg-stone-800/50 p-0.5 text-red-500",
-            borderColor,
-          )}
+          className="size-10 rounded-lg border-[0.15em] bg-stone-800/50 p-0.5 text-red-500"
+          style={{ borderColor }}
         />
       );
 
@@ -178,9 +193,9 @@ const Icon = ({ element }: IconProps) => {
       return (
         <div
           className={cn(
-            "size-10 overflow-hidden rounded-lg border-[0.1em] bg-stone-800/50",
-            borderColor,
-          )}>
+            "size-10 overflow-hidden rounded-lg border-[0.15em] bg-stone-800/50",
+          )}
+          style={{ borderColor }}>
           <CardImage
             card={element.card}
             className="translate-y-[5%] scale-155"
@@ -195,9 +210,9 @@ const Icon = ({ element }: IconProps) => {
           src="/heart.png"
           alt="damage"
           className={cn(
-            "size-10 shrink-0 rounded-lg border-[0.1em] bg-stone-800/50 p-0.5",
-            borderColor,
+            "size-10 shrink-0 rounded-lg border-[0.15em] bg-stone-800/50 p-0.5",
           )}
+          style={{ borderColor }}
           draggable={false}
         />
       );
@@ -208,61 +223,25 @@ const Icon = ({ element }: IconProps) => {
           src="/skull.webp"
           alt="death"
           className={cn(
-            "size-10 shrink-0 rounded-lg border-[0.1em] bg-stone-800/50 p-0.5",
-            borderColor,
+            "size-10 shrink-0 rounded-lg border-[0.15em] bg-stone-800/50 p-0.5",
           )}
-          style={{ imageRendering: "pixelated" }}
+          style={{ imageRendering: "pixelated", borderColor }}
           draggable={false}
         />
       );
   }
 };
 
-const PLAYER_BORDER_COLORS = [
-  "border-blue-600",
-  "border-red-600",
-  "border-orange-500",
-  "border-yellow-500",
-] as const;
-
-const getPlayerBorderColor = (playerName: string, state?: DetailedState) => {
-  if (!state) {
-    return "border-stone-700";
-  }
-
-  const orderedDistinctPlayers = [
-    state.me.name,
-    ...state.players.map((player) => player.name),
-  ].filter((name, index, players) => players.indexOf(name) === index);
-
-  const playerIndex = orderedDistinctPlayers.indexOf(playerName);
-  if (playerIndex < 0) {
-    return "border-stone-700";
-  }
-
-  return PLAYER_BORDER_COLORS[playerIndex % PLAYER_BORDER_COLORS.length];
-};
-
-const getBorderColor = (element: StackElement, state?: DetailedState) => {
-  let issuerEntity;
-
+const getBorderColor = (element: StackElement) => {
   switch (element.type) {
     case "diceRoll":
     case "LootCardEffect":
     case "effect":
-      issuerEntity = element.issuer;
-      break;
+      return element.issuer.color;
     case "damage":
     case "death":
-      issuerEntity = element.from;
-      break;
+      return element.from.color;
     default:
       return "border-stone-700";
   }
-
-  if (issuerEntity.type === "monster") {
-    return "border-stone-700";
-  }
-
-  return getPlayerBorderColor(issuerEntity.name, state);
 };

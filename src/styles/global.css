@@ -67,8 +67,20 @@
   src: url("/fonts/PC_Senior.ttf");
 }
 
+@utility glow-combat {
+  --tw-glow-color: #fb2c3699;
+}
+
+@utility glow-purchase {
+  --tw-glow-color: #fcc800de;
+}
+
+@utility glow-selection {
+  --tw-glow-color: #2b7fff;
+}
+
 @utility glow-* {
-  box-shadow: 0 0 --value(--glow-*) 0.1em var(--tw-shadow-color, white);
+  box-shadow: 0 0 --value(--glow-*) 0.1em var(--tw-glow-color, white);
 }
 
 @layer utilities {

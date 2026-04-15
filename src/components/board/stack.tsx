@@ -108,7 +108,7 @@ export const Stack = () => {
       <div
         ref={scrollViewRef}
         className={cn(
-          "no-scrollbar grow translate-z-1 place-content-start overflow-auto p-2 text-sm transform-3d",
+          "no-scrollbar grow translate-z-1 place-content-start overflow-auto p-2 transform-3d",
           state.stack.length > 0
             ? "grid grid-cols-1"
             : "flex place-items-center",
@@ -284,7 +284,10 @@ const DiceRollElement = ({ element }: { element: DiceRollJson }) => {
         </p>
 
         <p className="text-stone-200">
-          {element.issuer.name} rolled a {element.diceRoll}{" "}
+          <span style={{ color: element.issuer.color }}>
+            {element.issuer.name}
+          </span>{" "}
+          rolled a {element.diceRoll}{" "}
           {element.modifier !== 0 ? `(+${element.modifier})` : ""}
         </p>
       </div>
@@ -300,9 +303,12 @@ const LootCardEffectElement = ({
   return (
     <div className="flex flex-row items-center gap-4">
       <StackElementIcon element={element} />
-      <div>
+      <div className="text-sm">
         <p className="text-stone-200">
-          {element.issuer.name} used {element.card.name}
+          <span style={{ color: element.issuer.color }}>
+            {element.issuer.name}
+          </span>{" "}
+          used {element.card.name}
         </p>
       </div>
     </div>
@@ -313,8 +319,10 @@ const EffectElement = ({ element }: { element: EffectOnStackJson }) => {
   return (
     <div className="flex flex-row items-center gap-4">
       <StackElementIcon element={element} />
-      <div>
-        <p className="text-xs leading-6 text-stone-500">
+      <div className="text-sm">
+        <p
+          className="text-xs leading-6"
+          style={{ color: element.issuer.color }}>
           {element.issuer.name}
         </p>
         <p className="text-stone-200">{element.card.name}</p>
@@ -327,10 +335,13 @@ const DamageElement = ({ element }: { element: DamageOnStackJson }) => {
   return (
     <div className="flex flex-row items-center gap-4">
       <StackElementIcon element={element} />
-      <div>
+      <div className="text-sm">
         <p className="text-stone-200">
-          {element.from.name} dealt {element.damage} damage to{" "}
-          {receiverName(element)}
+          <span style={{ color: element.from.color }}>{element.from.name}</span>{" "}
+          dealt {element.damage} damage to{" "}
+          <span style={{ color: element.receiver.color }}>
+            {receiverName(element)}
+          </span>
         </p>
       </div>
     </div>
@@ -341,9 +352,13 @@ const DeathElement = ({ element }: { element: DeathOnStackJson }) => {
   return (
     <div className="flex flex-row items-center gap-4">
       <StackElementIcon element={element} />
-      <div>
+      <div className="text-sm">
         <p className="text-stone-200">
-          {element.from.name} killed {receiverName(element)}
+          <span style={{ color: element.from.color }}>{element.from.name}</span>{" "}
+          killed{" "}
+          <span style={{ color: element.receiver.color }}>
+            {receiverName(element)}
+          </span>
         </p>
       </div>
     </div>

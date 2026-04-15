@@ -38,11 +38,10 @@ export const LeftPlayer = ({ player }: LeftPlayerProps) => {
         )}>
         <PlayerStats
           name={player.name}
+          color={player.color}
           coins={player.coins}
           souls={player.souls}
           soulCards={player.soulCards}
-          isEngagedInCombat={player.isEngagedInCombat}
-          isEngagedInPurchase={player.isEngagedInPurchase}
           className={"flex-col gap-4 px-6 py-4"}
         />
         {player.handSize > 0 && <HandPile player={player} />}
@@ -70,6 +69,12 @@ export const LeftPlayer = ({ player }: LeftPlayerProps) => {
                     slug: card.slug,
                     charged: card.charged,
                     eternal: card.eternal,
+                    engagedInCombat:
+                      player.inPlay[0].slug === card.slug &&
+                      player.isEngagedInCombat,
+                    engagedInPurchase:
+                      player.inPlay[0].slug === card.slug &&
+                      player.isEngagedInPurchase,
                     effects:
                       player.inPlay[0].slug === card.slug
                         ? player.temporaryEffect
