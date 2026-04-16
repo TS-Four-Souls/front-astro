@@ -15,3 +15,5 @@
 - history icons don't have a shrink-0
 - get a zoomed view of the card when hovering it.
 - If new board state, refresh prompt options
+
+- 8 loots cards, the number of loot cards doesn't show

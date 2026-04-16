@@ -1,9 +1,9 @@
-import type { StackElement } from "@/shared/api";
+import type { SelectionItem, StackElement } from "@/shared/api";
 import { cn } from "@/utils/cn";
 import { Dice } from "@/icons/dice";
 import { CardImage } from "./card";
 import { usePopoverContext } from "./contexts/popover-context";
-import { receiverName, selectionToText } from "@/utils/selection-text";
+import { receiverName } from "@/utils/selection-text";
 
 interface StackElementIconProps {
   element: StackElement;
@@ -42,7 +42,11 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
           {element.card && <CardImage card={element.card} className="w-64" />}
           <div className="flex max-w-64 flex-wrap place-content-center gap-1 px-2 text-center leading-tight text-stone-400">
             <span>
-              <span className="font-bold" style={{ color: element.issuer.color }}>{element.issuer.name}</span>{" "}
+              <span
+                className="font-bold"
+                style={{ color: element.issuer.color }}>
+                {element.issuer.name}
+              </span>{" "}
               rolled a
             </span>
             <span className="font-bold whitespace-pre-line text-stone-300">
@@ -59,51 +63,39 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
     }
 
     case "LootCardEffect": {
-      const selectionText = element.targets
-        .map((target) => selectionToText(target))
-        .join("\n");
-      return (
-        <>
-          <CardImage card={element.card} className="w-64" />
-          {selectionText.length > 0 && (
-            <div className="mt-3 flex max-w-64 flex-col gap-2 text-center leading-tight text-stone-400">
-              <span>
-                <span
-                  className="font-bold"
-                  style={{ color: element.issuer.color }}>
-                  {element.issuer.name}
-                </span>{" "}
-                used this card on
-              </span>
-              <span className="font-bold whitespace-pre-line text-stone-300">
-                {selectionText}
-              </span>
-            </div>
-          )}
-        </>
-      );
-    }
-
-    case "effect": {
-      const selectionText = element.targets
-        .map((target) => selectionToText(target))
-        .join("\n");
       return (
         <>
           <CardImage card={element.card} className="w-64" />
           <div className="mt-3 flex max-w-64 flex-col gap-2 text-center leading-tight text-stone-400">
             <span>
-              <span style={{ color: element.issuer.color }} className="font-bold">{element.issuer.name}</span> selected
+              <span
+                className="font-bold"
+                style={{ color: element.issuer.color }}>
+                {element.issuer.name}
+              </span>{" "}
+              used this card
+            </span>
+            <SelectionsList selections={element.targets} />
+          </div>
+        </>
+      );
+    }
+
+    case "effect": {
+      return (
+        <>
+          <CardImage card={element.card} className="w-64" />
+          <div className="mt-3 flex max-w-64 flex-col gap-2 text-center leading-tight text-stone-400">
+            <span>
+              <span
+                style={{ color: element.issuer.color }}
+                className="font-bold">
+                {element.issuer.name}
+              </span>{" "}
+              selected
             </span>
             <span className="font-bold text-stone-300">{element.effect}</span>
-            {selectionText.length > 0 && (
-              <>
-                <span>on</span>
-                <span className="font-bold whitespace-pre-line text-stone-300">
-                  {selectionText}
-                </span>
-              </>
-            )}
+            <SelectionsList selections={element.targets} />
           </div>
         </>
       );
@@ -243,5 +235,83 @@ const getBorderColor = (element: StackElement) => {
       return element.from.color;
     default:
       return "border-stone-700";
+  }
+};
+
+export const SelectionsList = ({
+  selections,
+}: {
+  selections: SelectionItem[];
+}): React.ReactNode => {
+  return (
+    selections.length > 0 && (
+      <>
+        <span>and choose</span>
+        {selections.length === 1 ? (
+          <span className="font-bold text-stone-300">  
+            <SelectionContent selection={selections[0]} />
+          </span>
+        ) : (
+          <ol className="flex list-decimal flex-col gap-2 pr-4 pl-6 text-left font-bold text-stone-300 marker:font-normal marker:text-stone-400">
+            {selections.map((target, index) => (
+              <li className="pl-2">
+                <SelectionContent key={index} selection={target} />
+              </li>
+            ))}
+          </ol>
+        )}
+      </>
+    )
+  );
+};
+
+export const SelectionContent = ({
+  selection,
+}: {
+  selection: SelectionItem;
+}): React.ReactNode => {
+  switch (selection.type) {
+    case "card":
+      return selection.payload.name;
+    case "stackElement":
+      switch (selection.payload.type) {
+        case "death":
+          return `${selection.payload.from.name} killed ${receiverName(selection.payload)}`;
+        case "diceRoll":
+          return `${selection.payload.card?.name ?? "Attack roll"} - ${selection.payload.issuer.name} rolled a ${selection.payload.diceRoll}`;
+        case "damage":
+          return `${selection.payload.from.name} dealt ${selection.payload.damage} damage to ${receiverName(selection.payload)}`;
+        case "effect":
+          return `${selection.payload.issuer.name} - ${selection.payload.card.name}`;
+        case "LootCardEffect":
+          return `${selection.payload.issuer.name} used ${selection.payload.card.name}`;
+      }
+    case "deck":
+      return selection.payload;
+    case "player":
+      return (
+        <span style={{ color: selection.payload.color }}>
+          {selection.payload.name}
+        </span>
+      );
+    case "monster":
+      return (
+        <span style={{ color: selection.payload.color }}>
+          {selection.payload.name}
+        </span>
+      );
+    case "string":
+      return selection.payload;
+    case "number":
+      return selection.payload;
+    case "boolean":
+      return selection.payload;
+    case "couplePlayerHand":
+      return `${selection.payload.player.name} hand`;
+    case "object":
+    case "array":
+    case "null":
+    case "unknown":
+      return "Unknown";
   }
 };
