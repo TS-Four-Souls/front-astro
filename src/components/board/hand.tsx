@@ -88,7 +88,7 @@ export const Hand = () => {
             }
             onClickTopCardHotkey={
               targetableCards.includes(card.slug)
-                ? `${(targetableCards.indexOf(card.slug) + 1)%10},shift+${(targetableCards.indexOf(card.slug) + 1)%10}`
+                ? `${(targetableCards.indexOf(card.slug) + 1) % 10},shift+${(targetableCards.indexOf(card.slug) + 1) % 10}`
                 : undefined
             }
             disabled={state.me.capabilities.useLoot !== true}

@@ -11,6 +11,12 @@ import {
 } from "react";
 import { PromptHandler } from "../prompt-handler/prompt-handler";
 
+export enum SpecialGlobalIds {
+  Loot = -1,
+  Treasure = -2,
+  Monster = -3,
+}
+
 export type GlobalId = number;
 
 export interface BoardSelectionState {
@@ -73,7 +79,11 @@ export const BoardSelectionProvider = ({
       return undefined;
     }
 
-    if (!prompt.options.every((o) => isGlobalIdOnBoard(o.payload.globalId))) {
+    if (
+      !prompt.options.every((o) =>
+        o.type === "deck" ? true : isGlobalIdOnBoard(o.payload.globalId),
+      )
+    ) {
       console.log(
         "prompt.options.every((o) => isGlobalIdOnBoard(o.payload.globalId)) is false",
       );
@@ -84,7 +94,9 @@ export const BoardSelectionProvider = ({
 
     return new Map(
       prompt.options.map((o, index) => [
-        o.payload.globalId,
+        o.type === "deck"
+          ? convertDeckToGlobalId(o.payload)
+          : o.payload.globalId,
         {
           isSelectable: true,
           isSelected: selectedOptions.some((s) => s === o),
@@ -155,11 +167,25 @@ const isSupportedSelectionItem = (
   selectionItem: SelectionItem,
 ): selectionItem is Extract<
   SelectionItem,
-  { type: "card" | "player" | "monster" }
+  { type: "card" | "player" | "monster" | "deck" }
 > => {
   return (
     selectionItem.type === "card" ||
     selectionItem.type === "player" ||
-    selectionItem.type === "monster"
+    selectionItem.type === "monster" ||
+    selectionItem.type === "deck"
   );
+};
+
+const convertDeckToGlobalId = (deck: string): GlobalId => {
+  switch (deck) {
+    case "loot":
+      return SpecialGlobalIds.Loot;
+    case "treasure":
+      return SpecialGlobalIds.Treasure;
+    case "monster":
+      return SpecialGlobalIds.Monster;
+    default:
+      throw new Error(`Invalid deck: ${deck}`);
+  }
 };

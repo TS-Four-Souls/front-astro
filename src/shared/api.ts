@@ -384,7 +384,9 @@ const debugListCardsICanRemoveResponseSchema = z.union([
     error: z.string(),
   }),
 ]);
-export type DebugListCardsICanRemoveResponse = z.infer<typeof debugListCardsICanRemoveResponseSchema>;
+export type DebugListCardsICanRemoveResponse = z.infer<
+  typeof debugListCardsICanRemoveResponseSchema
+>;
 
 // const debugRemoveCardsResponseSchema = z.union([
 //   z.object({
@@ -809,7 +811,7 @@ export interface ClientToServerEvents {
     request: Requests.DebugRemoveCards,
     callback: (response: Responses.DebugRemoveCards) => void,
   ) => void;
-  
+
   debugListTreasure: (
     request: Requests.DebugListTreasure,
     callback: (response: Responses.DebugListTreasure) => void,

@@ -8,6 +8,7 @@ import { useGameContext } from "./contexts/game-context";
 import { useToastContext } from "./contexts/toast-context";
 import { usePromptContext } from "./contexts/prompt-context";
 import { usePileDetails } from "./use-pile-details";
+import { SpecialGlobalIds } from "./contexts/board-selection-context";
 
 interface CenterProps {
   state: DetailedState;
@@ -18,7 +19,7 @@ export const Center = ({ state }: CenterProps) => {
   const { toast, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
   const { displayPileDetails } = usePileDetails();
-  
+
   const purchaseTreasure = (index: number | "top") => {
     socket.emit("purchase", { issuer, index }, (response) => {
       switch (response.status) {
@@ -130,6 +131,7 @@ export const Center = ({ state }: CenterProps) => {
       </div>
       <div className="flex flex-col place-items-center gap-2 transform-3d">
         <Pile
+          globalId={SpecialGlobalIds.Loot}
           cards={Array.from({ length: state.loot.deckSize }).map(
             () => CardType.LootCard,
           )}
@@ -174,6 +176,7 @@ export const Center = ({ state }: CenterProps) => {
             }
           />
           <Pile
+            globalId={SpecialGlobalIds.Treasure}
             cards={Array.from({ length: state.treasure.deckSize }).map(
               (_, index) =>
                 index === state.treasure.deckSize - 1
@@ -246,6 +249,7 @@ export const Center = ({ state }: CenterProps) => {
             }
           />
           <Pile
+            globalId={SpecialGlobalIds.Monster}
             cards={Array.from({ length: state.monsters.deckSize }).map(
               (_, index) => ({
                 type: CardType.MonsterCard,

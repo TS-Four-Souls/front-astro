@@ -1,4 +1,4 @@
-import type { IdentifierType, SelectionItem } from "@/shared/api";
+import type { IdentifierType } from "@/shared/api";
 
 export const receiverName = ({
   from,

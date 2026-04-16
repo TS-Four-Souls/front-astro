@@ -2,7 +2,6 @@ import type { Player } from "@/shared/api";
 import { PlayerStats } from "../player-stats";
 import { cn } from "@/utils/cn";
 import { Pile } from "../pile";
-import { CardType } from "../card";
 import { HandPile } from "../hand-pile";
 
 interface LeftPlayerProps {

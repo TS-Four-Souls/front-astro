@@ -133,7 +133,11 @@ export const MainMenu = () => {
   const rollback = () => {
     socket.emit("rollback", null, (response) => {
       if (response.status === 200) {
-        toast("success", "Rollback", "Rolled back to the previous user action.");
+        toast(
+          "success",
+          "Rollback",
+          "Rolled back to the previous user action.",
+        );
       } else {
         toast("error", "Rollback", response.error);
       }

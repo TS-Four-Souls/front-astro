@@ -248,7 +248,7 @@ export const SelectionsList = ({
       <>
         <span>and choose</span>
         {selections.length === 1 ? (
-          <span className="font-bold text-stone-300">  
+          <span className="font-bold text-stone-300">
             <SelectionContent selection={selections[0]} />
           </span>
         ) : (

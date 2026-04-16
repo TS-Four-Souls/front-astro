@@ -4,7 +4,7 @@ import type { SelectionItem } from "@/shared/api";
 import { cn } from "@/utils/cn";
 import { HotkeyScope } from "@/utils/hotkey";
 import { useHotkeys } from "react-hotkeys-hook";
-import { CardImage } from "../card";
+import { CardImage, CardType } from "../card";
 import { Person } from "@/icons/person";
 import { Sword } from "@/icons/sword";
 import { StackElement } from "../stack";
@@ -240,7 +240,17 @@ export const DeckOption = ({
   option: Extract<SelectionItem, { type: "deck" }>;
 }) => {
   return (
-    <p className="w-60 p-4 text-center text-lg font-bold">{option.payload}</p>
+    <div className="flex flex-col items-center gap-2">
+      <div className="flex flex-row items-center gap-2">
+        <p className="text-center font-main font-bold uppercase">
+          {option.payload}
+        </p>
+      </div>
+      <CardImage
+        card={option.payload as CardType /* TODO: use type from api */}
+        className="h-64"
+      />
+    </div>
   );
 };
 
