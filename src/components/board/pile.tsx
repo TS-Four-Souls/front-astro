@@ -68,6 +68,7 @@ interface PileProps {
   enableRandomRotation?: boolean;
   globalId?: number;
   style?: React.CSSProperties;
+  children?: React.ReactNode;
 }
 
 const BRIGHTNESS_MIN = 0.3;
@@ -94,6 +95,7 @@ export const Pile = ({
   enableRandomRotation = true,
   style,
   globalId,
+  children,
 }: PileProps) => {
   const size = sizePx / 16;
   const seed = useRef(Math.random().toString());
@@ -196,79 +198,88 @@ export const Pile = ({
           const isRequiredAttack =
             typeof card === "object" ? card.isRequiredAttack : false;
 
+          const transformStyle = {
+            transform: `
+              ${enable3D ? `translateZ(${thickness * (index + 1)}em)` : ""}
+              ${enableRandomRotation ? `rotate(${(rng() - 0.5) * 5}deg)` : ""}
+            `,
+          };
+
           return (
-            <Card
-              onClick={index === array.length - 1 ? onClickTopCard : undefined}
-              thickness={thickness}
-              key={index}
-              card={
-                typeof card === "object" && "type" in card ? card.type : card
-              }
-              containerClassName={cn(
-                "col-start-1 row-start-1",
+            <>
+              <Card
+                onClick={
+                  index === array.length - 1 ? onClickTopCard : undefined
+                }
+                thickness={thickness}
+                key={index}
+                card={
+                  typeof card === "object" && "type" in card ? card.type : card
+                }
+                containerClassName={cn(
+                  "col-start-1 row-start-1",
 
-                engagedInCombat &&
-                  "outline-[0.2em] outline-red-500/60 glow-combat",
-                engagedInPurchase &&
-                  "outline-[0.2em] outline-yellow-400/60 glow-purchase",
+                  engagedInCombat &&
+                    "outline-[0.2em] outline-red-500/60 glow-combat",
+                  engagedInPurchase &&
+                    "outline-[0.2em] outline-yellow-400/60 glow-purchase",
 
-                isRequiredAttack &&
-                  "outline-[0.2em] outline-red-500/60 outline-dashed glow-combat",
+                  isRequiredAttack &&
+                    "outline-[0.2em] outline-red-500/60 outline-dashed glow-combat",
 
-                entityBoardSelectionState &&
-                  entityBoardSelectionState.isSelected &&
-                  index === array.length - 1 &&
-                  "outline-[0.2em] outline-blue-500 glow-selection",
+                  entityBoardSelectionState &&
+                    entityBoardSelectionState.isSelected &&
+                    index === array.length - 1 &&
+                    "outline-[0.2em] outline-blue-500 glow-selection",
+                )}
+                className={cn(
+                  !charged && "brightness-50 contrast-90",
+                  eternal && "glow-6",
+                  cards.length > 0 && index === 0 && "shadow-lg/20",
+                  cards.length > 5 && index === 3 && "shadow-lg/20",
+                  cards.length > 10 && index === 2 && "shadow-xl/30",
+                  cards.length > 40 && index === 1 && "shadow-2xl/30",
+                  cards.length > 80 && index === 0 && "shadow-3xl/30",
+                  index === array.length - 1 && topCardClassName,
+                )}
+                disabled={
+                  isBoardSelectionActive
+                    ? entityBoardSelectionState === undefined ||
+                      entityBoardSelectionState.isSelectable === false
+                    : disabled
+                }
+                containerStyle={transformStyle}
+                size={size}
+                brightness={brightness}
+                enableSides={enableSides}
+                stats={typeof card === "string" ? undefined : card.stats}
+                effects={typeof card === "string" ? undefined : card.effects}
+                counter={counter}
+                onMouseEnter={
+                  index === array.length - 1
+                    ? onHoverPopover
+                      ? onMouseEnter
+                      : setTooltip
+                    : undefined
+                }
+                onMouseLeave={
+                  index === array.length - 1
+                    ? onHoverPopover
+                      ? closePopover
+                      : closeTooltip
+                    : undefined
+                }
+                onPileDetailsClick={
+                  index === array.length - 1 ? onPileDetailsClick : undefined
+                }
+                hotkey={
+                  index === array.length - 1 ? onClickTopCardHotkey : undefined
+                }
+              />
+              {index === array.length - 1 && (
+                <div style={transformStyle}>{children}</div>
               )}
-              className={cn(
-                !charged && "brightness-50 contrast-90",
-                eternal && "glow-6",
-                cards.length > 0 && index === 0 && "shadow-lg/20",
-                cards.length > 5 && index === 3 && "shadow-lg/20",
-                cards.length > 10 && index === 2 && "shadow-xl/30",
-                cards.length > 40 && index === 1 && "shadow-2xl/30",
-                cards.length > 80 && index === 0 && "shadow-3xl/30",
-                index === array.length - 1 && topCardClassName,
-              )}
-              disabled={
-                isBoardSelectionActive
-                  ? entityBoardSelectionState === undefined ||
-                    entityBoardSelectionState.isSelectable === false
-                  : disabled
-              }
-              containerStyle={{
-                transform: `
-                  ${enable3D ? `translateZ(${thickness * (index + 1)}em)` : ""}
-                  ${enableRandomRotation ? `rotate(${(rng() - 0.5) * 5}deg)` : ""}
-                `,
-              }}
-              size={size}
-              brightness={brightness}
-              enableSides={enableSides}
-              stats={typeof card === "string" ? undefined : card.stats}
-              effects={typeof card === "string" ? undefined : card.effects}
-              counter={counter}
-              onMouseEnter={
-                index === array.length - 1
-                  ? onHoverPopover
-                    ? onMouseEnter
-                    : setTooltip
-                  : undefined
-              }
-              onMouseLeave={
-                index === array.length - 1
-                  ? onHoverPopover
-                    ? closePopover
-                    : closeTooltip
-                  : undefined
-              }
-              onPileDetailsClick={
-                index === array.length - 1 ? onPileDetailsClick : undefined
-              }
-              hotkey={
-                index === array.length - 1 ? onClickTopCardHotkey : undefined
-              }
-            />
+            </>
           );
         })}
       {cards.length === 0 && (
