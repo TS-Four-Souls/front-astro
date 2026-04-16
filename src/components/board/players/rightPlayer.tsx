@@ -3,6 +3,7 @@ import { PlayerStats } from "../player-stats";
 import { cn } from "@/utils/cn";
 import { Pile } from "../pile";
 import { HandPile } from "../hand-pile";
+import { CardHoverPreview } from "../card-hover-preview";
 
 interface RightPlayerProps {
   player: Player;
@@ -60,6 +61,7 @@ export const RightPlayer = ({ player }: RightPlayerProps) => (
                     : undefined,
               },
             ]}
+            onHoverPopover={() => <CardHoverPreview card={card} />}
           />
         ))}
       </div>

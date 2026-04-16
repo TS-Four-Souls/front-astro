@@ -9,6 +9,7 @@ import { useToastContext } from "./contexts/toast-context";
 import { usePromptContext } from "./contexts/prompt-context";
 import { usePileDetails } from "./use-pile-details";
 import { SpecialGlobalIds } from "./contexts/board-selection-context";
+import { CardHoverPreview } from "./card-hover-preview";
 
 interface CenterProps {
   state: DetailedState;
@@ -126,7 +127,12 @@ export const Center = ({ state }: CenterProps) => {
       <History />
       <div className="flex shrink-0 flex-col place-items-center gap-2 transform-3d">
         {state.bonusSouls.map((soul) => (
-          <Pile key={soul.slug} cards={soul.granted ? [] : [soul]} size={105} />
+          <Pile
+            key={soul.slug}
+            cards={soul.granted ? [] : [soul]}
+            size={105}
+            onHoverPopover={() => <CardHoverPreview card={soul} />}
+          />
         ))}
       </div>
       <div className="flex flex-col place-items-center gap-2 transform-3d">
@@ -219,10 +225,15 @@ export const Center = ({ state }: CenterProps) => {
                   () => purchaseTreasure(index),
                 )
               }
-              tooltip={{
-                capable: state.me.capabilities.buyTreasure,
-                title: "Cannot buy this card",
-              }}
+              onHoverPopover={() => (
+                <CardHoverPreview
+                  card={card}
+                  tooltip={{
+                    capable: state.me.capabilities.buyTreasure,
+                    title: "Cannot buy this card",
+                  }}
+                />
+              )}
             />
           ))}
         </div>
@@ -321,21 +332,6 @@ export const Center = ({ state }: CenterProps) => {
                   },
                 ]}
                 disabled={targetable !== true}
-                onHoverPopover={
-                  attackRequirement
-                    ? () => (
-                        <>
-                          <CardImage
-                            card={attackRequirement.source}
-                            className="w-64"
-                          />
-                          <p className="mt-3 max-w-64 text-center leading-tight text-stone-400">
-                            You are required to attack this monster this turn.
-                          </p>
-                        </>
-                      )
-                    : undefined
-                }
                 onClickTopCardHotkey={
                   targetableMonsters.includes(card.top.slug)
                     ? `${targetableMonsters.indexOf(card.top.slug) + 1}`
@@ -356,10 +352,22 @@ export const Center = ({ state }: CenterProps) => {
                       }
                     : undefined
                 }
-                tooltip={{
-                  capable: targetable,
-                  title: "Cannot attack this card",
-                }}
+                onHoverPopover={() => (
+                  <CardHoverPreview
+                    card={card.top}
+                    tooltip={[
+                      {
+                        capable: targetable,
+                        title: "Cannot attack this card",
+                      },
+                      {
+                        enabled: attackRequirement !== undefined,
+                        title: "Attack required",
+                        content: `You must attack this monster because of ${attackRequirement?.source.name}.`,
+                      },
+                    ]}
+                  />
+                )}
               />
             );
           })}

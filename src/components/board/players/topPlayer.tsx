@@ -3,6 +3,7 @@ import { PlayerStats } from "../player-stats";
 import { Pile } from "../pile";
 import { cn } from "@/utils/cn";
 import { HandPile } from "../hand-pile";
+import { CardHoverPreview } from "../card-hover-preview";
 
 interface TopPlayerProps {
   player: Player;
@@ -83,6 +84,7 @@ export const TopPlayer = ({ player }: TopPlayerProps) => {
                         : undefined,
                   },
                 ]}
+                onHoverPopover={() => <CardHoverPreview card={card} />}
               />
             );
           })}

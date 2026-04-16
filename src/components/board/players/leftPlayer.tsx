@@ -3,6 +3,7 @@ import { PlayerStats } from "../player-stats";
 import { cn } from "@/utils/cn";
 import { Pile } from "../pile";
 import { HandPile } from "../hand-pile";
+import { CardHoverPreview } from "../card-hover-preview";
 
 interface LeftPlayerProps {
   player: Player;
@@ -88,6 +89,7 @@ export const LeftPlayer = ({ player }: LeftPlayerProps) => {
                         : undefined,
                   },
                 ]}
+                onHoverPopover={() => <CardHoverPreview card={card} />}
               />
             );
           })}

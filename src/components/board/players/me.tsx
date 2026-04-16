@@ -6,6 +6,7 @@ import { usePromptContext } from "../contexts/prompt-context";
 import { socket } from "@/utils/socket";
 import { useToastContext } from "../contexts/toast-context";
 import type { InPlayMeCard, SelectionItem } from "@/shared/api";
+import { CardHoverPreview } from "../card-hover-preview";
 
 export const Me = () => {
   const { state, issuer, isHandUp } = useGameContext();
@@ -215,10 +216,15 @@ export const Me = () => {
               },
             ]}
             disabled={card.capabilities.activate !== true}
-            tooltip={{
-              capable: card.capabilities.activate,
-              title: "Cannot activate this card",
-            }}
+            onHoverPopover={() => (
+              <CardHoverPreview
+                card={card}
+                tooltip={{
+                  capable: card.capabilities.activate,
+                  title: "Cannot activate",
+                }}
+              />
+            )}
             onClickTopCard={() =>
               block(
                 "Cannot activate this card",
