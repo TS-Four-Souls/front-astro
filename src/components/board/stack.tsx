@@ -14,6 +14,12 @@ import { Button } from "../button";
 import { cn } from "@/utils/cn";
 import { receiverName } from "@/utils/selection-text";
 import { StackElementIcon } from "./stack-element-icon";
+import {
+  stackElementIdShift,
+  useBoardSelectionContext,
+} from "./contexts/board-selection-context";
+import { useHotkeys } from "react-hotkeys-hook";
+import { HotkeyScope, shouldUseKey } from "@/utils/hotkey";
 
 export const Stack = () => {
   const { state, issuer } = useGameContext();
@@ -103,6 +109,9 @@ export const Stack = () => {
     [selectedStackElementId, issuer],
   );
 
+  const { boardSelectionState, isBoardSelectionActive, toggleSelection } =
+    useBoardSelectionContext();
+
   return (
     <div className="flex h-86 w-60 flex-col gap-2 rounded-xl bg-stone-900 p-2 inset-shadow-sm inset-shadow-stone-950/30 transform-3d">
       <div
@@ -137,6 +146,10 @@ export const Stack = () => {
               isElementInSameGroup &&
               isPreviousElementDifferentGroup);
 
+          const entityBoardSelectionState = boardSelectionState?.get(
+            element.id + stackElementIdShift,
+          );
+
           return (
             <div key={element.id} className="relative w-full">
               {isFirstOfGroup &&
@@ -147,21 +160,33 @@ export const Stack = () => {
                     label="Move here"
                   />
                 )}
-              {(() => {
-                return (
-                  <StackElement
-                    element={element}
-                    onClick={
-                      (selectedStackElementId === null ||
-                        selectedStackElementId === element.id) &&
-                      element.reordering
-                        ? () => onStackElementClick(element)
-                        : undefined
-                    }
-                    isSelected={selectedStackElementId === element.id}
-                  />
-                );
-              })()}
+              <StackElement
+                element={element}
+                onClick={
+                  isBoardSelectionActive &&
+                  entityBoardSelectionState?.isSelectable
+                    ? () =>
+                        toggleSelection(entityBoardSelectionState.selectionItem)
+                    : (selectedStackElementId === null ||
+                          selectedStackElementId === element.id) &&
+                        element.reordering
+                      ? () => onStackElementClick(element)
+                      : undefined
+                }
+                isSelected={
+                  isBoardSelectionActive &&
+                  entityBoardSelectionState?.isSelected
+                    ? true
+                    : selectedStackElementId === element.id
+                }
+                hotkey={
+                  isBoardSelectionActive &&
+                  entityBoardSelectionState &&
+                  entityBoardSelectionState?.optionIndex < 9
+                    ? `${entityBoardSelectionState.optionIndex + 1}`
+                    : undefined
+                }
+              />
               {selectedStackElementId !== null &&
                 isElementInSameGroup &&
                 !isSelectedElement &&
@@ -211,23 +236,39 @@ export const StackElement = ({
   onClick,
   isSelected = false,
   className,
+  hotkey,
 }: {
   element: StackElementType;
   onClick?: () => void;
   isSelected?: boolean;
+  hotkey?: string;
   className?: string;
 }) => {
+  useHotkeys(hotkey ?? "", () => onClick?.(), {
+    enabled: hotkey !== undefined && onClick !== undefined,
+    scopes: [HotkeyScope.Selection],
+    useKey: shouldUseKey(hotkey ?? ""),
+  });
+
   return (
     <div
       onClick={onClick}
       className={cn(
-        "w-full rounded-lg p-2 transition-colors",
-        onClick && "cursor-pointer hover:bg-stone-800/45",
-        isSelected &&
-          "bg-blue-500/15 ring-1 ring-blue-500/60 hover:bg-blue-500/30",
+        "relative w-full rounded-lg p-2",
+        onClick && "cursor-pointer",
+        isSelected && "outline-[0.2em] outline-blue-500",
         className,
       )}>
       <StackElementContent element={element} />
+
+      {hotkey && (
+        <div className="absolute top-0 left-0 flex aspect-square w-5 place-items-center overflow-hidden rounded-sm bg-stone-700 outline-[0.1em] -outline-offset-[0.1em]">
+          <img
+            src={`/input-prompts/keyboard_${hotkey.split(",")[0]}_outline.svg`}
+            className="scale-150"
+          />
+        </div>
+      )}
     </div>
   );
 };

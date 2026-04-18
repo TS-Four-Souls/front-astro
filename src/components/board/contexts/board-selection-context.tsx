@@ -17,6 +17,8 @@ export enum SpecialGlobalIds {
   Monster = -3,
 }
 
+export const stackElementIdShift = 10_000;
+
 export type GlobalId = number;
 
 export interface BoardSelectionState {
@@ -81,7 +83,9 @@ export const BoardSelectionProvider = ({
 
     if (
       !prompt.options.every((o) =>
-        o.type === "deck" ? true : isGlobalIdOnBoard(o.payload.globalId),
+        o.type === "deck" || o.type === "stackElement"
+          ? true
+          : isGlobalIdOnBoard(o.payload.globalId),
       )
     ) {
       console.log(
@@ -90,13 +94,17 @@ export const BoardSelectionProvider = ({
       return undefined;
     }
 
-    console.log("prompt.options", prompt.options);
+    const sortedOptions = prompt.options.every((o) => o.type === "stackElement")
+      ? prompt.options.toReversed()
+      : prompt.options;
 
     return new Map(
-      prompt.options.map((o, index) => [
+      sortedOptions.map((o, index) => [
         o.type === "deck"
           ? convertDeckToGlobalId(o.payload)
-          : o.payload.globalId,
+          : o.type === "stackElement"
+            ? o.payload.id + stackElementIdShift
+            : o.payload.globalId,
         {
           isSelectable: true,
           isSelected: selectedOptions.some((s) => s === o),
@@ -167,13 +175,14 @@ const isSupportedSelectionItem = (
   selectionItem: SelectionItem,
 ): selectionItem is Extract<
   SelectionItem,
-  { type: "card" | "player" | "monster" | "deck" }
+  { type: "card" | "player" | "monster" | "deck" | "stackElement" }
 > => {
   return (
     selectionItem.type === "card" ||
     selectionItem.type === "player" ||
     selectionItem.type === "monster" ||
-    selectionItem.type === "deck"
+    selectionItem.type === "deck" ||
+    selectionItem.type === "stackElement"
   );
 };
 
