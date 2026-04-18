@@ -43,7 +43,7 @@ export const PromptPopup = ({
   return (
     <Popup onPressBackdrop={onCancel}>
       <div className="flex flex-row justify-between gap-8">
-        <h1 className="font-alt-stats text-2xl font-bold uppercase">
+        <h1 className="font-alt-stats text-2xl leading-tight font-bold uppercase">
           {prompt}
         </h1>
         <div className="flex gap-2">
@@ -68,7 +68,7 @@ export const PromptPopup = ({
 
       <div
         className={cn(
-          "flex grow flex-wrap gap-2 overflow-auto",
+          "flex grow flex-wrap gap-2 overflow-auto p-4",
           displayRow ? "flex-col" : "flex-row justify-center",
         )}>
         {options.map((option, index) => {
@@ -140,22 +140,17 @@ export const PromptOption = ({
 }: PromptOptionProps) => {
   useHotkeys(hotkey ?? "", () => onPress?.(), {
     scopes: [HotkeyScope.Popup],
-    enabled: onPress !== undefined && !!hotkey,
+    enabled: onPress !== undefined && hotkey !== undefined,
   });
 
   return (
-    <div
-      className={cn(
-        "relative flex w-max flex-row place-items-center gap-2 rounded-md border-2 border-stone-500 p-2 select-none",
-        isSelected ? "border-blue-600 bg-blue-600" : "bg-stone-600",
-        onPress && "cursor-pointer",
-      )}
-      onClick={onPress}>
-      {hotkey && (
-        <div className="absolute top-0 left-0 flex aspect-square w-6 place-items-center overflow-hidden rounded-sm bg-stone-700 outline-[0.1em] -outline-offset-[0.1em] outline-stone-200">
+    <GenericOption option={option} onPress={onPress} selected={isSelected}>
+      {onPress !== undefined && hotkey !== undefined && (
+        <div className="absolute top-0 left-0 flex aspect-square w-7 place-items-center overflow-hidden rounded-sm bg-stone-700 outline-[0.1em] -outline-offset-[0.1em] outline-stone-200">
           <img
             src={`/input-prompts/keyboard_${hotkey.split(",")[0]}_outline.svg`}
-            className="scale-170"
+            className="scale-170 select-none"
+            draggable={false}
           />
         </div>
       )}
@@ -164,31 +159,98 @@ export const PromptOption = ({
           {selectionIndex}
         </div>
       )}
-      <GenericOption option={option} />
-    </div>
+    </GenericOption>
   );
 };
 
-export const GenericOption = ({ option }: { option: SelectionItem }) => {
+export const GenericOption = ({
+  option,
+  onPress,
+  selected,
+  children,
+}: TemplateOptionProps<SelectionItem["type"]>) => {
   switch (option.type) {
     case "player":
-      return <PlayerOption option={option} />;
+      return (
+        <PlayerOption
+          option={option}
+          onPress={onPress}
+          selected={selected}
+          children={children}
+        />
+      );
     case "monster":
-      return <MonsterOption option={option} />;
+      return (
+        <MonsterOption
+          option={option}
+          onPress={onPress}
+          selected={selected}
+          children={children}
+        />
+      );
     case "string":
-      return <StringOption option={option} />;
+      return (
+        <StringOption
+          option={option}
+          onPress={onPress}
+          selected={selected}
+          children={children}
+        />
+      );
     case "stackElement":
-      return <StackElementOption option={option} />;
+      return (
+        <StackElementOption
+          option={option}
+          onPress={onPress}
+          selected={selected}
+          children={children}
+        />
+      );
     case "deck":
-      return <DeckOption option={option} />;
+      return (
+        <DeckOption
+          option={option}
+          onPress={onPress}
+          selected={selected}
+          children={children}
+        />
+      );
     case "card":
-      return <CardOption option={option} />;
+      return (
+        <CardOption
+          option={option}
+          onPress={onPress}
+          selected={selected}
+          children={children}
+        />
+      );
     case "couplePlayerHand":
-      return <CouplePlayerHandOption option={option} />;
+      return (
+        <CouplePlayerHandOption
+          option={option}
+          onPress={onPress}
+          selected={selected}
+          children={children}
+        />
+      );
     case "boolean":
-      return <BooleanOption option={option} />;
+      return (
+        <BooleanOption
+          option={option}
+          onPress={onPress}
+          selected={selected}
+          children={children}
+        />
+      );
     case "number":
-      return <NumberOption option={option} />;
+      return (
+        <NumberOption
+          option={option}
+          onPress={onPress}
+          selected={selected}
+          children={children}
+        />
+      );
     case "object":
     case "array":
     case "null":
@@ -198,115 +260,207 @@ export const GenericOption = ({ option }: { option: SelectionItem }) => {
   }
 };
 
+interface TemplateOptionProps<T extends SelectionItem["type"]> {
+  option: Extract<SelectionItem, { type: T }>;
+  selected: boolean;
+  onPress: (() => void) | undefined;
+  children: React.ReactNode;
+}
+
 export const PlayerOption = ({
   option,
-}: {
-  option: Extract<SelectionItem, { type: "player" }>;
-}) => {
+  onPress,
+  selected,
+  children,
+}: TemplateOptionProps<"player">) => {
   return (
-    <div className="flex flex-col items-center gap-2">
+    <div
+      className={cn(
+        "flex flex-col items-center gap-2",
+        onPress && "cursor-pointer",
+      )}
+      onClick={onPress}>
       <div className="flex flex-row items-center gap-2">
         <Person className="size-6" />
         <p className="text-center font-main font-bold uppercase">
           {option.payload.name}
         </p>
       </div>
-      <CardImage card={option.payload} className="h-64" />
+      <div className="relative">
+        <CardImage
+          card={option.payload}
+          className={cn("m-2 w-64", selected && "outline-6 outline-blue-500")}
+        />
+        <div className="absolute inset-4">{children}</div>
+      </div>
     </div>
   );
 };
 
 export const MonsterOption = ({
   option,
-}: {
-  option: Extract<SelectionItem, { type: "monster" }>;
-}) => {
+  selected,
+  onPress,
+  children,
+}: TemplateOptionProps<"monster">) => {
   return (
-    <div className="flex flex-col items-center gap-2">
+    <div
+      className={cn(
+        "flex flex-col items-center gap-2",
+        onPress && "cursor-pointer",
+      )}
+      onClick={onPress}>
       <div className="flex flex-row items-center gap-2">
         <Sword className="size-6" />
         <p className="text-center font-main font-bold uppercase">
           {option.payload.name}
         </p>
       </div>
-      <CardImage card={option.payload} className="h-64" />
+      <div className="relative">
+        <CardImage
+          card={option.payload}
+          className={cn("m-2 w-64", selected && "outline-6 outline-blue-500")}
+        />
+        <div className="absolute inset-4">{children}</div>
+      </div>
     </div>
   );
 };
 
 export const DeckOption = ({
   option,
-}: {
-  option: Extract<SelectionItem, { type: "deck" }>;
-}) => {
+  selected,
+  onPress,
+  children,
+}: TemplateOptionProps<"deck">) => {
   return (
-    <div className="flex flex-col items-center gap-2">
+    <div
+      className={cn(
+        "flex flex-col items-center gap-2",
+        onPress && "cursor-pointer",
+      )}
+      onClick={onPress}>
       <div className="flex flex-row items-center gap-2">
         <p className="text-center font-main font-bold uppercase">
           {option.payload}
         </p>
       </div>
-      <CardImage
-        card={option.payload as CardType /* TODO: use type from api */}
-        className="h-64"
-      />
+      <div className="relative">
+        <CardImage
+          card={option.payload as CardType}
+          className={cn("m-2 w-64", selected && "outline-6 outline-blue-500")}
+        />
+        <div className="absolute inset-4">{children}</div>
+      </div>
     </div>
   );
 };
 
 export const StringOption = ({
   option,
-}: {
-  option: Extract<SelectionItem, { type: "string" }>;
-}) => {
+  selected,
+  onPress,
+  children,
+}: TemplateOptionProps<"string">) => {
   return (
-    <p className="w-60 p-4 text-center text-lg font-bold">{option.payload}</p>
+    <div
+      className={cn(
+        "relative flex w-max flex-row place-items-center gap-2 rounded-md border-2 bg-stone-600 p-2 select-none",
+        selected
+          ? "border-blue-500 outline-2 outline-blue-500"
+          : "border-stone-500",
+        onPress && "cursor-pointer",
+      )}
+      onClick={onPress}>
+      <p className={cn("w-60 p-4 text-center text-lg font-bold")}>
+        {option.payload}
+      </p>
+      <div className="absolute inset-1">{children}</div>
+    </div>
   );
 };
 
 export const BooleanOption = ({
   option,
-}: {
-  option: Extract<SelectionItem, { type: "boolean" }>;
-}) => {
+  onPress,
+  children,
+  selected,
+}: TemplateOptionProps<"boolean">) => {
   return (
-    <p className="w-60 p-4 text-center text-lg font-bold">
-      {option.payload ? "Yes" : "No"}
-    </p>
+    <div
+      className={cn(
+        "relative flex w-max flex-row place-items-center gap-2 rounded-md border-2 bg-stone-600 p-2 select-none",
+        selected
+          ? "border-blue-500 outline-2 outline-blue-500"
+          : "border-stone-500",
+        onPress && "cursor-pointer",
+      )}
+      onClick={onPress}>
+      <p className={cn("px-6 py-4 text-center text-lg font-bold")}>
+        {option.payload ? "Yes" : "No"}
+      </p>
+      {children}
+    </div>
   );
 };
 
 export const StackElementOption = ({
   option,
-}: {
-  option: Extract<SelectionItem, { type: "stackElement" }>;
-}) => {
+  onPress,
+  children,
+  selected,
+}: TemplateOptionProps<"stackElement">) => {
   return (
-    <div className="rounded-md bg-stone-900 p-4 pr-12 text-xl">
-      <StackElement element={option.payload} />
+    <div
+      className={cn(
+        "relative m-1 rounded-md bg-stone-900 p-4 pr-12 text-xl",
+        selected && "outline-4 outline-blue-500",
+        onPress && "cursor-pointer",
+      )}
+      onClick={onPress}>
+      <StackElement
+        element={option.payload}
+        className="pointer-events-none touch-none p-0 pl-6 select-none"
+      />
+      <div className="absolute inset-1">{children}</div>
     </div>
   );
 };
 
 export const CardOption = ({
   option,
-}: {
-  option: Extract<SelectionItem, { type: "card" }>;
-}) => {
+  onPress,
+  children,
+  selected,
+}: TemplateOptionProps<"card">) => {
   return (
-    <div className="flex flex-col items-center gap-2">
-      <CardImage card={option.payload} className="h-64" />
+    <div
+      className={cn(
+        "relative flex flex-col items-center gap-2",
+        onPress && "cursor-pointer",
+      )}
+      onClick={onPress}>
+      <CardImage
+        card={option.payload}
+        className={cn("m-2 w-64", selected && "outline-6 outline-blue-500")}
+      />
+      <div className="absolute inset-4">{children}</div>
     </div>
   );
 };
 
 export const CouplePlayerHandOption = ({
   option,
-}: {
-  option: Extract<SelectionItem, { type: "couplePlayerHand" }>;
-}) => {
+  onPress,
+  children,
+}: TemplateOptionProps<"couplePlayerHand">) => {
   return (
-    <div className="flex items-end gap-2">
+    <div
+      className={cn(
+        "relative flex items-end gap-2",
+        onPress && "cursor-pointer",
+      )}
+      onClick={onPress}>
       <div className="flex flex-col items-center gap-2">
         <div className="flex flex-row items-center gap-2">
           <Person className="size-6" />
@@ -320,16 +474,31 @@ export const CouplePlayerHandOption = ({
       {option.payload.hand.map((card) => (
         <CardImage key={card.slug} card={card} className="h-64" />
       ))}
+      <div className="absolute inset-1">{children}</div>
     </div>
   );
 };
 
 export const NumberOption = ({
   option,
-}: {
-  option: Extract<SelectionItem, { type: "number" }>;
-}) => {
+  onPress,
+  children,
+  selected,
+}: TemplateOptionProps<"number">) => {
   return (
-    <p className="w-10 p-4 text-center text-lg font-bold">{option.payload}</p>
+    <div
+      className={cn(
+        "relative flex w-max flex-row place-items-center gap-2 rounded-md border-2 bg-stone-600 p-2 select-none",
+        selected
+          ? "border-blue-500 outline-2 outline-blue-500"
+          : "border-stone-500",
+        onPress && "cursor-pointer",
+      )}
+      onClick={onPress}>
+      <p className={cn("px-6 py-4 text-center text-lg font-bold")}>
+        {option.payload}
+      </p>
+      {children}
+    </div>
   );
 };

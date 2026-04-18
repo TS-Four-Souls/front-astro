@@ -50,7 +50,9 @@ const normalizeTooltips = (
 
 export const CardHoverPreview = ({ card, tooltip }: CardHoverPreviewProps) => {
   const tooltips = normalizeTooltips(tooltip);
-  const hasTooltips = tooltips.length > 0 && tooltips.some((t) => "enabled" in t ? t.enabled : t.capable !== true);
+  const hasTooltips =
+    tooltips.length > 0 &&
+    tooltips.some((t) => ("enabled" in t ? t.enabled : t.capable !== true));
 
   return (
     <div className="flex w-64 flex-col items-stretch gap-2.5">
