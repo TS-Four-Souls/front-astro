@@ -24,7 +24,7 @@ export const TopPlayer = ({ player }: TopPlayerProps) => {
   }
 
   // Turn back into a flat array
-  const cards = grid.reverse().flat();
+  const cards = grid.toReversed().flat();
 
   return (
     <div

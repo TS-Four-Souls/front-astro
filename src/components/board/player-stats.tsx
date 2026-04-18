@@ -230,7 +230,7 @@ export const PlayerStats = ({
             closePopover();
           }}>
           {alternateSoulSequence(souls)
-            .reverse()
+            .toReversed()
             .map((type, index) => {
               return (
                 <img

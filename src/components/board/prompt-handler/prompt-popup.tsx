@@ -40,6 +40,10 @@ export const PromptPopup = ({
   onSubmit,
   toggleMode,
 }: PromptPopupProps) => {
+  const sortedOptions = options.every((o) => o.type === "stackElement")
+    ? options.toReversed()
+    : options;
+
   return (
     <Popup onPressBackdrop={onCancel}>
       <div className="flex flex-row justify-between gap-8">
@@ -71,7 +75,7 @@ export const PromptPopup = ({
           "flex grow flex-wrap gap-2 overflow-auto p-4",
           displayRow ? "flex-col" : "flex-row justify-center",
         )}>
-        {options.map((option, index) => {
+        {sortedOptions.map((option, index) => {
           const selectionIndex = selectedOptions.findIndex((o) => o === option);
           const canAddMore = selectedOptions.length < maxCount;
           const isSingularSelection = maxCount === 1;
@@ -100,7 +104,7 @@ export const PromptPopup = ({
             />
           );
         })}
-        {options.length === 0 && (
+        {sortedOptions.length === 0 && (
           <div className="text-center text-lg text-stone-400">
             No options available
           </div>
@@ -418,10 +422,7 @@ export const StackElementOption = ({
         onPress && "cursor-pointer",
       )}
       onClick={onPress}>
-      <StackElement
-        element={option.payload}
-        className="pointer-events-none touch-none p-0 pl-6 select-none"
-      />
+      <StackElement element={option.payload} className="p-0 pl-6 select-none" />
       <div className="absolute inset-1">{children}</div>
     </div>
   );

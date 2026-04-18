@@ -9,7 +9,7 @@ export const History = () => {
   const scrollViewRef = useRef<HTMLDivElement>(null);
 
   // Show history in reverse order (newest first)
-  const reversedHistory = [...state.history].reverse();
+  const reversedHistory = state.history.toReversed();
   const displayedHistory = reversedHistory.slice(0, 30);
 
   if (!isOpen) return null;
