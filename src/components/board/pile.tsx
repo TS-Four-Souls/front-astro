@@ -127,7 +127,8 @@ export const Pile = ({
 
   const onClickTopCardHotkey = isBoardSelectionActive
     ? entityBoardSelectionState
-      ? entityBoardSelectionState.optionIndex < 9
+      ? entityBoardSelectionState.optionIndex < 9 &&
+        entityBoardSelectionState.isSelectable
         ? `${entityBoardSelectionState.optionIndex + 1}`
         : undefined
       : undefined
@@ -274,6 +275,11 @@ export const Pile = ({
                 }
                 hotkey={
                   index === array.length - 1 ? onClickTopCardHotkey : undefined
+                }
+                selectionIndex={
+                  index === array.length - 1
+                    ? entityBoardSelectionState?.selectionIndex
+                    : undefined
                 }
               />
               {index === array.length - 1 && (

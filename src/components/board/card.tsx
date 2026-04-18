@@ -4,6 +4,7 @@ import type { TemporaryEffect } from "@/shared/api";
 import { TemporaryEffectCard } from "./temporary-effect-card";
 import { SELF_BASE_URL } from "astro:env/client";
 import { PileIndicator } from "@/icons/pile-indicator";
+import { SelectionIndexIndicator } from "./selection-index-indicator";
 
 export enum CardType {
   BonusSoul = "bsoul",
@@ -24,6 +25,7 @@ interface CardProps {
   brightness?: number;
   enableSides?: boolean;
   hotkey?: string;
+  selectionIndex?: number;
   effects?: TemporaryEffect[];
   onPileDetailsClick?: () => void;
   onClick?: () => void;
@@ -52,6 +54,7 @@ export const Card = ({
   enableSides = true,
   onClick,
   hotkey,
+  selectionIndex,
   onPileDetailsClick,
   disabled,
   stats,
@@ -117,12 +120,19 @@ export const Card = ({
         />
 
         {hotkey && (
-          <div className="absolute top-[1.5%] left-[2%] flex aspect-square w-[15%] place-items-center overflow-hidden rounded-sm bg-stone-700 outline-[0.1em] -outline-offset-[0.1em]">
+          <div className="absolute top-1 left-1 flex aspect-square size-4 place-items-center overflow-hidden rounded-sm bg-stone-700 outline-[0.1em]">
             <img
               src={`/input-prompts/keyboard_${hotkey.split(",")[0]}_outline.svg`}
               className="scale-150"
             />
           </div>
+        )}
+
+        {selectionIndex && (
+          <SelectionIndexIndicator
+            index={selectionIndex}
+            className="top-1 right-1 size-5 text-2xs outline-[0.15em]"
+          />
         )}
 
         {onPileDetailsClick && (

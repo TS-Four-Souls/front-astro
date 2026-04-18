@@ -26,6 +26,7 @@ export interface BoardSelectionState {
   isSelected: boolean;
   selectionItem: SelectionItem;
   optionIndex: number;
+  selectionIndex?: number;
 }
 
 interface BoardSelectionContextProps {
@@ -88,9 +89,6 @@ export const BoardSelectionProvider = ({
           : isGlobalIdOnBoard(o.payload.globalId),
       )
     ) {
-      console.log(
-        "prompt.options.every((o) => isGlobalIdOnBoard(o.payload.globalId)) is false",
-      );
       return undefined;
     }
 
@@ -99,24 +97,34 @@ export const BoardSelectionProvider = ({
       : prompt.options;
 
     return new Map(
-      sortedOptions.map((o, index) => [
-        o.type === "deck"
-          ? convertDeckToGlobalId(o.payload)
-          : o.type === "stackElement"
-            ? o.payload.id + stackElementIdShift
-            : o.payload.globalId,
-        {
-          isSelectable: true,
-          isSelected: selectedOptions.some((s) => s === o),
-          selectionItem: o,
-          optionIndex: index,
-        },
-      ]),
+      sortedOptions.map((o, index) => {
+        const key =
+          o.type === "deck"
+            ? convertDeckToGlobalId(o.payload)
+            : o.type === "stackElement"
+              ? o.payload.id + stackElementIdShift
+              : o.payload.globalId;
+
+        const selectionIndex = selectedOptions.indexOf(o);
+        const isSelected = selectionIndex >= 0;
+        const isIndexVisible = isSelected && prompt.maxCount > 1;
+        
+        const canAddMore = selectedOptions.length < prompt.maxCount;
+        const isSingularSelection = prompt.maxCount === 1;
+
+        return [
+          key,
+          {
+            isSelectable: isSelected || canAddMore || isSingularSelection,
+            isSelected: selectedOptions.some((s) => s === o),
+            selectionItem: o,
+            optionIndex: index,
+            selectionIndex: isIndexVisible ? selectionIndex + 1 : undefined,
+          },
+        ];
+      }),
     );
   }, [selectedOptions, isGlobalIdOnBoard, prompt]);
-
-  console.log("boardSelectionState", boardSelectionState);
-  console.log("selectedOptions", selectedOptions);
 
   const toggleSelection = useCallback(
     (selectionItem: SelectionItem) => {
@@ -131,13 +139,10 @@ export const BoardSelectionProvider = ({
         const isSelected = current.some((s) => s === selectionItem);
 
         if (isSelected) {
-          console.log("isSelected", isSelected);
           return current.filter((s) => s !== selectionItem);
         } else if (canAddMore) {
-          console.log("canAddMore", canAddMore);
           return [...current, selectionItem];
         } else if (isSingularSelection) {
-          console.log("isSingularSelection", isSingularSelection);
           return [selectionItem];
         }
         return current;

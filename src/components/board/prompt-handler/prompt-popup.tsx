@@ -8,6 +8,7 @@ import { CardImage, CardType } from "../card";
 import { Person } from "@/icons/person";
 import { Sword } from "@/icons/sword";
 import { StackElement } from "../stack";
+import { SelectionIndexIndicator } from "../selection-index-indicator";
 
 interface PromptPopupProps {
   onCancel?: () => void | undefined;
@@ -76,7 +77,7 @@ export const PromptPopup = ({
           displayRow ? "flex-col" : "flex-row justify-center",
         )}>
         {sortedOptions.map((option, index) => {
-          const selectionIndex = selectedOptions.findIndex((o) => o === option);
+          const selectionIndex = selectedOptions.indexOf(option);
           const canAddMore = selectedOptions.length < maxCount;
           const isSingularSelection = maxCount === 1;
 
@@ -150,7 +151,7 @@ export const PromptOption = ({
   return (
     <GenericOption option={option} onPress={onPress} selected={isSelected}>
       {onPress !== undefined && hotkey !== undefined && (
-        <div className="absolute top-0 left-0 flex aspect-square w-7 place-items-center overflow-hidden rounded-sm bg-stone-700 outline-[0.1em] -outline-offset-[0.1em] outline-stone-200">
+        <div className="absolute top-0 left-0 flex aspect-square w-7 place-items-center overflow-hidden rounded-md bg-stone-700 outline-3 outline-stone-200">
           <img
             src={`/input-prompts/keyboard_${hotkey.split(",")[0]}_outline.svg`}
             className="scale-170 select-none"
@@ -158,11 +159,7 @@ export const PromptOption = ({
           />
         </div>
       )}
-      {selectionIndex && (
-        <div className="absolute top-0 right-0 flex size-12 items-center justify-center rounded-xl border-4 border-stone-300 bg-stone-800 text-sm font-bold text-stone-200">
-          {selectionIndex}
-        </div>
-      )}
+      {selectionIndex && <SelectionIndexIndicator index={selectionIndex} />}
     </GenericOption>
   );
 };
