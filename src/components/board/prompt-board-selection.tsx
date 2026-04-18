@@ -58,12 +58,14 @@ export const PromptBoardSelection = ({
             hotkeyScope={[HotkeyScope.Selection]}
           />
         )}
-        <Button
-          label="Cancel"
-          onClick={onCancel}
-          hotkey="escape"
-          hotkeyScope={[HotkeyScope.Selection]}
-        />
+        {onCancel && (
+          <Button
+            label="Cancel"
+            onClick={onCancel}
+            hotkey="escape"
+            hotkeyScope={[HotkeyScope.Selection]}
+          />
+        )}
         <Button
           label="Submit"
           onClick={() => onSubmit(selectedOptions)}
