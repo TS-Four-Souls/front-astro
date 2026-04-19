@@ -105,7 +105,7 @@ export const Center = ({ state }: CenterProps) => {
   };
 
   const monsterDeckAttackRequirement = state.me.attackRequirements.find(
-    (requirement) => requirement.monster === "top",
+    (requirement) => requirement.target === "topDeck",
   );
 
   const targetableMonsters = [
@@ -267,7 +267,7 @@ export const Center = ({ state }: CenterProps) => {
                 isRequiredAttack:
                   index === state.monsters.deckSize - 1 &&
                   state.me.attackRequirements.some(
-                    (requirement) => requirement.monster === "top",
+                    (requirement) => requirement.target === "topDeck",
                   ),
               }),
             )}
@@ -289,8 +289,8 @@ export const Center = ({ state }: CenterProps) => {
                 : undefined
             }
             onClickTopCardHotkey={
-              targetableMonsters.includes("top")
-                ? `${targetableMonsters.indexOf("top") + 1}`
+              targetableMonsters.includes("topDeck")
+                ? `${targetableMonsters.indexOf("topDeck") + 1}`
                 : undefined
             }
             onClickTopCard={() =>
@@ -314,8 +314,8 @@ export const Center = ({ state }: CenterProps) => {
 
             const attackRequirement = state.me.attackRequirements.find(
               (requirement) =>
-                requirement.monster !== "top" &&
-                requirement.monster.slug === card.top.slug,
+                requirement.target !== "topDeck" &&
+                requirement.target.slug === card.top.slug,
             );
             return (
               <Pile

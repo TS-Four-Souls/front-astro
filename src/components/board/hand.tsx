@@ -30,10 +30,8 @@ export const Hand = () => {
                 isUnique: false,
                 prompt: response.response.description,
                 options: response.response.options,
-                minCount: response.response.asMany
-                  ? 0
-                  : response.response.count,
-                maxCount: response.response.count,
+                minCount: response.response.min,
+                maxCount: response.response.max,
                 onSubmit: (additionalSelections) => {
                   playCard(index, [...selections, ...additionalSelections]);
                   removePrompt(promptId);

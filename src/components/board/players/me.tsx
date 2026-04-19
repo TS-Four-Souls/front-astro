@@ -48,8 +48,8 @@ export const Me = () => {
         isUnique: true,
         prompt: pendingSelection.description,
         options: pendingSelection.options,
-        minCount: pendingSelection.asMany ? 0 : pendingSelection.count,
-        maxCount: pendingSelection.count,
+        minCount: pendingSelection.min,
+        maxCount: pendingSelection.max,
         onSubmit: (selectedOptions) => {
           socket.emit(
             "submitSelection",
@@ -100,10 +100,8 @@ export const Me = () => {
                   isUnique: false,
                   prompt: response.response.description,
                   options: response.response.options,
-                  minCount: response.response.asMany
-                    ? 0
-                    : response.response.count,
-                  maxCount: response.response.count,
+                  minCount: response.response.min,
+                  maxCount: response.response.max,
                   onSubmit: (additionalSelections) => {
                     activateCard(effectIndex, [
                       ...selections,

@@ -22,13 +22,16 @@ const activeEffectEntrySchema = z.object({
 });
 export type ActiveEffectEntry = z.infer<typeof activeEffectEntrySchema>;
 
+const deckNameSchema = z.union([z.literal("loot"), z.literal("treasure"), z.literal("monster")]);
+export type DeckName = z.infer<typeof deckNameSchema>;
+
 // Forward declare types for circular references
 export type SelectionItem =
   | { type: "card"; payload: Card }
   | { type: "stackElement"; payload: StackElement }
   | { type: "player"; payload: EntityType }
   | { type: "monster"; payload: EntityType }
-  | { type: "deck"; payload: string }
+  | { type: "deck"; payload: DeckName }
   | { type: "number"; payload: number }
   | { type: "boolean"; payload: boolean }
   | { type: "string"; payload: string }
@@ -54,7 +57,7 @@ const selectionItemSchema: z.ZodType<SelectionItem> = z.lazy(() =>
     z.object({ type: z.literal("stackElement"), payload: stackElementSchema }),
     z.object({ type: z.literal("player"), payload: entityTypeSchema }),
     z.object({ type: z.literal("monster"), payload: entityTypeSchema }),
-    z.object({ type: z.literal("deck"), payload: z.string() }),
+    z.object({ type: z.literal("deck"), payload: deckNameSchema }),
     z.object({ type: z.literal("number"), payload: z.number() }),
     z.object({ type: z.literal("boolean"), payload: z.boolean() }),
     z.object({ type: z.literal("string"), payload: z.string() }),
@@ -82,8 +85,8 @@ const pendingSelectionSchema = z.object({
   requestId: z.string(),
   description: z.string(),
   options: z.array(selectionItemSchema),
-  count: z.number(),
-  asMany: z.boolean(),
+  min: z.number(),
+  max: z.number(),
 });
 export type PendingSelection = z.infer<typeof pendingSelectionSchema>;
 
@@ -140,10 +143,10 @@ export type BonusSoulCard = z.infer<typeof bonusSoulCardSchema>;
 const targetSelectorResponseSchema = z.object({
   /** Description of what to select */
   description: z.string(),
-  /** How many targets to select */
-  count: z.number(),
-  /** Whether the player can select fewer targets than count (asMany) */
-  asMany: z.boolean(),
+  /** Minimal number of targets to select */
+  min: z.number(),
+  /** Maximal number of targets to select */
+  max: z.number(),
   /** Available options as string identifiers */
   options: z.array(selectionItemSchema),
   /** Whether target building is complete */
@@ -384,9 +387,7 @@ const debugListCardsICanRemoveResponseSchema = z.union([
     error: z.string(),
   }),
 ]);
-export type DebugListCardsICanRemoveResponse = z.infer<
-  typeof debugListCardsICanRemoveResponseSchema
->;
+export type DebugListCardsICanRemoveResponse = z.infer<typeof debugListCardsICanRemoveResponseSchema>;
 
 // const debugRemoveCardsResponseSchema = z.union([
 //   z.object({
@@ -442,7 +443,7 @@ const purchaseSchema = z.object({
 });
 
 const attackRequirementSchema = z.object({
-  monster: z.union([cardSchema, z.literal("top")]),
+  target: z.union([cardSchema, z.literal("topDeck")]),
   source: cardSchema,
 });
 
@@ -811,7 +812,7 @@ export interface ClientToServerEvents {
     request: Requests.DebugRemoveCards,
     callback: (response: Responses.DebugRemoveCards) => void,
   ) => void;
-
+  
   debugListTreasure: (
     request: Requests.DebugListTreasure,
     callback: (response: Responses.DebugListTreasure) => void,
