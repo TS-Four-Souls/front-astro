@@ -108,7 +108,7 @@ export const BoardSelectionProvider = ({
         const selectionIndex = selectedOptions.indexOf(o);
         const isSelected = selectionIndex >= 0;
         const isIndexVisible = isSelected && prompt.maxCount > 1;
-        
+
         const canAddMore = selectedOptions.length < prompt.maxCount;
         const isSingularSelection = prompt.maxCount === 1;
 
