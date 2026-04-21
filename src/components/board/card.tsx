@@ -12,6 +12,7 @@ export enum CardType {
   LootCard = "loot",
   MonsterCard = "monster",
   TreasureCard = "treasure",
+  RoomCard = "room",
 }
 
 interface CardProps {
@@ -28,6 +29,7 @@ interface CardProps {
   onClick?: () => void;
   disabled?: boolean;
   size?: number;
+  aspectRatio?: number;
   stats?:
     | { healthPoints: number; attackPoints: number; evasionPoints: number }
     | { healthPoints: number; attackPoints: number };
@@ -56,6 +58,7 @@ export const Card = ({
   disabled,
   stats,
   size = 160,
+  aspectRatio = 750 / 1024,
   effects,
   counter,
   onMouseEnter,
@@ -65,11 +68,11 @@ export const Card = ({
     return (
       <div
         className={cn(
-          "aspect-750/1024 h-40 rounded-md shadow-sm inset-shadow-sm shadow-stone-700 inset-shadow-stone-900",
+          "h-40 rounded-md shadow-sm inset-shadow-sm shadow-stone-700 inset-shadow-stone-900",
           onClick && (disabled ? "cursor-not-allowed" : "cursor-pointer"),
           className,
         )}
-        style={{ ...style, borderRadius: BORDER_RADIUS }}
+        style={{ ...style, borderRadius: BORDER_RADIUS, aspectRatio }}
         onClick={onClick}
       />
     );
@@ -79,10 +82,11 @@ export const Card = ({
 
   return (
     <div
-      className={cn("relative aspect-750/1024", containerClassName)}
+      className={cn("relative", containerClassName)}
       style={{
         borderRadius: BORDER_RADIUS,
         height: size + "em",
+        aspectRatio,
         ...containerStyle,
       }}>
       <div
@@ -104,6 +108,7 @@ export const Card = ({
             filter: `brightness(${Math.max(0.2, brightness * brightness)})`,
             borderRadius: BORDER_RADIUS,
           }}
+          aspectRatio={aspectRatio}
         />
 
         {hotkey && (
@@ -221,12 +226,14 @@ export const CardImage = ({
   onClick,
   style,
   tooltip,
+  aspectRatio = 750 / 1024,
 }: {
   card: { slug: string } | CardType;
   className?: string;
   onClick?: () => void;
   style?: React.CSSProperties;
   tooltip?: string;
+  aspectRatio?: number;
 }) => {
   const src =
     typeof card === "string"
@@ -243,7 +250,7 @@ export const CardImage = ({
       className={cn("aspect-750/1024", className)}
       draggable={false}
       onClick={onClick}
-      style={{ borderRadius: BORDER_RADIUS, ...style }}
+      style={{ borderRadius: BORDER_RADIUS, aspectRatio, ...style }}
     />
   );
 };
