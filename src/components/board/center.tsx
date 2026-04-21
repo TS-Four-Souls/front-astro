@@ -125,17 +125,19 @@ export const Center = ({ state }: CenterProps) => {
     <div className="flex place-items-center gap-6 rounded-xl bg-stone-700/10 p-8 shadow-md inset-shadow-xs inset-shadow-stone-700">
       <Stack />
       <History />
-      <div className="flex shrink-0 flex-col place-items-center gap-2">
-        {state.bonusSouls.map((soul) => (
-          <Pile
-            key={soul.slug}
-            cards={soul.granted ? [] : [soul]}
-            size={105}
-            onHoverPopover={() => <CardHoverPreview card={soul} />}
-          />
-        ))}
-      </div>
-      <div className="flex flex-col place-items-center gap-2">
+      {state.bonusSouls && (
+        <div className="flex shrink-0 flex-col place-items-center gap-2">
+          {state.bonusSouls.map((soul) => (
+            <Pile
+              key={soul.slug}
+              cards={soul.granted ? [] : [soul]}
+              size={105}
+              onHoverPopover={() => <CardHoverPreview card={soul} />}
+            />
+          ))}
+        </div>
+      )}
+      <div className="flex flex-col place-items-center gap-6">
         <Pile
           globalId={SpecialGlobalIds.Loot}
           cards={Array.from({ length: state.loot.deckSize }).map(
@@ -152,6 +154,19 @@ export const Center = ({ state }: CenterProps) => {
           disabled={state.loot.discard.length === 0}
         />
       </div>
+      {state.room && (
+        <div className="flex flex-col gap-2">
+          <Pile cards={state.room.discard} orientation="landscape" size={110} />
+          <Pile
+            cards={Array.from({ length: state.room.deckSize }).map(
+              () => CardType.RoomCard,
+            )}
+            orientation="landscape"
+            size={110}
+          />
+          <Pile cards={state.room.inPlay} orientation="landscape" size={110} />
+        </div>
+      )}
       <div className="flex flex-col gap-6">
         <div className="flex place-items-center gap-2">
           <Pile
