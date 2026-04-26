@@ -275,16 +275,20 @@ export const Center = ({ state }: CenterProps) => {
             onHoverPopover={
               monsterDeckAttackRequirement
                 ? () => (
-                    <>
-                      <CardImage
+                    <CardHoverPreview
                         card={monsterDeckAttackRequirement.source}
-                        className="w-64"
-                      />
-                      <p className="mt-3 max-w-64 text-center leading-tight text-stone-400">
-                        You are required to attack the top of the monster deck
-                        this turn.
-                      </p>
-                    </>
+                        tooltip={[
+                        {
+                          capable: state.monsters.capabilities.targetableDeck,
+                          title: "Cannot attack this card",
+                        },
+                        {
+                          enabled: true,
+                          title: "Attack required",
+                          content: `You must attack this monster because of ${monsterDeckAttackRequirement.source.name}.`,
+                        },
+                      ]}
+                    />
                   )
                 : undefined
             }
