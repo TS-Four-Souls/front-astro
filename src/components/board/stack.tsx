@@ -113,11 +113,11 @@ export const Stack = () => {
     useBoardSelectionContext();
 
   return (
-    <div className="flex h-86 w-60 flex-col gap-2 rounded-xl bg-stone-900 p-2 inset-shadow-sm inset-shadow-stone-950/30 transform-3d">
+    <div className="flex h-86 w-60 flex-col gap-2 rounded-xl bg-stone-900 p-2 inset-shadow-sm inset-shadow-stone-950/30">
       <div
         ref={scrollViewRef}
         className={cn(
-          "no-scrollbar grow translate-z-1 place-content-start overflow-auto p-2 transform-3d",
+          "no-scrollbar grow place-content-start overflow-auto p-2",
           state.stack.length > 0
             ? "grid grid-cols-1"
             : "flex place-items-center",
@@ -224,7 +224,6 @@ export const Stack = () => {
           capable: state.me.capabilities.resolve,
         }}
         label="Resolve"
-        className="translate-z-1"
         theme="onDark"
       />
     </div>

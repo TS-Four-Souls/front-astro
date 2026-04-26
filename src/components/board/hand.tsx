@@ -5,6 +5,7 @@ import { usePromptContext } from "./contexts/prompt-context";
 import type { SelectionItem } from "@/shared/api";
 import { cn } from "@/utils/cn";
 import { Pile } from "./pile";
+import { CardHoverPreview } from "./card-hover-preview";
 
 export const Hand = () => {
   const { state, issuer, isHandUp, setIsHandUp } = useGameContext();
@@ -50,18 +51,15 @@ export const Hand = () => {
     );
   };
 
-  const cardSize = 350;
-
   const targetableCards = state.me.hand
     .filter((_, index) => isHandUp && index < 10)
     .map((card) => card.slug);
 
   return (
-    <div className="pointer-events-none fixed right-0 bottom-0 left-0 flex place-content-center place-items-center">
+    <div className="pointer-events-none flex place-content-center place-items-center">
       <div
         className={cn(
-          "pointer-events-auto grid translate-y-1/2 auto-cols-fr grid-flow-col transition-transform duration-500",
-          isHandUp && "translate-y-0",
+          "pointer-events-auto grid auto-cols-fr grid-flow-col gap-2 transition-transform duration-500",
         )}
         onMouseEnter={() => setIsHandUp(true)}
         onMouseLeave={() => setIsHandUp(false)}>
@@ -71,19 +69,20 @@ export const Hand = () => {
             key={card.slug}
             cards={[{ slug: card.slug }]}
             className={cn(
-              "m-1 transition-transform",
+              "transition-transform",
               state.me.capabilities.useLoot === true
-                ? "cursor-pointer hover:-translate-y-10"
+                ? "cursor-pointer"
                 : "cursor-not-allowed",
             )}
-            tooltip={
-              isHandUp
-                ? {
-                    capable: state.me.capabilities.useLoot,
-                    title: "Cannot play this card",
-                  }
-                : undefined
-            }
+            onHoverPopover={() => (
+              <CardHoverPreview
+                card={card}
+                tooltip={{
+                  capable: state.me.capabilities.useLoot,
+                  title: "Cannot play this card",
+                }}
+              />
+            )}
             onClickTopCardHotkey={
               targetableCards.includes(card.slug)
                 ? `${(targetableCards.indexOf(card.slug) + 1) % 10},shift+${(targetableCards.indexOf(card.slug) + 1) % 10}`
@@ -97,8 +96,7 @@ export const Hand = () => {
                 () => playCard(index),
               )
             }
-            size={cardSize}
-            enableRandomRotation={false}
+            size={200}
           />
         ))}
       </div>

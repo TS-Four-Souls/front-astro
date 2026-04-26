@@ -154,7 +154,7 @@ export const PromptOption = ({
         <div className="absolute top-0 left-0 flex aspect-square w-7 place-items-center overflow-hidden rounded-md bg-stone-700 outline-3 outline-stone-200">
           <img
             src={`/input-prompts/keyboard_${hotkey.split(",")[0]}_outline.svg`}
-            className="scale-170 select-none"
+            className="scale-170"
             draggable={false}
           />
         </div>
@@ -366,7 +366,7 @@ export const StringOption = ({
   return (
     <div
       className={cn(
-        "relative flex w-max flex-row place-items-center gap-2 rounded-md border-2 bg-stone-600 p-2 select-none",
+        "relative flex w-max flex-row place-items-center gap-2 rounded-md border-2 bg-stone-600 p-2",
         selected
           ? "border-blue-500 outline-2 outline-blue-500"
           : "border-stone-500",
@@ -390,7 +390,7 @@ export const BooleanOption = ({
   return (
     <div
       className={cn(
-        "relative flex w-max flex-row place-items-center gap-2 rounded-md border-2 bg-stone-600 p-2 select-none",
+        "relative flex w-max flex-row place-items-center gap-2 rounded-md border-2 bg-stone-600 p-2",
         selected
           ? "border-blue-500 outline-2 outline-blue-500"
           : "border-stone-500",
@@ -419,7 +419,7 @@ export const StackElementOption = ({
         onPress && "cursor-pointer",
       )}
       onClick={onPress}>
-      <StackElement element={option.payload} className="p-0 pl-6 select-none" />
+      <StackElement element={option.payload} className="p-0 pl-6" />
       <div className="absolute inset-1">{children}</div>
     </div>
   );
@@ -486,7 +486,7 @@ export const NumberOption = ({
   return (
     <div
       className={cn(
-        "relative flex w-max flex-row place-items-center gap-2 rounded-md border-2 bg-stone-600 p-2 select-none",
+        "relative flex w-max flex-row place-items-center gap-2 rounded-md border-2 bg-stone-600 p-2",
         selected
           ? "border-blue-500 outline-2 outline-blue-500"
           : "border-stone-500",

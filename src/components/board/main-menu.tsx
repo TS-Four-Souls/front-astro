@@ -3,7 +3,6 @@ import { usePromptContext } from "./contexts/prompt-context";
 import { useToastContext } from "./contexts/toast-context";
 import { Button } from "../button";
 import { useMainMenuContext } from "./contexts/main-menu-context";
-import { useUserSettingsContext } from "./contexts/user-settings-context";
 import { useGameContext } from "./contexts/game-context";
 import { HotkeyScope } from "@/utils/hotkey";
 
@@ -11,7 +10,6 @@ export const MainMenu = () => {
   const { addPrompt, removePrompt } = usePromptContext();
   const { toast } = useToastContext();
   const { closeMenu: closeMainMenu } = useMainMenuContext();
-  const { openMenu: openUserSettingsMenu } = useUserSettingsContext();
   const { issuer } = useGameContext();
 
   const onResetPress = (confirmed?: true) => {
@@ -247,21 +245,12 @@ export const MainMenu = () => {
       </div>
       <Button
         onClick={() => {
-          closeMainMenu();
-          openUserSettingsMenu();
-        }}
-        label="Graphics"
-        className="translate-z-1"
-      />
-      <Button
-        onClick={() => {
           // closeMainMenu();
           rollback();
         }}
         hotkey="r"
         hotkeyScope={[HotkeyScope.Popup]}
         label="Rollback"
-        className="translate-z-1"
       />
       <Button
         onClick={() => {
@@ -269,7 +258,6 @@ export const MainMenu = () => {
           debugGainLoot();
         }}
         label="[CHEAT] Loot"
-        className="translate-z-1"
       />
       <Button
         onClick={() => {
@@ -277,7 +265,6 @@ export const MainMenu = () => {
           debugGainTreasure();
         }}
         label="[CHEAT] Gain treasure"
-        className="translate-z-1"
       />
       <Button
         onClick={() => {
@@ -285,7 +272,6 @@ export const MainMenu = () => {
           debugRemoveCard();
         }}
         label="[CHEAT] Remove card"
-        className="translate-z-1"
       />
       <Button
         onClick={() => {
@@ -293,7 +279,6 @@ export const MainMenu = () => {
           onSaveGamePress();
         }}
         label="Save game"
-        className="translate-z-1"
       />
       <Button
         onClick={() => {
@@ -301,7 +286,6 @@ export const MainMenu = () => {
           onResetPress();
         }}
         label="Quit game"
-        className="translate-z-1"
       />
     </div>
   );

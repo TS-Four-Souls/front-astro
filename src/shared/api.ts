@@ -22,7 +22,11 @@ const activeEffectEntrySchema = z.object({
 });
 export type ActiveEffectEntry = z.infer<typeof activeEffectEntrySchema>;
 
-const deckNameSchema = z.union([z.literal("loot"), z.literal("treasure"), z.literal("monster")]);
+const deckNameSchema = z.union([
+  z.literal("loot"),
+  z.literal("treasure"),
+  z.literal("monster"),
+]);
 export type DeckName = z.infer<typeof deckNameSchema>;
 
 // Forward declare types for circular references
@@ -394,7 +398,9 @@ const debugListCardsICanRemoveResponseSchema = z.union([
     error: z.string(),
   }),
 ]);
-export type DebugListCardsICanRemoveResponse = z.infer<typeof debugListCardsICanRemoveResponseSchema>;
+export type DebugListCardsICanRemoveResponse = z.infer<
+  typeof debugListCardsICanRemoveResponseSchema
+>;
 
 // const debugRemoveCardsResponseSchema = z.union([
 //   z.object({
@@ -819,7 +825,7 @@ export interface ClientToServerEvents {
     request: Requests.DebugRemoveCards,
     callback: (response: Responses.DebugRemoveCards) => void,
   ) => void;
-  
+
   debugListTreasure: (
     request: Requests.DebugListTreasure,
     callback: (response: Responses.DebugListTreasure) => void,

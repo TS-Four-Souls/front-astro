@@ -13,11 +13,11 @@ export const RightPlayer = ({ player }: RightPlayerProps) => (
   <div
     key={player.name}
     className={
-      "col-start-3 row-span-3 flex flex-col place-content-center place-items-start gap-8 transform-3d"
+      "col-start-3 row-span-3 flex flex-col place-content-center place-items-start gap-8"
     }>
     <div
       className={cn(
-        "flex flex-col place-content-center place-items-center gap-8 transform-3d",
+        "flex flex-col place-content-center place-items-center gap-8",
         player.inPlay.length > 3 && "flex-row",
       )}>
       <PlayerStats
@@ -32,10 +32,10 @@ export const RightPlayer = ({ player }: RightPlayerProps) => (
     </div>
     <div
       className={cn(
-        "flex flex-col place-content-center place-items-center gap-8 transform-3d",
+        "flex flex-col place-content-center place-items-center gap-8",
       )}>
       <div
-        className={cn("grid gap-2 transform-3d", "grid-flow-col")}
+        className={cn("grid gap-2", "grid-flow-col")}
         style={{
           gridTemplateRows: `repeat(${Math.min(player.inPlay.length, 3)}, 1fr)`,
         }}>

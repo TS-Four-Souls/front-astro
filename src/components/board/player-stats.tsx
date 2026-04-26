@@ -166,13 +166,13 @@ export const PlayerStats = ({
   return (
     <div
       className={cn(
-        "flex place-items-center gap-16 rounded-lg p-3 pr-4 pl-6 text-white outline-[0.2em] outline-transparent transition-shadow duration-500 transform-3d",
+        "flex place-items-center gap-16 rounded-lg p-3 pr-4 pl-6 text-white outline-[0.2em] outline-transparent transition-shadow duration-500",
         isCurrentTurn && "outline-stone-700",
         isGlowing && "glow-8",
         className,
       )}>
       <h1
-        className="translate-z-1 text-center font-alt-stats font-bold uppercase"
+        className="text-center font-alt-stats font-bold uppercase"
         style={{ color }}>
         {name}
       </h1>
@@ -205,7 +205,7 @@ export const PlayerStats = ({
       {souls > 0 && (
         <div
           ref={soulSequenceRef}
-          className="flex translate-z-1 cursor-pointer flex-row-reverse items-center transform-3d"
+          className="flex cursor-pointer flex-row-reverse items-center"
           onMouseEnter={() => {
             if (soulSequenceRef.current && soulCards.length > 0) {
               const rect = soulSequenceRef.current.getBoundingClientRect();
@@ -248,7 +248,7 @@ export const PlayerStats = ({
       )}
 
       {isMe && (
-        <div className="flex translate-z-1 items-center gap-4">
+        <div className="flex items-center gap-4">
           <Button
             disabled={canEndTurn !== true}
             hotkey="e"
@@ -276,7 +276,6 @@ export const PlayerStats = ({
                   }
             }
             label="End turn"
-            className="translate-z-1"
           />
           {!state.me.isEngagedInPurchase && (
             <Button

@@ -7,6 +7,7 @@ import { socket } from "@/utils/socket";
 import { useToastContext } from "../contexts/toast-context";
 import type { InPlayMeCard, SelectionItem } from "@/shared/api";
 import { CardHoverPreview } from "../card-hover-preview";
+import { Hand } from "../hand";
 
 export const Me = () => {
   const { state, issuer, isHandUp } = useGameContext();
@@ -173,7 +174,7 @@ export const Me = () => {
     .slice(0, 9);
 
   return (
-    <div className="col-start-2 row-start-3 flex flex-col place-content-center place-items-center gap-6 transform-3d">
+    <div className="col-start-2 row-start-3 flex flex-col place-content-center place-items-center gap-6">
       <PlayerStats
         name={state.me.name}
         color={state.me.color}
@@ -182,7 +183,7 @@ export const Me = () => {
         soulCards={state.me.soulCards}
       />
       <div
-        className="grid gap-2 transform-3d"
+        className="grid gap-2"
         style={{
           gridTemplateColumns: `repeat(${Math.min(state.me.inPlay.length, 8)}, 1fr)`,
         }}>
@@ -233,6 +234,7 @@ export const Me = () => {
           />
         ))}
       </div>
+      <Hand />
     </div>
   );
 };

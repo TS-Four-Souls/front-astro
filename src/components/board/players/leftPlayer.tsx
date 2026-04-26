@@ -29,11 +29,11 @@ export const LeftPlayer = ({ player }: LeftPlayerProps) => {
     <div
       key={player.name}
       className={
-        "col-start-1 row-span-3 row-start-1 flex flex-col place-content-center place-items-end gap-8 transform-3d"
+        "col-start-1 row-span-3 row-start-1 flex flex-col place-content-center place-items-end gap-8"
       }>
       <div
         className={cn(
-          "flex flex-col place-content-center place-items-center gap-8 transform-3d",
+          "flex flex-col place-content-center place-items-center gap-8",
           player.inPlay.length > 3 && "flex-row-reverse",
         )}>
         <PlayerStats
@@ -48,10 +48,10 @@ export const LeftPlayer = ({ player }: LeftPlayerProps) => {
       </div>
       <div
         className={
-          "flex flex-col place-content-center place-items-center gap-8 transform-3d"
+          "flex flex-col place-content-center place-items-center gap-8"
         }>
         <div
-          className={cn("grid gap-2 transform-3d", "grid-flow-col")}
+          className={cn("grid gap-2", "grid-flow-col")}
           style={{
             gridTemplateRows: `repeat(${Math.min(player.inPlay.length, MAX_ROWS)}, 1fr)`,
           }}>

@@ -122,10 +122,10 @@ export const Center = ({ state }: CenterProps) => {
   ).slice(0, 9);
 
   return (
-    <div className="flex translate-z-1 place-items-center gap-6 rounded-xl bg-stone-700/10 p-8 shadow-md inset-shadow-xs inset-shadow-stone-700 transform-3d">
+    <div className="flex place-items-center gap-6 rounded-xl bg-stone-700/10 p-8 shadow-md inset-shadow-xs inset-shadow-stone-700">
       <Stack />
       <History />
-      <div className="flex shrink-0 flex-col place-items-center gap-2 transform-3d">
+      <div className="flex shrink-0 flex-col place-items-center gap-2">
         {state.bonusSouls.map((soul) => (
           <Pile
             key={soul.slug}
@@ -135,7 +135,7 @@ export const Center = ({ state }: CenterProps) => {
           />
         ))}
       </div>
-      <div className="flex flex-col place-items-center gap-2 transform-3d">
+      <div className="flex flex-col place-items-center gap-2">
         <Pile
           globalId={SpecialGlobalIds.Loot}
           cards={Array.from({ length: state.loot.deckSize }).map(
@@ -144,15 +144,6 @@ export const Center = ({ state }: CenterProps) => {
         />
         <Pile
           cards={state.loot.discard}
-          onClickTopCard={() =>
-            block(
-              "Cannot view loot discard",
-              state.loot.discard.length === 0
-                ? "The loot discard pile is empty"
-                : true,
-              () => displayPileDetails(state.loot.discard.toReversed()),
-            )
-          }
           onPileDetailsClick={
             state.loot.discard.length > 1
               ? () => displayPileDetails(state.loot.discard.toReversed())
@@ -161,19 +152,10 @@ export const Center = ({ state }: CenterProps) => {
           disabled={state.loot.discard.length === 0}
         />
       </div>
-      <div className="flex flex-col gap-6 transform-3d">
-        <div className="flex place-items-center gap-2 transform-3d">
+      <div className="flex flex-col gap-6">
+        <div className="flex place-items-center gap-2">
           <Pile
             cards={state.treasure.discard}
-            onClickTopCard={() =>
-              block(
-                "Cannot view treasure discard",
-                state.treasure.discard.length === 0
-                  ? "The treasure discard pile is empty"
-                  : true,
-                () => displayPileDetails(state.treasure.discard.toReversed()),
-              )
-            }
             disabled={state.treasure.discard.length === 0}
             onPileDetailsClick={
               state.treasure.discard.length > 1
@@ -237,7 +219,7 @@ export const Center = ({ state }: CenterProps) => {
             />
           ))}
         </div>
-        <div className="flex place-items-center gap-2 transform-3d">
+        <div className="flex place-items-center gap-2">
           <Pile
             cards={state.monsters.discard.map((card) => ({
               slug: card.slug,
@@ -249,15 +231,6 @@ export const Center = ({ state }: CenterProps) => {
                 : undefined
             }
             disabled={state.monsters.discard.length === 0}
-            onClickTopCard={() =>
-              block(
-                "Cannot view monster discard",
-                state.monsters.discard.length === 0
-                  ? "The monster discard pile is empty"
-                  : true,
-                () => displayPileDetails(state.monsters.discard.toReversed()),
-              )
-            }
           />
           <Pile
             globalId={SpecialGlobalIds.Monster}
@@ -276,8 +249,8 @@ export const Center = ({ state }: CenterProps) => {
               monsterDeckAttackRequirement
                 ? () => (
                     <CardHoverPreview
-                        card={monsterDeckAttackRequirement.source}
-                        tooltip={[
+                      card={monsterDeckAttackRequirement.source}
+                      tooltip={[
                         {
                           capable: state.monsters.capabilities.targetableDeck,
                           title: "Cannot attack this card",

@@ -15,3 +15,25 @@
 - history icons don't have a shrink-0
 - get a zoomed view of the card when hovering it.
 - If new board state, refresh prompt options
+
+
+## Release
+- Switch to 2D
+- Animations for draw, play loot, souls to help with game readibility
+    - V1:
+        - Loot card played -> for players, the card goes from hand to stack, for others, the card flip/appear then go to stack
+        - Draw loot card/loot from discard
+        - Draw treasure/shop
+        - Gain bonus souls/monsters souls
+    - V2:
+        - Loot card effect resolve -> card goes from stack to discard
+
+- Contact form/bug report
+- When a cheat tool is used, everyone should be notified
+- Only keep base game
+- Purge inactive games
+- Board background
+
+- Define logo/domain/name
+- Animated starry background
+- Fonts?
