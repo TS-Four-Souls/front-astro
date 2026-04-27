@@ -8,11 +8,13 @@ import { useToastContext } from "../contexts/toast-context";
 import type { InPlayMeCard, SelectionItem } from "@/shared/api";
 import { CardHoverPreview } from "../card-hover-preview";
 import { Hand } from "../hand";
+import { useGameAnimation } from "../contexts/game-animation";
 
 export const Me = () => {
   const { state, issuer, isHandUp } = useGameContext();
   const { toast, dismiss, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
+  const { registerInPlayCardEl } = useGameAnimation();
 
   const pendingSelections = useRef<Map<string, string>>(new Map());
 
@@ -188,50 +190,54 @@ export const Me = () => {
           gridTemplateColumns: `repeat(${Math.min(state.me.inPlay.length, 8)}, 1fr)`,
         }}>
         {state.me.inPlay.map((card, index) => (
-          <Pile
-            globalId={card.globalId}
-            key={card.slug}
-            onClickTopCardHotkey={
-              targetableCards.includes(card.slug)
-                ? `${targetableCards.indexOf(card.slug) + 1}`
-                : undefined
-            }
-            cards={[
-              {
-                slug: card.slug,
-                charged: card.charged,
-                eternal: card.eternal,
-                engagedInCombat: index === 0 && state.me.isEngagedInCombat,
-                engagedInPurchase: index === 0 && state.me.isEngagedInPurchase,
-                effects: index === 0 ? state.me.temporaryEffect : undefined,
-                counter: card.counter,
-                stats:
-                  index === 0
-                    ? {
-                        healthPoints: state.me.currentHealthPoints,
-                        attackPoints: state.me.currentAttackPoints,
-                      }
-                    : undefined,
-              },
-            ]}
-            disabled={card.capabilities.activate !== true}
-            onHoverPopover={() => (
-              <CardHoverPreview
-                card={card}
-                tooltip={{
-                  capable: card.capabilities.activate,
-                  title: "Cannot activate",
-                }}
-              />
-            )}
-            onClickTopCard={() =>
-              block(
-                "Cannot activate this card",
-                card.capabilities.activate,
-                () => onInPlayCardClick(card, index),
-              )
-            }
-          />
+          <div
+            key={card.globalId}
+            ref={(el) => registerInPlayCardEl(card.globalId, el)}>
+            <Pile
+              globalId={card.globalId}
+              onClickTopCardHotkey={
+                targetableCards.includes(card.slug)
+                  ? `${targetableCards.indexOf(card.slug) + 1}`
+                  : undefined
+              }
+              cards={[
+                {
+                  slug: card.slug,
+                  charged: card.charged,
+                  eternal: card.eternal,
+                  engagedInCombat: index === 0 && state.me.isEngagedInCombat,
+                  engagedInPurchase:
+                    index === 0 && state.me.isEngagedInPurchase,
+                  effects: index === 0 ? state.me.temporaryEffect : undefined,
+                  counter: card.counter,
+                  stats:
+                    index === 0
+                      ? {
+                          healthPoints: state.me.currentHealthPoints,
+                          attackPoints: state.me.currentAttackPoints,
+                        }
+                      : undefined,
+                },
+              ]}
+              disabled={card.capabilities.activate !== true}
+              onHoverPopover={() => (
+                <CardHoverPreview
+                  card={card}
+                  tooltip={{
+                    capable: card.capabilities.activate,
+                    title: "Cannot activate",
+                  }}
+                />
+              )}
+              onClickTopCard={() =>
+                block(
+                  "Cannot activate this card",
+                  card.capabilities.activate,
+                  () => onInPlayCardClick(card, index),
+                )
+              }
+            />
+          </div>
         ))}
       </div>
       <Hand />

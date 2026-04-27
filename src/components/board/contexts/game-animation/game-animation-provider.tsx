@@ -38,6 +38,7 @@ type CoinBurstItem = {
 export interface GameAnimationContextValue {
   setStackEl: (el: HTMLDivElement | null) => void;
   registerMeHandCardEl: (globalId: number, el: HTMLDivElement | null) => void;
+  registerInPlayCardEl: (globalId: number, el: HTMLDivElement | null) => void;
   registerOpponentHandPile: (
     playerName: string,
     el: HTMLDivElement | null,
@@ -52,6 +53,7 @@ export interface GameAnimationContextValue {
 const GameAnimationContext = createContext<GameAnimationContextValue>({
   setStackEl: () => {},
   registerMeHandCardEl: () => {},
+  registerInPlayCardEl: () => {},
   registerOpponentHandPile: () => {},
   registerPlayerAnchor: () => {},
 });
@@ -118,6 +120,17 @@ const AnimationsFromState = ({
             };
             onGiveCoins({ fromRect: from, toPoint, count: a.count });
           }
+        }
+        continue;
+      }
+
+      if (a.type === "activateInPlay") {
+        const el = bridge.inPlayCardEls.get(a.card.globalId);
+        if (el) {
+          onLootToStack({
+            slug: a.card.slug,
+            fromRect: el.getBoundingClientRect(),
+          });
         }
         continue;
       }
@@ -233,6 +246,15 @@ export const GameAnimationProvider = ({
     [],
   );
 
+  const registerInPlayCardEl = useCallback(
+    (globalId: number, el: HTMLDivElement | null) => {
+      const b = bridgeRef.current;
+      if (el) b.inPlayCardEls.set(globalId, el);
+      else b.inPlayCardEls.delete(globalId);
+    },
+    [],
+  );
+
   const registerOpponentHandPile = useCallback(
     (playerName: string, el: HTMLDivElement | null) => {
       const b = bridgeRef.current;
@@ -268,6 +290,7 @@ export const GameAnimationProvider = ({
       value={{
         setStackEl,
         registerMeHandCardEl,
+        registerInPlayCardEl,
         registerOpponentHandPile,
         registerPlayerAnchor,
       }}>

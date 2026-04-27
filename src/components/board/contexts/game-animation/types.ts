@@ -3,6 +3,8 @@ export type PlayerAnchor = "coins";
 
 export type GameAnimationBridge = {
   meHandEls: Map<number, HTMLDivElement>;
+  /** Any in-play item card on the table (all players), keyed by card globalId. */
+  inPlayCardEls: Map<number, HTMLDivElement>;
   opponentHandPileEls: Map<string, HTMLDivElement>;
   playerAnchors: Map<string, Map<PlayerAnchor, HTMLDivElement>>;
   previousMeByCard: Map<number, { slug: string; rect: DOMRect }>;
@@ -13,6 +15,7 @@ export type GameAnimationBridge = {
 
 export const createAnimationBridge = (): GameAnimationBridge => ({
   meHandEls: new Map(),
+  inPlayCardEls: new Map(),
   opponentHandPileEls: new Map(),
   playerAnchors: new Map(),
   previousMeByCard: new Map(),

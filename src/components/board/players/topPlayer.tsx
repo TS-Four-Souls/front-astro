@@ -4,6 +4,7 @@ import { Pile } from "../pile";
 import { cn } from "@/utils/cn";
 import { HandPile } from "../hand-pile";
 import { CardHoverPreview } from "../card-hover-preview";
+import { useGameAnimation } from "../contexts/game-animation";
 
 interface TopPlayerProps {
   player: Player;
@@ -12,6 +13,7 @@ interface TopPlayerProps {
 const MAX_COLUMNS = 8;
 
 export const TopPlayer = ({ player }: TopPlayerProps) => {
+  const { registerInPlayCardEl } = useGameAnimation();
   // Create an array of arrays of 8 elements each, fill with undefined if needed
   const grid: InPlayCard[][] = Array.from(
     { length: Math.ceil(player.inPlay.length / MAX_COLUMNS) },
@@ -53,36 +55,39 @@ export const TopPlayer = ({ player }: TopPlayerProps) => {
             }
 
             return (
-              <Pile
-                globalId={card.globalId}
-                key={card.slug}
-                cards={[
-                  {
-                    slug: card.slug,
-                    charged: card.charged,
-                    eternal: card.eternal,
-                    engagedInCombat:
-                      player.inPlay[0].slug === card.slug &&
-                      player.isEngagedInCombat,
-                    engagedInPurchase:
-                      player.inPlay[0].slug === card.slug &&
-                      player.isEngagedInPurchase,
-                    effects:
-                      player.inPlay[0].slug === card.slug
-                        ? player.temporaryEffect
-                        : undefined,
-                    counter: card.counter,
-                    stats:
-                      player.inPlay[0].slug === card.slug
-                        ? {
-                            healthPoints: player.currentHealthPoints,
-                            attackPoints: player.currentAttackPoints,
-                          }
-                        : undefined,
-                  },
-                ]}
-                onHoverPopover={() => <CardHoverPreview card={card} />}
-              />
+              <div
+                key={card.globalId}
+                ref={(el) => registerInPlayCardEl(card.globalId, el)}>
+                <Pile
+                  globalId={card.globalId}
+                  cards={[
+                    {
+                      slug: card.slug,
+                      charged: card.charged,
+                      eternal: card.eternal,
+                      engagedInCombat:
+                        player.inPlay[0].slug === card.slug &&
+                        player.isEngagedInCombat,
+                      engagedInPurchase:
+                        player.inPlay[0].slug === card.slug &&
+                        player.isEngagedInPurchase,
+                      effects:
+                        player.inPlay[0].slug === card.slug
+                          ? player.temporaryEffect
+                          : undefined,
+                      counter: card.counter,
+                      stats:
+                        player.inPlay[0].slug === card.slug
+                          ? {
+                              healthPoints: player.currentHealthPoints,
+                              attackPoints: player.currentAttackPoints,
+                            }
+                          : undefined,
+                    },
+                  ]}
+                  onHoverPopover={() => <CardHoverPreview card={card} />}
+                />
+              </div>
             );
           })}
         </div>

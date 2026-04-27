@@ -80,14 +80,13 @@ export const CoinProjectile = ({
   flightInstanceId: number;
   onDone: () => void;
 }) => {
-  const [flight] = useState(
-    () =>
-      createCoinFlight(
-        `coin-${flightInstanceId}`,
-        delayMs,
-        centerOfRect(fromRect),
-        { ...toPoint },
-      ),
+  const [flight] = useState(() =>
+    createCoinFlight(
+      `coin-${flightInstanceId}`,
+      delayMs,
+      centerOfRect(fromRect),
+      { ...toPoint },
+    ),
   );
   const onDoneRef = useRef(onDone);
   onDoneRef.current = onDone;
