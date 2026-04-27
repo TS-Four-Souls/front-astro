@@ -18,7 +18,7 @@ import {
 import { LootCardGhost } from "./loot-card-ghost";
 import { CoinProjectile } from "./coin-projectile";
 
-const MAX_VISIBLE_COINS = 5;
+const MAX_VISIBLE_COINS = 100;
 const COIN_STAGGER_MS = 60;
 
 type LootCardGhostItem = {
@@ -288,6 +288,7 @@ export const GameAnimationProvider = ({
         {coinBursts.map((c) => (
           <CoinProjectile
             key={c.id}
+            flightInstanceId={c.id}
             fromRect={c.fromRect}
             toPoint={c.toPoint}
             delayMs={c.delayMs}
