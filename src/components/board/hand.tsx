@@ -6,11 +6,13 @@ import type { SelectionItem } from "@/shared/api";
 import { cn } from "@/utils/cn";
 import { Pile } from "./pile";
 import { CardHoverPreview } from "./card-hover-preview";
+import { useGameAnimation } from "./contexts/game-animation";
 
 export const Hand = () => {
   const { state, issuer, isHandUp, setIsHandUp } = useGameContext();
   const { toast, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
+  const { registerMeHandCardEl } = useGameAnimation();
 
   const playCard = (index: number, selections: SelectionItem[] = []) => {
     setIsHandUp(false);
@@ -64,40 +66,43 @@ export const Hand = () => {
         onMouseEnter={() => setIsHandUp(true)}
         onMouseLeave={() => setIsHandUp(false)}>
         {state.me.hand.map((card, index) => (
-          <Pile
-            globalId={card.globalId}
+          <div
             key={card.slug}
-            cards={[{ slug: card.slug }]}
-            className={cn(
-              "transition-transform",
-              state.me.capabilities.useLoot === true
-                ? "cursor-pointer"
-                : "cursor-not-allowed",
-            )}
-            onHoverPopover={() => (
-              <CardHoverPreview
-                card={card}
-                tooltip={{
-                  capable: state.me.capabilities.useLoot,
-                  title: "Cannot play this card",
-                }}
-              />
-            )}
-            onClickTopCardHotkey={
-              targetableCards.includes(card.slug)
-                ? `${(targetableCards.indexOf(card.slug) + 1) % 10},shift+${(targetableCards.indexOf(card.slug) + 1) % 10}`
-                : undefined
-            }
-            disabled={state.me.capabilities.useLoot !== true}
-            onClickTopCard={() =>
-              block(
-                "Cannot play this card",
-                state.me.capabilities.useLoot,
-                () => playCard(index),
-              )
-            }
-            size={200}
-          />
+            ref={(el) => registerMeHandCardEl(card.globalId, el)}>
+            <Pile
+              globalId={card.globalId}
+              cards={[{ slug: card.slug }]}
+              className={cn(
+                "transition-transform",
+                state.me.capabilities.useLoot === true
+                  ? "cursor-pointer"
+                  : "cursor-not-allowed",
+              )}
+              onHoverPopover={() => (
+                <CardHoverPreview
+                  card={card}
+                  tooltip={{
+                    capable: state.me.capabilities.useLoot,
+                    title: "Cannot play this card",
+                  }}
+                />
+              )}
+              onClickTopCardHotkey={
+                targetableCards.includes(card.slug)
+                  ? `${(targetableCards.indexOf(card.slug) + 1) % 10},shift+${(targetableCards.indexOf(card.slug) + 1) % 10}`
+                  : undefined
+              }
+              disabled={state.me.capabilities.useLoot !== true}
+              onClickTopCard={() =>
+                block(
+                  "Cannot play this card",
+                  state.me.capabilities.useLoot,
+                  () => playCard(index),
+                )
+              }
+              size={200}
+            />
+          </div>
         ))}
       </div>
     </div>

@@ -10,6 +10,7 @@ import type { Card as CardType } from "@/shared/api";
 import { useEffect, useRef, useState } from "react";
 import { CardImage } from "./card";
 import { useMainMenuContext } from "./contexts/main-menu-context";
+import { useGameAnimation } from "./contexts/game-animation";
 import { useTooltip } from "./use-tooltip";
 
 interface PlayerStatsProps {
@@ -34,6 +35,7 @@ export const PlayerStats = ({
   const { addPrompt, removePrompt } = usePromptContext();
   const { setPopover, closePopover } = usePopoverContext();
   const { openMenu } = useMainMenuContext();
+  const { registerPlayerAnchor } = useGameAnimation();
   const soulSequenceRef = useRef<HTMLDivElement>(null);
 
   const isCurrentTurn = state.turn === name;
@@ -195,6 +197,7 @@ export const PlayerStats = ({
           )
         }>
         <img
+          ref={(el) => registerPlayerAnchor(name, "coins", el)}
           src="/coin.png"
           className="size-6 rounded-full shadow-md/50"
           draggable={false}

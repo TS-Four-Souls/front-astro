@@ -12,6 +12,7 @@ import { RoomJoinForm } from "../onboarding/room-join-form";
 import { OnboardingLayout } from "../onboarding-layout";
 import { storage } from "@/utils/storage";
 import { BoardSelectionProvider } from "../board/contexts/board-selection-context";
+import { GameAnimationProvider } from "../board/contexts/game-animation";
 
 export const GamePage = () => {
   const [room, setRoom] = useState<Room | null>(null);
@@ -78,7 +79,9 @@ export const GamePage = () => {
       <GameProvider state={room.gameState} issuer={room.room.issuer}>
         <BoardSelectionProvider>
           <MainMenuProvider>
-            <Board />
+            <GameAnimationProvider>
+              <Board />
+            </GameAnimationProvider>
           </MainMenuProvider>
         </BoardSelectionProvider>
       </GameProvider>

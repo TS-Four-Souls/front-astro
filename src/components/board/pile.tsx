@@ -259,7 +259,9 @@ export const Pile = ({
                     ? entityBoardSelectionState?.selectionIndex
                     : undefined
                 }
-                aspectRatio={orientation === "portrait" ? 750 / 1024 : 1024 / 750}
+                aspectRatio={
+                  orientation === "portrait" ? 750 / 1024 : 1024 / 750
+                }
               />
               {index === array.length - 1 && (
                 <div style={transformStyle}>{children}</div>

@@ -20,15 +20,23 @@ import {
 } from "./contexts/board-selection-context";
 import { useHotkeys } from "react-hotkeys-hook";
 import { HotkeyScope, shouldUseKey } from "@/utils/hotkey";
+import { useGameAnimation } from "./contexts/game-animation";
 
 export const Stack = () => {
   const { state, issuer } = useGameContext();
   const { toast, block } = useToastContext();
+  const { setStackEl } = useGameAnimation();
 
+  const stackContainerRef = useRef<HTMLDivElement>(null);
   const scrollViewRef = useRef<HTMLDivElement>(null);
   const [selectedStackElementId, setSelectedStackElementId] = useState<
     number | null
   >(null);
+
+  useEffect(() => {
+    setStackEl(stackContainerRef.current);
+    return () => setStackEl(null);
+  }, [setStackEl]);
 
   const resolveStack = () => {
     socket.emit("resolve", { issuer }, (response) => {
@@ -113,7 +121,9 @@ export const Stack = () => {
     useBoardSelectionContext();
 
   return (
-    <div className="flex h-86 w-60 flex-col gap-2 rounded-xl bg-stone-900 p-2 inset-shadow-sm inset-shadow-stone-950/30">
+    <div
+      ref={stackContainerRef}
+      className="flex h-86 w-60 flex-col gap-2 rounded-xl bg-stone-900 p-2 inset-shadow-sm inset-shadow-stone-950/30">
       <div
         ref={scrollViewRef}
         className={cn(

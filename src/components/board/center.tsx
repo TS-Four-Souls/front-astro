@@ -1,6 +1,6 @@
 import type { Card, DetailedState } from "@/shared/api";
 import { Pile } from "./pile";
-import { CardImage, CardType } from "./card";
+import { CardType } from "./card";
 import { Stack } from "./stack";
 import { History } from "./history";
 import { socket } from "@/utils/socket";
