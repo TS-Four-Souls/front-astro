@@ -96,7 +96,7 @@ const AnimationsFromState = ({
       if (bridge.seenAnimationIds.has(a.id)) continue;
       bridge.seenAnimationIds.add(a.id);
 
-      if (a.type === "lootPlay") {
+      if (a.type === "playLoot") {
         const isMe = a.player === state.me.name;
         if (isMe) {
           const prev = bridge.previousMeByCard.get(a.card.globalId);
