@@ -145,7 +145,7 @@ export const PlayerStats = ({
 
   const { setTooltip: setCoinTooltip, closeTooltip: closeCoinTooltip } =
     useTooltip(
-      state.me.capabilities.canDonateCoins === true
+      state.me.capabilities.canDonateCoins === true && !isMe
         ? {
             enabled: true,
             title: "Donate coins",
@@ -182,7 +182,7 @@ export const PlayerStats = ({
         onMouseEnter={setCoinTooltip}
         onMouseLeave={closeCoinTooltip}
         className={cn(
-          "flex cursor-pointer items-center gap-1",
+          "flex items-center gap-1",
           !isMe &&
             (state.me.capabilities.canDonateCoins === true
               ? "cursor-pointer"
