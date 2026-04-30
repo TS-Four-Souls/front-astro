@@ -129,7 +129,7 @@ export const MainMenu = () => {
   };
 
   const rollback = () => {
-    socket.emit("rollback", null, (response) => {
+    socket.emit("rollback", issuer, (response) => {
       if (response.status === 200) {
         toast(
           "success",
