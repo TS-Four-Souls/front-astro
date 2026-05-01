@@ -106,11 +106,6 @@ export const MainMenu = () => {
               },
               (response) => {
                 if (response.status === 200) {
-                  toast(
-                    "success",
-                    "CHEAT MODE",
-                    "You've looted the selected cards",
-                  );
                 } else {
                   toast("error", "CHEAT MODE", response.error);
                 }
@@ -165,11 +160,6 @@ export const MainMenu = () => {
               },
               (response) => {
                 if (response.status === 200) {
-                  toast(
-                    "success",
-                    "CHEAT MODE",
-                    "You've gained the selected treasures",
-                  );
                 } else {
                   toast("error", "CHEAT MODE", response.error);
                 }
@@ -210,11 +200,6 @@ export const MainMenu = () => {
               },
               (response) => {
                 if (response.status === 200) {
-                  toast(
-                    "success",
-                    "CHEAT MODE",
-                    "You've removed the selected cards",
-                  );
                 } else {
                   toast("error", "CHEAT MODE", response.error);
                 }
@@ -238,7 +223,10 @@ export const MainMenu = () => {
       promptId,
       isUnique: false,
       prompt: "Select amount of coins to gain",
-      options: Array.from({ length: 10 }, (_, i) => ({ type: "number", payload: i + 1 })),
+      options: Array.from({ length: 10 }, (_, i) => ({
+        type: "number",
+        payload: i + 1,
+      })),
       minCount: 1,
       maxCount: 1,
       onSubmit: (selections) => {
@@ -251,7 +239,6 @@ export const MainMenu = () => {
           },
           (response) => {
             if (response.status === 200) {
-              toast("success", "CHEAT MODE", `You've gained ${coins} coins`);
             } else {
               toast("error", "CHEAT MODE", response.error);
             }
@@ -273,7 +260,10 @@ export const MainMenu = () => {
           promptId,
           isUnique: false,
           prompt: "Select a monster card to put in a slot",
-          options: response.cards.map((card) => ({ type: "card", payload: card })),
+          options: response.cards.map((card) => ({
+            type: "card",
+            payload: card,
+          })),
           minCount: 1,
           maxCount: 1,
           onSubmit: (selections) => {
@@ -285,7 +275,10 @@ export const MainMenu = () => {
               promptId: promptId2,
               isUnique: false,
               prompt: "Select a card to cover",
-              options: response.coverable.map((card) => ({ type: "card", payload: card })),
+              options: response.coverable.map((card) => ({
+                type: "card",
+                payload: card,
+              })),
               minCount: 1,
               maxCount: 1,
               onSubmit: (selections2) => {
@@ -297,11 +290,10 @@ export const MainMenu = () => {
                     card,
                     toCover,
                   },
-                  (resp) => {
-                    if (resp.status === 200) {
-                      toast("success", "CHEAT MODE", "Monster card placed in slot");
+                  (response) => {
+                    if (response.status === 200) {
                     } else {
-                      toast("error", "CHEAT MODE", resp.error);
+                      toast("error", "CHEAT MODE", response.error);
                     }
                   },
                 );
@@ -372,10 +364,10 @@ export const MainMenu = () => {
       />
       <Button
         onClick={() => {
-          closeMainMenu();
-          debugRemoveCard();
+            closeMainMenu();
+            debugRemoveCard();
         }}
-        label="[CHEAT] Remove card"
+        label="[CHEAT] Discard card"
       />
       <Button
         onClick={() => {
