@@ -265,6 +265,63 @@ export const MainMenu = () => {
     });
   };
 
+  const debugPutMonsterCardInSlot = () => {
+    socket.emit("debugListMonsterDeck", issuer, (response) => {
+      if (response.status === 200) {
+        const promptId = `debug-list-monster-deck-${Date.now()}`;
+        addPrompt({
+          promptId,
+          isUnique: false,
+          prompt: "Select a monster card to put in a slot",
+          options: response.cards.map((card) => ({ type: "card", payload: card })),
+          minCount: 1,
+          maxCount: 1,
+          onSubmit: (selections) => {
+            const card = selections[0].payload;
+            removePrompt(promptId);
+
+            const promptId2 = `debug-list-monster-cover-${Date.now()}`;
+            addPrompt({
+              promptId: promptId2,
+              isUnique: false,
+              prompt: "Select a card to cover",
+              options: response.coverable.map((card) => ({ type: "card", payload: card })),
+              minCount: 1,
+              maxCount: 1,
+              onSubmit: (selections2) => {
+                const toCover = selections2[0].payload;
+                socket.emit(
+                  "debugPutMonsterCardInSlot",
+                  {
+                    ...issuer,
+                    card,
+                    toCover,
+                  },
+                  (resp) => {
+                    if (resp.status === 200) {
+                      toast("success", "CHEAT MODE", "Monster card placed in slot");
+                    } else {
+                      toast("error", "CHEAT MODE", resp.error);
+                    }
+                  },
+                );
+                removePrompt(promptId2);
+              },
+              onCancel: () => {
+                removePrompt(promptId2);
+              },
+            });
+          },
+          onCancel: () => {
+            removePrompt(promptId);
+          },
+        });
+      } else {
+        toast("error", "CHEAT MODE", response.error);
+      }
+    });
+  };
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
@@ -298,6 +355,13 @@ export const MainMenu = () => {
           debugGainTreasure();
         }}
         label="[CHEAT] Gain treasure"
+      />
+      <Button
+        onClick={() => {
+          closeMainMenu();
+          debugPutMonsterCardInSlot();
+        }}
+        label="[CHEAT] Put monster card in slot"
       />
       <Button
         onClick={() => {
