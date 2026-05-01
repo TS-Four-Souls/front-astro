@@ -232,6 +232,39 @@ export const MainMenu = () => {
     });
   };
 
+  const debugGainCoins = () => {
+    const promptId = `debug-gain-coins-${Date.now()}`;
+    addPrompt({
+      promptId,
+      isUnique: false,
+      prompt: "Select amount of coins to gain",
+      options: Array.from({ length: 10 }, (_, i) => ({ type: "number", payload: i + 1 })),
+      minCount: 1,
+      maxCount: 1,
+      onSubmit: (selections) => {
+        const coins = selections[0].payload as number;
+        socket.emit(
+          "debugGainCoins",
+          {
+            ...issuer,
+            coins,
+          },
+          (response) => {
+            if (response.status === 200) {
+              toast("success", "CHEAT MODE", `You've gained ${coins} coins`);
+            } else {
+              toast("error", "CHEAT MODE", response.error);
+            }
+          },
+        );
+        removePrompt(promptId);
+      },
+      onCancel: () => {
+        removePrompt(promptId);
+      },
+    });
+  };
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
@@ -265,6 +298,13 @@ export const MainMenu = () => {
           debugGainTreasure();
         }}
         label="[CHEAT] Gain treasure"
+      />
+      <Button
+        onClick={() => {
+          closeMainMenu();
+          debugGainCoins();
+        }}
+        label="[CHEAT] Gain coins"
       />
       <Button
         onClick={() => {
