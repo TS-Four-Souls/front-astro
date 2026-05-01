@@ -2,6 +2,7 @@
 export type PlayerAnchor = "coins";
 
 export type GameAnimationBridge = {
+  stackEl: HTMLDivElement | null;
   meHandEls: Map<number, HTMLDivElement>;
   /** Any in-play item card on the table (all players), keyed by card globalId. */
   inPlayCardEls: Map<number, HTMLDivElement>;
@@ -14,6 +15,7 @@ export type GameAnimationBridge = {
 };
 
 export const createAnimationBridge = (): GameAnimationBridge => ({
+  stackEl: null,
   meHandEls: new Map(),
   inPlayCardEls: new Map(),
   opponentHandPileEls: new Map(),

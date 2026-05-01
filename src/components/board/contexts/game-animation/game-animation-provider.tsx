@@ -14,18 +14,22 @@ import {
   type GameAnimationBridge,
   type PlayerAnchor,
   type Point2D,
+  type RectPlain,
 } from "./types";
 import { LootCardGhost } from "./loot-card-ghost";
 import { CoinProjectile } from "./coin-projectile";
 
 const MAX_VISIBLE_COINS = 100;
 const COIN_STAGGER_MS = 60;
+const STACK_TARGET_OFFSET_LEFT = 24;
+const STACK_TARGET_OFFSET_TOP = 24;
+const STACK_TARGET_SIZE = 40;
 
 type LootCardGhostItem = {
   id: number;
   slug: string;
   fromRect: { left: number; top: number; width: number; height: number };
-  toPoint: Point2D;
+  toRect: RectPlain;
 };
 
 type CoinBurstItem = {
@@ -100,11 +104,20 @@ const AnimationsFromState = ({
         const isMe = a.player === state.me.name;
         if (isMe) {
           const prev = bridge.previousMeByCard.get(a.card.globalId);
-          if (prev) onLootToStack({ slug: prev.slug, fromRect: prev.rect });
+          if (prev) {
+            onLootToStack({
+              slug: prev.slug,
+              fromRect: prev.rect,
+            });
+          }
         } else {
           const prevPile = bridge.previousOppPile.get(a.player);
-          if (prevPile)
-            onLootToStack({ slug: a.card.slug, fromRect: prevPile });
+          if (prevPile) {
+            onLootToStack({
+              slug: a.card.slug,
+              fromRect: prevPile,
+            });
+          }
         }
         continue;
       }
@@ -151,6 +164,25 @@ function getPlayerCoinRect(bridge: GameAnimationBridge, playerName: string) {
   );
 }
 
+function getFixedStackTargetRect(stackEl: HTMLDivElement | null, fromRect: DOMRect) {
+  if (!stackEl) {
+    return {
+      left: fromRect.left,
+      top: fromRect.top,
+      width: fromRect.width * 0.4,
+      height: fromRect.height * 0.4,
+    };
+  }
+
+  const stackRect = stackEl.getBoundingClientRect();
+  return {
+    left: stackRect.left + STACK_TARGET_OFFSET_LEFT,
+    top: stackRect.top + STACK_TARGET_OFFSET_TOP,
+    width: STACK_TARGET_SIZE,
+    height: STACK_TARGET_SIZE,
+  };
+}
+
 function refreshHandSnapshots(
   bridge: GameAnimationBridge,
   state: DetailedState,
@@ -189,21 +221,21 @@ export const GameAnimationProvider = ({
 
   const setStackEl = useCallback((el: HTMLDivElement | null) => {
     stackElRef.current = el;
+    bridgeRef.current.stackEl = el;
   }, []);
 
   const onLootToStack = useCallback(
     ({ slug, fromRect }: { slug: string; fromRect: DOMRect }) => {
-      const stackEl = stackElRef.current;
-      if (!stackEl) return;
-      const stackRect = stackEl.getBoundingClientRect();
-      const toPoint = {
-        x: stackRect.left + stackRect.width / 2,
-        y: stackRect.top + stackRect.height / 2,
-      };
       const id = nextIdRef.current++;
+      const toRect = getFixedStackTargetRect(stackElRef.current, fromRect);
       setLootGhosts((prev) => [
         ...prev,
-        { id, slug, fromRect: rectPlain(fromRect), toPoint },
+        {
+          id,
+          slug,
+          fromRect: rectPlain(fromRect),
+          toRect,
+        },
       ]);
     },
     [],
