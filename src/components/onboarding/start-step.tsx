@@ -14,6 +14,19 @@ export const StartStep = ({ room }: StartStepProps) => {
   const { issuer, gameParameters, players } = room;
   const { toast } = useToastContext();
   const loadGameInputRef = useRef<HTMLInputElement>(null);
+  const loadParametersInputRef = useRef<HTMLInputElement>(null);
+
+  const downloadTextFile = (content: string, filename: string) => {
+    const blob = new Blob([content], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
 
   const onChangeGameParameter = (request: Requests.SetGameParameter) => {
     socket.emit("setGameParameter", request, (response) => {
@@ -88,6 +101,74 @@ export const StartStep = ({ room }: StartStepProps) => {
     event.target.value = "";
   };
 
+  const onLoadParametersPress = () => {
+    loadParametersInputRef.current?.click();
+  };
+
+  const onLoadParametersFileSelected = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const settings = reader.result;
+      if (typeof settings !== "string") {
+        toast("error", "Load parameters", "Could not read selected file");
+        return;
+      }
+
+      socket.emit(
+        "loadGameSettings",
+        {
+          issuer,
+          settings,
+        },
+        (response) => {
+          if (response.status === 200) {
+            toast("success", "Load parameters", "Game parameters loaded");
+          } else {
+            toast("error", "Load parameters", response.error);
+          }
+        },
+      );
+    };
+
+    reader.onerror = () => {
+      toast("error", "Load parameters", "Could not read selected file");
+    };
+
+    reader.readAsText(file);
+    event.target.value = "";
+  };
+
+  const onSaveParametersPress = () => {
+    socket.emit("getGameSettings", issuer, (response) => {
+      if (response.status === 200) {
+        const now = new Date();
+        const datePart = [
+          now.getFullYear(),
+          String(now.getMonth() + 1).padStart(2, "0"),
+          String(now.getDate()).padStart(2, "0"),
+        ].join("-");
+        const timePart = [
+          String(now.getHours()).padStart(2, "0"),
+          String(now.getMinutes()).padStart(2, "0"),
+          String(now.getSeconds()).padStart(2, "0"),
+        ].join("-");
+        const filename = `four-souls_settings_${datePart}_${timePart}.txt`;
+
+        downloadTextFile(response.settings, filename);
+        toast("success", "Save parameters", `Saved as ${filename}`);
+      } else {
+        toast("error", "Save parameters", response.error);
+      }
+    });
+  };
+
   return (
     <div className="flex w-full items-start gap-16">
       <div className="flex flex-1 justify-between gap-16">
@@ -144,12 +225,29 @@ export const StartStep = ({ room }: StartStepProps) => {
               label="Load game"
               className="w-120"
             />
+            <Button
+              onClick={onSaveParametersPress}
+              label="Save parameters"
+              className="w-120"
+            />
+            <Button
+              onClick={onLoadParametersPress}
+              label="Load parameters"
+              className="w-120"
+            />
             <input
               ref={loadGameInputRef}
               type="file"
               accept=".log,text/plain"
               className="hidden"
               onChange={onLoadGameFileSelected}
+            />
+            <input
+              ref={loadParametersInputRef}
+              type="file"
+              accept=".txt,text/plain"
+              className="hidden"
+              onChange={onLoadParametersFileSelected}
             />
           </div>
         </div>
