@@ -150,10 +150,10 @@ export const Card = ({
 
         {counter !== undefined && (
           <div
-            className="absolute bottom-[3%] left-[5%] flex items-center justify-center rounded-full font-statblock text-black shadow-lg"
+            className="absolute bottom-[3%] left-[50%] flex items-center justify-center rounded-full font-statblock text-black shadow-lg"
             style={{
               fontSize: size * 0.09 + "em",
-              width: size * 0.75 + "em",
+              width: "0%",
               height: size * 0.005 + "em",
             }}>
             {counter > 0 ? counter.toString().replaceAll("0", "O") : counter}
