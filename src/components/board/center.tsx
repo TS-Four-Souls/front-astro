@@ -25,6 +25,7 @@ export const Center = ({ state }: CenterProps) => {
     registerLootDeckEl,
     registerTreasureDeckEl,
     registerTreasureShopPileEl,
+    registerMonsterSlotEl,
   } = useGameAnimation();
 
   const purchaseTreasure = (index: number | "top") => {
@@ -323,9 +324,11 @@ export const Center = ({ state }: CenterProps) => {
                 requirement.target.slug === card.top.slug,
             );
             return (
+              <div
+                key={card.top.globalId}
+                ref={(el) => registerMonsterSlotEl(card.top.globalId, el)}>
               <Pile
                 globalId={card.top.globalId}
-                key={card.top.slug}
                 cards={[
                   ...card.covered,
                   {
@@ -374,6 +377,7 @@ export const Center = ({ state }: CenterProps) => {
                   />
                 )}
               />
+              </div>
             );
           })}
         </div>
