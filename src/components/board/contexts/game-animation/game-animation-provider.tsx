@@ -47,6 +47,10 @@ export interface GameAnimationContextValue {
     el: HTMLDivElement | null,
   ) => void;
   registerMonsterSlotEl: (globalId: number, el: HTMLDivElement | null) => void;
+  registerBonusSoulPileEl: (
+    globalId: number,
+    el: HTMLDivElement | null,
+  ) => void;
   registerMeHandCardEl: (globalId: number, el: HTMLDivElement | null) => void;
   registerInPlayCardEl: (globalId: number, el: HTMLDivElement | null) => void;
   registerOpponentHandPile: (
@@ -66,6 +70,7 @@ const GameAnimationContext = createContext<GameAnimationContextValue>({
   registerTreasureDeckEl: () => {},
   registerTreasureShopPileEl: () => {},
   registerMonsterSlotEl: () => {},
+  registerBonusSoulPileEl: () => {},
   registerMeHandCardEl: () => {},
   registerInPlayCardEl: () => {},
   registerOpponentHandPile: () => {},
@@ -122,6 +127,7 @@ const AnimationsFromState = ({
       refreshHandSnapshots(bridge, state);
       refreshTreasureShopSnapshots(bridge, state);
       refreshMonsterSnapshots(bridge, state);
+      refreshBonusSoulSnapshots(bridge, state);
       bridge.initialized = true;
       return;
     }
@@ -257,11 +263,29 @@ const AnimationsFromState = ({
         }
         continue;
       }
+
+      if (a.type === "obtainBonusSoul") {
+        const fromRect =
+          bridge.previousBonusSoulPileByCard.get(a.card.globalId) ??
+          bridge.bonusSoulPileEls.get(a.card.globalId)?.getBoundingClientRect() ??
+          null;
+        const soulsEl = bridge.playerAnchors.get(a.player)?.get("souls");
+        const toRect = soulsEl?.getBoundingClientRect() ?? null;
+        if (fromRect && toRect) {
+          onMonsterSoulToCounter({
+            fromRect,
+            toRect,
+            slug: a.card.slug,
+          });
+        }
+        continue;
+      }
     }
 
     refreshHandSnapshots(bridge, state);
     refreshTreasureShopSnapshots(bridge, state);
     refreshMonsterSnapshots(bridge, state);
+    refreshBonusSoulSnapshots(bridge, state);
   }, [
     state,
     bridgeRef,
@@ -362,6 +386,24 @@ function refreshTreasureShopSnapshots(
   }
 }
 
+function refreshBonusSoulSnapshots(
+  bridge: GameAnimationBridge,
+  state: DetailedState,
+) {
+  bridge.previousBonusSoulPileByCard.clear();
+  const souls = state.bonusSouls;
+  if (!souls) return;
+  for (const soul of souls) {
+    const el = bridge.bonusSoulPileEls.get(soul.globalId);
+    if (el) {
+      bridge.previousBonusSoulPileByCard.set(
+        soul.globalId,
+        el.getBoundingClientRect(),
+      );
+    }
+  }
+}
+
 export const GameAnimationProvider = ({
   children,
 }: {
@@ -401,6 +443,15 @@ export const GameAnimationProvider = ({
       const b = bridgeRef.current;
       if (el) b.monsterSlotEls.set(globalId, el);
       else b.monsterSlotEls.delete(globalId);
+    },
+    [],
+  );
+
+  const registerBonusSoulPileEl = useCallback(
+    (globalId: number, el: HTMLDivElement | null) => {
+      const b = bridgeRef.current;
+      if (el) b.bonusSoulPileEls.set(globalId, el);
+      else b.bonusSoulPileEls.delete(globalId);
     },
     [],
   );
@@ -573,6 +624,7 @@ export const GameAnimationProvider = ({
         registerTreasureDeckEl,
         registerTreasureShopPileEl,
         registerMonsterSlotEl,
+        registerBonusSoulPileEl,
         registerMeHandCardEl,
         registerInPlayCardEl,
         registerOpponentHandPile,

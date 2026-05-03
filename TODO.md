@@ -21,11 +21,11 @@
 - Switch to 2D
 - Animations for draw, play loot, souls to help with game readibility
   - V1:
-    - [x] Loot card played -> for players, the card goes from hand to stack, for others, the card flip/appear then go to stack
+    - [x] Loot card played
     - [x] Give coins
     - [x] Draw loot card from top deck
-    - Draw treasure from top deck or shop
-    - Gain bonus souls/monsters souls
+    - [x] Buy treasure from top deck or shop
+    - [x] Gain bonus souls/monsters souls
   - V2:
     - Loot card effect resolve -> card goes from stack to discard
     - Passive effect from monster cards
@@ -43,3 +43,4 @@
 - Animated starry background
 - Fonts?
 - dice animation (3D?)
+- Cheat apply x times when the game was quit and restarted x times

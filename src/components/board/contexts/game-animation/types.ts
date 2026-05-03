@@ -15,6 +15,10 @@ export type GameAnimationBridge = {
   monsterSlotEls: Map<number, HTMLDivElement>;
   /** Previous-frame rects for monster slots before the card leaves play (obtainMonsterSoul). */
   previousMonsterSlotByCard: Map<number, DOMRect>;
+  /** Bonus soul piles (center column), keyed by card globalId. */
+  bonusSoulPileEls: Map<number, HTMLDivElement>;
+  /** Previous-frame rects before the bonus soul is granted (obtainBonusSoul). */
+  previousBonusSoulPileByCard: Map<number, DOMRect>;
   meHandEls: Map<number, HTMLDivElement>;
   /** Any in-play item card on the table (all players), keyed by card globalId. */
   inPlayCardEls: Map<number, HTMLDivElement>;
@@ -34,6 +38,8 @@ export const createAnimationBridge = (): GameAnimationBridge => ({
   previousTreasureShopPileByCard: new Map(),
   monsterSlotEls: new Map(),
   previousMonsterSlotByCard: new Map(),
+  bonusSoulPileEls: new Map(),
+  previousBonusSoulPileByCard: new Map(),
   meHandEls: new Map(),
   inPlayCardEls: new Map(),
   opponentHandPileEls: new Map(),

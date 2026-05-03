@@ -26,6 +26,7 @@ export const Center = ({ state }: CenterProps) => {
     registerTreasureDeckEl,
     registerTreasureShopPileEl,
     registerMonsterSlotEl,
+    registerBonusSoulPileEl,
   } = useGameAnimation();
 
   const purchaseTreasure = (index: number | "top") => {
@@ -135,12 +136,15 @@ export const Center = ({ state }: CenterProps) => {
       {state.bonusSouls && (
         <div className="flex shrink-0 flex-col place-items-center gap-2">
           {state.bonusSouls.map((soul) => (
-            <Pile
-              key={soul.slug}
-              cards={soul.granted ? [] : [soul]}
-              size={105}
-              onHoverPopover={() => <CardHoverPreview card={soul} />}
-            />
+            <div
+              key={soul.globalId}
+              ref={(el) => registerBonusSoulPileEl(soul.globalId, el)}>
+              <Pile
+                cards={soul.granted ? [] : [soul]}
+                size={105}
+                onHoverPopover={() => <CardHoverPreview card={soul} />}
+              />
+            </div>
           ))}
         </div>
       )}
