@@ -3,7 +3,7 @@ import { JoinForm } from "../onboarding/join-form";
 import { StartStep } from "../onboarding/start-step";
 import { Board } from "../board/board";
 import { socket } from "@/utils/socket";
-import { schemas, type Room, type RoomBroadcast } from "@/shared/api";
+import { type Room, type RoomBroadcast } from "@/shared/api";
 import { GameProvider } from "../board/contexts/game-context";
 import { Loading } from "../onboarding/loading";
 import { MainMenuProvider } from "../board/contexts/main-menu-context";
@@ -35,9 +35,6 @@ export const GamePage = () => {
     function onRoomChanged(room: Room | null) {
       console.log("[🔌 Socket] Room changed", room);
       setRoom(room);
-      if (room?.room.state === "joined") {
-        storage.setItem("issuer", JSON.stringify(room.room.issuer));
-      }
     }
 
     function onAnyOutgoing(event: string, ...args: any[]) {
@@ -119,20 +116,10 @@ export const OnboardingPages = ({ room }: OnboardingPagesProps) => {
     const userId = storage.getItem("userId");
     if (userId) {
       try {
-        const textLocalStorageIssuer = storage.getItem("issuer") ?? "";
-        const objectLocalStorageIssuer = JSON.parse(textLocalStorageIssuer);
-        const localStorageIssuer = schemas.issuer.parse(
-          objectLocalStorageIssuer,
-        );
-
-        socket.emit(
-          "rejoin",
-          { userId, issuer: localStorageIssuer },
-          (response) => {
-            console.log("[🔌 Socket] Join as user response", response);
-            setTryingToRejoin(false);
-          },
-        );
+        socket.emit("rejoin", { userId }, (response) => {
+          console.log("[🔌 Socket] Join as user response", response);
+          setTryingToRejoin(false);
+        });
         return;
       } catch (error) {
         console.log("[🔌 Socket] Invalid issuer", error);

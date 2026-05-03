@@ -259,8 +259,8 @@ export const StartStep = ({ room }: StartStepProps) => {
                     onCharacterSelectionPress,
                   }}
                 />
-                {players.map((player) => (
-                  <PlayerCard key={player.id} player={player} />
+                {players.map((player, index) => (
+                  <PlayerCard key={index} player={player} />
                 ))}
               </div>
               <div className="mt-4">
