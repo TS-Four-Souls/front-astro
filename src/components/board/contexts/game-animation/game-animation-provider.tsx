@@ -164,7 +164,10 @@ function getPlayerCoinRect(bridge: GameAnimationBridge, playerName: string) {
   );
 }
 
-function getFixedStackTargetRect(stackEl: HTMLDivElement | null, fromRect: DOMRect) {
+function getFixedStackTargetRect(
+  stackEl: HTMLDivElement | null,
+  fromRect: DOMRect,
+) {
   if (!stackEl) {
     return {
       left: fromRect.left,

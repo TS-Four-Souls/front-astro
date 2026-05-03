@@ -234,6 +234,15 @@ export const GenericOption = ({
           children={children}
         />
       );
+    case "character":
+      return (
+        <CharacterOption
+          option={option}
+          onPress={onPress}
+          selected={selected}
+          children={children}
+        />
+      );
     case "boolean":
       return (
         <BooleanOption
@@ -442,6 +451,54 @@ export const CardOption = ({
         card={option.payload}
         className={cn("m-2 w-64", selected && "outline-6 outline-blue-500")}
       />
+      <div className="absolute inset-4">{children}</div>
+    </div>
+  );
+};
+
+export const CharacterOption = ({
+  option,
+  onPress,
+  children,
+  selected,
+}: TemplateOptionProps<"character">) => {
+  return (
+    <div
+      className={cn(
+        "relative flex items-center gap-2 p-8",
+        onPress && "cursor-pointer",
+        selected && "rounded-2xl outline-6 outline-blue-500",
+      )}
+      onClick={onPress}>
+      {option.payload.character === "random" ? (
+        <div className="grid items-center gap-2">
+          <CardImage
+            card={CardType.CharacterCard}
+            className={cn("col-start-1 row-start-1 w-48")}
+          />
+          <p className="col-start-1 row-start-1 text-center font-main text-[800%] font-bold text-black uppercase text-shadow-amber-50 text-shadow-lg">
+            ?
+          </p>
+        </div>
+      ) : (
+        <CardImage
+          card={{ slug: option.payload.character }}
+          className={"w-48"}
+        />
+      )}
+      {option.payload.eternal === "random" ? (
+        <div className="grid items-center gap-2">
+          <CardImage
+            card={CardType.TreasureCard}
+            className={cn("col-start-1 row-start-1 w-48")}
+          />
+          <p className="col-start-1 row-start-1 text-center font-main text-[800%] font-bold text-black uppercase text-shadow-amber-50 text-shadow-lg">
+            ?
+          </p>
+        </div>
+      ) : (
+        <CardImage card={{ slug: option.payload.eternal }} className={"w-48"} />
+      )}
       <div className="absolute inset-4">{children}</div>
     </div>
   );

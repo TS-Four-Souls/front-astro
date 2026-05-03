@@ -359,8 +359,8 @@ export const MainMenu = () => {
       />
       <Button
         onClick={() => {
-            closeMainMenu();
-            debugRemoveCard();
+          closeMainMenu();
+          debugRemoveCard();
         }}
         label="[CHEAT] Discard card"
       />

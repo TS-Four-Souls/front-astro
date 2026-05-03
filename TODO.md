@@ -27,12 +27,15 @@
     - Gain bonus souls/monsters souls
   - V2:
     - Loot card effect resolve -> card goes from stack to discard
+    - Passive effect from monster cards
 
 - Contact form/bug report
-- When a cheat tool is used, everyone should be notified
+- [x] When a cheat tool is used, everyone should be notified
 - Only keep base game
 - Purge inactive games
 - Board background
+- Use canUseOnBoardSelection in the selection logic
+- Replace start game with "I'm ready". When everyone is ready, the game starts
 
 - Define logo/domain/name
 - Animated starry background

@@ -125,7 +125,8 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
               type === "success" && "bg-green-600/20",
               type === "info" && "bg-blue-600/20",
               type === "warning" && "bg-[#eed202]/40",
-              type === "victory" && "bg-linear-to-r from-amber-400/40 to-mist-400/40",
+              type === "victory" &&
+                "bg-linear-to-r from-amber-400/40 to-mist-400/40",
             )}
           />
         </div>

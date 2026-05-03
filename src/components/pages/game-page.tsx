@@ -99,7 +99,9 @@ export const GamePage = () => {
 
   return (
     <OnboardingLayout headerMode={room?.room.state === "joined"}>
-      <OnboardingPages room={room} />
+      <BoardSelectionProvider>
+        <OnboardingPages room={room} />
+      </BoardSelectionProvider>
     </OnboardingLayout>
   );
 };
