@@ -51,7 +51,7 @@ export const MainMenu = () => {
   };
 
   const onSaveGamePress = () => {
-    socket.emit("getGameLogs", issuer, (response) => {
+    socket.emit("getGameLogs", null, (response) => {
       if (response.status === 200) {
         const now = new Date();
         const datePart = [
@@ -84,7 +84,7 @@ export const MainMenu = () => {
   };
 
   const debugGainLoot = () => {
-    socket.emit("debugListLoot", issuer, (response) => {
+    socket.emit("debugListLoot", null, (response) => {
       if (response.status === 200) {
         const promptId = `debug-list-loot-${Date.now()}`;
         addPrompt({
@@ -101,7 +101,6 @@ export const MainMenu = () => {
             socket.emit(
               "debugLoot",
               {
-                ...issuer,
                 cards: selections.map((selection) => selection.payload),
               },
               (response) => {
@@ -124,7 +123,7 @@ export const MainMenu = () => {
   };
 
   const rollback = () => {
-    socket.emit("rollback", issuer, (response) => {
+    socket.emit("rollback", null, (response) => {
       if (response.status === 200) {
       } else {
         toast("error", "Rollback", response.error);
@@ -133,7 +132,7 @@ export const MainMenu = () => {
   };
 
   const debugGainTreasure = () => {
-    socket.emit("debugListTreasure", issuer, (response) => {
+    socket.emit("debugListTreasure", null, (response) => {
       if (response.status === 200) {
         const promptId = `debug-list-treasure-${Date.now()}`;
         addPrompt({
@@ -150,7 +149,6 @@ export const MainMenu = () => {
             socket.emit(
               "debugGainTreasure",
               {
-                ...issuer,
                 cards: selections.map((selection) => selection.payload),
               },
               (response) => {
@@ -173,7 +171,7 @@ export const MainMenu = () => {
   };
 
   const debugRemoveCard = () => {
-    socket.emit("debugListCardsICanRemove", issuer, (response) => {
+    socket.emit("debugListCardsICanRemove", null, (response) => {
       if (response.status === 200) {
         const promptId = `debug-list-cards-i-can-remove-${Date.now()}`;
         addPrompt({
@@ -190,7 +188,6 @@ export const MainMenu = () => {
             socket.emit(
               "debugRemoveCards",
               {
-                ...issuer,
                 cards: selections.map((selection) => selection.payload),
               },
               (response) => {
@@ -229,7 +226,6 @@ export const MainMenu = () => {
         socket.emit(
           "debugGainCoins",
           {
-            ...issuer,
             coins,
           },
           (response) => {
@@ -248,7 +244,7 @@ export const MainMenu = () => {
   };
 
   const debugPutMonsterCardInSlot = () => {
-    socket.emit("debugListMonsterDeck", issuer, (response) => {
+    socket.emit("debugListMonsterDeck", null, (response) => {
       if (response.status === 200) {
         const promptId = `debug-list-monster-deck-${Date.now()}`;
         addPrompt({
@@ -281,7 +277,6 @@ export const MainMenu = () => {
                 socket.emit(
                   "debugPutMonsterCardInSlot",
                   {
-                    ...issuer,
                     card,
                     toCover,
                   },

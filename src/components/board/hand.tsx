@@ -18,7 +18,7 @@ export const Hand = () => {
     setIsHandUp(false);
     socket.emit(
       "playCard",
-      { issuer, index, effectIndex: "tap", targetChoices: selections },
+      { index, effectIndex: "tap", targetChoices: selections },
       (response) => {
         switch (response.status) {
           case 200:

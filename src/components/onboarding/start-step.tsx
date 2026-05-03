@@ -52,7 +52,7 @@ export const StartStep = ({ room }: StartStepProps) => {
   };
 
   const requestStart = async () => {
-    socket.emit("start", { issuer }, (response) => {
+    socket.emit("start", null, (response) => {
       switch (response.status) {
         case 200:
           break;
@@ -84,7 +84,7 @@ export const StartStep = ({ room }: StartStepProps) => {
         return;
       }
 
-      socket.emit("loadGame", { issuer, logs }, (response) => {
+      socket.emit("loadGame", { logs }, (response) => {
         switch (response.status) {
           case 200:
             toast("success", "Load game", "Saved game loaded successfully");
@@ -128,7 +128,6 @@ export const StartStep = ({ room }: StartStepProps) => {
       socket.emit(
         "loadGameSettings",
         {
-          issuer,
           settings,
         },
         (response) => {
@@ -176,7 +175,7 @@ export const StartStep = ({ room }: StartStepProps) => {
 
     socket.emit(
       "selectCharacter",
-      { issuer, character: nextCharacter },
+      { character: nextCharacter },
       (response) => {
         switch (response.status) {
           case 200:
@@ -196,7 +195,7 @@ export const StartStep = ({ room }: StartStepProps) => {
 
     socket.emit(
       "selectCharacter",
-      { issuer, character: previousCharacter },
+      { character: previousCharacter },
       (response) => {
         switch (response.status) {
           case 200:
@@ -220,7 +219,7 @@ export const StartStep = ({ room }: StartStepProps) => {
       onSubmit: (selectedOptions) => {
         socket.emit(
           "selectCharacter",
-          { issuer, character: selectedOptions[0].payload },
+          { character: selectedOptions[0].payload },
           (response) => {
             switch (response.status) {
               case 200:
@@ -357,7 +356,6 @@ export const StartStep = ({ room }: StartStepProps) => {
                       onChangeGameParameter({
                         parameter: parameter,
                         value,
-                        issuer,
                       });
                     }}
                   />
@@ -368,7 +366,6 @@ export const StartStep = ({ room }: StartStepProps) => {
                       onChangeGameParameter({
                         parameter: parameter,
                         value,
-                        issuer,
                       });
                     }}
                   />

@@ -57,7 +57,6 @@ export const Me = () => {
           socket.emit(
             "submitSelection",
             {
-              issuer,
               requestId: pendingSelection.requestId,
               selections: selectedOptions,
             },
@@ -84,7 +83,7 @@ export const Me = () => {
     ) => {
       socket.emit(
         "activate",
-        { issuer, index, effectIndex, targetChoices: selections },
+        { index, effectIndex, targetChoices: selections },
         (response) => {
           switch (response.status) {
             case 200:

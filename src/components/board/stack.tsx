@@ -39,7 +39,7 @@ export const Stack = () => {
   }, [setStackEl]);
 
   const resolveStack = () => {
-    socket.emit("resolve", { issuer }, (response) => {
+    socket.emit("resolve", null, (response) => {
       switch (response.status) {
         case 200:
           break;
@@ -100,7 +100,7 @@ export const Stack = () => {
 
       socket.emit(
         "insertStackElementBefore",
-        { issuer, elementToMoveStackId, targetStackId },
+        { elementToMoveStackId, targetStackId },
         (response) => {
           switch (response.status) {
             case 200:

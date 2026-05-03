@@ -22,7 +22,7 @@ export const Center = ({ state }: CenterProps) => {
   const { displayPileDetails } = usePileDetails();
 
   const purchaseTreasure = (index: number | "top") => {
-    socket.emit("purchase", { issuer, index }, (response) => {
+    socket.emit("purchase", { index }, (response) => {
       switch (response.status) {
         case 200:
           break;
@@ -70,7 +70,7 @@ export const Center = ({ state }: CenterProps) => {
 
       socket.emit(
         "attackMonster",
-        { issuer, index: "top", replaceIndex },
+        { index: "top", replaceIndex },
         (response) => {
           if (response.status === 200) {
             toast(
@@ -91,7 +91,7 @@ export const Center = ({ state }: CenterProps) => {
       return;
     }
 
-    socket.emit("attackMonster", { issuer, index }, (response) => {
+    socket.emit("attackMonster", { index }, (response) => {
       if (response.status === 200) {
         toast(
           "success",
