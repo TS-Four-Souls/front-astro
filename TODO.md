@@ -15,3 +15,32 @@
 - history icons don't have a shrink-0
 - get a zoomed view of the card when hovering it.
 - If new board state, refresh prompt options
+
+## Release
+
+- Switch to 2D
+- Animations for draw, play loot, souls to help with game readibility
+  - V1:
+    - [x] Loot card played
+    - [x] Give coins
+    - [x] Draw loot card from top deck
+    - [x] Buy treasure from top deck or shop
+    - [x] Gain bonus souls/monsters souls
+  - V2:
+    - Loot card effect resolve -> card goes from stack to discard
+    - Passive effect from monster cards
+
+- Contact form/bug report
+- [x] When a cheat tool is used, everyone should be notified
+- Only keep base game
+- Purge inactive games
+- Board background
+- Use canUseOnBoardSelection in the selection logic
+- Replace start game with "I'm ready". When everyone is ready, the game starts
+- Remove animationID
+
+- Define logo/domain/name
+- Animated starry background
+- Fonts?
+- dice animation (3D?)
+- Cheat apply x times when the game was quit and restarted x times

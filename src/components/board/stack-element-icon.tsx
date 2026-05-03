@@ -309,6 +309,7 @@ export const SelectionContent = ({
     case "couplePlayerHand":
       return `${selection.payload.player.name} hand`;
     case "object":
+    case "character":
     case "array":
     case "null":
     case "unknown":

@@ -4,6 +4,7 @@ import { Pile } from "../pile";
 import { cn } from "@/utils/cn";
 import { HandPile } from "../hand-pile";
 import { CardHoverPreview } from "../card-hover-preview";
+import { useGameAnimation } from "../contexts/game-animation";
 
 interface TopPlayerProps {
   player: Player;
@@ -12,6 +13,7 @@ interface TopPlayerProps {
 const MAX_COLUMNS = 8;
 
 export const TopPlayer = ({ player }: TopPlayerProps) => {
+  const { registerInPlayCardEl } = useGameAnimation();
   // Create an array of arrays of 8 elements each, fill with undefined if needed
   const grid: InPlayCard[][] = Array.from(
     { length: Math.ceil(player.inPlay.length / MAX_COLUMNS) },
@@ -30,7 +32,7 @@ export const TopPlayer = ({ player }: TopPlayerProps) => {
     <div
       key={player.name}
       className={
-        "col-start-2 row-start-1 flex flex-col-reverse place-content-center place-items-center gap-6 transform-3d"
+        "col-start-2 row-start-1 flex flex-col-reverse place-content-center place-items-center gap-6"
       }>
       <PlayerStats
         name={player.name}
@@ -40,13 +42,10 @@ export const TopPlayer = ({ player }: TopPlayerProps) => {
         soulCards={player.soulCards}
         className={"flex-row gap-12 px-8 py-3"}
       />
-      <div
-        className={
-          "flex place-content-center place-items-center gap-8 transform-3d"
-        }>
+      <div className={"flex place-content-center place-items-center gap-8"}>
         {player.handSize > 0 && <HandPile player={player} />}
         <div
-          className={cn("grid grid-flow-row gap-2 transform-3d")}
+          className={cn("grid grid-flow-row gap-2")}
           style={{
             gridTemplateColumns: `repeat(${Math.min(player.inPlay.length, MAX_COLUMNS)}, 1fr)`,
           }}>
@@ -56,36 +55,39 @@ export const TopPlayer = ({ player }: TopPlayerProps) => {
             }
 
             return (
-              <Pile
-                globalId={card.globalId}
-                key={card.slug}
-                cards={[
-                  {
-                    slug: card.slug,
-                    charged: card.charged,
-                    eternal: card.eternal,
-                    engagedInCombat:
-                      player.inPlay[0].slug === card.slug &&
-                      player.isEngagedInCombat,
-                    engagedInPurchase:
-                      player.inPlay[0].slug === card.slug &&
-                      player.isEngagedInPurchase,
-                    effects:
-                      player.inPlay[0].slug === card.slug
-                        ? player.temporaryEffect
-                        : undefined,
-                    counter: card.counter,
-                    stats:
-                      player.inPlay[0].slug === card.slug
-                        ? {
-                            healthPoints: player.currentHealthPoints,
-                            attackPoints: player.currentAttackPoints,
-                          }
-                        : undefined,
-                  },
-                ]}
-                onHoverPopover={() => <CardHoverPreview card={card} />}
-              />
+              <div
+                key={card.globalId}
+                ref={(el) => registerInPlayCardEl(card.globalId, el)}>
+                <Pile
+                  globalId={card.globalId}
+                  cards={[
+                    {
+                      slug: card.slug,
+                      charged: card.charged,
+                      eternal: card.eternal,
+                      engagedInCombat:
+                        player.inPlay[0].slug === card.slug &&
+                        player.isEngagedInCombat,
+                      engagedInPurchase:
+                        player.inPlay[0].slug === card.slug &&
+                        player.isEngagedInPurchase,
+                      effects:
+                        player.inPlay[0].slug === card.slug
+                          ? player.temporaryEffect
+                          : undefined,
+                      counter: card.counter,
+                      stats:
+                        player.inPlay[0].slug === card.slug
+                          ? {
+                              healthPoints: player.currentHealthPoints,
+                              attackPoints: player.currentAttackPoints,
+                            }
+                          : undefined,
+                    },
+                  ]}
+                  onHoverPopover={() => <CardHoverPreview card={card} />}
+                />
+              </div>
             );
           })}
         </div>

@@ -1,6 +1,6 @@
 import type { Card, DetailedState } from "@/shared/api";
 import { Pile } from "./pile";
-import { CardImage, CardType } from "./card";
+import { CardType } from "./card";
 import { Stack } from "./stack";
 import { History } from "./history";
 import { socket } from "@/utils/socket";
@@ -10,6 +10,7 @@ import { usePromptContext } from "./contexts/prompt-context";
 import { usePileDetails } from "./use-pile-details";
 import { SpecialGlobalIds } from "./contexts/board-selection-context";
 import { CardHoverPreview } from "./card-hover-preview";
+import { useGameAnimation } from "./contexts/game-animation";
 
 interface CenterProps {
   state: DetailedState;
@@ -20,9 +21,16 @@ export const Center = ({ state }: CenterProps) => {
   const { toast, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
   const { displayPileDetails } = usePileDetails();
+  const {
+    registerLootDeckEl,
+    registerTreasureDeckEl,
+    registerTreasureShopPileEl,
+    registerMonsterSlotEl,
+    registerBonusSoulPileEl,
+  } = useGameAnimation();
 
   const purchaseTreasure = (index: number | "top") => {
-    socket.emit("purchase", { issuer, index }, (response) => {
+    socket.emit("purchase", { index }, (response) => {
       switch (response.status) {
         case 200:
           break;
@@ -70,7 +78,7 @@ export const Center = ({ state }: CenterProps) => {
 
       socket.emit(
         "attackMonster",
-        { issuer, index: "top", replaceIndex },
+        { index: "top", replaceIndex },
         (response) => {
           if (response.status === 200) {
             toast(
@@ -91,7 +99,7 @@ export const Center = ({ state }: CenterProps) => {
       return;
     }
 
-    socket.emit("attackMonster", { issuer, index }, (response) => {
+    socket.emit("attackMonster", { index }, (response) => {
       if (response.status === 200) {
         toast(
           "success",
@@ -122,37 +130,35 @@ export const Center = ({ state }: CenterProps) => {
   ).slice(0, 9);
 
   return (
-    <div className="flex translate-z-1 place-items-center gap-6 rounded-xl bg-stone-700/10 p-8 shadow-md inset-shadow-xs inset-shadow-stone-700 transform-3d">
+    <div className="flex place-items-center gap-6 rounded-xl bg-stone-700/10 p-8 shadow-md inset-shadow-xs inset-shadow-stone-700">
       <Stack />
       <History />
-      <div className="flex shrink-0 flex-col place-items-center gap-2 transform-3d">
-        {state.bonusSouls.map((soul) => (
+      {state.bonusSouls && (
+        <div className="flex shrink-0 flex-col place-items-center gap-2">
+          {state.bonusSouls.map((soul) => (
+            <div
+              key={soul.globalId}
+              ref={(el) => registerBonusSoulPileEl(soul.globalId, el)}>
+              <Pile
+                cards={soul.granted ? [] : [soul]}
+                size={105}
+                onHoverPopover={() => <CardHoverPreview card={soul} />}
+              />
+            </div>
+          ))}
+        </div>
+      )}
+      <div className="flex flex-col place-items-center gap-6">
+        <div ref={registerLootDeckEl}>
           <Pile
-            key={soul.slug}
-            cards={soul.granted ? [] : [soul]}
-            size={105}
-            onHoverPopover={() => <CardHoverPreview card={soul} />}
+            globalId={SpecialGlobalIds.Loot}
+            cards={Array.from({ length: state.loot.deckSize }).map(
+              () => CardType.LootCard,
+            )}
           />
-        ))}
-      </div>
-      <div className="flex flex-col place-items-center gap-2 transform-3d">
-        <Pile
-          globalId={SpecialGlobalIds.Loot}
-          cards={Array.from({ length: state.loot.deckSize }).map(
-            () => CardType.LootCard,
-          )}
-        />
+        </div>
         <Pile
           cards={state.loot.discard}
-          onClickTopCard={() =>
-            block(
-              "Cannot view loot discard",
-              state.loot.discard.length === 0
-                ? "The loot discard pile is empty"
-                : true,
-              () => displayPileDetails(state.loot.discard.toReversed()),
-            )
-          }
           onPileDetailsClick={
             state.loot.discard.length > 1
               ? () => displayPileDetails(state.loot.discard.toReversed())
@@ -161,19 +167,23 @@ export const Center = ({ state }: CenterProps) => {
           disabled={state.loot.discard.length === 0}
         />
       </div>
-      <div className="flex flex-col gap-6 transform-3d">
-        <div className="flex place-items-center gap-2 transform-3d">
+      {state.room && (
+        <div className="flex flex-col gap-2">
+          <Pile cards={state.room.discard} orientation="landscape" size={110} />
+          <Pile
+            cards={Array.from({ length: state.room.deckSize }).map(
+              () => CardType.RoomCard,
+            )}
+            orientation="landscape"
+            size={110}
+          />
+          <Pile cards={state.room.inPlay} orientation="landscape" size={110} />
+        </div>
+      )}
+      <div className="flex flex-col gap-6">
+        <div className="flex place-items-center gap-2">
           <Pile
             cards={state.treasure.discard}
-            onClickTopCard={() =>
-              block(
-                "Cannot view treasure discard",
-                state.treasure.discard.length === 0
-                  ? "The treasure discard pile is empty"
-                  : true,
-                () => displayPileDetails(state.treasure.discard.toReversed()),
-              )
-            }
             disabled={state.treasure.discard.length === 0}
             onPileDetailsClick={
               state.treasure.discard.length > 1
@@ -181,63 +191,68 @@ export const Center = ({ state }: CenterProps) => {
                 : undefined
             }
           />
-          <Pile
-            globalId={SpecialGlobalIds.Treasure}
-            cards={Array.from({ length: state.treasure.deckSize }).map(
-              (_, index) =>
-                index === state.treasure.deckSize - 1
-                  ? (state.firstCardTreasureDeck ?? CardType.TreasureCard)
-                  : CardType.TreasureCard,
-            )}
-            onClickTopCardHotkey={
-              targetableTreasures.includes("top")
-                ? `${targetableTreasures.indexOf("top") + 1}`
-                : undefined
-            }
-            disabled={state.me.capabilities.buyTreasure !== true}
-            onClickTopCard={() =>
-              block(
-                "Cannot buy this card",
-                state.me.capabilities.buyTreasure,
-                () => purchaseTreasure("top"),
-              )
-            }
-            tooltip={{
-              capable: state.me.capabilities.buyTreasure,
-              title: "Cannot buy this card",
-            }}
-          />
-          {state.treasure.inPlay.map((card, index) => (
+          <div ref={registerTreasureDeckEl}>
             <Pile
-              globalId={card.globalId}
-              key={card.slug}
-              cards={[card]}
-              disabled={state.me.capabilities.buyTreasure !== true}
+              globalId={SpecialGlobalIds.Treasure}
+              cards={Array.from({ length: state.treasure.deckSize }).map(
+                (_, index) =>
+                  index === state.treasure.deckSize - 1
+                    ? (state.firstCardTreasureDeck ?? CardType.TreasureCard)
+                    : CardType.TreasureCard,
+              )}
               onClickTopCardHotkey={
-                targetableTreasures.includes(card.slug)
-                  ? `${targetableTreasures.indexOf(card.slug) + 1}`
+                targetableTreasures.includes("top")
+                  ? `${targetableTreasures.indexOf("top") + 1}`
                   : undefined
               }
+              disabled={state.me.capabilities.buyTreasure !== true}
               onClickTopCard={() =>
                 block(
                   "Cannot buy this card",
                   state.me.capabilities.buyTreasure,
-                  () => purchaseTreasure(index),
+                  () => purchaseTreasure("top"),
                 )
               }
-              onHoverPopover={() => (
-                <CardHoverPreview
-                  card={card}
-                  tooltip={{
-                    capable: state.me.capabilities.buyTreasure,
-                    title: "Cannot buy this card",
-                  }}
-                />
-              )}
+              tooltip={{
+                capable: state.me.capabilities.buyTreasure,
+                title: "Cannot buy this card",
+              }}
             />
+          </div>
+          {state.treasure.inPlay.map((card, index) => (
+            <div
+              key={card.slug}
+              ref={(el) => registerTreasureShopPileEl(card.globalId, el)}>
+              <Pile
+                globalId={card.globalId}
+                cards={[card]}
+                disabled={state.me.capabilities.buyTreasure !== true}
+                onClickTopCardHotkey={
+                  targetableTreasures.includes(card.slug)
+                    ? `${targetableTreasures.indexOf(card.slug) + 1}`
+                    : undefined
+                }
+                onClickTopCard={() =>
+                  block(
+                    "Cannot buy this card",
+                    state.me.capabilities.buyTreasure,
+                    () => purchaseTreasure(index),
+                  )
+                }
+                onHoverPopover={() => (
+                  <CardHoverPreview
+                    card={card}
+                    tooltip={{
+                      capable: state.me.capabilities.buyTreasure,
+                      title: "Cannot buy this card",
+                    }}
+                  />
+                )}
+              />
+            </div>
           ))}
         </div>
-        <div className="flex place-items-center gap-2 transform-3d">
+        <div className="flex place-items-center gap-2">
           <Pile
             cards={state.monsters.discard.map((card) => ({
               slug: card.slug,
@@ -249,15 +264,6 @@ export const Center = ({ state }: CenterProps) => {
                 : undefined
             }
             disabled={state.monsters.discard.length === 0}
-            onClickTopCard={() =>
-              block(
-                "Cannot view monster discard",
-                state.monsters.discard.length === 0
-                  ? "The monster discard pile is empty"
-                  : true,
-                () => displayPileDetails(state.monsters.discard.toReversed()),
-              )
-            }
           />
           <Pile
             globalId={SpecialGlobalIds.Monster}
@@ -276,8 +282,8 @@ export const Center = ({ state }: CenterProps) => {
               monsterDeckAttackRequirement
                 ? () => (
                     <CardHoverPreview
-                        card={monsterDeckAttackRequirement.source}
-                        tooltip={[
+                      card={monsterDeckAttackRequirement.source}
+                      tooltip={[
                         {
                           capable: state.monsters.capabilities.targetableDeck,
                           title: "Cannot attack this card",
@@ -322,9 +328,11 @@ export const Center = ({ state }: CenterProps) => {
                 requirement.target.slug === card.top.slug,
             );
             return (
+              <div
+                key={card.top.globalId}
+                ref={(el) => registerMonsterSlotEl(card.top.globalId, el)}>
               <Pile
                 globalId={card.top.globalId}
-                key={card.top.slug}
                 cards={[
                   ...card.covered,
                   {
@@ -373,6 +381,7 @@ export const Center = ({ state }: CenterProps) => {
                   />
                 )}
               />
+              </div>
             );
           })}
         </div>

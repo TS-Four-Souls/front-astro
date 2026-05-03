@@ -20,18 +20,26 @@ import {
 } from "./contexts/board-selection-context";
 import { useHotkeys } from "react-hotkeys-hook";
 import { HotkeyScope, shouldUseKey } from "@/utils/hotkey";
+import { useGameAnimation } from "./contexts/game-animation";
 
 export const Stack = () => {
   const { state, issuer } = useGameContext();
   const { toast, block } = useToastContext();
+  const { setStackEl } = useGameAnimation();
 
+  const stackContainerRef = useRef<HTMLDivElement>(null);
   const scrollViewRef = useRef<HTMLDivElement>(null);
   const [selectedStackElementId, setSelectedStackElementId] = useState<
     number | null
   >(null);
 
+  useEffect(() => {
+    setStackEl(stackContainerRef.current);
+    return () => setStackEl(null);
+  }, [setStackEl]);
+
   const resolveStack = () => {
-    socket.emit("resolve", { issuer }, (response) => {
+    socket.emit("resolve", null, (response) => {
       switch (response.status) {
         case 200:
           break;
@@ -92,7 +100,7 @@ export const Stack = () => {
 
       socket.emit(
         "insertStackElementBefore",
-        { issuer, elementToMoveStackId, targetStackId },
+        { elementToMoveStackId, targetStackId },
         (response) => {
           switch (response.status) {
             case 200:
@@ -113,11 +121,13 @@ export const Stack = () => {
     useBoardSelectionContext();
 
   return (
-    <div className="flex h-86 w-60 flex-col gap-2 rounded-xl bg-stone-900 p-2 inset-shadow-sm inset-shadow-stone-950/30 transform-3d">
+    <div
+      ref={stackContainerRef}
+      className="flex h-86 w-60 flex-col gap-2 rounded-xl bg-stone-900 p-2 inset-shadow-sm inset-shadow-stone-950/30">
       <div
         ref={scrollViewRef}
         className={cn(
-          "no-scrollbar grow translate-z-1 place-content-start overflow-auto p-2 transform-3d",
+          "no-scrollbar grow place-content-start overflow-auto p-2",
           state.stack.length > 0
             ? "grid grid-cols-1"
             : "flex place-items-center",
@@ -224,7 +234,6 @@ export const Stack = () => {
           capable: state.me.capabilities.resolve,
         }}
         label="Resolve"
-        className="translate-z-1"
         theme="onDark"
       />
     </div>

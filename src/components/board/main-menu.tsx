@@ -3,7 +3,6 @@ import { usePromptContext } from "./contexts/prompt-context";
 import { useToastContext } from "./contexts/toast-context";
 import { Button } from "../button";
 import { useMainMenuContext } from "./contexts/main-menu-context";
-import { useUserSettingsContext } from "./contexts/user-settings-context";
 import { useGameContext } from "./contexts/game-context";
 import { HotkeyScope } from "@/utils/hotkey";
 
@@ -11,7 +10,6 @@ export const MainMenu = () => {
   const { addPrompt, removePrompt } = usePromptContext();
   const { toast } = useToastContext();
   const { closeMenu: closeMainMenu } = useMainMenuContext();
-  const { openMenu: openUserSettingsMenu } = useUserSettingsContext();
   const { issuer } = useGameContext();
 
   const onResetPress = (confirmed?: true) => {
@@ -53,7 +51,7 @@ export const MainMenu = () => {
   };
 
   const onSaveGamePress = () => {
-    socket.emit("getGameLogs", issuer, (response) => {
+    socket.emit("getGameLogs", null, (response) => {
       if (response.status === 200) {
         const now = new Date();
         const datePart = [
@@ -86,7 +84,7 @@ export const MainMenu = () => {
   };
 
   const debugGainLoot = () => {
-    socket.emit("debugListLoot", issuer, (response) => {
+    socket.emit("debugListLoot", null, (response) => {
       if (response.status === 200) {
         const promptId = `debug-list-loot-${Date.now()}`;
         addPrompt({
@@ -103,16 +101,10 @@ export const MainMenu = () => {
             socket.emit(
               "debugLoot",
               {
-                ...issuer,
                 cards: selections.map((selection) => selection.payload),
               },
               (response) => {
                 if (response.status === 200) {
-                  toast(
-                    "success",
-                    "CHEAT MODE",
-                    "You've looted the selected cards",
-                  );
                 } else {
                   toast("error", "CHEAT MODE", response.error);
                 }
@@ -133,11 +125,6 @@ export const MainMenu = () => {
   const rollback = () => {
     socket.emit("rollback", null, (response) => {
       if (response.status === 200) {
-        toast(
-          "success",
-          "Rollback",
-          "Rolled back to the previous user action.",
-        );
       } else {
         toast("error", "Rollback", response.error);
       }
@@ -145,7 +132,7 @@ export const MainMenu = () => {
   };
 
   const debugGainTreasure = () => {
-    socket.emit("debugListTreasure", issuer, (response) => {
+    socket.emit("debugListTreasure", null, (response) => {
       if (response.status === 200) {
         const promptId = `debug-list-treasure-${Date.now()}`;
         addPrompt({
@@ -162,16 +149,10 @@ export const MainMenu = () => {
             socket.emit(
               "debugGainTreasure",
               {
-                ...issuer,
                 cards: selections.map((selection) => selection.payload),
               },
               (response) => {
                 if (response.status === 200) {
-                  toast(
-                    "success",
-                    "CHEAT MODE",
-                    "You've gained the selected treasures",
-                  );
                 } else {
                   toast("error", "CHEAT MODE", response.error);
                 }
@@ -190,7 +171,7 @@ export const MainMenu = () => {
   };
 
   const debugRemoveCard = () => {
-    socket.emit("debugListCardsICanRemove", issuer, (response) => {
+    socket.emit("debugListCardsICanRemove", null, (response) => {
       if (response.status === 200) {
         const promptId = `debug-list-cards-i-can-remove-${Date.now()}`;
         addPrompt({
@@ -207,22 +188,111 @@ export const MainMenu = () => {
             socket.emit(
               "debugRemoveCards",
               {
-                ...issuer,
                 cards: selections.map((selection) => selection.payload),
               },
               (response) => {
                 if (response.status === 200) {
-                  toast(
-                    "success",
-                    "CHEAT MODE",
-                    "You've removed the selected cards",
-                  );
                 } else {
                   toast("error", "CHEAT MODE", response.error);
                 }
               },
             );
             removePrompt(promptId);
+          },
+          onCancel: () => {
+            removePrompt(promptId);
+          },
+        });
+      } else {
+        toast("error", "CHEAT MODE", response.error);
+      }
+    });
+  };
+
+  const debugGainCoins = () => {
+    const promptId = `debug-gain-coins-${Date.now()}`;
+    addPrompt({
+      promptId,
+      isUnique: false,
+      prompt: "Select amount of coins to gain",
+      options: Array.from({ length: 10 }, (_, i) => ({
+        type: "number",
+        payload: i + 1,
+      })),
+      minCount: 1,
+      maxCount: 1,
+      onSubmit: (selections) => {
+        const coins = selections[0].payload as number;
+        socket.emit(
+          "debugGainCoins",
+          {
+            coins,
+          },
+          (response) => {
+            if (response.status === 200) {
+            } else {
+              toast("error", "CHEAT MODE", response.error);
+            }
+          },
+        );
+        removePrompt(promptId);
+      },
+      onCancel: () => {
+        removePrompt(promptId);
+      },
+    });
+  };
+
+  const debugPutMonsterCardInSlot = () => {
+    socket.emit("debugListMonsterDeck", null, (response) => {
+      if (response.status === 200) {
+        const promptId = `debug-list-monster-deck-${Date.now()}`;
+        addPrompt({
+          promptId,
+          isUnique: false,
+          prompt: "Select a monster card to put in a slot",
+          options: response.cards.map((card) => ({
+            type: "card",
+            payload: card,
+          })),
+          minCount: 1,
+          maxCount: 1,
+          onSubmit: (selections) => {
+            const card = selections[0].payload;
+            removePrompt(promptId);
+
+            const promptId2 = `debug-list-monster-cover-${Date.now()}`;
+            addPrompt({
+              promptId: promptId2,
+              isUnique: false,
+              prompt: "Select a card to cover",
+              options: response.coverable.map((card) => ({
+                type: "card",
+                payload: card,
+              })),
+              minCount: 1,
+              maxCount: 1,
+              onSubmit: (selections2) => {
+                const toCover = selections2[0].payload;
+                socket.emit(
+                  "debugPutMonsterCardInSlot",
+                  {
+                    card,
+                    toCover,
+                  },
+                  (response) => {
+                    if (response.status === 200) {
+                    } else {
+                      toast("error", "CHEAT MODE", response.error);
+                    }
+                  },
+                );
+                removePrompt(promptId2);
+              },
+              onCancel: () => {
+                removePrompt(promptId2);
+              },
+            });
           },
           onCancel: () => {
             removePrompt(promptId);
@@ -247,21 +317,12 @@ export const MainMenu = () => {
       </div>
       <Button
         onClick={() => {
-          closeMainMenu();
-          openUserSettingsMenu();
-        }}
-        label="Graphics"
-        className="translate-z-1"
-      />
-      <Button
-        onClick={() => {
           // closeMainMenu();
           rollback();
         }}
         hotkey="r"
         hotkeyScope={[HotkeyScope.Popup]}
         label="Rollback"
-        className="translate-z-1"
       />
       <Button
         onClick={() => {
@@ -269,7 +330,6 @@ export const MainMenu = () => {
           debugGainLoot();
         }}
         label="[CHEAT] Loot"
-        className="translate-z-1"
       />
       <Button
         onClick={() => {
@@ -277,15 +337,27 @@ export const MainMenu = () => {
           debugGainTreasure();
         }}
         label="[CHEAT] Gain treasure"
-        className="translate-z-1"
+      />
+      <Button
+        onClick={() => {
+          closeMainMenu();
+          debugPutMonsterCardInSlot();
+        }}
+        label="[CHEAT] Put monster card in slot"
+      />
+      <Button
+        onClick={() => {
+          closeMainMenu();
+          debugGainCoins();
+        }}
+        label="[CHEAT] Gain coins"
       />
       <Button
         onClick={() => {
           closeMainMenu();
           debugRemoveCard();
         }}
-        label="[CHEAT] Remove card"
-        className="translate-z-1"
+        label="[CHEAT] Discard card"
       />
       <Button
         onClick={() => {
@@ -293,7 +365,6 @@ export const MainMenu = () => {
           onSaveGamePress();
         }}
         label="Save game"
-        className="translate-z-1"
       />
       <Button
         onClick={() => {
@@ -301,7 +372,6 @@ export const MainMenu = () => {
           onResetPress();
         }}
         label="Quit game"
-        className="translate-z-1"
       />
     </div>
   );

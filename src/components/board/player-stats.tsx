@@ -10,6 +10,7 @@ import type { Card as CardType } from "@/shared/api";
 import { useEffect, useRef, useState } from "react";
 import { CardImage } from "./card";
 import { useMainMenuContext } from "./contexts/main-menu-context";
+import { useGameAnimation } from "./contexts/game-animation";
 import { useTooltip } from "./use-tooltip";
 
 interface PlayerStatsProps {
@@ -34,14 +35,15 @@ export const PlayerStats = ({
   const { addPrompt, removePrompt } = usePromptContext();
   const { setPopover, closePopover } = usePopoverContext();
   const { openMenu } = useMainMenuContext();
-  const soulSequenceRef = useRef<HTMLDivElement>(null);
+  const { registerPlayerAnchor } = useGameAnimation();
+  const soulAnchorRef = useRef<HTMLDivElement | null>(null);
 
   const isCurrentTurn = state.turn === name;
   const isMe = state.me.name === name;
   const canEndTurn = isMe && state.me.capabilities.endTurn;
 
   const declareAttack = () => {
-    socket.emit("declareAttack", { issuer }, (response) => {
+    socket.emit("declareAttack", null, (response) => {
       if (response.status === 200) {
         toast("success", "Declared attack", "You have declared an attack");
       } else {
@@ -51,7 +53,7 @@ export const PlayerStats = ({
   };
 
   const rollDice = () => {
-    socket.emit("attackRoll", issuer, (response) => {
+    socket.emit("attackRoll", null, (response) => {
       if (response.status === 200) {
         toast("success", "Rolled dice", "You have rolled a dice");
       } else {
@@ -61,7 +63,7 @@ export const PlayerStats = ({
   };
 
   const declarePurchase = () => {
-    socket.emit("declarePurchase", { issuer }, (response) => {
+    socket.emit("declarePurchase", null, (response) => {
       if (response.status === 200) {
         toast("success", "Declared purchase", "You have declared a purchase");
       } else {
@@ -71,7 +73,7 @@ export const PlayerStats = ({
   };
 
   const cancelPurchase = () => {
-    socket.emit("cancelPurchase", { issuer }, (response) => {
+    socket.emit("cancelPurchase", null, (response) => {
       if (response.status === 200) {
         toast("success", "Cancelled purchase", "You have cancelled a purchase");
       } else {
@@ -81,7 +83,7 @@ export const PlayerStats = ({
   };
 
   const onEndTurnPress = () => {
-    socket.emit("endTurn", { issuer }, (response) => {
+    socket.emit("endTurn", null, (response) => {
       switch (response.status) {
         case 200:
           break;
@@ -117,7 +119,7 @@ export const PlayerStats = ({
         }
         socket.emit(
           "giveCoins",
-          { issuer, coins: selections[0].payload, target: name },
+          { coins: selections[0].payload, target: name },
           (response) => {
             switch (response.status) {
               case 200:
@@ -143,7 +145,7 @@ export const PlayerStats = ({
 
   const { setTooltip: setCoinTooltip, closeTooltip: closeCoinTooltip } =
     useTooltip(
-      state.me.capabilities.canDonateCoins === true
+      state.me.capabilities.canDonateCoins === true && !isMe
         ? {
             enabled: true,
             title: "Donate coins",
@@ -166,13 +168,13 @@ export const PlayerStats = ({
   return (
     <div
       className={cn(
-        "flex place-items-center gap-16 rounded-lg p-3 pr-4 pl-6 text-white outline-[0.2em] outline-transparent transition-shadow duration-500 transform-3d",
+        "flex place-items-center gap-16 rounded-lg p-3 pr-4 pl-6 text-white outline-[0.2em] outline-transparent transition-shadow duration-500",
         isCurrentTurn && "outline-stone-700",
         isGlowing && "glow-8",
         className,
       )}>
       <h1
-        className="translate-z-1 text-center font-alt-stats font-bold uppercase"
+        className="text-center font-alt-stats font-bold uppercase"
         style={{ color }}>
         {name}
       </h1>
@@ -180,7 +182,7 @@ export const PlayerStats = ({
         onMouseEnter={setCoinTooltip}
         onMouseLeave={closeCoinTooltip}
         className={cn(
-          "flex cursor-pointer items-center gap-1",
+          "flex items-center gap-1",
           !isMe &&
             (state.me.capabilities.canDonateCoins === true
               ? "cursor-pointer"
@@ -195,6 +197,7 @@ export const PlayerStats = ({
           )
         }>
         <img
+          ref={(el) => registerPlayerAnchor(name, "coins", el)}
           src="/coin.png"
           className="size-6 rounded-full shadow-md/50"
           draggable={false}
@@ -202,34 +205,40 @@ export const PlayerStats = ({
         :<span className="font-statblock text-4xl">{coins}</span>
       </div>
 
-      {souls > 0 && (
-        <div
-          ref={soulSequenceRef}
-          className="flex translate-z-1 cursor-pointer flex-row-reverse items-center transform-3d"
-          onMouseEnter={() => {
-            if (soulSequenceRef.current && soulCards.length > 0) {
-              const rect = soulSequenceRef.current.getBoundingClientRect();
-              setPopover({
-                anchor: rect,
-                content: (
-                  <div className="flex w-max flex-nowrap gap-4">
-                    {soulCards.map((card, index) => (
-                      <CardImage
-                        card={card}
-                        className="w-64 shrink-0"
-                        key={index}
-                        tooltip={card.name}
-                      />
-                    ))}
-                  </div>
-                ),
-              });
-            }
-          }}
-          onMouseLeave={() => {
-            closePopover();
-          }}>
-          {alternateSoulSequence(souls)
+      <div
+        ref={(el) => {
+          soulAnchorRef.current = el;
+          registerPlayerAnchor(name, "souls", el);
+        }}
+        className={cn(
+          "flex min-h-8 min-w-6 flex-row-reverse items-center",
+          souls > 0 && "cursor-pointer",
+        )}
+        onMouseEnter={() => {
+          if (soulAnchorRef.current && soulCards.length > 0) {
+            const rect = soulAnchorRef.current.getBoundingClientRect();
+            setPopover({
+              anchor: rect,
+              content: (
+                <div className="flex w-max flex-nowrap gap-4">
+                  {soulCards.map((card, index) => (
+                    <CardImage
+                      card={card}
+                      className="w-64 shrink-0"
+                      key={index}
+                      tooltip={card.name}
+                    />
+                  ))}
+                </div>
+              ),
+            });
+          }
+        }}
+        onMouseLeave={() => {
+          closePopover();
+        }}>
+        {souls > 0 &&
+          alternateSoulSequence(souls)
             .toReversed()
             .map((type, index) => {
               return (
@@ -244,11 +253,10 @@ export const PlayerStats = ({
                 />
               );
             })}
-        </div>
-      )}
+      </div>
 
       {isMe && (
-        <div className="flex translate-z-1 items-center gap-4">
+        <div className="flex items-center gap-4">
           <Button
             disabled={canEndTurn !== true}
             hotkey="e"
@@ -276,7 +284,6 @@ export const PlayerStats = ({
                   }
             }
             label="End turn"
-            className="translate-z-1"
           />
           {!state.me.isEngagedInPurchase && (
             <Button

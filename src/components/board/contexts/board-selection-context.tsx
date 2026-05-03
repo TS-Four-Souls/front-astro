@@ -162,6 +162,7 @@ export const BoardSelectionProvider = ({
       {children}
       {prompt && (
         <PromptHandler
+          key={prompt.promptId}
           areOptionsOnBoard={boardSelectionState !== undefined}
           prompt={prompt}
           setSelectedOptions={setSelectedOptions}

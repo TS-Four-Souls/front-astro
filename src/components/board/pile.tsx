@@ -3,10 +3,6 @@ import { cn } from "../../utils/cn";
 import { Card, CardType } from "./card";
 import seedrandom from "seedrandom";
 import { clamp } from "@/utils/numbers";
-import {
-  ZoomResolutionPreset,
-  useUserSettingsContext,
-} from "./contexts/user-settings-context";
 import type { TemporaryEffect } from "@/shared/api";
 import { usePopoverContext } from "./contexts/popover-context";
 import { HotkeyScope, shouldUseKey } from "@/utils/hotkey";
@@ -52,17 +48,13 @@ interface PileProps {
         ))
   )[];
   size?: number;
+  orientation?: "portrait" | "landscape";
   disabled?: boolean;
   className?: string;
   topCardClassName?: string;
   onClickTopCard?: () => void;
   onClickTopCardHotkey?: string;
   onPileDetailsClick?: () => void;
-  optimizations?: {
-    maxCards: number;
-    enableSides: boolean;
-    enable3D: boolean;
-  };
   onHoverPopover?: () => React.ReactNode;
   tooltip?: Tooltip;
   enableRandomRotation?: boolean;
@@ -73,13 +65,6 @@ interface PileProps {
 
 const BRIGHTNESS_MIN = 0.3;
 
-const maxCardsByResolution = {
-  [ZoomResolutionPreset.HIGH]: 20,
-  [ZoomResolutionPreset.MEDIUM]: 20,
-  [ZoomResolutionPreset.LOW]: 15,
-  [ZoomResolutionPreset.VERY_LOW]: 10,
-};
-
 export const Pile = ({
   cards,
   size: sizePx = 160,
@@ -89,13 +74,13 @@ export const Pile = ({
   onPileDetailsClick,
   className,
   tooltip,
-  optimizations,
   topCardClassName,
   onHoverPopover,
   enableRandomRotation = true,
   style,
   globalId,
   children,
+  orientation = "portrait",
 }: PileProps) => {
   const size = sizePx / 16;
   const seed = useRef(Math.random().toString());
@@ -156,23 +141,15 @@ export const Pile = ({
     }
   };
 
-  const userSettings = useUserSettingsContext();
-
-  const enable3D = optimizations?.enable3D ?? userSettings.enable3D;
-  const enableSides =
-    optimizations?.enableSides ?? userSettings.enableCardSides;
-  const maxCards =
-    optimizations?.maxCards ??
-    maxCardsByResolution[userSettings.zoomResolutionPreset];
+  const maxCards = 16;
 
   return (
     <div
-      className={cn("grid shrink-0 transform-3d", className)}
+      className={cn("grid shrink-0", className)}
       style={{ height: size + "em", ...style }}>
       {cards
         .filter((_, index) => index >= cards.length - maxCards)
         .map((card, index, array) => {
-          const thickness = Math.max(0.05 * (cards.length / array.length), 0.1);
           const distanceFromTop = array.length - index - 1;
           const brightness = clamp(
             1 - ((1 - BRIGHTNESS_MIN) / array.length) * distanceFromTop,
@@ -199,10 +176,13 @@ export const Pile = ({
           const isRequiredAttack =
             typeof card === "object" ? card.isRequiredAttack : false;
 
+          const cardsIndex = (index / array.length) * cards.length;
+
           const transformStyle = {
             transform: `
-              ${enable3D ? `translateZ(${thickness * (index + 1)}em)` : ""}
               ${enableRandomRotation ? `rotate(${(rng() - 0.5) * 5}deg)` : ""}
+              translateY(-${cardsIndex * 0.02}em)
+              scale(${1 + cardsIndex * 0.0002})
             `,
           };
 
@@ -212,7 +192,6 @@ export const Pile = ({
                 onClick={
                   index === array.length - 1 ? onClickTopCard : undefined
                 }
-                thickness={thickness}
                 key={index}
                 card={
                   typeof card === "object" && "type" in card ? card.type : card
@@ -252,7 +231,6 @@ export const Pile = ({
                 containerStyle={transformStyle}
                 size={size}
                 brightness={brightness}
-                enableSides={enableSides}
                 stats={typeof card === "string" ? undefined : card.stats}
                 effects={typeof card === "string" ? undefined : card.effects}
                 counter={counter}
@@ -281,6 +259,9 @@ export const Pile = ({
                     ? entityBoardSelectionState?.selectionIndex
                     : undefined
                 }
+                aspectRatio={
+                  orientation === "portrait" ? 750 / 1024 : 1024 / 750
+                }
               />
               {index === array.length - 1 && (
                 <div style={transformStyle}>{children}</div>
@@ -293,6 +274,7 @@ export const Pile = ({
           onClick={onClickTopCard}
           disabled={disabled}
           style={{ height: size + "em" }}
+          aspectRatio={orientation === "portrait" ? 750 / 1024 : 1024 / 750}
         />
       )}
     </div>

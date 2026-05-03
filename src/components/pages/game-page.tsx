@@ -3,7 +3,7 @@ import { JoinForm } from "../onboarding/join-form";
 import { StartStep } from "../onboarding/start-step";
 import { Board } from "../board/board";
 import { socket } from "@/utils/socket";
-import { schemas, type Room } from "@/shared/api";
+import { type Room, type RoomBroadcast } from "@/shared/api";
 import { GameProvider } from "../board/contexts/game-context";
 import { Loading } from "../onboarding/loading";
 import { MainMenuProvider } from "../board/contexts/main-menu-context";
@@ -12,9 +12,12 @@ import { RoomJoinForm } from "../onboarding/room-join-form";
 import { OnboardingLayout } from "../onboarding-layout";
 import { storage } from "@/utils/storage";
 import { BoardSelectionProvider } from "../board/contexts/board-selection-context";
+import { GameAnimationProvider } from "../board/contexts/game-animation";
+import { useToastContext } from "../board/contexts/toast-context";
 
 export const GamePage = () => {
   const [room, setRoom] = useState<Room | null>(null);
+  const { toast } = useToastContext();
 
   useEffect(() => {
     function onConnect() {
@@ -32,9 +35,6 @@ export const GamePage = () => {
     function onRoomChanged(room: Room | null) {
       console.log("[🔌 Socket] Room changed", room);
       setRoom(room);
-      if (room?.room.state === "joined") {
-        storage.setItem("issuer", JSON.stringify(room.room.issuer));
-      }
     }
 
     function onAnyOutgoing(event: string, ...args: any[]) {
@@ -54,11 +54,17 @@ export const GamePage = () => {
       }
     }
 
+    function onRoomBroadcast(broadcast: RoomBroadcast) {
+      console.log("[🔌 Socket] Room broadcast", broadcast);
+      toast(broadcast.type, broadcast.title, broadcast.message);
+    }
+
     socket.on("connect", onConnect);
     socket.on("connect_error", onConnectError);
     socket.on("disconnect", onDisconnect);
     socket.on("on:room:changed", onRoomChanged);
     socket.on("on:user:assigned", onUserAssigned);
+    socket.on("on:room:broadcast", onRoomBroadcast);
     socket.onAnyOutgoing(onAnyOutgoing);
     socket.onAny(onAnyIncoming);
 
@@ -68,6 +74,7 @@ export const GamePage = () => {
       socket.off("disconnect", onDisconnect);
       socket.off("on:room:changed", onRoomChanged);
       socket.off("on:user:assigned", onUserAssigned);
+      socket.off("on:room:broadcast", onRoomBroadcast);
       socket.offAnyOutgoing(onAnyOutgoing);
       socket.offAny(onAnyIncoming);
     };
@@ -78,7 +85,9 @@ export const GamePage = () => {
       <GameProvider state={room.gameState} issuer={room.room.issuer}>
         <BoardSelectionProvider>
           <MainMenuProvider>
-            <Board />
+            <GameAnimationProvider>
+              <Board />
+            </GameAnimationProvider>
           </MainMenuProvider>
         </BoardSelectionProvider>
       </GameProvider>
@@ -87,7 +96,9 @@ export const GamePage = () => {
 
   return (
     <OnboardingLayout headerMode={room?.room.state === "joined"}>
-      <OnboardingPages room={room} />
+      <BoardSelectionProvider>
+        <OnboardingPages room={room} />
+      </BoardSelectionProvider>
     </OnboardingLayout>
   );
 };
@@ -105,20 +116,10 @@ export const OnboardingPages = ({ room }: OnboardingPagesProps) => {
     const userId = storage.getItem("userId");
     if (userId) {
       try {
-        const textLocalStorageIssuer = storage.getItem("issuer") ?? "";
-        const objectLocalStorageIssuer = JSON.parse(textLocalStorageIssuer);
-        const localStorageIssuer = schemas.issuer.parse(
-          objectLocalStorageIssuer,
-        );
-
-        socket.emit(
-          "rejoin",
-          { userId, issuer: localStorageIssuer },
-          (response) => {
-            console.log("[🔌 Socket] Join as user response", response);
-            setTryingToRejoin(false);
-          },
-        );
+        socket.emit("rejoin", { userId }, (response) => {
+          console.log("[🔌 Socket] Join as user response", response);
+          setTryingToRejoin(false);
+        });
         return;
       } catch (error) {
         console.log("[🔌 Socket] Invalid issuer", error);

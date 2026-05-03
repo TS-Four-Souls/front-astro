@@ -154,7 +154,7 @@ export const PromptOption = ({
         <div className="absolute top-0 left-0 flex aspect-square w-7 place-items-center overflow-hidden rounded-md bg-stone-700 outline-3 outline-stone-200">
           <img
             src={`/input-prompts/keyboard_${hotkey.split(",")[0]}_outline.svg`}
-            className="scale-170 select-none"
+            className="scale-170"
             draggable={false}
           />
         </div>
@@ -228,6 +228,15 @@ export const GenericOption = ({
     case "couplePlayerHand":
       return (
         <CouplePlayerHandOption
+          option={option}
+          onPress={onPress}
+          selected={selected}
+          children={children}
+        />
+      );
+    case "character":
+      return (
+        <CharacterOption
           option={option}
           onPress={onPress}
           selected={selected}
@@ -366,7 +375,7 @@ export const StringOption = ({
   return (
     <div
       className={cn(
-        "relative flex w-max flex-row place-items-center gap-2 rounded-md border-2 bg-stone-600 p-2 select-none",
+        "relative flex w-max flex-row place-items-center gap-2 rounded-md border-2 bg-stone-600 p-2",
         selected
           ? "border-blue-500 outline-2 outline-blue-500"
           : "border-stone-500",
@@ -390,7 +399,7 @@ export const BooleanOption = ({
   return (
     <div
       className={cn(
-        "relative flex w-max flex-row place-items-center gap-2 rounded-md border-2 bg-stone-600 p-2 select-none",
+        "relative flex w-max flex-row place-items-center gap-2 rounded-md border-2 bg-stone-600 p-2",
         selected
           ? "border-blue-500 outline-2 outline-blue-500"
           : "border-stone-500",
@@ -419,7 +428,7 @@ export const StackElementOption = ({
         onPress && "cursor-pointer",
       )}
       onClick={onPress}>
-      <StackElement element={option.payload} className="p-0 pl-6 select-none" />
+      <StackElement element={option.payload} className="p-0 pl-6" />
       <div className="absolute inset-1">{children}</div>
     </div>
   );
@@ -442,6 +451,54 @@ export const CardOption = ({
         card={option.payload}
         className={cn("m-2 w-64", selected && "outline-6 outline-blue-500")}
       />
+      <div className="absolute inset-4">{children}</div>
+    </div>
+  );
+};
+
+export const CharacterOption = ({
+  option,
+  onPress,
+  children,
+  selected,
+}: TemplateOptionProps<"character">) => {
+  return (
+    <div
+      className={cn(
+        "relative flex items-center gap-2 p-8",
+        onPress && "cursor-pointer",
+        selected && "rounded-2xl outline-6 outline-blue-500",
+      )}
+      onClick={onPress}>
+      {option.payload.character === "random" ? (
+        <div className="grid items-center gap-2">
+          <CardImage
+            card={CardType.CharacterCard}
+            className={cn("col-start-1 row-start-1 w-48")}
+          />
+          <p className="col-start-1 row-start-1 text-center font-main text-[800%] font-bold text-black uppercase text-shadow-amber-50 text-shadow-lg">
+            ?
+          </p>
+        </div>
+      ) : (
+        <CardImage
+          card={{ slug: option.payload.character }}
+          className={"w-48"}
+        />
+      )}
+      {option.payload.eternal === "random" ? (
+        <div className="grid items-center gap-2">
+          <CardImage
+            card={CardType.TreasureCard}
+            className={cn("col-start-1 row-start-1 w-48")}
+          />
+          <p className="col-start-1 row-start-1 text-center font-main text-[800%] font-bold text-black uppercase text-shadow-amber-50 text-shadow-lg">
+            ?
+          </p>
+        </div>
+      ) : (
+        <CardImage card={{ slug: option.payload.eternal }} className={"w-48"} />
+      )}
       <div className="absolute inset-4">{children}</div>
     </div>
   );
@@ -486,7 +543,7 @@ export const NumberOption = ({
   return (
     <div
       className={cn(
-        "relative flex w-max flex-row place-items-center gap-2 rounded-md border-2 bg-stone-600 p-2 select-none",
+        "relative flex w-max flex-row place-items-center gap-2 rounded-md border-2 bg-stone-600 p-2",
         selected
           ? "border-blue-500 outline-2 outline-blue-500"
           : "border-stone-500",
