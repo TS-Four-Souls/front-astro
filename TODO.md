@@ -21,9 +21,10 @@
 - Switch to 2D
 - Animations for draw, play loot, souls to help with game readibility
   - V1:
-    - Loot card played -> for players, the card goes from hand to stack, for others, the card flip/appear then go to stack
-    - Draw loot card/loot from discard
-    - Draw treasure/shop
+    - [x] Loot card played -> for players, the card goes from hand to stack, for others, the card flip/appear then go to stack
+    - [x] Give coins
+    - [x] Draw loot card from top deck
+    - Draw treasure from top deck or shop
     - Gain bonus souls/monsters souls
   - V2:
     - Loot card effect resolve -> card goes from stack to discard
@@ -36,6 +37,7 @@
 - Board background
 - Use canUseOnBoardSelection in the selection logic
 - Replace start game with "I'm ready". When everyone is ready, the game starts
+- Remove animationID
 
 - Define logo/domain/name
 - Animated starry background

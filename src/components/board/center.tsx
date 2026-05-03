@@ -10,6 +10,7 @@ import { usePromptContext } from "./contexts/prompt-context";
 import { usePileDetails } from "./use-pile-details";
 import { SpecialGlobalIds } from "./contexts/board-selection-context";
 import { CardHoverPreview } from "./card-hover-preview";
+import { useGameAnimation } from "./contexts/game-animation";
 
 interface CenterProps {
   state: DetailedState;
@@ -20,6 +21,7 @@ export const Center = ({ state }: CenterProps) => {
   const { toast, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
   const { displayPileDetails } = usePileDetails();
+  const { registerLootDeckEl } = useGameAnimation();
 
   const purchaseTreasure = (index: number | "top") => {
     socket.emit("purchase", { index }, (response) => {
@@ -138,12 +140,14 @@ export const Center = ({ state }: CenterProps) => {
         </div>
       )}
       <div className="flex flex-col place-items-center gap-6">
-        <Pile
-          globalId={SpecialGlobalIds.Loot}
-          cards={Array.from({ length: state.loot.deckSize }).map(
-            () => CardType.LootCard,
-          )}
-        />
+        <div ref={registerLootDeckEl}>
+          <Pile
+            globalId={SpecialGlobalIds.Loot}
+            cards={Array.from({ length: state.loot.deckSize }).map(
+              () => CardType.LootCard,
+            )}
+          />
+        </div>
         <Pile
           cards={state.loot.discard}
           onPileDetailsClick={

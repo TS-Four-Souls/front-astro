@@ -22,7 +22,7 @@ export const Board = () => {
         <div
           ref={boardRef}
           className={cn(
-            "grid grid-cols-[auto_1fr_auto] grid-rows-[auto_1fr_auto] gap-4 p-6 pb-2",
+            "grid grid-cols-[auto_1fr_auto] grid-rows-[auto_1fr_auto] place-items-center gap-4 p-6 pb-2",
             state.players.length === 1 && "gap-x-0",
           )}>
           <Me />

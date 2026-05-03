@@ -3,6 +3,8 @@ export type PlayerAnchor = "coins";
 
 export type GameAnimationBridge = {
   stackEl: HTMLDivElement | null;
+  /** Center board loot draw pile (top of deck visual). */
+  lootDeckEl: HTMLDivElement | null;
   meHandEls: Map<number, HTMLDivElement>;
   /** Any in-play item card on the table (all players), keyed by card globalId. */
   inPlayCardEls: Map<number, HTMLDivElement>;
@@ -16,6 +18,7 @@ export type GameAnimationBridge = {
 
 export const createAnimationBridge = (): GameAnimationBridge => ({
   stackEl: null,
+  lootDeckEl: null,
   meHandEls: new Map(),
   inPlayCardEls: new Map(),
   opponentHandPileEls: new Map(),

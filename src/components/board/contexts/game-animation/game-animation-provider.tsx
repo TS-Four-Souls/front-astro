@@ -16,20 +16,23 @@ import {
   type Point2D,
   type RectPlain,
 } from "./types";
-import { LootCardGhost } from "./loot-card-ghost";
+import { LootCardGhost, type LootCardFace } from "./loot-card-ghost";
 import { CoinProjectile } from "./coin-projectile";
 
 const MAX_VISIBLE_COINS = 100;
 const COIN_STAGGER_MS = 60;
+const DRAW_LOOT_STAGGER_MS = 60;
+const MAX_DRAW_LOOT_GHOSTS = 20;
 const STACK_TARGET_OFFSET_LEFT = 24;
 const STACK_TARGET_OFFSET_TOP = 24;
 const STACK_TARGET_SIZE = 40;
 
 type LootCardGhostItem = {
   id: number;
-  slug: string;
   fromRect: { left: number; top: number; width: number; height: number };
   toRect: RectPlain;
+  face: LootCardFace;
+  delayMs?: number;
 };
 
 type CoinBurstItem = {
@@ -41,6 +44,7 @@ type CoinBurstItem = {
 
 export interface GameAnimationContextValue {
   setStackEl: (el: HTMLDivElement | null) => void;
+  registerLootDeckEl: (el: HTMLDivElement | null) => void;
   registerMeHandCardEl: (globalId: number, el: HTMLDivElement | null) => void;
   registerInPlayCardEl: (globalId: number, el: HTMLDivElement | null) => void;
   registerOpponentHandPile: (
@@ -56,6 +60,7 @@ export interface GameAnimationContextValue {
 
 const GameAnimationContext = createContext<GameAnimationContextValue>({
   setStackEl: () => {},
+  registerLootDeckEl: () => {},
   registerMeHandCardEl: () => {},
   registerInPlayCardEl: () => {},
   registerOpponentHandPile: () => {},
@@ -72,10 +77,16 @@ const rectPlain = (r: DOMRect) => ({
 const AnimationsFromState = ({
   bridgeRef,
   onLootToStack,
+  onDrawLoot,
   onGiveCoins,
 }: {
   bridgeRef: RefObject<GameAnimationBridge>;
   onLootToStack: (payload: { slug: string; fromRect: DOMRect }) => void;
+  onDrawLoot: (payload: {
+    fromRect: DOMRect;
+    toRect: DOMRect;
+    delayMs?: number;
+  }) => void;
   onGiveCoins: (payload: {
     fromRect: DOMRect;
     toPoint: Point2D;
@@ -147,10 +158,46 @@ const AnimationsFromState = ({
         }
         continue;
       }
+
+      if (a.type === "drawLoot") {
+        const fromEl = bridge.lootDeckEl;
+        if (fromEl && a.nb > 0) {
+          const fromRect = fromEl.getBoundingClientRect();
+          if (a.player === state.me.name) {
+            const hand = state.me.hand;
+            const n = Math.min(a.nb, hand.length);
+            for (let i = 0; i < n; i++) {
+              const card = hand[hand.length - n + i];
+              const el = bridge.meHandEls.get(card.globalId);
+              if (el) {
+                onDrawLoot({
+                  fromRect,
+                  toRect: el.getBoundingClientRect(),
+                  delayMs: i * DRAW_LOOT_STAGGER_MS,
+                });
+              }
+            }
+          } else {
+            const pileEl = bridge.opponentHandPileEls.get(a.player);
+            if (pileEl) {
+              const toRect = pileEl.getBoundingClientRect();
+              const count = Math.min(a.nb, MAX_DRAW_LOOT_GHOSTS);
+              for (let i = 0; i < count; i++) {
+                onDrawLoot({
+                  fromRect,
+                  toRect,
+                  delayMs: i * DRAW_LOOT_STAGGER_MS,
+                });
+              }
+            }
+          }
+        }
+        continue;
+      }
     }
 
     refreshHandSnapshots(bridge, state);
-  }, [state, bridgeRef, onLootToStack, onGiveCoins]);
+  }, [state, bridgeRef, onLootToStack, onDrawLoot, onGiveCoins]);
 
   return null;
 };
@@ -227,6 +274,10 @@ export const GameAnimationProvider = ({
     bridgeRef.current.stackEl = el;
   }, []);
 
+  const registerLootDeckEl = useCallback((el: HTMLDivElement | null) => {
+    bridgeRef.current.lootDeckEl = el;
+  }, []);
+
   const onLootToStack = useCallback(
     ({ slug, fromRect }: { slug: string; fromRect: DOMRect }) => {
       const id = nextIdRef.current++;
@@ -235,9 +286,30 @@ export const GameAnimationProvider = ({
         ...prev,
         {
           id,
-          slug,
           fromRect: rectPlain(fromRect),
           toRect,
+          face: { kind: "front", slug },
+        },
+      ]);
+    },
+    [],
+  );
+
+  const onDrawLoot = useCallback(
+    (payload: {
+      fromRect: DOMRect;
+      toRect: DOMRect;
+      delayMs?: number;
+    }) => {
+      const id = nextIdRef.current++;
+      setLootGhosts((prev) => [
+        ...prev,
+        {
+          id,
+          fromRect: rectPlain(payload.fromRect),
+          toRect: rectPlain(payload.toRect),
+          face: { kind: "back" },
+          delayMs: payload.delayMs,
         },
       ]);
     },
@@ -324,6 +396,7 @@ export const GameAnimationProvider = ({
     <GameAnimationContext.Provider
       value={{
         setStackEl,
+        registerLootDeckEl,
         registerMeHandCardEl,
         registerInPlayCardEl,
         registerOpponentHandPile,
@@ -333,6 +406,7 @@ export const GameAnimationProvider = ({
       <AnimationsFromState
         bridgeRef={bridgeRef}
         onLootToStack={onLootToStack}
+        onDrawLoot={onDrawLoot}
         onGiveCoins={onGiveCoins}
       />
       <div className="pointer-events-none fixed inset-0 z-50 overflow-hidden">
