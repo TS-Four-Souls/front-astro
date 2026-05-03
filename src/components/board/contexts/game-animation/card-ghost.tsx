@@ -7,20 +7,28 @@ const CROP_DURATION_MS = 200;
 const EASING = "ease-in";
 const END_IMAGE_TRANSFORM = "translateY(25%) scale(1.55)";
 
-export type LootCardFace =
-  | { kind: "front"; slug: string }
-  | { kind: "back" };
+/** What to render inside the flying card shell (loot backs, treasure fronts, etc.). */
+export type CardGhostFace =
+  | {
+      kind: "front";
+      slug: string;
+      /** End-of-flight image zoom/crop; defaults true for loot → stack. Set false for treasure purchase flights. */
+      cropEnd?: boolean;
+    }
+  | { kind: "back"; cardType: CardType };
 
-export const LootCardGhost = ({
+export type CardGhostPayload = {
+  fromRect: RectPlain;
+  toRect: RectPlain;
+  face: CardGhostFace;
+  delayMs?: number;
+};
+
+export const CardGhost = ({
   ghost,
   onDone,
 }: {
-  ghost: {
-    fromRect: RectPlain;
-    toRect: RectPlain;
-    face: LootCardFace;
-    delayMs?: number;
-  };
+  ghost: CardGhostPayload;
   onDone: () => void;
 }) => {
   const onDoneRef = useRef(onDone);
@@ -57,9 +65,12 @@ export const LootCardGhost = ({
   const height = mounted ? ghost.toRect.height : ghost.fromRect.height;
 
   const cardProp =
-    ghost.face.kind === "back" ? CardType.LootCard : { slug: ghost.face.slug };
+    ghost.face.kind === "back"
+      ? ghost.face.cardType
+      : { slug: ghost.face.slug };
 
-  const cropEffect = ghost.face.kind === "front";
+  const cropEffect =
+    ghost.face.kind === "front" && ghost.face.cropEnd !== false;
 
   return (
     <div

@@ -5,6 +5,12 @@ export type GameAnimationBridge = {
   stackEl: HTMLDivElement | null;
   /** Center board loot draw pile (top of deck visual). */
   lootDeckEl: HTMLDivElement | null;
+  /** Center board treasure deck pile. */
+  treasureDeckEl: HTMLDivElement | null;
+  /** Treasure shop slots (center row), keyed by card globalId. */
+  treasureShopPileEls: Map<number, HTMLDivElement>;
+  /** Previous-frame rects for shop slots (card still in shop); used when animating buyShopTreasure after the slot unmounts. */
+  previousTreasureShopPileByCard: Map<number, DOMRect>;
   meHandEls: Map<number, HTMLDivElement>;
   /** Any in-play item card on the table (all players), keyed by card globalId. */
   inPlayCardEls: Map<number, HTMLDivElement>;
@@ -19,6 +25,9 @@ export type GameAnimationBridge = {
 export const createAnimationBridge = (): GameAnimationBridge => ({
   stackEl: null,
   lootDeckEl: null,
+  treasureDeckEl: null,
+  treasureShopPileEls: new Map(),
+  previousTreasureShopPileByCard: new Map(),
   meHandEls: new Map(),
   inPlayCardEls: new Map(),
   opponentHandPileEls: new Map(),

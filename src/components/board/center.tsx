@@ -21,7 +21,11 @@ export const Center = ({ state }: CenterProps) => {
   const { toast, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
   const { displayPileDetails } = usePileDetails();
-  const { registerLootDeckEl } = useGameAnimation();
+  const {
+    registerLootDeckEl,
+    registerTreasureDeckEl,
+    registerTreasureShopPileEl,
+  } = useGameAnimation();
 
   const purchaseTreasure = (index: number | "top") => {
     socket.emit("purchase", { index }, (response) => {
@@ -182,60 +186,65 @@ export const Center = ({ state }: CenterProps) => {
                 : undefined
             }
           />
-          <Pile
-            globalId={SpecialGlobalIds.Treasure}
-            cards={Array.from({ length: state.treasure.deckSize }).map(
-              (_, index) =>
-                index === state.treasure.deckSize - 1
-                  ? (state.firstCardTreasureDeck ?? CardType.TreasureCard)
-                  : CardType.TreasureCard,
-            )}
-            onClickTopCardHotkey={
-              targetableTreasures.includes("top")
-                ? `${targetableTreasures.indexOf("top") + 1}`
-                : undefined
-            }
-            disabled={state.me.capabilities.buyTreasure !== true}
-            onClickTopCard={() =>
-              block(
-                "Cannot buy this card",
-                state.me.capabilities.buyTreasure,
-                () => purchaseTreasure("top"),
-              )
-            }
-            tooltip={{
-              capable: state.me.capabilities.buyTreasure,
-              title: "Cannot buy this card",
-            }}
-          />
-          {state.treasure.inPlay.map((card, index) => (
+          <div ref={registerTreasureDeckEl}>
             <Pile
-              globalId={card.globalId}
-              key={card.slug}
-              cards={[card]}
-              disabled={state.me.capabilities.buyTreasure !== true}
+              globalId={SpecialGlobalIds.Treasure}
+              cards={Array.from({ length: state.treasure.deckSize }).map(
+                (_, index) =>
+                  index === state.treasure.deckSize - 1
+                    ? (state.firstCardTreasureDeck ?? CardType.TreasureCard)
+                    : CardType.TreasureCard,
+              )}
               onClickTopCardHotkey={
-                targetableTreasures.includes(card.slug)
-                  ? `${targetableTreasures.indexOf(card.slug) + 1}`
+                targetableTreasures.includes("top")
+                  ? `${targetableTreasures.indexOf("top") + 1}`
                   : undefined
               }
+              disabled={state.me.capabilities.buyTreasure !== true}
               onClickTopCard={() =>
                 block(
                   "Cannot buy this card",
                   state.me.capabilities.buyTreasure,
-                  () => purchaseTreasure(index),
+                  () => purchaseTreasure("top"),
                 )
               }
-              onHoverPopover={() => (
-                <CardHoverPreview
-                  card={card}
-                  tooltip={{
-                    capable: state.me.capabilities.buyTreasure,
-                    title: "Cannot buy this card",
-                  }}
-                />
-              )}
+              tooltip={{
+                capable: state.me.capabilities.buyTreasure,
+                title: "Cannot buy this card",
+              }}
             />
+          </div>
+          {state.treasure.inPlay.map((card, index) => (
+            <div
+              key={card.slug}
+              ref={(el) => registerTreasureShopPileEl(card.globalId, el)}>
+              <Pile
+                globalId={card.globalId}
+                cards={[card]}
+                disabled={state.me.capabilities.buyTreasure !== true}
+                onClickTopCardHotkey={
+                  targetableTreasures.includes(card.slug)
+                    ? `${targetableTreasures.indexOf(card.slug) + 1}`
+                    : undefined
+                }
+                onClickTopCard={() =>
+                  block(
+                    "Cannot buy this card",
+                    state.me.capabilities.buyTreasure,
+                    () => purchaseTreasure(index),
+                  )
+                }
+                onHoverPopover={() => (
+                  <CardHoverPreview
+                    card={card}
+                    tooltip={{
+                      capable: state.me.capabilities.buyTreasure,
+                      title: "Cannot buy this card",
+                    }}
+                  />
+                )}
+              />
+            </div>
           ))}
         </div>
         <div className="flex place-items-center gap-2">
