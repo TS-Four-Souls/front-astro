@@ -36,7 +36,7 @@ export const PlayerStats = ({
   const { setPopover, closePopover } = usePopoverContext();
   const { openMenu } = useMainMenuContext();
   const { registerPlayerAnchor } = useGameAnimation();
-  const soulSequenceRef = useRef<HTMLDivElement>(null);
+  const soulAnchorRef = useRef<HTMLDivElement | null>(null);
 
   const isCurrentTurn = state.turn === name;
   const isMe = state.me.name === name;
@@ -205,34 +205,40 @@ export const PlayerStats = ({
         :<span className="font-statblock text-4xl">{coins}</span>
       </div>
 
-      {souls > 0 && (
-        <div
-          ref={soulSequenceRef}
-          className="flex cursor-pointer flex-row-reverse items-center"
-          onMouseEnter={() => {
-            if (soulSequenceRef.current && soulCards.length > 0) {
-              const rect = soulSequenceRef.current.getBoundingClientRect();
-              setPopover({
-                anchor: rect,
-                content: (
-                  <div className="flex w-max flex-nowrap gap-4">
-                    {soulCards.map((card, index) => (
-                      <CardImage
-                        card={card}
-                        className="w-64 shrink-0"
-                        key={index}
-                        tooltip={card.name}
-                      />
-                    ))}
-                  </div>
-                ),
-              });
-            }
-          }}
-          onMouseLeave={() => {
-            closePopover();
-          }}>
-          {alternateSoulSequence(souls)
+      <div
+        ref={(el) => {
+          soulAnchorRef.current = el;
+          registerPlayerAnchor(name, "souls", el);
+        }}
+        className={cn(
+          "flex min-h-8 min-w-6 flex-row-reverse items-center",
+          souls > 0 && "cursor-pointer",
+        )}
+        onMouseEnter={() => {
+          if (soulAnchorRef.current && soulCards.length > 0) {
+            const rect = soulAnchorRef.current.getBoundingClientRect();
+            setPopover({
+              anchor: rect,
+              content: (
+                <div className="flex w-max flex-nowrap gap-4">
+                  {soulCards.map((card, index) => (
+                    <CardImage
+                      card={card}
+                      className="w-64 shrink-0"
+                      key={index}
+                      tooltip={card.name}
+                    />
+                  ))}
+                </div>
+              ),
+            });
+          }
+        }}
+        onMouseLeave={() => {
+          closePopover();
+        }}>
+        {souls > 0 &&
+          alternateSoulSequence(souls)
             .toReversed()
             .map((type, index) => {
               return (
@@ -247,8 +253,7 @@ export const PlayerStats = ({
                 />
               );
             })}
-        </div>
-      )}
+      </div>
 
       {isMe && (
         <div className="flex items-center gap-4">
