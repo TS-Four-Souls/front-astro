@@ -12,7 +12,7 @@ export type GameAnimationBridge = {
   playerAnchors: Map<string, Map<PlayerAnchor, HTMLDivElement>>;
   previousMeByCard: Map<number, { slug: string; rect: DOMRect }>;
   previousOppPile: Map<string, DOMRect>;
-  seenAnimationIds: Set<number>;
+  seenAnimationIds: Set<string>;
   initialized: boolean;
 };
 
