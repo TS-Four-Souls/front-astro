@@ -4,7 +4,6 @@ import { CardType } from "./card";
 import { Stack } from "./stack";
 import { History } from "./history";
 import { socket } from "@/utils/socket";
-import { useGameContext } from "./contexts/game-context";
 import { useToastContext } from "./contexts/toast-context";
 import { usePromptContext } from "./contexts/prompt-context";
 import { usePileDetails } from "./use-pile-details";
@@ -17,7 +16,6 @@ interface CenterProps {
 }
 
 export const Center = ({ state }: CenterProps) => {
-  const { issuer } = useGameContext();
   const { toast, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
   const { displayPileDetails } = usePileDetails();

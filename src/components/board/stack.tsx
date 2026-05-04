@@ -23,7 +23,7 @@ import { HotkeyScope, shouldUseKey } from "@/utils/hotkey";
 import { useGameAnimation } from "./contexts/game-animation";
 
 export const Stack = () => {
-  const { state, issuer } = useGameContext();
+  const { state } = useGameContext();
   const { toast, block } = useToastContext();
   const { setStackEl } = useGameAnimation();
 
@@ -114,7 +114,7 @@ export const Stack = () => {
         },
       );
     },
-    [selectedStackElementId, issuer],
+    [selectedStackElementId],
   );
 
   const { boardSelectionState, isBoardSelectionActive, toggleSelection } =

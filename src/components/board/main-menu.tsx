@@ -3,14 +3,12 @@ import { usePromptContext } from "./contexts/prompt-context";
 import { useToastContext } from "./contexts/toast-context";
 import { Button } from "../button";
 import { useMainMenuContext } from "./contexts/main-menu-context";
-import { useGameContext } from "./contexts/game-context";
 import { HotkeyScope } from "@/utils/hotkey";
 
 export const MainMenu = () => {
   const { addPrompt, removePrompt } = usePromptContext();
   const { toast } = useToastContext();
   const { closeMenu: closeMainMenu } = useMainMenuContext();
-  const { issuer } = useGameContext();
 
   const onResetPress = (confirmed?: true) => {
     if (confirmed === undefined) {

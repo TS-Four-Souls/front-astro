@@ -37,7 +37,7 @@ export const ReplayPage = () => {
   }
 
   return (
-    <GameProvider state={gameState} issuer="1">
+    <GameProvider state={gameState}>
       <BoardSelectionProvider>
         <MainMenuProvider>
           <Board />

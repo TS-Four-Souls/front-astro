@@ -30,7 +30,7 @@ export const PlayerStats = ({
   soulCards,
   className,
 }: PlayerStatsProps) => {
-  const { state, issuer } = useGameContext();
+  const { state } = useGameContext();
   const { toast, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
   const { setPopover, closePopover } = usePopoverContext();

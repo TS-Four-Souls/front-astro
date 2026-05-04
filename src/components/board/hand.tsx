@@ -9,7 +9,7 @@ import { CardHoverPreview } from "./card-hover-preview";
 import { useGameAnimation } from "./contexts/game-animation";
 
 export const Hand = () => {
-  const { state, issuer, isHandUp, setIsHandUp } = useGameContext();
+  const { state, isHandUp, setIsHandUp } = useGameContext();
   const { toast, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
   const { registerMeHandCardEl } = useGameAnimation();

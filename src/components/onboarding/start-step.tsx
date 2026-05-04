@@ -14,7 +14,7 @@ interface StartStepProps {
 }
 
 export const StartStep = ({ room }: StartStepProps) => {
-  const { issuer, gameParameters, players, me } = room;
+  const { gameParameters, players, me } = room;
   const { toast } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
   const loadGameInputRef = useRef<HTMLInputElement>(null);

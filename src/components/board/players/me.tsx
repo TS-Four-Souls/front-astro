@@ -11,7 +11,7 @@ import { Hand } from "../hand";
 import { useGameAnimation } from "../contexts/game-animation";
 
 export const Me = () => {
-  const { state, issuer, isHandUp } = useGameContext();
+  const { state, isHandUp } = useGameContext();
   const { toast, dismiss, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
   const { registerInPlayCardEl } = useGameAnimation();
@@ -74,7 +74,7 @@ export const Me = () => {
         },
       });
     }
-  }, [state.me.pendingSelection, addPrompt, removePrompt, issuer, toast]);
+  }, [state.me.pendingSelection, addPrompt, removePrompt, toast]);
 
   const onInPlayCardClick = (card: InPlayMeCard, index: number) => {
     const activateCard = (

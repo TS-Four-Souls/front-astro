@@ -82,7 +82,7 @@ export const GamePage = () => {
 
   if (room?.room.state === "joined" && room.gameState) {
     return (
-      <GameProvider state={room.gameState} issuer={room.room.issuer}>
+      <GameProvider state={room.gameState}>
         <BoardSelectionProvider>
           <MainMenuProvider>
             <GameAnimationProvider>
