@@ -231,7 +231,9 @@ const AnimationsFromState = ({
         } else {
           fromRect =
             bridge.previousTreasureShopPileByCard.get(a.card.globalId) ??
-            bridge.treasureShopPileEls.get(a.card.globalId)?.getBoundingClientRect() ??
+            bridge.treasureShopPileEls
+              .get(a.card.globalId)
+              ?.getBoundingClientRect() ??
             null;
         }
 
@@ -250,9 +252,7 @@ const AnimationsFromState = ({
           bridge.previousMonsterSlotByCard.get(a.card.globalId) ??
           bridge.monsterSlotEls.get(a.card.globalId)?.getBoundingClientRect() ??
           null;
-        const soulsEl = bridge.playerAnchors
-          .get(a.player)
-          ?.get("souls");
+        const soulsEl = bridge.playerAnchors.get(a.player)?.get("souls");
         const toRect = soulsEl?.getBoundingClientRect() ?? null;
         if (fromRect && toRect) {
           onMonsterSoulToCounter({
@@ -267,7 +267,9 @@ const AnimationsFromState = ({
       if (a.type === "obtainBonusSoul") {
         const fromRect =
           bridge.previousBonusSoulPileByCard.get(a.card.globalId) ??
-          bridge.bonusSoulPileEls.get(a.card.globalId)?.getBoundingClientRect() ??
+          bridge.bonusSoulPileEls
+            .get(a.card.globalId)
+            ?.getBoundingClientRect() ??
           null;
         const soulsEl = bridge.playerAnchors.get(a.player)?.get("souls");
         const toRect = soulsEl?.getBoundingClientRect() ?? null;
@@ -474,11 +476,7 @@ export const GameAnimationProvider = ({
   );
 
   const onDrawLoot = useCallback(
-    (payload: {
-      fromRect: DOMRect;
-      toRect: DOMRect;
-      delayMs?: number;
-    }) => {
+    (payload: { fromRect: DOMRect; toRect: DOMRect; delayMs?: number }) => {
       const id = nextIdRef.current++;
       setCardGhosts((prev) => [
         ...prev,
@@ -495,11 +493,7 @@ export const GameAnimationProvider = ({
   );
 
   const onTreasureBuyToInPlay = useCallback(
-    (payload: {
-      fromRect: DOMRect;
-      toRect: DOMRect;
-      slug: string;
-    }) => {
+    (payload: { fromRect: DOMRect; toRect: DOMRect; slug: string }) => {
       const id = nextIdRef.current++;
       setCardGhosts((prev) => [
         ...prev,
@@ -519,11 +513,7 @@ export const GameAnimationProvider = ({
   );
 
   const onMonsterSoulToCounter = useCallback(
-    (payload: {
-      fromRect: DOMRect;
-      toRect: DOMRect;
-      slug: string;
-    }) => {
+    (payload: { fromRect: DOMRect; toRect: DOMRect; slug: string }) => {
       const id = nextIdRef.current++;
       setCardGhosts((prev) => [
         ...prev,

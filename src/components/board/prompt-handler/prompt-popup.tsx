@@ -58,12 +58,16 @@ export const PromptPopup = ({
       return sortedOptions;
     }
     return sortedOptions.filter((option) => {
-      return JSON.stringify(option.payload).toLowerCase().includes(searchCleaned);
+      return JSON.stringify(option.payload)
+        .toLowerCase()
+        .includes(searchCleaned);
     });
   }, [sortedOptions, search]);
 
   return (
-    <Popup onPressBackdrop={onCancel} className={cn(canUseLookup && "w-full h-full")}>
+    <Popup
+      onPressBackdrop={onCancel}
+      className={cn(canUseLookup && "h-full w-full")}>
       <div className="flex flex-row justify-between gap-8">
         <h1 className="font-alt-stats text-2xl leading-tight font-bold uppercase">
           {prompt}
@@ -97,7 +101,7 @@ export const PromptPopup = ({
 
       <div
         className={cn(
-          "flex grow flex-wrap gap-2 overflow-auto p-4 content-start",
+          "flex grow flex-wrap content-start gap-2 overflow-auto p-4",
           displayRow ? "flex-col" : "flex-row justify-center",
         )}>
         {filteredOptions.map((option, index) => {

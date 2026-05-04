@@ -173,16 +173,12 @@ export const StartStep = ({ room }: StartStepProps) => {
     const nextIndex = (currentIndex + 1) % room.characters.length;
     const nextCharacter = room.characters[nextIndex];
 
-    socket.emit(
-      "selectCharacter",
-      { character: nextCharacter },
-      (response) => {
-        switch (response.status) {
-          case 200:
-            break;
-        }
-      },
-    );
+    socket.emit("selectCharacter", { character: nextCharacter }, (response) => {
+      switch (response.status) {
+        case 200:
+          break;
+      }
+    });
   };
 
   const onPreviousCharacterPress = () => {

@@ -66,10 +66,7 @@ export const CardGhost = ({
 
   useEffect(() => {
     const extra = hasShrink ? shrinkMs! : 0;
-    const t = setTimeout(
-      finish,
-      (ghost.delayMs ?? 0) + flightMs + extra + 200,
-    );
+    const t = setTimeout(finish, (ghost.delayMs ?? 0) + flightMs + extra + 200);
     return () => clearTimeout(t);
   }, [ghost.delayMs, flightMs, shrinkMs, hasShrink]);
 

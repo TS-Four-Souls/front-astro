@@ -331,56 +331,57 @@ export const Center = ({ state }: CenterProps) => {
               <div
                 key={card.top.globalId}
                 ref={(el) => registerMonsterSlotEl(card.top.globalId, el)}>
-              <Pile
-                globalId={card.top.globalId}
-                cards={[
-                  ...card.covered,
-                  {
-                    slug: card.top.slug,
-                    stats: card.top.stats,
-                    effects: card.top.stats?.temporaryEffect,
-                    engagedInCombat: card.top.stats?.isEngagedInCombat ?? false,
-                    isRequiredAttack: attackRequirement !== undefined,
-                  },
-                ]}
-                disabled={targetable !== true}
-                onClickTopCardHotkey={
-                  targetableMonsters.includes(card.top.slug)
-                    ? `${targetableMonsters.indexOf(card.top.slug) + 1}`
-                    : undefined
-                }
-                onClickTopCard={() =>
-                  block("Cannot attack this card", targetable, () =>
-                    selectMonsterToAttack(index),
-                  )
-                }
-                onPileDetailsClick={
-                  card.covered.length > 0
-                    ? () => {
-                        displayPileDetails([
-                          card.top,
-                          ...card.covered.toReversed(),
-                        ]);
-                      }
-                    : undefined
-                }
-                onHoverPopover={() => (
-                  <CardHoverPreview
-                    card={card.top}
-                    tooltip={[
-                      {
-                        capable: targetable,
-                        title: "Cannot attack this card",
-                      },
-                      {
-                        enabled: attackRequirement !== undefined,
-                        title: "Attack required",
-                        content: `You must attack this monster because of ${attackRequirement?.source.name}.`,
-                      },
-                    ]}
-                  />
-                )}
-              />
+                <Pile
+                  globalId={card.top.globalId}
+                  cards={[
+                    ...card.covered,
+                    {
+                      slug: card.top.slug,
+                      stats: card.top.stats,
+                      effects: card.top.stats?.temporaryEffect,
+                      engagedInCombat:
+                        card.top.stats?.isEngagedInCombat ?? false,
+                      isRequiredAttack: attackRequirement !== undefined,
+                    },
+                  ]}
+                  disabled={targetable !== true}
+                  onClickTopCardHotkey={
+                    targetableMonsters.includes(card.top.slug)
+                      ? `${targetableMonsters.indexOf(card.top.slug) + 1}`
+                      : undefined
+                  }
+                  onClickTopCard={() =>
+                    block("Cannot attack this card", targetable, () =>
+                      selectMonsterToAttack(index),
+                    )
+                  }
+                  onPileDetailsClick={
+                    card.covered.length > 0
+                      ? () => {
+                          displayPileDetails([
+                            card.top,
+                            ...card.covered.toReversed(),
+                          ]);
+                        }
+                      : undefined
+                  }
+                  onHoverPopover={() => (
+                    <CardHoverPreview
+                      card={card.top}
+                      tooltip={[
+                        {
+                          capable: targetable,
+                          title: "Cannot attack this card",
+                        },
+                        {
+                          enabled: attackRequirement !== undefined,
+                          title: "Attack required",
+                          content: `You must attack this monster because of ${attackRequirement?.source.name}.`,
+                        },
+                      ]}
+                    />
+                  )}
+                />
               </div>
             );
           })}
