@@ -4,14 +4,19 @@ import { GamePage } from "./pages/game-page";
 import { HotkeysProvider } from "react-hotkeys-hook";
 import { HotkeyScope } from "@/utils/hotkey";
 import { PopoverProvider } from "./board/contexts/popover-context";
+import { ReplayPage } from "./pages/replay-page";
 
-export const App = () => (
+interface AppProps {
+  page: "game" | "replay";
+}
+
+export const App = ({ page }: AppProps) => (
   <div className="h-screen w-screen overflow-hidden bg-stone-800 text-white select-none">
     <HotkeysProvider initiallyActiveScopes={[HotkeyScope.Main]}>
       <PopoverProvider>
         <ToastProvider>
           <PromptProvider>
-            <GamePage />
+            {page === "game" ? <GamePage /> : <ReplayPage />}
           </PromptProvider>
         </ToastProvider>
       </PopoverProvider>
