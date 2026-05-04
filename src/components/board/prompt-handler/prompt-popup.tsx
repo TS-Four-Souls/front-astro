@@ -9,6 +9,7 @@ import { Person } from "@/icons/person";
 import { Sword } from "@/icons/sword";
 import { StackElement } from "../stack";
 import { SelectionIndexIndicator } from "../selection-index-indicator";
+import { useMemo, useState } from "react";
 
 interface PromptPopupProps {
   onCancel?: () => void | undefined;
@@ -45,13 +46,36 @@ export const PromptPopup = ({
     ? options.toReversed()
     : options;
 
+  const canUseLookup = useMemo(() => {
+    return sortedOptions.length > 10;
+  }, [sortedOptions]);
+
+  const [search, setSearch] = useState<string>("");
+
+  const filteredOptions = useMemo(() => {
+    const searchCleaned = search.trim().toLowerCase();
+    if (searchCleaned.length === 0) {
+      return sortedOptions;
+    }
+    return sortedOptions.filter((option) => {
+      return JSON.stringify(option.payload).toLowerCase().includes(searchCleaned);
+    });
+  }, [sortedOptions, search]);
+
   return (
-    <Popup onPressBackdrop={onCancel}>
+    <Popup onPressBackdrop={onCancel} className={cn(canUseLookup && "w-full h-full")}>
       <div className="flex flex-row justify-between gap-8">
         <h1 className="font-alt-stats text-2xl leading-tight font-bold uppercase">
           {prompt}
         </h1>
         <div className="flex gap-2">
+          {canUseLookup && (
+            <input
+              className="w-48 rounded-md border-2 border-stone-500 px-4"
+              placeholder="Search..."
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          )}
           {toggleMode && (
             <Button
               onClick={toggleMode}
@@ -73,10 +97,10 @@ export const PromptPopup = ({
 
       <div
         className={cn(
-          "flex grow flex-wrap gap-2 overflow-auto p-4",
+          "flex grow flex-wrap gap-2 overflow-auto p-4 content-start",
           displayRow ? "flex-col" : "flex-row justify-center",
         )}>
-        {sortedOptions.map((option, index) => {
+        {filteredOptions.map((option, index) => {
           const selectionIndex = selectedOptions.indexOf(option);
           const canAddMore = selectedOptions.length < maxCount;
           const isSingularSelection = maxCount === 1;
