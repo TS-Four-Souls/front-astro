@@ -2,7 +2,7 @@ import { Board } from "../board/board";
 import { GameProvider } from "../board/contexts/game-context";
 import { MainMenuProvider } from "../board/contexts/main-menu-context";
 import { BoardSelectionProvider } from "../board/contexts/board-selection-context";
-import type { DetailedState, GameParametersJson, Room } from "@/shared/api";
+import type { DetailedState } from "@/shared/api";
 import { useState } from "react";
 import { OnboardingLayout } from "../onboarding-layout";
 import { Button } from "../button";
@@ -17,7 +17,7 @@ export const ReplayPage = () => {
         <div className="flex flex-col gap-4">
           <h1 className="text-2xl font-bold">Replay</h1>
           <textarea
-            className="h-[50vh] w-[50vw] p-4 bg-stone-500"
+            className="h-[50vh] w-[50vw] p-4 bg-stone-500 rounded-lg"
             value={text}
             onChange={(e) => setText(e.target.value)}
             autoComplete="off"
@@ -37,7 +37,7 @@ export const ReplayPage = () => {
   }
 
   return (
-    <GameProvider state={gameState} issuer={{ id: "1", secret: "1" }}>
+    <GameProvider state={gameState} issuer="1">
       <BoardSelectionProvider>
         <MainMenuProvider>
           <Board />
