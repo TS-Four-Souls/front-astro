@@ -155,6 +155,20 @@ export const Center = ({ state }: CenterProps) => {
               : undefined
           }
           disabled={state.loot.discard.length === 0}
+          onClickTopCard={
+            state.loot.discard.length > 1
+              ? () => displayPileDetails(state.loot.discard.toReversed())
+              : undefined
+          }
+          onHoverPopover={
+            state.loot.discard.length > 0
+              ? () => (
+                  <CardHoverPreview
+                    card={state.loot.discard[state.loot.discard.length - 1]}
+                  />
+                )
+              : undefined
+          }
         />
         <div ref={registerLootDeckEl}>
           <Pile
@@ -186,6 +200,24 @@ export const Center = ({ state }: CenterProps) => {
             onPileDetailsClick={
               state.treasure.discard.length > 1
                 ? () => displayPileDetails(state.treasure.discard.toReversed())
+                : undefined
+            }
+            onClickTopCard={
+              state.treasure.discard.length > 1
+                ? () => displayPileDetails(state.treasure.discard.toReversed())
+                : undefined
+            }
+            onHoverPopover={
+              state.treasure.discard.length > 0
+                ? () => (
+                    <CardHoverPreview
+                      card={
+                        state.treasure.discard[
+                          state.treasure.discard.length - 1
+                        ]
+                      }
+                    />
+                  )
                 : undefined
             }
           />
@@ -262,6 +294,24 @@ export const Center = ({ state }: CenterProps) => {
                 : undefined
             }
             disabled={state.monsters.discard.length === 0}
+            onClickTopCard={
+              state.monsters.discard.length > 1
+                ? () => displayPileDetails(state.monsters.discard.toReversed())
+                : undefined
+            }
+            onHoverPopover={
+              state.monsters.discard.length > 0
+                ? () => (
+                    <CardHoverPreview
+                      card={
+                        state.monsters.discard[
+                          state.monsters.discard.length - 1
+                        ]
+                      }
+                    />
+                  )
+                : undefined
+            }
           />
           <Pile
             globalId={SpecialGlobalIds.Monster}
