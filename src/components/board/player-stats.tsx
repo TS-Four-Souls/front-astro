@@ -168,7 +168,7 @@ export const PlayerStats = ({
   return (
     <div
       className={cn(
-        "flex place-items-center gap-16 rounded-lg bg-taupe-600/50 p-3 pr-4 pl-6 text-white outline-[0.2em] outline-transparent backdrop-blur-xl transition-shadow duration-500",
+        "flex place-items-center gap-16 rounded-xl bg-taupe-600/50 p-3 pr-4 pl-6 text-white outline-[0.2em] outline-transparent backdrop-blur-xl transition-shadow duration-500",
         isGlowing && "glow-8",
         className,
       )}>

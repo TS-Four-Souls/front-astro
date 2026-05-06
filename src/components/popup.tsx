@@ -33,7 +33,7 @@ export const Popup = ({ children, onPressBackdrop, className }: PopupProps) => {
       onClick={onPressBackdrop}>
       <div
         className={cn(
-          "flex max-h-[90vh] max-w-[90vw] min-w-120 flex-col gap-4 rounded-lg bg-taupe-700 p-4",
+          "flex max-h-[90vh] max-w-[90vw] min-w-120 flex-col gap-4 rounded-lg bg-taupe-700 p-4 shadow-4xl/60 outline-4 outline-taupe-600",
           className,
         )}
         onClick={(e) => e.stopPropagation()}>

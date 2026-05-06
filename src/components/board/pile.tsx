@@ -201,7 +201,7 @@ export const Pile = ({
 
                   engagedInCombat &&
                     "outline-[0.3em] outline-red-500/60 glow-combat",
-                    
+
                   engagedInPurchase &&
                     "outline-[0.3em] outline-yellow-400/60 glow-purchase",
 
@@ -215,7 +215,7 @@ export const Pile = ({
                 )}
                 className={cn(
                   !charged && "brightness-50 contrast-90",
-                  eternal && "glow-6 glow-eternal",
+                  eternal && "glow-eternal glow-6",
                   cards.length > 0 && index === 0 && "shadow-md/50",
                   cards.length > 5 && index === 3 && "shadow-lg/50",
                   cards.length > 10 && index === 2 && "shadow-xl/30",

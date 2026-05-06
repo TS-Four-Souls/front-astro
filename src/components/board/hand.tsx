@@ -60,7 +60,7 @@ export const Hand = () => {
     <div className="pointer-events-none flex place-content-center place-items-center">
       <div
         className={cn(
-          "pointer-events-auto grid auto-cols-fr grid-flow-col gap-2 transition-transform duration-500",
+          "hand-pile pointer-events-auto grid auto-cols-fr grid-flow-col gap-2 transition-transform duration-500",
         )}
         onMouseEnter={() => setIsHandUp(true)}
         onMouseLeave={() => setIsHandUp(false)}>
@@ -77,6 +77,8 @@ export const Hand = () => {
                   ? "cursor-pointer"
                   : "cursor-not-allowed",
               )}
+              topCardClassName="shadow-lg/30"
+              enableRandomRotation={false}
               onHoverPopover={() => (
                 <CardHoverPreview
                   card={card}

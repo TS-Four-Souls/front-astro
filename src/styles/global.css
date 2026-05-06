@@ -4,6 +4,11 @@
 @import "tailwindcss/preflight.css" layer(base);
 @import "tailwindcss/utilities.css" layer(utilities);
 
+.hand-pile {
+  filter: drop-shadow(0 2em 4em rgb(0 0 0 / 0.5))
+    drop-shadow(0 1em 2em rgb(0 0 0 / 0.5));
+}
+
 .board-light {
   background: radial-gradient(circle at center, white 30%, #333 100%);
 }

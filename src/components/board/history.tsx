@@ -28,7 +28,7 @@ export const History = () => {
   }, [state.stack.length]);
 
   return (
-    <div className="rounded-lg bg-taupe-800">
+    <div className="rounded-lg bg-taupe-800 inset-shadow-sm inset-shadow-taupe-950/30">
       <div
         ref={scrollViewRef}
         className="no-scrollbar relative flex h-86 w-14 flex-col items-center gap-1.5 overflow-y-auto p-2 transition-colors duration-300">

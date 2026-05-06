@@ -327,7 +327,10 @@ export const PlayerOption = ({
       <div className="relative">
         <CardImage
           card={option.payload}
-          className={cn("m-2 w-64", selected && "outline-6 outline-blue-400")}
+          className={cn(
+            "m-2 w-64 shadow-lg/30",
+            selected && "outline-6 outline-blue-400",
+          )}
         />
         <div className="absolute inset-4">{children}</div>
       </div>
@@ -357,7 +360,10 @@ export const MonsterOption = ({
       <div className="relative">
         <CardImage
           card={option.payload}
-          className={cn("m-2 w-64", selected && "outline-6 outline-blue-400")}
+          className={cn(
+            "m-2 w-64 shadow-lg/30",
+            selected && "outline-6 outline-blue-400",
+          )}
         />
         <div className="absolute inset-4">{children}</div>
       </div>
@@ -386,7 +392,10 @@ export const DeckOption = ({
       <div className="relative">
         <CardImage
           card={option.payload as CardType}
-          className={cn("m-2 w-64", selected && "outline-6 outline-blue-400")}
+          className={cn(
+            "m-2 w-64 shadow-lg/30",
+            selected && "outline-6 outline-blue-400",
+          )}
         />
         <div className="absolute inset-4">{children}</div>
       </div>
@@ -477,7 +486,10 @@ export const CardOption = ({
       onClick={onPress}>
       <CardImage
         card={option.payload}
-        className={cn("m-2 w-64", selected && "outline-6 outline-blue-400")}
+        className={cn(
+          "m-2 w-64 shadow-lg/30",
+          selected && "outline-6 outline-blue-400",
+        )}
       />
       <div className="absolute inset-4">{children}</div>
     </div>
@@ -502,7 +514,7 @@ export const CharacterOption = ({
         <div className="grid items-center gap-2">
           <CardImage
             card={CardType.CharacterCard}
-            className={cn("col-start-1 row-start-1 w-48")}
+            className={cn("col-start-1 row-start-1 w-48 shadow-lg/30")}
           />
           <p className="col-start-1 row-start-1 text-center font-main text-[800%] font-bold text-black uppercase text-shadow-amber-50 text-shadow-lg">
             ?
@@ -511,21 +523,24 @@ export const CharacterOption = ({
       ) : (
         <CardImage
           card={{ slug: option.payload.character }}
-          className={"w-48"}
+          className={"w-48 shadow-lg/30"}
         />
       )}
       {option.payload.eternal === "random" ? (
         <div className="grid items-center gap-2">
           <CardImage
             card={CardType.TreasureCard}
-            className={cn("col-start-1 row-start-1 w-48")}
+            className={cn("col-start-1 row-start-1 w-48 shadow-lg/30")}
           />
           <p className="col-start-1 row-start-1 text-center font-main text-[800%] font-bold text-black uppercase text-shadow-amber-50 text-shadow-lg">
             ?
           </p>
         </div>
       ) : (
-        <CardImage card={{ slug: option.payload.eternal }} className={"w-48"} />
+        <CardImage
+          card={{ slug: option.payload.eternal }}
+          className={"w-48 shadow-lg/30"}
+        />
       )}
       <div className="absolute inset-4">{children}</div>
     </div>
@@ -551,11 +566,11 @@ export const CouplePlayerHandOption = ({
             {option.payload.player.name}
           </p>
         </div>
-        <CardImage card={option.payload.player} className="h-64" />
+        <CardImage card={option.payload.player} className="h-64 shadow-lg/30" />
       </div>
       <div className="mx-2 h-64" />
       {option.payload.hand.map((card) => (
-        <CardImage key={card.slug} card={card} className="h-64" />
+        <CardImage key={card.slug} card={card} className="h-64 shadow-lg/30" />
       ))}
       <div className="absolute inset-1">{children}</div>
     </div>

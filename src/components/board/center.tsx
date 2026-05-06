@@ -128,7 +128,7 @@ export const Center = ({ state }: CenterProps) => {
   ).slice(0, 9);
 
   return (
-    <div className="flex place-items-center gap-6 rounded-xl bg-taupe-700/50 p-8 shadow-md inset-shadow-sm inset-shadow-taupe-900/50 backdrop-blur-xl">
+    <div className="flex place-items-center gap-6 rounded-3xl bg-taupe-700/50 p-8 backdrop-blur-xl">
       <Stack />
       <History />
       {state.bonusSouls && (
