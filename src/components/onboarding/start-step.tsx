@@ -238,7 +238,7 @@ export const StartStep = ({ room }: StartStepProps) => {
     <div className="flex w-full items-start gap-8">
       <div className="flex flex-1 justify-between gap-8">
         <div className="flex flex-col gap-6">
-          <div className="flex flex-col gap-6 rounded-lg border-2 border-stone-700 bg-stone-800/60 p-6 backdrop-blur-md">
+          <div className="flex flex-col gap-6 rounded-lg border-2 border-taupe-700 bg-taupe-800/60 p-6 backdrop-blur-md">
             <div className="flex flex-col gap-8">
               <h2 className="font-main text-2xl font-bold">
                 {players.length === 0
@@ -277,7 +277,7 @@ export const StartStep = ({ room }: StartStepProps) => {
             </div>
           </div>
 
-          <div className="flex w-full flex-col place-items-start gap-6 self-start rounded-lg border-2 border-stone-700 bg-stone-800/60 p-6 backdrop-blur-md">
+          <div className="flex w-full flex-col place-items-start gap-6 self-start rounded-lg border-2 border-taupe-700 bg-taupe-800/60 p-6 backdrop-blur-md">
             <h2 className="font-main text-2xl font-bold">Ready?</h2>
             <p className="leading-relaxed">
               When everyone joined and is ready,
@@ -312,7 +312,7 @@ export const StartStep = ({ room }: StartStepProps) => {
           </div>
         </div>
 
-        <div className="flex flex-col gap-4 self-start rounded-lg border-2 border-stone-700 bg-stone-800/60 p-6 backdrop-blur-md">
+        <div className="flex flex-col gap-4 self-start rounded-lg border-2 border-taupe-700 bg-taupe-800/60 p-6 backdrop-blur-md">
           <h2 className="font-main text-2xl font-bold">Game reset</h2>
           <p>
             Not happy with your playmates?
@@ -323,7 +323,7 @@ export const StartStep = ({ room }: StartStepProps) => {
         </div>
       </div>
 
-      <div className="flex max-h-[calc(100vh-400px)] flex-col gap-12 overflow-auto rounded-lg border-2 border-stone-700 bg-stone-800/60 p-6 pb-8 backdrop-blur-md">
+      <div className="flex max-h-[calc(100vh-400px)] flex-col gap-12 overflow-auto rounded-lg border-2 border-taupe-700 bg-taupe-800/60 p-6 pb-8 backdrop-blur-md">
         <h2 className="font-main text-2xl font-bold">Game parameters</h2>
         <div className="flex gap-4">
           <Button
@@ -342,7 +342,7 @@ export const StartStep = ({ room }: StartStepProps) => {
             .filter(isParameterKey)
             .map((parameter) => (
               <Fragment key={parameter}>
-                <p className="text-stone-400">
+                <p className="text-taupe-400">
                   {gameParameters[parameter].text}
                 </p>
                 {isBooleanParameterKey(parameter) ? (
@@ -449,7 +449,7 @@ const NumericInput = ({
         label="−"
         className="rounded-r-none font-sans"
       />
-      <p className="flex h-10 min-w-13 items-center justify-center border-y-2 border-stone-700 text-center font-bold text-stone-400">
+      <p className="flex h-10 min-w-13 items-center justify-center border-y-2 border-taupe-700 text-center font-bold text-taupe-400">
         {value}
       </p>
       <Button

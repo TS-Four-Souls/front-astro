@@ -110,7 +110,7 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
       (t) => (
         <div
           className={cn(
-            "relative flex items-center gap-4 overflow-hidden rounded-lg bg-stone-600 p-4 pr-8 text-white",
+            "relative flex items-center gap-4 overflow-hidden rounded-lg bg-taupe-600 p-4 pr-8 text-white",
             t.visible ? "animate-in-right" : "animate-out-right",
           )}>
           <Icon type={type} className="size-8 shrink-0" />

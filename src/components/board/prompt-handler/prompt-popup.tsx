@@ -75,7 +75,7 @@ export const PromptPopup = ({
         <div className="flex gap-2">
           {canUseLookup && (
             <input
-              className="w-48 rounded-md border-2 border-stone-500 px-4"
+              className="w-48 rounded-md border-2 border-taupe-500 px-4"
               placeholder="Search..."
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -134,7 +134,7 @@ export const PromptPopup = ({
           );
         })}
         {sortedOptions.length === 0 && (
-          <div className="text-center text-lg text-stone-400">
+          <div className="text-center text-lg text-taupe-400">
             No options available
           </div>
         )}
@@ -179,7 +179,7 @@ export const PromptOption = ({
   return (
     <GenericOption option={option} onPress={onPress} selected={isSelected}>
       {onPress !== undefined && hotkey !== undefined && (
-        <div className="absolute top-0 left-0 flex aspect-square w-7 place-items-center overflow-hidden rounded-md bg-stone-700 outline-3 outline-stone-200">
+        <div className="absolute top-0 left-0 flex aspect-square w-7 place-items-center overflow-hidden rounded-md bg-taupe-700 outline-3 outline-taupe-200">
           <img
             src={`/input-prompts/keyboard_${hotkey.split(",")[0]}_outline.svg`}
             className="scale-170"
@@ -327,7 +327,7 @@ export const PlayerOption = ({
       <div className="relative">
         <CardImage
           card={option.payload}
-          className={cn("m-2 w-64", selected && "outline-6 outline-blue-500")}
+          className={cn("m-2 w-64", selected && "outline-6 outline-blue-400")}
         />
         <div className="absolute inset-4">{children}</div>
       </div>
@@ -357,7 +357,7 @@ export const MonsterOption = ({
       <div className="relative">
         <CardImage
           card={option.payload}
-          className={cn("m-2 w-64", selected && "outline-6 outline-blue-500")}
+          className={cn("m-2 w-64", selected && "outline-6 outline-blue-400")}
         />
         <div className="absolute inset-4">{children}</div>
       </div>
@@ -386,7 +386,7 @@ export const DeckOption = ({
       <div className="relative">
         <CardImage
           card={option.payload as CardType}
-          className={cn("m-2 w-64", selected && "outline-6 outline-blue-500")}
+          className={cn("m-2 w-64", selected && "outline-6 outline-blue-400")}
         />
         <div className="absolute inset-4">{children}</div>
       </div>
@@ -403,10 +403,10 @@ export const StringOption = ({
   return (
     <div
       className={cn(
-        "relative flex w-max flex-row place-items-center gap-2 rounded-md border-2 bg-stone-600 p-2",
+        "relative flex w-max flex-row place-items-center gap-2 rounded-md border-2 bg-taupe-600 p-2",
         selected
-          ? "border-blue-500 outline-2 outline-blue-500"
-          : "border-stone-500",
+          ? "border-blue-500 outline-2 outline-blue-400"
+          : "border-taupe-500",
         onPress && "cursor-pointer",
       )}
       onClick={onPress}>
@@ -427,10 +427,10 @@ export const BooleanOption = ({
   return (
     <div
       className={cn(
-        "relative flex w-max flex-row place-items-center gap-2 rounded-md border-2 bg-stone-600 p-2",
+        "relative flex w-max flex-row place-items-center gap-2 rounded-md border-2 bg-taupe-600 p-2",
         selected
-          ? "border-blue-500 outline-2 outline-blue-500"
-          : "border-stone-500",
+          ? "border-blue-500 outline-2 outline-blue-400"
+          : "border-taupe-500",
         onPress && "cursor-pointer",
       )}
       onClick={onPress}>
@@ -451,8 +451,8 @@ export const StackElementOption = ({
   return (
     <div
       className={cn(
-        "relative m-1 rounded-md bg-stone-900 p-4 pr-12 text-xl",
-        selected && "outline-4 outline-blue-500",
+        "relative m-1 rounded-md bg-taupe-900 p-4 pr-12 text-xl",
+        selected && "outline-4 outline-blue-400",
         onPress && "cursor-pointer",
       )}
       onClick={onPress}>
@@ -477,7 +477,7 @@ export const CardOption = ({
       onClick={onPress}>
       <CardImage
         card={option.payload}
-        className={cn("m-2 w-64", selected && "outline-6 outline-blue-500")}
+        className={cn("m-2 w-64", selected && "outline-6 outline-blue-400")}
       />
       <div className="absolute inset-4">{children}</div>
     </div>
@@ -495,7 +495,7 @@ export const CharacterOption = ({
       className={cn(
         "relative flex items-center gap-2 p-8",
         onPress && "cursor-pointer",
-        selected && "rounded-2xl outline-6 outline-blue-500",
+        selected && "rounded-2xl outline-6 outline-blue-400",
       )}
       onClick={onPress}>
       {option.payload.character === "random" ? (
@@ -571,10 +571,10 @@ export const NumberOption = ({
   return (
     <div
       className={cn(
-        "relative flex w-max flex-row place-items-center gap-2 rounded-md border-2 bg-stone-600 p-2",
+        "relative flex w-max flex-row place-items-center gap-2 rounded-md border-2 bg-taupe-600 p-2",
         selected
-          ? "border-blue-500 outline-2 outline-blue-500"
-          : "border-stone-500",
+          ? "border-blue-500 outline-2 outline-blue-400"
+          : "border-taupe-500",
         onPress && "cursor-pointer",
       )}
       onClick={onPress}>

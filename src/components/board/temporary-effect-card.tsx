@@ -25,9 +25,9 @@ export const TemporaryEffectCard = ({
       content: (
         <div className="flex flex-col place-items-center gap-2">
           <CardImage card={effect.card} className="w-64" />
-          <div className="flex w-64 flex-col gap-4 text-center text-stone-300">
+          <div className="flex w-64 flex-col gap-4 text-center text-taupe-300">
             <p className="text-lg font-bold">{effect.card.name}</p>
-            <p className="leading-tight text-stone-400">{effect.description}</p>
+            <p className="leading-tight text-taupe-400">{effect.description}</p>
           </div>
         </div>
       ),

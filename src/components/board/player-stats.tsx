@@ -168,16 +168,15 @@ export const PlayerStats = ({
   return (
     <div
       className={cn(
-        "flex place-items-center gap-16 rounded-lg p-3 pr-4 pl-6 text-white outline-[0.2em] outline-transparent transition-shadow duration-500",
-        isCurrentTurn && "outline-stone-700",
+        "flex place-items-center gap-16 rounded-lg bg-taupe-600/50 p-3 pr-4 pl-6 text-white outline-[0.2em] outline-transparent backdrop-blur-xl transition-shadow duration-500",
         isGlowing && "glow-8",
         className,
       )}>
-      <h1
-        className="text-center font-alt-stats font-bold uppercase"
+      <p
+        className="text-center font-alt-stats font-bold uppercase text-shadow-lg text-shadow-taupe-950/20"
         style={{ color }}>
         {name}
-      </h1>
+      </p>
       <div
         onMouseEnter={setCoinTooltip}
         onMouseLeave={closeCoinTooltip}
@@ -237,27 +236,24 @@ export const PlayerStats = ({
         onMouseLeave={() => {
           closePopover();
         }}>
-        {souls > 0 &&
-          alternateSoulSequence(souls)
-            .toReversed()
-            .map((type, index) => {
-              return (
-                <img
-                  src={`/${type === 1 ? "soul-1" : "soul-2"}.png`}
-                  className={cn(
-                    type === 1 ? "h-6" : "h-8",
-                    souls > 2 && "-ml-3",
-                  )}
-                  draggable={false}
-                  key={index}
-                />
-              );
-            })}
+        {alternateSoulSequence(souls)
+          .toReversed()
+          .map((type, index) => {
+            return (
+              <img
+                src={`/${type === 1 ? "soul-1" : "soul-2"}.png`}
+                className={cn(type === 1 ? "h-6" : "h-8", souls > 2 && "-ml-3")}
+                draggable={false}
+                key={index}
+              />
+            );
+          })}
       </div>
 
       {isMe && (
         <div className="flex items-center gap-4">
           <Button
+            className="shadow-xl shadow-taupe-950/50"
             disabled={canEndTurn !== true}
             hotkey="e"
             onClick={() =>
@@ -288,6 +284,7 @@ export const PlayerStats = ({
           {!state.me.isEngagedInPurchase && (
             <Button
               label="Declare purchase"
+              className="shadow-xl shadow-taupe-950/50"
               disabled={state.me.capabilities.declarePurchase !== true}
               hotkey="p"
               onClick={() =>
@@ -306,6 +303,7 @@ export const PlayerStats = ({
           {state.me.isEngagedInPurchase && (
             <Button
               label="Abandon purchase"
+              className="shadow-xl shadow-taupe-950/50"
               disabled={state.me.capabilities.buyTreasure === true}
               tooltip={{
                 title: "Cannot abandon purchase while able to buy treasure.",
@@ -326,6 +324,7 @@ export const PlayerStats = ({
           {!state.me.isEngagedInCombat && (
             <Button
               label="Declare attack"
+              className="shadow-xl shadow-taupe-950/50"
               disabled={state.me.capabilities.declareAttack !== true}
               hotkey="a"
               onClick={() =>
@@ -344,6 +343,7 @@ export const PlayerStats = ({
           {state.me.isEngagedInCombat && (
             <Button
               label="Roll dice"
+              className="shadow-xl shadow-taupe-950/50"
               disabled={state.me.capabilities.rollDice !== true}
               tooltip={{
                 title: "Cannot roll dice",

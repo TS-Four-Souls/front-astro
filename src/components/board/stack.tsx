@@ -123,7 +123,7 @@ export const Stack = () => {
   return (
     <div
       ref={stackContainerRef}
-      className="flex h-86 w-60 flex-col gap-2 rounded-xl bg-stone-900 p-2 inset-shadow-sm inset-shadow-stone-950/30">
+      className="flex h-86 w-60 flex-col gap-2 rounded-xl bg-taupe-800 p-2 inset-shadow-sm inset-shadow-taupe-950/30">
       <div
         ref={scrollViewRef}
         className={cn(
@@ -213,7 +213,7 @@ export const Stack = () => {
         })}
         {state.stack.length === 0 && (
           <div className="flex text-center">
-            <p className="font-time-fcuk text-sm leading-normal text-stone-600">
+            <p className="font-time-fcuk text-sm leading-normal text-taupe-600">
               NOTHING ON THE STACK YET...
             </p>
           </div>
@@ -265,13 +265,13 @@ export const StackElement = ({
       className={cn(
         "relative w-full rounded-lg p-2",
         onClick && "cursor-pointer",
-        isSelected && "outline-[0.2em] outline-blue-500",
+        isSelected && "outline-[0.2em] outline-blue-400",
         className,
       )}>
       <StackElementContent element={element} />
 
       {hotkey && (
-        <div className="absolute top-0 left-0 flex aspect-square w-5 place-items-center overflow-hidden rounded-sm bg-stone-700 outline-[0.1em] -outline-offset-[0.1em]">
+        <div className="absolute top-0 left-0 flex aspect-square w-5 place-items-center overflow-hidden rounded-sm bg-taupe-700 outline-[0.1em] -outline-offset-[0.1em]">
           <img
             src={`/input-prompts/keyboard_${hotkey.split(",")[0]}_outline.svg`}
             className="scale-150"
@@ -316,7 +316,7 @@ const InsertionBar = ({
       )}>
       <span className="col-start-1 row-start-1 w-full border-t-[0.1em] border-dotted border-blue-400/50 group-hover:border-solid" />
       {label && (
-        <span className="col-start-1 row-start-1 bg-stone-900 p-2 text-2xs text-blue-300 opacity-0 transition-opacity group-hover:opacity-100">
+        <span className="col-start-1 row-start-1 bg-taupe-900 p-2 text-2xs text-blue-300 opacity-0 transition-opacity group-hover:opacity-100">
           {label}
         </span>
       )}
@@ -329,11 +329,11 @@ const DiceRollElement = ({ element }: { element: DiceRollJson }) => {
     <div className="flex flex-row items-center gap-4">
       <StackElementIcon element={element} />
       <div className="flex flex-col">
-        <p className="text-2xs leading-6 text-stone-500">
+        <p className="text-2xs leading-6 text-taupe-500">
           {element.card?.name ?? "Attack roll"}
         </p>
 
-        <p className="text-stone-200">
+        <p className="text-taupe-200">
           <span style={{ color: element.issuer.color }}>
             {element.issuer.name}
           </span>{" "}
@@ -354,7 +354,7 @@ const LootCardEffectElement = ({
     <div className="flex flex-row items-center gap-4">
       <StackElementIcon element={element} />
       <div className="text-sm">
-        <p className="text-stone-200">
+        <p className="text-taupe-200">
           <span style={{ color: element.issuer.color }}>
             {element.issuer.name}
           </span>{" "}
@@ -375,7 +375,7 @@ const EffectElement = ({ element }: { element: EffectOnStackJson }) => {
           style={{ color: element.issuer.color }}>
           {element.issuer.name}
         </p>
-        <p className="text-stone-200">{element.card.name}</p>
+        <p className="text-taupe-200">{element.card.name}</p>
       </div>
     </div>
   );
@@ -386,7 +386,7 @@ const DamageElement = ({ element }: { element: DamageOnStackJson }) => {
     <div className="flex flex-row items-center gap-4">
       <StackElementIcon element={element} />
       <div className="text-sm">
-        <p className="text-stone-200">
+        <p className="text-taupe-200">
           <span style={{ color: element.from.color }}>{element.from.name}</span>{" "}
           dealt {element.damage} damage to{" "}
           <span style={{ color: element.receiver.color }}>
@@ -403,7 +403,7 @@ const DeathElement = ({ element }: { element: DeathOnStackJson }) => {
     <div className="flex flex-row items-center gap-4">
       <StackElementIcon element={element} />
       <div className="text-sm">
-        <p className="text-stone-200">
+        <p className="text-taupe-200">
           <span style={{ color: element.from.color }}>{element.from.name}</span>{" "}
           killed{" "}
           <span style={{ color: element.receiver.color }}>

@@ -37,7 +37,7 @@ export const HandPile = ({ player }: HandPileProps) => {
         size={120}>
         <p
           className={cn(
-            "pointer-events-none absolute bottom-[0.1em] left-1/2 -translate-x-1/2 text-center font-statblock text-5xl text-stone-950 text-shadow-amber-50 text-shadow-lg",
+            "pointer-events-none absolute bottom-[0.1em] left-1/2 -translate-x-1/2 text-center font-statblock text-5xl text-taupe-950 text-shadow-amber-50 text-shadow-lg",
             player.handSize >= 10 && "text-5xl",
           )}>
           {player.handSize}

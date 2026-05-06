@@ -200,26 +200,27 @@ export const Pile = ({
                   "col-start-1 row-start-1",
 
                   engagedInCombat &&
-                    "outline-[0.2em] outline-red-500/60 glow-combat",
+                    "outline-[0.3em] outline-red-500/60 glow-combat",
+                    
                   engagedInPurchase &&
-                    "outline-[0.2em] outline-yellow-400/60 glow-purchase",
+                    "outline-[0.3em] outline-yellow-400/60 glow-purchase",
 
                   isRequiredAttack &&
-                    "outline-[0.2em] outline-red-500/60 outline-dashed glow-combat",
+                    "outline-[0.3em] outline-red-500/60 outline-dashed glow-combat",
 
                   entityBoardSelectionState &&
                     entityBoardSelectionState.isSelected &&
                     index === array.length - 1 &&
-                    "outline-[0.2em] outline-blue-500 glow-selection",
+                    "outline-[0.3em] outline-blue-400 shadow-2xl/50 glow-selection z-50",
                 )}
                 className={cn(
                   !charged && "brightness-50 contrast-90",
-                  eternal && "glow-6",
-                  cards.length > 0 && index === 0 && "shadow-lg/20",
-                  cards.length > 5 && index === 3 && "shadow-lg/20",
+                  eternal && "glow-6 glow-eternal",
+                  cards.length > 0 && index === 0 && "shadow-md/50",
+                  cards.length > 5 && index === 3 && "shadow-lg/50",
                   cards.length > 10 && index === 2 && "shadow-xl/30",
                   cards.length > 40 && index === 1 && "shadow-2xl/30",
-                  cards.length > 80 && index === 0 && "shadow-3xl/30",
+                  cards.length > 80 && index === 0 && "shadow-3xl/40",
                   index === array.length - 1 && topCardClassName,
                 )}
                 disabled={

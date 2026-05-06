@@ -74,7 +74,7 @@ export const Popover = ({ children, anchor, className }: PopoverProps) => {
       }}>
       <div
         className={cn(
-          "rounded-3xl border-3 border-stone-700 bg-stone-950 p-3",
+          "rounded-3xl border-3 border-taupe-700 bg-taupe-950 p-3",
           className,
         )}>
         {children}

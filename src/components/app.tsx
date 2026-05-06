@@ -11,7 +11,7 @@ interface AppProps {
 }
 
 export const App = ({ page }: AppProps) => (
-  <div className="h-screen w-screen overflow-hidden bg-stone-800 text-white select-none">
+  <div className="h-screen w-screen overflow-hidden bg-taupe-800 text-white select-none">
     <HotkeysProvider initiallyActiveScopes={[HotkeyScope.Main]}>
       <PopoverProvider>
         <ToastProvider>

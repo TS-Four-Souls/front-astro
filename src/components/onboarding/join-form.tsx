@@ -61,7 +61,7 @@ export const JoinForm = () => {
 
   if (gameOngoing) {
     return (
-      <div className="flex flex-col gap-4 rounded-lg border-2 border-stone-700 p-8 text-center">
+      <div className="flex flex-col gap-4 rounded-lg border-2 border-taupe-700 p-8 text-center">
         <h1 className="font-main text-3xl font-bold">Game ongoing</h1>
         <p>
           A game is already ongoing.
@@ -86,7 +86,7 @@ export const JoinForm = () => {
   }
 
   return (
-    <div className="flex flex-col gap-8 rounded-lg border-2 border-stone-700 bg-stone-800/60 p-8 text-center backdrop-blur-md">
+    <div className="flex flex-col gap-8 rounded-lg border-2 border-taupe-700 bg-taupe-800/60 p-8 text-center backdrop-blur-md">
       <h1 className="font-main text-3xl font-bold">Welcome!</h1>
       <div className="flex flex-col gap-4">
         <input
@@ -105,7 +105,7 @@ export const JoinForm = () => {
           minLength={1}
           required
           autoFocus
-          className="rounded-md border-2 border-stone-700 bg-stone-800 px-4 py-2 text-white focus:ring-2 focus:ring-stone-500 focus:outline-none"
+          className="rounded-md border-2 border-taupe-700 bg-taupe-800 px-4 py-2 text-white focus:ring-2 focus:ring-taupe-500 focus:outline-none"
         />
         <Button label="Join" onClick={joinGame} hotkey="enter" />
         <Button label="Leave" onClick={onLeaveRoomPress} hotkey="escape" />

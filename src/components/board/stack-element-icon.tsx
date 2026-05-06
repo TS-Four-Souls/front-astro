@@ -40,7 +40,7 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
       return (
         <div className="flex flex-col items-center gap-3">
           {element.card && <CardImage card={element.card} className="w-64" />}
-          <div className="flex max-w-64 flex-wrap place-content-center gap-1 px-2 text-center leading-tight text-stone-400">
+          <div className="flex max-w-64 flex-wrap place-content-center gap-1 px-2 text-center leading-tight text-taupe-400">
             <span>
               <span
                 className="font-bold"
@@ -49,12 +49,12 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
               </span>{" "}
               rolled a
             </span>
-            <span className="font-bold whitespace-pre-line text-stone-300">
+            <span className="font-bold whitespace-pre-line text-taupe-300">
               {element.diceRoll}
               {element.modifier !== 0 ? ` (+${element.modifier})` : ""}
             </span>
             <span>for</span>
-            <span className="font-bold whitespace-pre-line text-stone-300">
+            <span className="font-bold whitespace-pre-line text-taupe-300">
               {element.card?.name ?? "an attack roll"}
             </span>
           </div>
@@ -66,7 +66,7 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
       return (
         <>
           <CardImage card={element.card} className="w-64" />
-          <div className="mt-3 flex max-w-64 flex-col gap-2 text-center leading-tight text-stone-400">
+          <div className="mt-3 flex max-w-64 flex-col gap-2 text-center leading-tight text-taupe-400">
             <span>
               <span
                 className="font-bold"
@@ -85,7 +85,7 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
       return (
         <>
           <CardImage card={element.card} className="w-64" />
-          <div className="mt-3 flex max-w-64 flex-col gap-2 text-center leading-tight text-stone-400">
+          <div className="mt-3 flex max-w-64 flex-col gap-2 text-center leading-tight text-taupe-400">
             <span>
               <span
                 style={{ color: element.issuer.color }}
@@ -94,7 +94,7 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
               </span>{" "}
               selected
             </span>
-            <span className="font-bold text-stone-300">{element.effect}</span>
+            <span className="font-bold text-taupe-300">{element.effect}</span>
             <SelectionsList selections={element.targets} />
           </div>
         </>
@@ -107,22 +107,22 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
           {"slug" in element.source && (
             <CardImage card={element.source} className="w-64" />
           )}
-          <div className="max-w-64 px-2 text-center leading-tight text-stone-400">
+          <div className="max-w-64 px-2 text-center leading-tight text-taupe-400">
             <span
               style={{ color: element.from.color }}
-              className="font-bold text-stone-300">
+              className="font-bold text-taupe-300">
               {element.from.name}
             </span>{" "}
             dealt{" "}
-            <span className="font-bold text-stone-300">{element.damage}</span>{" "}
+            <span className="font-bold text-taupe-300">{element.damage}</span>{" "}
             damage to{" "}
             <span
               style={{ color: element.receiver.color }}
-              className="font-bold text-stone-300">
+              className="font-bold text-taupe-300">
               {receiverName(element)}
             </span>{" "}
             using{" "}
-            <span className="font-bold text-stone-300">
+            <span className="font-bold text-taupe-300">
               {"slug" in element.source
                 ? element.source.name
                 : "an attack roll"}
@@ -138,20 +138,20 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
           {"slug" in element.source && (
             <CardImage card={element.source} className="w-64" />
           )}
-          <div className="max-w-64 px-2 text-center leading-tight text-stone-400">
+          <div className="max-w-64 px-2 text-center leading-tight text-taupe-400">
             <span
               style={{ color: element.from.color }}
-              className="font-bold text-stone-300">
+              className="font-bold text-taupe-300">
               {element.from.name}
             </span>{" "}
             killed{" "}
             <span
               style={{ color: element.receiver.color }}
-              className="font-bold text-stone-300">
+              className="font-bold text-taupe-300">
               {receiverName(element)}
             </span>{" "}
             using{" "}
-            <span className="font-bold text-stone-300">
+            <span className="font-bold text-taupe-300">
               {"slug" in element.source
                 ? element.source.name
                 : "an attack roll"}
@@ -175,7 +175,7 @@ const Icon = ({ element }: IconProps) => {
       return (
         <Dice
           value={element.diceRoll}
-          className="size-10 rounded-lg border-[0.15em] bg-stone-800/50 p-0.5 text-red-500"
+          className="size-10 rounded-lg border-[0.15em] bg-taupe-800/50 p-0.5 text-red-500"
           style={{ borderColor }}
         />
       );
@@ -185,7 +185,7 @@ const Icon = ({ element }: IconProps) => {
       return (
         <div
           className={cn(
-            "size-10 overflow-hidden rounded-lg border-[0.15em] bg-stone-800/50",
+            "size-10 overflow-hidden rounded-lg border-[0.15em] bg-taupe-800/50",
           )}
           style={{ borderColor }}>
           <CardImage
@@ -202,7 +202,7 @@ const Icon = ({ element }: IconProps) => {
           src="/heart.png"
           alt="damage"
           className={cn(
-            "size-10 shrink-0 rounded-lg border-[0.15em] bg-stone-800/50 p-0.5",
+            "size-10 shrink-0 rounded-lg border-[0.15em] bg-taupe-800/50 p-0.5",
           )}
           style={{ borderColor }}
           draggable={false}
@@ -215,7 +215,7 @@ const Icon = ({ element }: IconProps) => {
           src="/skull.webp"
           alt="death"
           className={cn(
-            "size-10 shrink-0 rounded-lg border-[0.15em] bg-stone-800/50 p-0.5",
+            "size-10 shrink-0 rounded-lg border-[0.15em] bg-taupe-800/50 p-0.5",
           )}
           style={{ imageRendering: "pixelated", borderColor }}
           draggable={false}
@@ -234,7 +234,7 @@ const getBorderColor = (element: StackElement) => {
     case "death":
       return element.from.color;
     default:
-      return "border-stone-700";
+      return "border-taupe-700";
   }
 };
 
@@ -248,11 +248,11 @@ export const SelectionsList = ({
       <>
         <span>and choose</span>
         {selections.length === 1 ? (
-          <span className="font-bold text-stone-300">
+          <span className="font-bold text-taupe-300">
             <SelectionContent selection={selections[0]} />
           </span>
         ) : (
-          <ol className="flex list-decimal flex-col gap-2 pr-4 pl-6 text-left font-bold text-stone-300 marker:font-normal marker:text-stone-400">
+          <ol className="flex list-decimal flex-col gap-2 pr-4 pl-6 text-left font-bold text-taupe-300 marker:font-normal marker:text-taupe-400">
             {selections.map((target, index) => (
               <li className="pl-2">
                 <SelectionContent key={index} selection={target} />

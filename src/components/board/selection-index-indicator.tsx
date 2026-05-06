@@ -12,7 +12,7 @@ export const SelectionIndexIndicator = ({
   return (
     <div
       className={cn(
-        "absolute top-0 right-0 flex size-5 items-center justify-center rounded-full bg-blue-100 text-xl font-black text-blue-900 outline-4 outline-blue-500",
+        "absolute top-0 right-0 flex size-5 items-center justify-center rounded-full bg-blue-100 text-xl font-black text-blue-900 outline-4 outline-blue-400",
         className,
       )}>
       {index}

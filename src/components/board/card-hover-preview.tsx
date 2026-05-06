@@ -24,7 +24,7 @@ const TooltipAboveCard = ({ tooltip }: { tooltip: Tooltip }) => {
   return (
     <div
       className={cn(
-        "relative w-full overflow-hidden rounded-2xl border-3 border-stone-700 bg-stone-950 p-3 px-4 text-center",
+        "relative w-full overflow-hidden rounded-2xl border-3 border-taupe-700 bg-taupe-950 p-3 px-4 text-center",
         type === "denied" && "border-red-950",
         type === "warning" && "border-yellow-900",
       )}>

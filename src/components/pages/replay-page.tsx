@@ -17,7 +17,7 @@ export const ReplayPage = () => {
         <div className="flex flex-col gap-4">
           <h1 className="text-2xl font-bold">Replay</h1>
           <textarea
-            className="h-[50vh] w-[50vw] rounded-lg bg-stone-500 p-4"
+            className="h-[50vh] w-[50vw] rounded-lg bg-taupe-500 p-4"
             value={text}
             onChange={(e) => setText(e.target.value)}
             autoComplete="off"

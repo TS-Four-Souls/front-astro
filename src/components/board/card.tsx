@@ -68,7 +68,7 @@ export const Card = ({
     return (
       <div
         className={cn(
-          "h-40 rounded-md shadow-sm inset-shadow-sm shadow-stone-700 inset-shadow-stone-900",
+          "rounded-md shadow-sm inset-shadow-sm shadow-taupe-700 inset-shadow-taupe-700",
           onClick && (disabled ? "cursor-not-allowed" : "cursor-pointer"),
           className,
         )}
@@ -112,7 +112,7 @@ export const Card = ({
         />
 
         {hotkey && (
-          <div className="absolute top-1 left-1 flex aspect-square size-4 place-items-center overflow-hidden rounded-sm bg-stone-700 outline-[0.1em]">
+          <div className="absolute top-1 left-1 flex aspect-square size-4 place-items-center overflow-hidden rounded-sm bg-taupe-700 outline-[0.1em]">
             <img
               src={`/input-prompts/keyboard_${hotkey.split(",")[0]}_outline.svg`}
               className="scale-150"
@@ -129,7 +129,7 @@ export const Card = ({
 
         {onPileDetailsClick && (
           <div
-            className="absolute bottom-0.5 left-0.5 cursor-pointer rounded-md bg-stone-700 p-0.5"
+            className="absolute bottom-0.5 left-0.5 cursor-pointer rounded-md bg-taupe-700 p-0.5"
             onClick={onPileDetailsClick}>
             <PileIndicator className="h-3 w-3" />
           </div>

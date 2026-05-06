@@ -128,7 +128,7 @@ export const Center = ({ state }: CenterProps) => {
   ).slice(0, 9);
 
   return (
-    <div className="flex place-items-center gap-6 rounded-xl bg-stone-700/10 p-8 shadow-md inset-shadow-xs inset-shadow-stone-700">
+    <div className="flex place-items-center gap-6 rounded-xl bg-taupe-700/50 p-8 shadow-md inset-shadow-sm inset-shadow-taupe-900/50 backdrop-blur-xl">
       <Stack />
       <History />
       {state.bonusSouls && (
@@ -146,15 +146,7 @@ export const Center = ({ state }: CenterProps) => {
           ))}
         </div>
       )}
-      <div className="flex flex-col place-items-center gap-6">
-        <div ref={registerLootDeckEl}>
-          <Pile
-            globalId={SpecialGlobalIds.Loot}
-            cards={Array.from({ length: state.loot.deckSize }).map(
-              () => CardType.LootCard,
-            )}
-          />
-        </div>
+      <div className="flex flex-col-reverse place-items-center gap-6">
         <Pile
           cards={state.loot.discard}
           onPileDetailsClick={
@@ -164,6 +156,14 @@ export const Center = ({ state }: CenterProps) => {
           }
           disabled={state.loot.discard.length === 0}
         />
+        <div ref={registerLootDeckEl}>
+          <Pile
+            globalId={SpecialGlobalIds.Loot}
+            cards={Array.from({ length: state.loot.deckSize }).map(
+              () => CardType.LootCard,
+            )}
+          />
+        </div>
       </div>
       {state.room && (
         <div className="flex flex-col gap-2">

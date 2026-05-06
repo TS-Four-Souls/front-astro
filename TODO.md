@@ -38,6 +38,7 @@
 - Use canUseOnBoardSelection in the selection logic
 - Replace start game with "I'm ready". When everyone is ready, the game starts
 - Remove animationID
+- Padding top on board when on board selection so that the top player cards are visible
 
 - Define logo/domain/name
 - Animated starry background
