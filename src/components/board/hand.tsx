@@ -23,7 +23,6 @@ export const Hand = () => {
         switch (response.status) {
           case 200:
             if (response.response.complete) {
-              toast("success", "Card played", response.response.description);
             } else if (response.response.options.length === 0) {
               toast("error", "Cannot play this card", "No options available");
             } else {

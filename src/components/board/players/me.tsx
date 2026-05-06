@@ -88,11 +88,6 @@ export const Me = () => {
           switch (response.status) {
             case 200:
               if (response.response.complete) {
-                toast(
-                  "success",
-                  "Card activated",
-                  response.response.description,
-                );
               } else if (response.response.options.length === 0) {
                 toast("error", "Cannot play this card", "No options available");
               } else {
