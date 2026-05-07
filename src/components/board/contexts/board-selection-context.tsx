@@ -77,6 +77,10 @@ export const BoardSelectionProvider = ({
       return undefined;
     }
 
+    if (prompt.canUseOnBoardSelection === false) {
+      return undefined;
+    }
+
     if (!prompt.options.every(isSupportedSelectionItem)) {
       console.log("prompt.options.every(isSupportedSelectionItem) is false");
       return undefined;

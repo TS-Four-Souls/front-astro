@@ -24,6 +24,11 @@ export interface Prompt<T extends SelectionItem = SelectionItem> {
    */
   maxCount: number;
   /**
+   * Whether board selection is allowed for this prompt
+   * @default true
+   */
+  canUseOnBoardSelection?: boolean;
+  /**
    * The function to call when the user submits the prompt
    */
   onSubmit: (selections: T[]) => void;

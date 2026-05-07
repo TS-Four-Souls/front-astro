@@ -53,6 +53,7 @@ export const Me = () => {
         options: pendingSelection.options,
         minCount: pendingSelection.min,
         maxCount: pendingSelection.max,
+        canUseOnBoardSelection: pendingSelection.canUseOnBoardSelection,
         onSubmit: (selectedOptions) => {
           socket.emit(
             "submitSelection",
