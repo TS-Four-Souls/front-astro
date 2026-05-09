@@ -156,22 +156,13 @@ export const PlayerStats = ({
             capable: state.me.capabilities.canDonateCoins,
           },
     );
-  const [isGlowing, setIsGlowing] = useState(false);
-  useEffect(() => {
-    setIsGlowing(isCurrentTurn);
-    const timeout = setTimeout(() => {
-      setIsGlowing(false);
-    }, 1500);
-    return () => clearTimeout(timeout);
-  }, [isCurrentTurn]);
 
   return (
     <div
       className={cn(
-        "flex place-items-center gap-16 rounded-xl border-[0.2em] border-taupe-700/50 bg-board/90 p-3 pr-4 pl-6 text-white outline-[0.2em] outline-transparent transition-shadow duration-500",
-        isGlowing && "glow-8",
+        "flex place-items-center gap-16 rounded-xl border-[0.2em] border-taupe-900/50 bg-board/90 p-3 pr-4 pl-6 text-white outline-[0.2em] outline-transparent transition-shadow duration-500",
         className,
-      )}>
+      )} style={{ background: isCurrentTurn ? `radial-gradient(circle at center, var(--color-board) 0%, ${color} 500%)` : undefined }}>
       <p
         className="text-center font-alt-stats font-bold uppercase text-shadow-lg text-shadow-taupe-950/20"
         style={{ color }}>
