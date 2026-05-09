@@ -168,7 +168,7 @@ export const PlayerStats = ({
   return (
     <div
       className={cn(
-        "flex place-items-center gap-16 rounded-xl bg-taupe-600/50 p-3 pr-4 pl-6 text-white outline-[0.2em] outline-transparent backdrop-blur-xl transition-shadow duration-500",
+        "flex place-items-center gap-16 rounded-xl border-[0.2em] border-taupe-700/50 bg-board/90 p-3 pr-4 pl-6 text-white outline-[0.2em] outline-transparent transition-shadow duration-500",
         isGlowing && "glow-8",
         className,
       )}>
@@ -198,10 +198,13 @@ export const PlayerStats = ({
         <img
           ref={(el) => registerPlayerAnchor(name, "coins", el)}
           src="/coin.png"
-          className="size-6 rounded-full shadow-md/50"
+          className="size-6 rounded-full shadow-lg shadow-taupe-800/30"
           draggable={false}
         />
-        :<span className="font-statblock text-4xl">{coins}</span>
+        <span className="text-shadow-lg text-shadow-taupe-800/70">:</span>{" "}
+        <span className="font-statblock text-4xl text-shadow-lg text-shadow-taupe-800/70">
+          {coins}
+        </span>
       </div>
 
       <div
@@ -242,7 +245,11 @@ export const PlayerStats = ({
             return (
               <img
                 src={`/${type === 1 ? "soul-1" : "soul-2"}.png`}
-                className={cn(type === 1 ? "h-6" : "h-8", souls > 2 && "-ml-3")}
+                className={cn(
+                  type === 1 ? "h-6" : "h-8",
+                  souls > 2 && "-ml-3",
+                  "drop-shadow-lg drop-shadow-taupe-800/70",
+                )}
                 draggable={false}
                 key={index}
               />
@@ -253,7 +260,7 @@ export const PlayerStats = ({
       {isMe && (
         <div className="flex items-center gap-4">
           <Button
-            className="shadow-xl shadow-taupe-950/50"
+            className="shadow-lg shadow-taupe-800/70"
             disabled={canEndTurn !== true}
             hotkey="e"
             onClick={() =>
@@ -284,7 +291,7 @@ export const PlayerStats = ({
           {!state.me.isEngagedInPurchase && (
             <Button
               label="Declare purchase"
-              className="shadow-xl shadow-taupe-950/50"
+              className="shadow-lg shadow-taupe-800/70"
               disabled={state.me.capabilities.declarePurchase !== true}
               hotkey="p"
               onClick={() =>
@@ -303,7 +310,7 @@ export const PlayerStats = ({
           {state.me.isEngagedInPurchase && (
             <Button
               label="Abandon purchase"
-              className="shadow-xl shadow-taupe-950/50"
+              className="shadow-lg shadow-taupe-800/70"
               disabled={state.me.capabilities.buyTreasure === true}
               tooltip={{
                 title: "Cannot abandon purchase while able to buy treasure.",
@@ -324,7 +331,7 @@ export const PlayerStats = ({
           {!state.me.isEngagedInCombat && (
             <Button
               label="Declare attack"
-              className="shadow-xl shadow-taupe-950/50"
+              className="shadow-lg shadow-taupe-800/70"
               disabled={state.me.capabilities.declareAttack !== true}
               hotkey="a"
               onClick={() =>
@@ -343,7 +350,7 @@ export const PlayerStats = ({
           {state.me.isEngagedInCombat && (
             <Button
               label="Roll dice"
-              className="shadow-xl shadow-taupe-950/50"
+              className="shadow-lg shadow-taupe-800/70"
               disabled={state.me.capabilities.rollDice !== true}
               tooltip={{
                 title: "Cannot roll dice",
@@ -359,7 +366,10 @@ export const PlayerStats = ({
               }
             />
           )}
-          <Gear className="size-5 cursor-pointer" onClick={() => openMenu()} />
+          <Gear
+            className="size-5 cursor-pointer drop-shadow-lg drop-shadow-taupe-800"
+            onClick={() => openMenu()}
+          />
         </div>
       )}
     </div>

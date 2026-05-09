@@ -9,14 +9,12 @@
     drop-shadow(0 1em 2em rgb(0 0 0 / 0.5));
 }
 
-.board-light {
-  background: radial-gradient(circle at center, white 30%, #333 100%);
-}
-
 .board-texture {
-  background-image: url(/background/board.png);
+  background-image:
+    url(/background/board.png),
+    radial-gradient(circle at center, #777 30%, #222 100%);
   background-size: cover;
-  mix-blend-mode: multiply;
+  background-blend-mode: hard-light;
 }
 
 .planetarium {
@@ -193,6 +191,8 @@
   --color-space-400: #435093;
   --color-space-500: #3d426b;
   --color-space-300: #5f68a2;
+
+  --color-board: #6e574e;
 
   --inset-shadow-2xs: inset 0 0.05em rgb(0 0 0 / 0.05);
   --inset-shadow-xs: inset 0 0.05em 0.05em rgb(0 0 0 / 0.05);

@@ -42,7 +42,7 @@ export const PromptBoardSelection = ({
 
   return (
     <div className="pointer-events-none fixed top-0 right-0 left-0 z-50 flex justify-center p-6">
-      <div className="pointer-events-auto flex items-center gap-4 rounded-2xl border-2 border-taupe-700 bg-taupe-900/95 p-4 shadow-xl backdrop-blur-md">
+      <div className="pointer-events-auto flex items-center gap-4 rounded-2xl border-2 border-taupe-700 bg-taupe-900 p-4 shadow-xl">
         <div className="flex flex-col">
           <p className="font-main text-lg font-bold">{prompt}</p>
           <p className="text-sm text-taupe-400">
