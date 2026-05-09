@@ -21,7 +21,7 @@ export const RoomJoinForm = ({ onCancel, onSuccess }: RoomJoinFormProps) => {
   };
 
   return (
-    <div className="flex flex-col gap-8 rounded-lg border-2 border-taupe-700 bg-taupe-800/60 p-8 text-center backdrop-blur-md">
+    <div className="flex flex-col gap-8 rounded-lg border-2 border-space-400 bg-space p-8 text-center">
       <h1 className="font-main text-3xl font-bold">Join a room</h1>
       <div className="flex flex-col gap-4">
         <input
@@ -40,10 +40,10 @@ export const RoomJoinForm = ({ onCancel, onSuccess }: RoomJoinFormProps) => {
           minLength={1}
           required
           autoFocus
-          className="rounded-md border-2 border-taupe-700 bg-taupe-800 px-4 py-2 text-white focus:ring-2 focus:ring-taupe-500 focus:outline-none"
+          className="rounded-md border-2 border-space-300 bg-space-500 px-4 py-2 text-white focus:ring-2 focus:ring-space-500 focus:outline-none"
         />
-        <Button label="Join" onClick={joinRoom} hotkey="enter" />
-        <Button label="Leave" onClick={onCancel} hotkey="escape" />
+        <Button label="Join" onClick={joinRoom} hotkey="enter" theme="onSpace" />
+        <Button label="Leave" onClick={onCancel} hotkey="escape" theme="onSpace" />
       </div>
     </div>
   );

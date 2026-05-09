@@ -13,12 +13,14 @@ export const RoomOptions = ({ onCreateRoom, onJoinRoom }: RoomOptionsProps) => {
         onClick={onCreateRoom}
         hotkey="1"
         className="h-16 w-120"
+        theme="onSpace"
       />
       <Button
         label="Join a room"
         onClick={onJoinRoom}
         hotkey="2"
         className="h-16 w-120"
+        theme="onSpace"
       />
     </>
   );

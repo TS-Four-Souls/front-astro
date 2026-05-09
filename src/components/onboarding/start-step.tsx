@@ -238,7 +238,7 @@ export const StartStep = ({ room }: StartStepProps) => {
     <div className="flex w-full items-start gap-8">
       <div className="flex flex-1 justify-between gap-8">
         <div className="flex flex-col gap-6">
-          <div className="flex flex-col gap-6 rounded-lg border-2 border-taupe-700 bg-taupe-800/60 p-6 backdrop-blur-md">
+          <div className="flex flex-col gap-6 rounded-lg border-2 border-space-400 bg-space p-6">
             <div className="flex flex-col gap-8">
               <h2 className="font-main text-2xl font-bold">
                 {players.length === 0
@@ -271,13 +271,14 @@ export const StartStep = ({ room }: StartStepProps) => {
                     onClick={() => {
                       navigator.clipboard.writeText(room.id);
                     }}
+                    theme="onSpace"
                   />
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="flex w-full flex-col place-items-start gap-6 self-start rounded-lg border-2 border-taupe-700 bg-taupe-800/60 p-6 backdrop-blur-md">
+          <div className="flex w-full flex-col place-items-start gap-6 self-start rounded-lg border-2 border-space-400 bg-space p-6">
             <h2 className="font-main text-2xl font-bold">Ready?</h2>
             <p className="leading-relaxed">
               When everyone joined and is ready,
@@ -289,11 +290,13 @@ export const StartStep = ({ room }: StartStepProps) => {
               hotkey="enter"
               label="Let's go!"
               className="h-16 w-full font-alt-stats text-xl font-bold"
+              theme="onSpace"
             />
             <Button
               onClick={onLoadGamePress}
               label="Load game"
               className="w-full"
+              theme="onSpace"
             />
             <input
               ref={loadGameInputRef}
@@ -312,29 +315,36 @@ export const StartStep = ({ room }: StartStepProps) => {
           </div>
         </div>
 
-        <div className="flex flex-col gap-4 self-start rounded-lg border-2 border-taupe-700 bg-taupe-800/60 p-6 backdrop-blur-md">
+        <div className="flex flex-col gap-4 self-start rounded-lg border-2 border-space-400 bg-space p-6">
           <h2 className="font-main text-2xl font-bold">Game reset</h2>
           <p>
             Not happy with your playmates?
             <br />
             You can reset the game and start over.
           </p>
-          <Button onClick={onResetPress} label="Reset" className="mt-4" />
+          <Button
+            onClick={onResetPress}
+            label="Reset"
+            className="mt-4"
+            theme="onSpace"
+          />
         </div>
       </div>
 
-      <div className="flex max-h-[calc(100vh-400px)] flex-col gap-12 overflow-auto rounded-lg border-2 border-taupe-700 bg-taupe-800/60 p-6 pb-8 backdrop-blur-md">
+      <div className="flex max-h-[calc(100vh-400px)] flex-col gap-12 overflow-auto rounded-lg border-2 border-space-400 bg-space p-6 pb-8">
         <h2 className="font-main text-2xl font-bold">Game parameters</h2>
         <div className="flex gap-4">
           <Button
             onClick={onSaveParametersPress}
             label="Save"
             className="flex-1"
+            theme="onSpace"
           />
           <Button
             onClick={onLoadParametersPress}
             label="Load"
             className="flex-1"
+            theme="onSpace"
           />
         </div>
         <div className="grid grid-cols-[auto_auto] items-center gap-x-12 gap-y-6">
@@ -342,9 +352,7 @@ export const StartStep = ({ room }: StartStepProps) => {
             .filter(isParameterKey)
             .map((parameter) => (
               <Fragment key={parameter}>
-                <p className="text-taupe-400">
-                  {gameParameters[parameter].text}
-                </p>
+                <p>{gameParameters[parameter].text}</p>
                 {isBooleanParameterKey(parameter) ? (
                   <BooleanInput
                     value={gameParameters[parameter].value}
@@ -396,6 +404,7 @@ const PlayerCard = ({
           label="<"
           onClick={actions.onPreviousCharacterPress}
           className="size-8"
+          theme="onSpace"
         />
       )}
       {player.character.character === "random" ? (
@@ -429,6 +438,7 @@ const PlayerCard = ({
           label=">"
           onClick={actions.onNextCharacterPress}
           className="size-8"
+          theme="onSpace"
         />
       )}
     </div>
@@ -447,15 +457,17 @@ const NumericInput = ({
       <Button
         onClick={() => onChange(value - 1)}
         label="−"
-        className="rounded-r-none font-sans"
+        className="rounded-r-none font-sans shadow-none"
+        theme="onSpace"
       />
-      <p className="flex h-10 min-w-13 items-center justify-center border-y-2 border-taupe-700 text-center font-bold text-taupe-400">
+      <p className="flex h-10 min-w-13 items-center justify-center border-y-2 border-space-500 text-center font-bold">
         {value}
       </p>
       <Button
         onClick={() => onChange(value + 1)}
         label="+"
-        className="rounded-l-none font-sans"
+        className="rounded-l-none font-sans shadow-none"
+        theme="onSpace"
       />
     </div>
   );
@@ -469,19 +481,12 @@ const BooleanInput = ({
   onChange: (value: boolean) => void;
 }) => {
   return (
-    <div className="grid grid-cols-2 items-center justify-end">
-      <Button
-        onClick={() => onChange(false)}
-        label="No"
-        active={!value}
-        className="rounded-r-none font-sans font-bold"
-      />
-      <Button
-        onClick={() => onChange(true)}
-        label="Yes"
-        active={value}
-        className="rounded-l-none font-sans font-bold"
-      />
-    </div>
+    <Button
+      onClick={() => onChange(!value)}
+      label={value ? "On" : "Off"}
+      active={value}
+      className={cn("font-sans font-bold", !value && "text-space/40 shadow-none")}
+      theme="onSpace"
+    />
   );
 };

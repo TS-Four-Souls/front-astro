@@ -12,7 +12,7 @@ interface ButtonProps {
   hotkey?: string;
   hotkeyScope?: HotkeyScope[];
   type?: "button" | "submit" | "reset" | undefined;
-  theme?: "default" | "onLight" | "onDark";
+  theme?: "default" | "onLight" | "onDark" | "onSpace";
   tooltip?: Tooltip;
 }
 
@@ -47,6 +47,7 @@ export const Button = ({
         theme === "default" && "bg-taupe-600",
         theme === "onLight" && "bg-taupe-500",
         theme === "onDark" && "bg-taupe-700",
+        theme === "onSpace" && "bg-space-500 shadow-black/30",
         active ? "bg-taupe-300 text-taupe-900" : "",
         className,
       )}
