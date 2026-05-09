@@ -394,7 +394,7 @@ const PlayerCard = ({
   };
 }) => (
   <div className="flex shrink-0 flex-col items-center gap-1">
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1 font-bold">
       <Person className="size-4" />
       {player.name ?? "Joining..."}
     </div>
@@ -412,7 +412,7 @@ const PlayerCard = ({
           <CardImage
             card={CardType.CharacterCard}
             className={cn(
-              "col-start-1 row-start-1 h-32",
+              "col-start-1 row-start-1 h-32 shadow-lg/30",
               player.name ? "opacity-100" : "opacity-50",
               actions && "cursor-pointer",
             )}
@@ -426,7 +426,7 @@ const PlayerCard = ({
         <CardImage
           card={{ slug: player.character.character }}
           className={cn(
-            "h-32",
+            "h-32 shadow-lg/30",
             player.name ? "opacity-100" : "opacity-50",
             actions && "cursor-pointer",
           )}
@@ -485,7 +485,10 @@ const BooleanInput = ({
       onClick={() => onChange(!value)}
       label={value ? "On" : "Off"}
       active={value}
-      className={cn("font-sans font-bold", !value && "text-space/40 shadow-none")}
+      className={cn(
+        "font-sans font-bold",
+        !value && "text-space/40 shadow-none",
+      )}
       theme="onSpace"
     />
   );

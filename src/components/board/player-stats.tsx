@@ -7,7 +7,7 @@ import { Button } from "../button";
 import { usePromptContext } from "./contexts/prompt-context";
 import { usePopoverContext } from "./contexts/popover-context";
 import type { Card as CardType } from "@/shared/api";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { CardImage } from "./card";
 import { useMainMenuContext } from "./contexts/main-menu-context";
 import { useGameAnimation } from "./contexts/game-animation";
@@ -162,7 +162,12 @@ export const PlayerStats = ({
       className={cn(
         "flex place-items-center gap-16 rounded-xl border-[0.2em] border-taupe-900/50 bg-board/90 p-3 pr-4 pl-6 text-white outline-[0.2em] outline-transparent transition-shadow duration-500",
         className,
-      )} style={{ background: isCurrentTurn ? `radial-gradient(circle at center, var(--color-board) 0%, ${color} 500%)` : undefined }}>
+      )}
+      style={{
+        background: isCurrentTurn
+          ? `radial-gradient(circle at center, var(--color-board) 0%, ${color} 500%)`
+          : undefined,
+      }}>
       <p
         className="text-center font-alt-stats font-bold uppercase text-shadow-lg text-shadow-taupe-950/20"
         style={{ color }}>

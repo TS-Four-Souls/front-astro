@@ -107,8 +107,18 @@ export const JoinForm = () => {
           autoFocus
           className="rounded-md border-2 border-space-300 bg-space-500 px-4 py-2 text-white focus:ring-2 focus:ring-space-500 focus:outline-none"
         />
-        <Button label="Join" onClick={joinGame} hotkey="enter" theme="onSpace" />
-        <Button label="Leave" onClick={onLeaveRoomPress} hotkey="escape" theme="onSpace" />
+        <Button
+          label="Join"
+          onClick={joinGame}
+          hotkey="enter"
+          theme="onSpace"
+        />
+        <Button
+          label="Leave"
+          onClick={onLeaveRoomPress}
+          hotkey="escape"
+          theme="onSpace"
+        />
       </div>
     </div>
   );

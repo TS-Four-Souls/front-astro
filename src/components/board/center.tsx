@@ -127,10 +127,16 @@ export const Center = ({ state }: CenterProps) => {
       : []
   ).slice(0, 9);
 
-  const currentPlayer = [state.me, ...state.players].find((player) => player.name === state.turn);
+  const currentPlayer = [state.me, ...state.players].find(
+    (player) => player.name === state.turn,
+  );
 
   return (
-    <div className="flex place-items-center gap-6 rounded-3xl border-[0.3em] border-taupe-900/40 bg-board/90 p-8" style={{ background: `radial-gradient(circle at center, var(--color-board) 50%, ${currentPlayer?.color} 250%)` }}>
+    <div
+      className="flex place-items-center gap-6 rounded-3xl border-[0.3em] border-taupe-900/40 bg-board/90 p-8"
+      style={{
+        background: `radial-gradient(circle at center, var(--color-board) 50%, ${currentPlayer?.color} 250%)`,
+      }}>
       <Stack />
       <History />
       {state.bonusSouls && (

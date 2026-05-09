@@ -37,7 +37,7 @@
 - Board background
 - [x] Use canUseOnBoardSelection in the selection logic
 - Replace start game with "I'm ready". When everyone is ready, the game starts
-- [x] ~~Remove animationID~~ Use random indices in the back. 
+- [x] ~~Remove animationID~~ Use random indices in the back.
 - Purge the 50 first animations seen when 100 animations were seen to avoid keeping to many in memory
 - Padding top on board when on board selection so that the top player cards are visible
 
