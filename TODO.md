@@ -40,6 +40,9 @@
 - [x] ~~Remove animationID~~ Use random indices in the back. 
 - Purge the 50 first animations seen when 100 animations were seen to avoid keeping to many in memory
 - Padding top on board when on board selection so that the top player cards are visible
+- Join room
+  - Display error when wrong code
+  - Limit input to alphanumerical characters and length
 
 - Define logo/domain/name
 - Animated starry background
