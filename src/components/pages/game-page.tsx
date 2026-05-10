@@ -115,6 +115,7 @@ interface OnboardingPagesProps {
 export const OnboardingPages = ({ room }: OnboardingPagesProps) => {
   const [tryingToRejoin, setTryingToRejoin] = useState<boolean>(true);
   const [joiningRoom, setJoiningRoom] = useState<boolean>(false);
+  const { toast } = useToastContext();
 
   // Retrieve the secret from local storage
   useEffect(() => {
@@ -138,12 +139,14 @@ export const OnboardingPages = ({ room }: OnboardingPagesProps) => {
                   case 200:
                     break;
                   case 400:
+                    toast("error", "Failed to join game", response.error);
                     break;
                 }
               });
             }
             break;
           case 400:
+            toast("error", "Incorrect room link", response.error);
             break;
         }
       });
