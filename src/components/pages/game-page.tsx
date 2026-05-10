@@ -35,6 +35,11 @@ export const GamePage = () => {
     function onRoomChanged(room: Room | null) {
       console.log("[🔌 Socket] Room changed", room);
       setRoom(room);
+      if (room?.room.id) {
+        storage.setItem("roomId", room.room.id);
+      } else {
+        storage.removeItem("roomId");
+      }
     }
 
     function onAnyOutgoing(event: string, ...args: any[]) {
@@ -113,6 +118,38 @@ export const OnboardingPages = ({ room }: OnboardingPagesProps) => {
 
   // Retrieve the secret from local storage
   useEffect(() => {
+    const code = new URLSearchParams(window.location.search).get("code");
+    const roomId = storage.getItem("roomId");
+    const name = storage.getItem("name");
+
+    // Remove the code from the URL
+    const url = new URL(window.location.href);
+    url.searchParams.delete("code");
+    window.history.replaceState({}, "", url.toString());
+
+    if (code && code !== roomId) {
+      setTryingToRejoin(false);
+      socket.emit("joinRoom", { roomId: code }, (response) => {
+        switch (response.status) {
+          case 200:
+            if (name) {
+              socket.emit("join", name, (response) => {
+                switch (response.status) {
+                  case 200:
+                    break;
+                  case 400:
+                    break;
+                }
+              });
+            }
+            break;
+          case 400:
+            break;
+        }
+      });
+      return;
+    }
+
     const userId = storage.getItem("userId");
     if (userId) {
       try {

@@ -1,14 +1,21 @@
 import { socket } from "@/utils/socket";
-import { useLocalStorage } from "@/utils/use-local-storage";
 import { useToastContext } from "../board/contexts/toast-context";
 import { Button } from "../button";
 import { useEffect, useState } from "react";
+import { storage } from "@/utils/storage";
 
 export const JoinForm = () => {
-  const [name, setName] = useLocalStorage<string>("name", "");
+  const [name, setName] = useState("");
   const { toast } = useToastContext();
 
   const [gameOngoing, setGameOngoing] = useState<boolean>(false);
+
+  useEffect(() => {
+    const name = storage.getItem("name");
+    if (name) {
+      setName(name);
+    }
+  }, []);
 
   useEffect(() => {
     socket.emit("isGameOngoing", (response) => {
@@ -24,6 +31,7 @@ export const JoinForm = () => {
   }, []);
 
   const joinGame = () => {
+    storage.setItem("name", name);
     socket.emit("join", name, (response) => {
       switch (response.status) {
         case 200:

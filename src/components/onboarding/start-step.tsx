@@ -266,10 +266,33 @@ export const StartStep = ({ room }: StartStepProps) => {
                     Room ID: <span className="font-bold">{room.id}</span>
                   </p>
                   <Button
-                    label="Copy"
+                    label="Copy code"
                     hotkey="c"
                     onClick={() => {
                       navigator.clipboard.writeText(room.id);
+                      toast(
+                        "success",
+                        "Copied code",
+                        "Code copied to clipboard",
+                      );
+                    }}
+                    theme="onSpace"
+                  />
+                  <Button
+                    label="Copy link"
+                    hotkey="l"
+                    onClick={() => {
+                      const currentUrl = new URL(window.location.href);
+                      const link = new URL(
+                        `/?code=${room.id}`,
+                        currentUrl.origin,
+                      );
+                      navigator.clipboard.writeText(link.toString());
+                      toast(
+                        "success",
+                        "Copied link",
+                        "Link copied to clipboard",
+                      );
                     }}
                     theme="onSpace"
                   />
