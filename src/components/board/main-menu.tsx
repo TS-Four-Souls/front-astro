@@ -35,14 +35,13 @@ export const MainMenu = () => {
       });
       return;
     }
-    socket.emit("leaveRoom", (response) => {
+    socket.emit("quitGame", (response) => {
       switch (response.status) {
         case 200:
-          toast("success", "Reset", "The game has been reset");
           break;
         default:
         case 400:
-          toast("error", "Failed to reset", response.error);
+          toast("error", "Failed to quit game", response.error);
           break;
       }
     });

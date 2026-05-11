@@ -317,7 +317,6 @@ const numberGameParameterSchema = z.object({
 });
 
 const gameParametersSchema = z.object({
-  edenVariant: booleanGameParameterSchema,
   miniDraft: booleanGameParameterSchema,
   nbPennies: numberGameParameterSchema,
   nb2Cents: numberGameParameterSchema,
@@ -824,6 +823,7 @@ export namespace Responses {
   export type CreateRoom = BasicResponse;
   export type EnterRoom = BasicResponse;
   export type LeaveRoom = BasicResponse;
+  export type QuitGame = BasicResponse;
   export type KickFromRoom = BasicResponse;
   export type SaveGame = SaveGameResponse;
   export type LoadGame = BasicResponse;
@@ -991,4 +991,6 @@ export interface ClientToServerEvents {
     request: Requests.SelectCharacter,
     callback: (response: Responses.SelectCharacter) => void,
   ) => void;
+
+  quitGame: (callback: (response: Responses.QuitGame) => void) => void;
 }
