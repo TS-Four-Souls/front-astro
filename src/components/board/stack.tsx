@@ -39,7 +39,7 @@ export const Stack = () => {
   }, [setStackEl]);
 
   const resolveStack = () => {
-    socket.emit("resolve", null, (response) => {
+    socket.emit("resolve", (response) => {
       switch (response.status) {
         case 200:
           break;

@@ -10,11 +10,12 @@ import { cn } from "@/utils/cn";
 import { usePromptContext } from "../board/contexts/prompt-context";
 
 interface StartStepProps {
-  room: Extract<Room["room"], { state: "joined" }>;
+  room: Room;
+  me: RoomPlayer;
 }
 
-export const StartStep = ({ room }: StartStepProps) => {
-  const { gameParameters, players, me } = room;
+export const StartStep = ({ room, me }: StartStepProps) => {
+  const { gameParameters, players } = room;
   const { toast } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
   const loadGameInputRef = useRef<HTMLInputElement>(null);
@@ -41,18 +42,8 @@ export const StartStep = ({ room }: StartStepProps) => {
     });
   };
 
-  const onResetPress = () => {
-    socket.emit("reset", null, (response) => {
-      switch (response.status) {
-        case 200:
-          toast("success", "Reset", "The game has been reset");
-          break;
-      }
-    });
-  };
-
   const requestStart = async () => {
-    socket.emit("start", null, (response) => {
+    socket.emit("start", (response) => {
       switch (response.status) {
         case 200:
           break;
@@ -84,7 +75,7 @@ export const StartStep = ({ room }: StartStepProps) => {
         return;
       }
 
-      socket.emit("loadGame", { logs }, (response) => {
+      socket.emit("loadGame", logs, (response) => {
         switch (response.status) {
           case 200:
             toast("success", "Load game", "Saved game loaded successfully");
@@ -125,19 +116,13 @@ export const StartStep = ({ room }: StartStepProps) => {
         return;
       }
 
-      socket.emit(
-        "loadGameSettings",
-        {
-          settings,
-        },
-        (response) => {
-          if (response.status === 200) {
-            toast("success", "Load parameters", "Game parameters loaded");
-          } else {
-            toast("error", "Load parameters", response.error);
-          }
-        },
-      );
+      socket.emit("loadGameParameters", settings, (response) => {
+        if (response.status === 200) {
+          toast("success", "Load parameters", "Game parameters loaded");
+        } else {
+          toast("error", "Load parameters", response.error);
+        }
+      });
     };
 
     reader.onerror = () => {
@@ -164,6 +149,19 @@ export const StartStep = ({ room }: StartStepProps) => {
 
     downloadTextFile(JSON.stringify(gameParameters, null, 2), filename);
     toast("success", "Save parameters", `Saved as ${filename}`);
+  };
+
+  const onResetPress = () => {
+    socket.emit("resetGameParameters", (response) => {
+      switch (response.status) {
+        case 200:
+          break;
+        case 400:
+        default:
+          toast("error", "Failed to reset game settings", response.error);
+          break;
+      }
+    });
   };
 
   const onNextCharacterPress = () => {
@@ -234,122 +232,126 @@ export const StartStep = ({ room }: StartStepProps) => {
     });
   };
 
+  const onKickPlayerPress = (player: RoomPlayer) => {
+    socket.emit("kickFromRoom", { name: player.name }, (response) => {
+      switch (response.status) {
+        case 200:
+          break;
+      }
+    });
+  };
+
+  const onLeaveRoomPress = () => {
+    socket.emit("leaveRoom", (response) => {
+      switch (response.status) {
+        case 200:
+          break;
+      }
+    });
+  };
+
   return (
-    <div className="flex w-full items-start gap-8">
-      <div className="flex flex-1 justify-between gap-8">
-        <div className="flex flex-col gap-6">
-          <div className="flex flex-col gap-6 rounded-lg border-2 border-space-400 bg-space p-6">
-            <div className="flex flex-col gap-8">
-              <h2 className="font-main text-2xl font-bold">
-                {players.length === 0
-                  ? "Waiting for a least another player to join..."
-                  : `Starting a game with ${players.length + 1} players`}
-              </h2>
-              <div className="flex flex-wrap gap-6">
+    <div className="flex w-full justify-between gap-8">
+      <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6 rounded-lg border-2 border-space-400 bg-space p-6">
+          <div className="flex flex-col gap-8">
+            <h2 className="font-main text-2xl font-bold">
+              {players.length === 0
+                ? "Waiting for a least another player to join..."
+                : `Starting a game with ${players.length + 1} players`}
+            </h2>
+            <div className="flex flex-wrap gap-6">
+              <PlayerCard
+                player={me}
+                actions={{
+                  onPreviousCharacterPress,
+                  onNextCharacterPress,
+                  onCharacterSelectionPress,
+                }}
+                bottomButton={{
+                  label: "Leave",
+                  onClick: onLeaveRoomPress,
+                }}
+              />
+              {players.map((player, index) => (
                 <PlayerCard
-                  player={me}
-                  actions={{
-                    onPreviousCharacterPress,
-                    onNextCharacterPress,
-                    onCharacterSelectionPress,
+                  key={index}
+                  player={player}
+                  bottomButton={{
+                    label: "Kick",
+                    onClick: () => onKickPlayerPress(player),
                   }}
                 />
-                {players.map((player, index) => (
-                  <PlayerCard key={index} player={player} />
-                ))}
-              </div>
-              <div className="mt-4">
-                Share the room ID with your friends to invite them to join the
-                game.
-                <div className="flex items-center gap-2">
-                  <p>
-                    Room ID: <span className="font-bold">{room.id}</span>
-                  </p>
-                  <Button
-                    label="Copy code"
-                    hotkey="c"
-                    onClick={() => {
-                      navigator.clipboard.writeText(room.id);
-                      toast(
-                        "success",
-                        "Copied code",
-                        "Code copied to clipboard",
-                      );
-                    }}
-                    theme="onSpace"
-                  />
-                  <Button
-                    label="Copy link"
-                    hotkey="l"
-                    onClick={() => {
-                      const currentUrl = new URL(window.location.href);
-                      const link = new URL(
-                        `/?code=${room.id}`,
-                        currentUrl.origin,
-                      );
-                      navigator.clipboard.writeText(link.toString());
-                      toast(
-                        "success",
-                        "Copied link",
-                        "Link copied to clipboard",
-                      );
-                    }}
-                    theme="onSpace"
-                  />
-                </div>
+              ))}
+            </div>
+            <div className="mt-4">
+              Share the room ID with your friends to invite them to join the
+              game.
+              <div className="flex items-center gap-2">
+                <p>
+                  Room ID: <span className="font-bold">{room.id}</span>
+                </p>
+                <Button
+                  label="Copy code"
+                  hotkey="c"
+                  onClick={() => {
+                    navigator.clipboard.writeText(room.id);
+                    toast("success", "Copied code", "Code copied to clipboard");
+                  }}
+                  theme="onSpace"
+                />
+                <Button
+                  label="Copy link"
+                  hotkey="l"
+                  onClick={() => {
+                    const currentUrl = new URL(window.location.href);
+                    const link = new URL(
+                      `/?code=${room.id}`,
+                      currentUrl.origin,
+                    );
+                    navigator.clipboard.writeText(link.toString());
+                    toast("success", "Copied link", "Link copied to clipboard");
+                  }}
+                  theme="onSpace"
+                />
               </div>
             </div>
           </div>
-
-          <div className="flex w-full flex-col place-items-start gap-6 self-start rounded-lg border-2 border-space-400 bg-space p-6">
-            <h2 className="font-main text-2xl font-bold">Ready?</h2>
-            <p className="leading-relaxed">
-              When everyone joined and is ready,
-              <br />
-              click the button below to start the game.
-            </p>
-            <Button
-              onClick={requestStart}
-              hotkey="enter"
-              label="Let's go!"
-              className="h-16 w-full font-alt-stats text-xl font-bold"
-              theme="onSpace"
-            />
-            <Button
-              onClick={onLoadGamePress}
-              label="Load game"
-              className="w-full"
-              theme="onSpace"
-            />
-            <input
-              ref={loadGameInputRef}
-              type="file"
-              accept=".log,text/plain"
-              className="hidden"
-              onChange={onLoadGameFileSelected}
-            />
-            <input
-              ref={loadParametersInputRef}
-              type="file"
-              accept=".txt,text/plain"
-              className="hidden"
-              onChange={onLoadParametersFileSelected}
-            />
-          </div>
         </div>
 
-        <div className="flex flex-col gap-4 self-start rounded-lg border-2 border-space-400 bg-space p-6">
-          <h2 className="font-main text-2xl font-bold">Game reset</h2>
-          <p>
-            Not happy with your playmates?
+        <div className="flex w-full flex-col place-items-start gap-6 self-start rounded-lg border-2 border-space-400 bg-space p-6">
+          <h2 className="font-main text-2xl font-bold">Ready?</h2>
+          <p className="leading-relaxed">
+            When everyone joined and is ready,
             <br />
-            You can reset the game and start over.
+            click the button below to start the game.
           </p>
           <Button
-            onClick={onResetPress}
-            label="Reset"
-            className="mt-4"
+            onClick={requestStart}
+            hotkey="enter"
+            label="Let's go!"
+            className="h-16 w-full font-alt-stats text-xl font-bold"
             theme="onSpace"
+          />
+          <Button
+            onClick={onLoadGamePress}
+            label="Load game"
+            className="w-full"
+            theme="onSpace"
+          />
+          <input
+            ref={loadGameInputRef}
+            type="file"
+            accept=".log,text/plain"
+            className="hidden"
+            onChange={onLoadGameFileSelected}
+          />
+          <input
+            ref={loadParametersInputRef}
+            type="file"
+            accept=".txt,text/plain"
+            className="hidden"
+            onChange={onLoadParametersFileSelected}
           />
         </div>
       </div>
@@ -360,6 +362,12 @@ export const StartStep = ({ room }: StartStepProps) => {
           <Button
             onClick={onSaveParametersPress}
             label="Save"
+            className="flex-1"
+            theme="onSpace"
+          />
+          <Button
+            onClick={onResetPress}
+            label="Reset"
             className="flex-1"
             theme="onSpace"
           />
@@ -408,12 +416,17 @@ export const StartStep = ({ room }: StartStepProps) => {
 const PlayerCard = ({
   player,
   actions,
+  bottomButton,
 }: {
   player: RoomPlayer;
   actions?: {
     onPreviousCharacterPress: () => void;
     onNextCharacterPress: () => void;
     onCharacterSelectionPress: () => void;
+  };
+  bottomButton?: {
+    label: string;
+    onClick: () => void;
   };
 }) => (
   <div className="flex shrink-0 flex-col items-center gap-1">
@@ -465,6 +478,13 @@ const PlayerCard = ({
         />
       )}
     </div>
+    {bottomButton && (
+      <Button
+        label={bottomButton.label}
+        onClick={bottomButton.onClick}
+        theme="onSpace"
+      />
+    )}
   </div>
 );
 

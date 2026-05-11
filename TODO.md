@@ -46,3 +46,11 @@
 - Fonts?
 - dice animation (3D?)
 - Cheat apply x times when the game was quit and restarted x times
+
+- Important actions -> player should hold the button for longer to confirm
+  - Kick player
+  - Exit game
+
+## V2
+
+- Being able to exit a game mid-play

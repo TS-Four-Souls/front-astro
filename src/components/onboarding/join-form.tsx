@@ -8,8 +8,6 @@ export const JoinForm = () => {
   const [name, setName] = useState("");
   const { toast } = useToastContext();
 
-  const [gameOngoing, setGameOngoing] = useState<boolean>(false);
-
   useEffect(() => {
     const name = storage.getItem("name");
     if (name) {
@@ -17,39 +15,15 @@ export const JoinForm = () => {
     }
   }, []);
 
-  useEffect(() => {
-    socket.emit("isGameOngoing", (response) => {
-      switch (response.status) {
-        case 200:
-          setGameOngoing(response.gameOngoing);
-          break;
-        case 400:
-          toast("error", "Failed to check if game is ongoing", response.error);
-          break;
-      }
-    });
-  }, []);
-
   const joinGame = () => {
     storage.setItem("name", name);
-    socket.emit("join", name, (response) => {
+    socket.emit("setName", name, (response) => {
       switch (response.status) {
         case 200:
           break;
         case 400:
         default:
           toast("error", "Failed to join game", response.error);
-          break;
-      }
-    });
-  };
-
-  const onResetPress = () => {
-    socket.emit("reset", null, (response) => {
-      switch (response.status) {
-        case 200:
-          toast("success", "Reset", "The game has been reset");
-          setGameOngoing(false);
           break;
       }
     });
@@ -66,32 +40,6 @@ export const JoinForm = () => {
       }
     });
   };
-
-  if (gameOngoing) {
-    return (
-      <div className="flex flex-col gap-4 rounded-lg border-2 border-taupe-700 p-8 text-center">
-        <h1 className="font-main text-3xl font-bold">Game ongoing</h1>
-        <p>
-          A game is already ongoing.
-          <br />
-          You can reset it to start a new one or leave the room.
-        </p>
-        <Button
-          type="button"
-          label="Reset game"
-          className="mt-4"
-          onClick={onResetPress}
-          hotkey="enter"
-        />
-        <Button
-          type="button"
-          label="Leave"
-          onClick={onLeaveRoomPress}
-          hotkey="escape"
-        />
-      </div>
-    );
-  }
 
   return (
     <div className="flex flex-col gap-8 rounded-lg border-2 border-space-400 bg-space p-8 text-center">

@@ -30,7 +30,7 @@ export const RoomJoinForm = ({ onCancel, onSuccess }: RoomJoinFormProps) => {
       return;
     }
 
-    socket.emit("joinRoom", { roomId }, (response) => {
+    socket.emit("enterRoom", { roomId }, (response) => {
       switch (response.status) {
         case 200:
           onSuccess();

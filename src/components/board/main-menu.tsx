@@ -35,7 +35,7 @@ export const MainMenu = () => {
       });
       return;
     }
-    socket.emit("reset", null, (response) => {
+    socket.emit("leaveRoom", (response) => {
       switch (response.status) {
         case 200:
           toast("success", "Reset", "The game has been reset");
@@ -49,7 +49,7 @@ export const MainMenu = () => {
   };
 
   const onSaveGamePress = () => {
-    socket.emit("getGameLogs", null, (response) => {
+    socket.emit("saveGame", (response) => {
       if (response.status === 200) {
         const now = new Date();
         const datePart = [
@@ -82,7 +82,7 @@ export const MainMenu = () => {
   };
 
   const debugGainLoot = () => {
-    socket.emit("debugListLoot", null, (response) => {
+    socket.emit("debugListLoot", (response) => {
       if (response.status === 200) {
         const promptId = `debug-list-loot-${Date.now()}`;
         addPrompt({
@@ -121,7 +121,7 @@ export const MainMenu = () => {
   };
 
   const rollback = () => {
-    socket.emit("rollback", null, (response) => {
+    socket.emit("rollback", (response) => {
       if (response.status === 200) {
       } else {
         toast("error", "Rollback", response.error);
@@ -130,7 +130,7 @@ export const MainMenu = () => {
   };
 
   const debugGainTreasure = () => {
-    socket.emit("debugListTreasure", null, (response) => {
+    socket.emit("debugListTreasure", (response) => {
       if (response.status === 200) {
         const promptId = `debug-list-treasure-${Date.now()}`;
         addPrompt({
@@ -169,7 +169,7 @@ export const MainMenu = () => {
   };
 
   const debugRemoveCard = () => {
-    socket.emit("debugListCardsICanRemove", null, (response) => {
+    socket.emit("debugListCardsICanRemove", (response) => {
       if (response.status === 200) {
         const promptId = `debug-list-cards-i-can-remove-${Date.now()}`;
         addPrompt({
@@ -242,7 +242,7 @@ export const MainMenu = () => {
   };
 
   const debugPutMonsterCardInSlot = () => {
-    socket.emit("debugListMonsterDeck", null, (response) => {
+    socket.emit("debugListMonsterDeck", (response) => {
       if (response.status === 200) {
         const promptId = `debug-list-monster-deck-${Date.now()}`;
         addPrompt({

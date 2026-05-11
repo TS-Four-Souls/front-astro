@@ -35,8 +35,8 @@ export const GamePage = () => {
     function onRoomChanged(room: Room | null) {
       console.log("[🔌 Socket] Room changed", room);
       setRoom(room);
-      if (room?.room.id) {
-        storage.setItem("roomId", room.room.id);
+      if (room?.id) {
+        storage.setItem("roomId", room.id);
       } else {
         storage.removeItem("roomId");
       }
@@ -85,9 +85,9 @@ export const GamePage = () => {
     };
   }, []);
 
-  if (room?.room.state === "joined" && room.gameState) {
+  if (room?.game) {
     return (
-      <GameProvider state={room.gameState}>
+      <GameProvider state={room.game}>
         <BoardSelectionProvider>
           <MainMenuProvider>
             <GameAnimationProvider>
@@ -100,7 +100,7 @@ export const GamePage = () => {
   }
 
   return (
-    <OnboardingLayout headerMode={room?.room.state === "joined"}>
+    <OnboardingLayout headerMode={room?.me !== undefined}>
       <BoardSelectionProvider>
         <OnboardingPages room={room} />
       </BoardSelectionProvider>
@@ -129,12 +129,11 @@ export const OnboardingPages = ({ room }: OnboardingPagesProps) => {
     window.history.replaceState({}, "", url.toString());
 
     if (code && code !== roomId) {
-      setTryingToRejoin(false);
-      socket.emit("joinRoom", { roomId: code }, (response) => {
+      socket.emit("enterRoom", { roomId: code }, (response) => {
         switch (response.status) {
           case 200:
             if (name) {
-              socket.emit("join", name, (response) => {
+              socket.emit("setName", name, (response) => {
                 switch (response.status) {
                   case 200:
                     break;
@@ -150,22 +149,14 @@ export const OnboardingPages = ({ room }: OnboardingPagesProps) => {
             break;
         }
       });
+      setTryingToRejoin(false);
       return;
     }
 
     const userId = storage.getItem("userId");
-    if (userId) {
-      try {
-        socket.emit("rejoin", { userId }, (response) => {
-          console.log("[🔌 Socket] Join as user response", response);
-          setTryingToRejoin(false);
-        });
-        return;
-      } catch (error) {
-        console.log("[🔌 Socket] Invalid issuer", error);
-      }
 
-      socket.emit("rejoin", { userId }, (response) => {
+    if (userId && roomId) {
+      socket.emit("enterRoom", { roomId, userId }, (response) => {
         switch (response.status) {
           case 200:
             console.log("[🔌 Socket] Joined as user", userId);
@@ -206,9 +197,9 @@ export const OnboardingPages = ({ room }: OnboardingPagesProps) => {
         onCancel={() => setJoiningRoom(false)}
       />
     );
-  } else if (room && room.room.state === "created") {
+  } else if (room && room.me === undefined) {
     return <JoinForm />;
-  } else if (room && room.room.state === "joined" && !room.gameState) {
-    return <StartStep room={room.room} />;
+  } else if (room && room.me && !room.game) {
+    return <StartStep room={room} me={room.me} />;
   }
 };

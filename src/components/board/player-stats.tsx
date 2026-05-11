@@ -43,7 +43,7 @@ export const PlayerStats = ({
   const canEndTurn = isMe && state.me.capabilities.endTurn;
 
   const declareAttack = () => {
-    socket.emit("declareAttack", null, (response) => {
+    socket.emit("declareAttack", (response) => {
       if (response.status === 200) {
         toast("success", "Declared attack", "You have declared an attack");
       } else {
@@ -53,7 +53,7 @@ export const PlayerStats = ({
   };
 
   const rollDice = () => {
-    socket.emit("attackRoll", null, (response) => {
+    socket.emit("attackRoll", (response) => {
       if (response.status === 200) {
         toast("success", "Rolled dice", "You have rolled a dice");
       } else {
@@ -63,7 +63,7 @@ export const PlayerStats = ({
   };
 
   const declarePurchase = () => {
-    socket.emit("declarePurchase", null, (response) => {
+    socket.emit("declarePurchase", (response) => {
       if (response.status === 200) {
         toast("success", "Declared purchase", "You have declared a purchase");
       } else {
@@ -73,7 +73,7 @@ export const PlayerStats = ({
   };
 
   const cancelPurchase = () => {
-    socket.emit("cancelPurchase", null, (response) => {
+    socket.emit("cancelPurchase", (response) => {
       if (response.status === 200) {
         toast("success", "Cancelled purchase", "You have cancelled a purchase");
       } else {
@@ -83,7 +83,7 @@ export const PlayerStats = ({
   };
 
   const onEndTurnPress = () => {
-    socket.emit("endTurn", null, (response) => {
+    socket.emit("endTurn", (response) => {
       switch (response.status) {
         case 200:
           break;
