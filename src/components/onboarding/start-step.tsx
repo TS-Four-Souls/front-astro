@@ -265,7 +265,7 @@ export const StartStep = ({ room, me }: StartStepProps) => {
   );
 
   return (
-    <div className="grid h-full grid-rows-[250px_calc(100vh-250px-3em)] gap-4 p-4">
+    <div className="grid h-full grid-rows-[270px_calc(100vh-270px-3em)] gap-4 p-4">
       <div className="flex place-items-center justify-between gap-18 rounded-lg border-2 border-space-400 bg-space p-6">
         <div className="flex flex-col gap-2">
           <p className="font-main text-lg">Room</p>
@@ -290,7 +290,7 @@ export const StartStep = ({ room, me }: StartStepProps) => {
           />
         </div>
 
-        <div className="flex gap-6">
+        <div className="flex gap-6 mb-3">
           <PlayerCard
             player={me}
             actions={{
@@ -327,10 +327,8 @@ export const StartStep = ({ room, me }: StartStepProps) => {
             onClick={requestStart}
             hotkey="enter"
             label="Start"
-            className={cn(
-              "p-4 px-8 font-alt-stats text-lg",
-              !me.isHost && "cursor-not-allowed opacity-30",
-            )}
+            className="p-4 px-8 font-alt-stats text-lg"
+            disabled={!me.isHost}
             theme="onSpace"
             tooltip={{
               title: "Cannot start the game",
@@ -378,12 +376,26 @@ export const StartStep = ({ room, me }: StartStepProps) => {
               label="Reset"
               className="flex-1"
               theme="onSpace"
+              disabled={!me.isHost}
+              tooltip={{
+                title: "Cannot reset game settings",
+                capable: me.isHost
+                  ? true
+                  : "Only the host can reset game settings",
+              }}
             />
             <Button
               onClick={onLoadParametersPress}
               label="Load"
               className="flex-1"
               theme="onSpace"
+              disabled={!me.isHost}
+              tooltip={{
+                title: "Cannot load game settings",
+                capable: me.isHost
+                  ? true
+                  : "Only the host can load game settings",
+              }}
             />
           </div>
           <div className="grid grid-cols-[auto_auto] items-center gap-x-12 gap-y-6">
@@ -402,6 +414,7 @@ export const StartStep = ({ room, me }: StartStepProps) => {
                             value,
                           });
                         }}
+                        disabled={!me.isHost}
                       />
                     </>
                   ) : (
@@ -416,6 +429,7 @@ export const StartStep = ({ room, me }: StartStepProps) => {
                               value,
                             });
                           }}
+                          disabled={!me.isHost}
                         />
                       </>
                     )
@@ -441,6 +455,7 @@ export const StartStep = ({ room, me }: StartStepProps) => {
                   },
                 })
               }
+              disabled={!me.isHost}
             />
             <p>Use rooms?</p>
             <BooleanInput
@@ -456,6 +471,7 @@ export const StartStep = ({ room, me }: StartStepProps) => {
                   },
                 })
               }
+              disabled={!me.isHost}
             />
             {gameParameters.decksConfig.nbPlayerCardRestriction && (
               <>
@@ -476,6 +492,7 @@ export const StartStep = ({ room, me }: StartStepProps) => {
                       },
                     })
                   }
+                  disabled={!me.isHost}
                 />
               </>
             )}
@@ -483,22 +500,26 @@ export const StartStep = ({ room, me }: StartStepProps) => {
           <div className="flex gap-[4vw]">
             <DeckPile
               type={CardType.TreasureCard}
+              label="Treasures"
               count={gameParameters.decksConfig.treasure.total}
               onClick={() => setDeckPilePopup(CardType.TreasureCard)}
             />
             <DeckPile
               type={CardType.MonsterCard}
+              label="Monsters"
               count={gameParameters.decksConfig.monster.total}
               onClick={() => setDeckPilePopup(CardType.MonsterCard)}
             />
             <DeckPile
               type={CardType.LootCard}
+              label="Loots"
               count={gameParameters.decksConfig.loot.total}
               onClick={() => setDeckPilePopup(CardType.LootCard)}
             />
             {gameParameters.decksConfig.bsoul && (
               <DeckPile
                 type={CardType.BonusSoul}
+                label="Bonus Souls"
                 count={gameParameters.decksConfig.bsoul.total}
                 onClick={() => setDeckPilePopup(CardType.BonusSoul)}
               />
@@ -506,6 +527,7 @@ export const StartStep = ({ room, me }: StartStepProps) => {
             {gameParameters.decksConfig.room && (
               <DeckPile
                 type={CardType.RoomCard}
+                label="Rooms"
                 count={gameParameters.decksConfig.room.total}
                 onClick={() => setDeckPilePopup(CardType.RoomCard)}
               />
@@ -518,6 +540,7 @@ export const StartStep = ({ room, me }: StartStepProps) => {
           type={deckPilePopup}
           cards={gameParameters.decksConfig[deckPilePopup].cards}
           onPressBackdrop={() => setDeckPilePopup(null)}
+          editable={me.isHost}
         />
       )}
     </div>
@@ -527,9 +550,11 @@ export const StartStep = ({ room, me }: StartStepProps) => {
 const DeckPile = ({
   type,
   count,
+  label,
   onClick,
 }: {
   type: CardType;
+  label: string;
   count: number;
   onClick: () => void;
 }) => {
@@ -544,7 +569,7 @@ const DeckPile = ({
         orientation={type === CardType.RoomCard ? "landscape" : "portrait"}
         onClickTopCard={onClick}
       />
-      <p className="text-center font-main">{`${type} (${count})`}</p>
+      <p className="text-center font-main">{`${label} (${count})`}</p>
     </div>
   );
 };
@@ -647,17 +672,24 @@ const PlayerCard = ({
 const NumericInput = ({
   value,
   onChange,
+  disabled,
 }: {
   value: number;
   onChange: (value: number) => void;
+  disabled: boolean;
 }) => {
   return (
     <div className="flex items-center justify-end">
       <Button
         onClick={() => onChange(value - 1)}
         label="−"
-        className="rounded-r-none font-sans shadow-none"
+        className="rounded-r-none font-sans font-bold shadow-none"
         theme="onSpace"
+        disabled={disabled}
+        tooltip={{
+          title: "Cannot change game parameters",
+          capable: disabled ? "Only the host can change game parameters" : true,
+        }}
       />
       <p className="flex h-10 min-w-13 items-center justify-center border-y-2 border-space-500 text-center font-bold">
         {value}
@@ -665,8 +697,13 @@ const NumericInput = ({
       <Button
         onClick={() => onChange(value + 1)}
         label="+"
-        className="rounded-l-none font-sans shadow-none"
+        className="rounded-l-none font-sans font-bold shadow-none"
         theme="onSpace"
+        disabled={disabled}
+        tooltip={{
+          title: "Cannot change game parameters",
+          capable: disabled ? "Only the host can change game parameters" : true,
+        }}
       />
     </div>
   );
@@ -675,9 +712,11 @@ const NumericInput = ({
 const BooleanInput = ({
   value,
   onChange,
+  disabled,
 }: {
   value: boolean;
   onChange: (value: boolean) => void;
+  disabled: boolean;
 }) => {
   return (
     <Button
@@ -686,9 +725,14 @@ const BooleanInput = ({
       active={value}
       className={cn(
         "font-sans font-bold",
-        !value && "text-space/40 shadow-none",
+        !value && !disabled && "text-space/40",
       )}
       theme="onSpace"
+      disabled={disabled}
+      tooltip={{
+        title: "Cannot toggle game parameters",
+        capable: disabled ? "Only the host can toggle game parameters" : true,
+      }}
     />
   );
 };
