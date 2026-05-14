@@ -1,13 +1,22 @@
-import { Fragment, useRef } from "react";
+import { Fragment, useRef, useState } from "react";
 import { socket } from "@/utils/socket";
-import type { Requests, Room, RoomPlayer } from "@/shared/api";
+import {
+  isBooleanParameterKey,
+  isNumberParameterKey,
+  isParameterKey,
+  type Requests,
+  type Room,
+  type RoomPlayer,
+} from "@/shared/api";
 import { useToastContext } from "../board/contexts/toast-context";
 import { Button } from "../button";
-import { isBooleanParameterKey, isParameterKey } from "@/shared/api";
 import { Person } from "@/icons/person";
 import { CardImage, CardType } from "../board/card";
 import { cn } from "@/utils/cn";
 import { usePromptContext } from "../board/contexts/prompt-context";
+import { Crown } from "@/icons/crown";
+import { Pile } from "../board/pile";
+import { DeckConfigPopup, type DeckTypes } from "./deck-config-popup";
 
 interface StartStepProps {
   room: Room;
@@ -15,11 +24,12 @@ interface StartStepProps {
 }
 
 export const StartStep = ({ room, me }: StartStepProps) => {
-  const { gameParameters, players } = room;
+  const { gameParameters } = room;
   const { toast } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
   const loadGameInputRef = useRef<HTMLInputElement>(null);
   const loadParametersInputRef = useRef<HTMLInputElement>(null);
+  const [deckPilePopup, setDeckPilePopup] = useState<DeckTypes | null>(null);
 
   const downloadTextFile = (content: string, filename: string) => {
     const blob = new Blob([content], { type: "text/plain" });
@@ -250,165 +260,291 @@ export const StartStep = ({ room, me }: StartStepProps) => {
     });
   };
 
+  const playerSlots = Array.from({ length: 3 }).map<RoomPlayer | undefined>(
+    (_, index) => room.players[index] ?? undefined,
+  );
+
   return (
-    <div className="flex w-full justify-between gap-8">
-      <div className="flex flex-col gap-6">
-        <div className="flex flex-col gap-6 rounded-lg border-2 border-space-400 bg-space p-6">
-          <div className="flex flex-col gap-8">
-            <h2 className="font-main text-2xl font-bold">
-              {players.length === 0
-                ? "Waiting for a least another player to join..."
-                : `Starting a game with ${players.length + 1} players`}
-            </h2>
-            <div className="flex flex-wrap gap-6">
-              <PlayerCard
-                player={me}
-                actions={{
-                  onPreviousCharacterPress,
-                  onNextCharacterPress,
-                  onCharacterSelectionPress,
-                }}
-                bottomButton={{
-                  label: "Leave",
-                  onClick: onLeaveRoomPress,
-                }}
-              />
-              {players.map((player, index) => (
-                <PlayerCard
-                  key={index}
-                  player={player}
-                  bottomButton={{
-                    label: "Kick",
-                    onClick: () => onKickPlayerPress(player),
-                  }}
-                />
-              ))}
-            </div>
-            <div className="mt-4">
-              Share the room ID with your friends to invite them to join the
-              game.
-              <div className="flex items-center gap-2">
-                <p>
-                  Room ID: <span className="font-bold">{room.id}</span>
-                </p>
-                <Button
-                  label="Copy code"
-                  hotkey="c"
-                  onClick={() => {
-                    navigator.clipboard.writeText(room.id);
-                    toast("success", "Copied code", "Code copied to clipboard");
-                  }}
-                  theme="onSpace"
-                />
-                <Button
-                  label="Copy link"
-                  hotkey="l"
-                  onClick={() => {
-                    const currentUrl = new URL(window.location.href);
-                    const link = new URL(
-                      `/?code=${room.id}`,
-                      currentUrl.origin,
-                    );
-                    navigator.clipboard.writeText(link.toString());
-                    toast("success", "Copied link", "Link copied to clipboard");
-                  }}
-                  theme="onSpace"
-                />
-              </div>
-            </div>
-          </div>
+    <div className="grid h-full grid-rows-[250px_calc(100vh-250px-3em)] gap-4 p-4">
+      <div className="flex place-items-center justify-between gap-18 rounded-lg border-2 border-space-400 bg-space p-6">
+        <div className="flex flex-col gap-2">
+          <p className="font-main text-lg">Room</p>
+          <p
+            className="mb-2 cursor-pointer text-3xl font-bold"
+            onClick={() => {
+              navigator.clipboard.writeText(room.id);
+              toast("success", "Copied code", "Code copied to clipboard");
+            }}>
+            {room.id}
+          </p>
+          <Button
+            label="Copy link"
+            hotkey="c"
+            onClick={() => {
+              const currentUrl = new URL(window.location.href);
+              const link = new URL(`/?code=${room.id}`, currentUrl.origin);
+              navigator.clipboard.writeText(link.toString());
+              toast("success", "Copied link", "Link copied to clipboard");
+            }}
+            theme="onSpace"
+          />
         </div>
 
-        <div className="flex w-full flex-col place-items-start gap-6 self-start rounded-lg border-2 border-space-400 bg-space p-6">
-          <h2 className="font-main text-2xl font-bold">Ready?</h2>
-          <p className="leading-relaxed">
-            When everyone joined and is ready,
-            <br />
-            click the button below to start the game.
-          </p>
+        <div className="flex gap-6">
+          <PlayerCard
+            player={me}
+            actions={{
+              onPreviousCharacterPress,
+              onNextCharacterPress,
+              onCharacterSelectionPress,
+            }}
+            bottomButton={{
+              label: "Leave",
+              onClick: onLeaveRoomPress,
+            }}
+            index={1}
+            isHost={me.isHost}
+          />
+          {playerSlots.map((player, index) => (
+            <PlayerCard
+              key={index}
+              player={player}
+              bottomButton={
+                player && me.isHost
+                  ? {
+                      label: "Kick",
+                      onClick: () => onKickPlayerPress(player),
+                    }
+                  : undefined
+              }
+              index={index + 2}
+              isHost={player?.isHost ?? false}
+            />
+          ))}
+        </div>
+        <div className="flex flex-col gap-4">
           <Button
             onClick={requestStart}
             hotkey="enter"
-            label="Let's go!"
-            className="h-16 w-full font-alt-stats text-xl font-bold"
+            label="Start"
+            className={cn(
+              "p-4 px-8 font-alt-stats text-lg",
+              !me.isHost && "cursor-not-allowed opacity-30",
+            )}
             theme="onSpace"
+            tooltip={{
+              title: "Cannot start the game",
+              capable: me.isHost ? true : "Only the host can start the game",
+            }}
           />
-          <Button
-            onClick={onLoadGamePress}
-            label="Load game"
-            className="w-full"
-            theme="onSpace"
-          />
-          <input
-            ref={loadGameInputRef}
-            type="file"
-            accept=".log,text/plain"
-            className="hidden"
-            onChange={onLoadGameFileSelected}
-          />
-          <input
-            ref={loadParametersInputRef}
-            type="file"
-            accept=".txt,text/plain"
-            className="hidden"
-            onChange={onLoadParametersFileSelected}
-          />
+          {me.isHost && (
+            <>
+              <Button
+                onClick={onLoadGamePress}
+                label="Load game"
+                className="w-full"
+                theme="onSpace"
+              />
+              <input
+                ref={loadGameInputRef}
+                type="file"
+                accept=".log,text/plain"
+                className="hidden"
+                onChange={onLoadGameFileSelected}
+              />
+              <input
+                ref={loadParametersInputRef}
+                type="file"
+                accept=".txt,text/plain"
+                className="hidden"
+                onChange={onLoadParametersFileSelected}
+              />
+            </>
+          )}
         </div>
       </div>
+      <div className="grid grid-cols-[auto_1fr] place-items-center gap-18 rounded-lg border-2 border-space-400 bg-space p-6">
+        <div className="h-full overflow-auto pr-6">
+          <h2 className="font-main text-2xl font-bold">Game parameters</h2>
+          <div className="mt-4 mb-16 flex gap-4">
+            <Button
+              onClick={onSaveParametersPress}
+              label="Save"
+              className="flex-1"
+              theme="onSpace"
+            />
+            <Button
+              onClick={onResetPress}
+              label="Reset"
+              className="flex-1"
+              theme="onSpace"
+            />
+            <Button
+              onClick={onLoadParametersPress}
+              label="Load"
+              className="flex-1"
+              theme="onSpace"
+            />
+          </div>
+          <div className="grid grid-cols-[auto_auto] items-center gap-x-12 gap-y-6">
+            {Object.keys(gameParameters)
+              .filter(isParameterKey)
+              .map((parameter) => (
+                <Fragment key={parameter}>
+                  {isBooleanParameterKey(parameter) ? (
+                    <>
+                      <p>{gameParameters[parameter].text}</p>
+                      <BooleanInput
+                        value={gameParameters[parameter].value}
+                        onChange={(value) => {
+                          onChangeGameParameter({
+                            parameter: parameter,
+                            value,
+                          });
+                        }}
+                      />
+                    </>
+                  ) : (
+                    isNumberParameterKey(parameter) && (
+                      <>
+                        <p>{gameParameters[parameter].text}</p>
+                        <NumericInput
+                          value={gameParameters[parameter].value}
+                          onChange={(value) => {
+                            onChangeGameParameter({
+                              parameter: parameter,
+                              value,
+                            });
+                          }}
+                        />
+                      </>
+                    )
+                  )}
+                </Fragment>
+              ))}
+          </div>
+        </div>
 
-      <div className="flex max-h-[calc(100vh-400px)] flex-col gap-12 overflow-auto rounded-lg border-2 border-space-400 bg-space p-6 pb-8">
-        <h2 className="font-main text-2xl font-bold">Game parameters</h2>
-        <div className="flex gap-4">
-          <Button
-            onClick={onSaveParametersPress}
-            label="Save"
-            className="flex-1"
-            theme="onSpace"
-          />
-          <Button
-            onClick={onResetPress}
-            label="Reset"
-            className="flex-1"
-            theme="onSpace"
-          />
-          <Button
-            onClick={onLoadParametersPress}
-            label="Load"
-            className="flex-1"
-            theme="onSpace"
-          />
-        </div>
-        <div className="grid grid-cols-[auto_auto] items-center gap-x-12 gap-y-6">
-          {Object.keys(gameParameters)
-            .filter(isParameterKey)
-            .map((parameter) => (
-              <Fragment key={parameter}>
-                <p>{gameParameters[parameter].text}</p>
-                {isBooleanParameterKey(parameter) ? (
-                  <BooleanInput
-                    value={gameParameters[parameter].value}
-                    onChange={(value) => {
-                      onChangeGameParameter({
-                        parameter: parameter,
-                        value,
-                      });
-                    }}
-                  />
-                ) : (
-                  <NumericInput
-                    value={gameParameters[parameter].value}
-                    onChange={(value) => {
-                      onChangeGameParameter({
-                        parameter: parameter,
-                        value,
-                      });
-                    }}
-                  />
-                )}
-              </Fragment>
-            ))}
+        <div className="flex flex-col place-items-center">
+          <div className="mt-[5vh] mb-[10vh] grid grid-cols-[auto_auto] items-center gap-x-12 gap-y-6">
+            <p>Use bonus souls?</p>
+            <BooleanInput
+              value={gameParameters.decksConfig.useBonusSouls.value}
+              onChange={(value) =>
+                onChangeGameParameter({
+                  parameter: "decksConfig",
+                  value: {
+                    useBonusSouls: {
+                      text: gameParameters.decksConfig.useBonusSouls.text,
+                      value,
+                    },
+                  },
+                })
+              }
+            />
+            <p>Use rooms?</p>
+            <BooleanInput
+              value={gameParameters.decksConfig.useRooms.value}
+              onChange={(value) =>
+                onChangeGameParameter({
+                  parameter: "decksConfig",
+                  value: {
+                    useRooms: {
+                      text: gameParameters.decksConfig.useRooms.text,
+                      value,
+                    },
+                  },
+                })
+              }
+            />
+            {gameParameters.decksConfig.nbPlayerCardRestriction && (
+              <>
+                <p>Restrict player cards?</p>
+                <BooleanInput
+                  value={
+                    gameParameters.decksConfig.nbPlayerCardRestriction.value
+                  }
+                  onChange={(value) =>
+                    onChangeGameParameter({
+                      parameter: "decksConfig",
+                      value: {
+                        nbPlayerCardRestriction: {
+                          text: gameParameters.decksConfig
+                            .nbPlayerCardRestriction!.text,
+                          value,
+                        },
+                      },
+                    })
+                  }
+                />
+              </>
+            )}
+          </div>
+          <div className="flex gap-[4vw]">
+            <DeckPile
+              type={CardType.TreasureCard}
+              count={gameParameters.decksConfig.treasure.total}
+              onClick={() => setDeckPilePopup(CardType.TreasureCard)}
+            />
+            <DeckPile
+              type={CardType.MonsterCard}
+              count={gameParameters.decksConfig.monster.total}
+              onClick={() => setDeckPilePopup(CardType.MonsterCard)}
+            />
+            <DeckPile
+              type={CardType.LootCard}
+              count={gameParameters.decksConfig.loot.total}
+              onClick={() => setDeckPilePopup(CardType.LootCard)}
+            />
+            {gameParameters.decksConfig.bsoul && (
+              <DeckPile
+                type={CardType.BonusSoul}
+                count={gameParameters.decksConfig.bsoul.total}
+                onClick={() => setDeckPilePopup(CardType.BonusSoul)}
+              />
+            )}
+            {gameParameters.decksConfig.room && (
+              <DeckPile
+                type={CardType.RoomCard}
+                count={gameParameters.decksConfig.room.total}
+                onClick={() => setDeckPilePopup(CardType.RoomCard)}
+              />
+            )}
+          </div>
         </div>
       </div>
+      {deckPilePopup && gameParameters.decksConfig[deckPilePopup] && (
+        <DeckConfigPopup
+          type={deckPilePopup}
+          cards={gameParameters.decksConfig[deckPilePopup].cards}
+          onPressBackdrop={() => setDeckPilePopup(null)}
+        />
+      )}
+    </div>
+  );
+};
+
+const DeckPile = ({
+  type,
+  count,
+  onClick,
+}: {
+  type: CardType;
+  count: number;
+  onClick: () => void;
+}) => {
+  return (
+    <div className="flex flex-col items-center gap-4">
+      <Pile
+        topCardClassName={cn(
+          count === 0 &&
+            "bg-space-500/30 inset-shadow-sm inset-shadow-black shadow-none",
+        )}
+        cards={Array.from({ length: count }).map(() => type)}
+        orientation={type === CardType.RoomCard ? "landscape" : "portrait"}
+        onClickTopCard={onClick}
+      />
+      <p className="text-center font-main">{`${type} (${count})`}</p>
     </div>
   );
 };
@@ -417,8 +553,10 @@ const PlayerCard = ({
   player,
   actions,
   bottomButton,
+  index,
+  isHost,
 }: {
-  player: RoomPlayer;
+  player?: RoomPlayer;
   actions?: {
     onPreviousCharacterPress: () => void;
     onNextCharacterPress: () => void;
@@ -428,56 +566,74 @@ const PlayerCard = ({
     label: string;
     onClick: () => void;
   };
+  index: number;
+  isHost: boolean;
 }) => (
   <div className="flex shrink-0 flex-col items-center gap-1">
-    <div className="flex items-center gap-1 font-bold">
-      <Person className="size-4" />
-      {player.name ?? "Joining..."}
-    </div>
-    <div className="flex items-center gap-1">
-      {actions && (
-        <Button
-          label="<"
-          onClick={actions.onPreviousCharacterPress}
-          className="size-8"
-          theme="onSpace"
-        />
+    <div className="flex h-8 items-center gap-1 font-bold">
+      {player && (
+        <>
+          {isHost ? (
+            <Crown className="size-4" />
+          ) : (
+            <Person className="size-4" />
+          )}
+          {player.name ?? "Joining..."}
+        </>
       )}
-      {player.character.character === "random" ? (
-        <div className="grid items-center gap-2">
+    </div>
+    {player ? (
+      <div className="flex items-center gap-1">
+        {actions && (
+          <Button
+            label="<"
+            onClick={actions.onPreviousCharacterPress}
+            className="size-8"
+            theme="onSpace"
+          />
+        )}
+        {player.character.character === "random" ? (
+          <div className="grid items-center gap-2">
+            <CardImage
+              card={CardType.CharacterCard}
+              className={cn(
+                "col-start-1 row-start-1 h-32 shadow-lg/30",
+                player.name ? "opacity-100" : "opacity-50",
+                actions && "cursor-pointer",
+              )}
+              onClick={actions?.onCharacterSelectionPress}
+            />
+            <p className="pointer-events-none col-start-1 row-start-1 touch-none text-center font-main text-[400%] font-bold text-black uppercase text-shadow-amber-50 text-shadow-lg">
+              ?
+            </p>
+          </div>
+        ) : (
           <CardImage
-            card={CardType.CharacterCard}
+            card={{ slug: player.character.character }}
             className={cn(
-              "col-start-1 row-start-1 h-32 shadow-lg/30",
+              "h-32 shadow-lg/30",
               player.name ? "opacity-100" : "opacity-50",
               actions && "cursor-pointer",
             )}
             onClick={actions?.onCharacterSelectionPress}
           />
-          <p className="pointer-events-none col-start-1 row-start-1 touch-none text-center font-main text-[400%] font-bold text-black uppercase text-shadow-amber-50 text-shadow-lg">
-            ?
-          </p>
-        </div>
-      ) : (
-        <CardImage
-          card={{ slug: player.character.character }}
-          className={cn(
-            "h-32 shadow-lg/30",
-            player.name ? "opacity-100" : "opacity-50",
-            actions && "cursor-pointer",
-          )}
-          onClick={actions?.onCharacterSelectionPress}
-        />
-      )}
-      {actions && (
-        <Button
-          label=">"
-          onClick={actions.onNextCharacterPress}
-          className="size-8"
-          theme="onSpace"
-        />
-      )}
-    </div>
+        )}
+        {actions && (
+          <Button
+            label=">"
+            onClick={actions.onNextCharacterPress}
+            className="size-8"
+            theme="onSpace"
+          />
+        )}
+      </div>
+    ) : (
+      <div className="aspect-750/1024 h-32 place-content-center rounded-md bg-space-500/30 inset-shadow-sm inset-shadow-black">
+        <p className="text-center text-6xl font-bold text-space-400/30">
+          {index}
+        </p>
+      </div>
+    )}
     {bottomButton && (
       <Button
         label={bottomButton.label}

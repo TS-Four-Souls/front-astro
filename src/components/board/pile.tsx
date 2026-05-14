@@ -63,7 +63,7 @@ interface PileProps {
   children?: React.ReactNode;
 }
 
-const BRIGHTNESS_MIN = 0.3;
+const BRIGHTNESS_MIN = 0.4;
 
 export const Pile = ({
   cards,
@@ -216,11 +216,11 @@ export const Pile = ({
                 className={cn(
                   !charged && "brightness-50 contrast-90",
                   eternal && "glow-eternal glow-6",
-                  cards.length > 0 && index === 0 && "shadow-md/50",
-                  cards.length > 5 && index === 3 && "shadow-lg/50",
-                  cards.length > 10 && index === 2 && "shadow-xl/30",
-                  cards.length > 40 && index === 1 && "shadow-2xl/30",
-                  cards.length > 80 && index === 0 && "shadow-3xl/40",
+                  cards.length > 0 && index === 0 && "pile-md-shadow",
+                  cards.length > 5 && index === 0 && "pile-lg-shadow",
+                  cards.length > 10 && index === 0 && "pile-xl-shadow",
+                  cards.length > 40 && index === 0 && "pile-2xl-shadow",
+                  cards.length > 80 && index === 0 && "pile-3xl-shadow",
                   index === array.length - 1 && topCardClassName,
                 )}
                 disabled={
@@ -276,6 +276,7 @@ export const Pile = ({
           disabled={disabled}
           style={{ height: size + "em" }}
           aspectRatio={orientation === "portrait" ? 750 / 1024 : 1024 / 750}
+          className={topCardClassName}
         />
       )}
     </div>

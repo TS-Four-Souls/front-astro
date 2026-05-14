@@ -35,6 +35,32 @@
     1200px 800px;
 }
 
+.pile-md-shadow {
+  --pile-md-shadow: 0 0.1em 0.1em 0.1em rgb(0 0 0 / 0.5);
+  box-shadow: var(--pile-md-shadow);
+}
+.pile-lg-shadow {
+  --pile-lg-shadow: 0 0.2em 0.2em 0.2em rgb(0 0 0 / 0.5);
+  box-shadow: var(--pile-md-shadow), var(--pile-lg-shadow);
+}
+.pile-xl-shadow {
+  --pile-xl-shadow: 0 0.5em 0.5em 0.3em rgb(0 0 0 / 0.3);
+  box-shadow:
+    var(--pile-md-shadow), var(--pile-lg-shadow), var(--pile-xl-shadow);
+}
+.pile-2xl-shadow {
+  --pile-2xl-shadow: 0 1em 1em 0.4em rgb(0 0 0 / 0.3);
+  box-shadow:
+    var(--pile-md-shadow), var(--pile-lg-shadow), var(--pile-xl-shadow),
+    var(--pile-2xl-shadow);
+}
+.pile-3xl-shadow {
+  --pile-3xl-shadow: 0 2em 2em 0.5em rgb(0 0 0 / 0.4);
+  box-shadow:
+    var(--pile-md-shadow), var(--pile-lg-shadow), var(--pile-xl-shadow),
+    var(--pile-2xl-shadow), var(--pile-3xl-shadow);
+}
+
 @keyframes planetariumBackground {
   from {
     background-position:

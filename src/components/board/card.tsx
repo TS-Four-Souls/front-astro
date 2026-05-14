@@ -105,7 +105,7 @@ export const Card = ({
             onClick && (disabled ? "cursor-not-allowed" : "cursor-pointer"),
           )}
           style={{
-            filter: `brightness(${Math.max(0.2, brightness * brightness)})`,
+            filter: `brightness(${Math.max(0, brightness * brightness)})`,
             borderRadius: BORDER_RADIUS,
           }}
           aspectRatio={aspectRatio}

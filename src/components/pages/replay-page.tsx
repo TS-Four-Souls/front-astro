@@ -13,7 +13,7 @@ export const ReplayPage = () => {
 
   if (!gameState) {
     return (
-      <OnboardingLayout headerMode={true}>
+      <OnboardingLayout withHeader={true}>
         <div className="flex flex-col gap-4">
           <h1 className="text-2xl font-bold">Replay</h1>
           <textarea

@@ -100,7 +100,7 @@ export const GamePage = () => {
   }
 
   return (
-    <OnboardingLayout headerMode={room?.me !== undefined}>
+    <OnboardingLayout withHeader={room?.me === undefined}>
       <BoardSelectionProvider>
         <OnboardingPages room={room} />
       </BoardSelectionProvider>
