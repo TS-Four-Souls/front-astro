@@ -47,7 +47,7 @@ export const Button = ({
         active ? "bg-taupe-300 text-taupe-900" : "",
         onClick &&
           (disabled
-            ? "cursor-not-allowed opacity-50 contrast-50 shadow-none"
+            ? "cursor-not-allowed opacity-50 shadow-none contrast-50"
             : "cursor-pointer transition-[filter] hover:brightness-120"),
         className,
       )}

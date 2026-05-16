@@ -5,6 +5,7 @@ import { HotkeysProvider } from "react-hotkeys-hook";
 import { HotkeyScope } from "@/utils/hotkey";
 import { PopoverProvider } from "./board/contexts/popover-context";
 import { ReplayPage } from "./pages/replay-page";
+import { ContactProvider } from "./contexts/contact-context";
 
 interface AppProps {
   page: "game" | "replay";
@@ -15,9 +16,11 @@ export const App = ({ page }: AppProps) => (
     <HotkeysProvider initiallyActiveScopes={[HotkeyScope.Main]}>
       <PopoverProvider>
         <ToastProvider>
-          <PromptProvider>
-            {page === "game" ? <GamePage /> : <ReplayPage />}
-          </PromptProvider>
+          <ContactProvider>
+            <PromptProvider>
+              {page === "game" ? <GamePage /> : <ReplayPage />}
+            </PromptProvider>
+          </ContactProvider>
         </ToastProvider>
       </PopoverProvider>
     </HotkeysProvider>

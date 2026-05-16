@@ -1,3 +1,6 @@
+import { useTooltip } from "./board/use-tooltip";
+import { useContactContext } from "./contexts/contact-context";
+
 interface OnboardingLayoutProps {
   withHeader: boolean;
   children: React.ReactNode;
@@ -10,6 +13,7 @@ export const OnboardingLayout = ({
   return (
     <div className="flex h-screen gap-8">
       <div className="planetarium flex flex-2 flex-col">
+        <ReportBugButton />
         {withHeader ? (
           <>
             <div className="flex flex-1 flex-col place-content-center place-items-center gap-6 p-12">
@@ -26,5 +30,23 @@ export const OnboardingLayout = ({
         )}
       </div>
     </div>
+  );
+};
+
+const ReportBugButton = () => {
+  const tooltip = useTooltip({
+    enabled: true,
+    title: "Contact us",
+    content: "A suggestion, a bug to report?",
+  });
+  const { openContactPopup } = useContactContext();
+  return (
+    <img
+      src="/contact.png"
+      className="pixelated absolute right-10 bottom-10 w-16 cursor-pointer rounded-full bg-space-400 p-2 shadow-xl/50"
+      onMouseEnter={tooltip.setTooltip}
+      onMouseLeave={tooltip.closeTooltip}
+      onClick={openContactPopup}
+    />
   );
 };

@@ -4,12 +4,14 @@ import { useToastContext } from "./contexts/toast-context";
 import { Button } from "../button";
 import { useMainMenuContext } from "./contexts/main-menu-context";
 import { HotkeyScope } from "@/utils/hotkey";
+import { useContactContext } from "../contexts/contact-context";
 
 export const MainMenu = () => {
   const { addPrompt, removePrompt } = usePromptContext();
   const { toast } = useToastContext();
   const { closeMenu: closeMainMenu } = useMainMenuContext();
-
+  const { openContactPopup } = useContactContext();
+  
   const onResetPress = (confirmed?: true) => {
     if (confirmed === undefined) {
       const promptId = `reset-confirm-${Date.now()}`;
@@ -355,6 +357,13 @@ export const MainMenu = () => {
           debugRemoveCard();
         }}
         label="[CHEAT] Discard card"
+      />
+      <Button
+        onClick={() => {
+          closeMainMenu();
+          openContactPopup();
+        }}
+        label="Contact us"
       />
       <Button
         onClick={() => {

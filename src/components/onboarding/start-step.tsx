@@ -290,7 +290,7 @@ export const StartStep = ({ room, me }: StartStepProps) => {
           />
         </div>
 
-        <div className="flex gap-6 mb-3">
+        <div className="mb-3 flex gap-6">
           <PlayerCard
             player={me}
             actions={{

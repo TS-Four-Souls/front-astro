@@ -1,4 +1,5 @@
 ## Release
+
 - Contact form/bug report
 - Only keep base game
 - Only keep ids from the previous state for seenAnimationIds

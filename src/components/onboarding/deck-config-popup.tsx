@@ -133,7 +133,7 @@ export const DeckConfigPopup = ({
         ))}
 
         {filteredCards.length === 0 && (
-          <div className="text-center text-lg text-taupe-400 h-full w-full flex items-center justify-center">
+          <div className="flex h-full w-full items-center justify-center text-center text-lg text-taupe-400">
             No cards to display
           </div>
         )}
