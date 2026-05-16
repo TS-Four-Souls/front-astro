@@ -1,6 +1,5 @@
 ## Release
 
-- Contact form/bug report
 - Only keep base game
 - Only keep ids from the previous state for seenAnimationIds
 - Padding top on board when on board selection so that the top player cards are visible
