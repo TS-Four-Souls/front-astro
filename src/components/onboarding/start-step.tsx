@@ -499,22 +499,28 @@ export const StartStep = ({ room, me }: StartStepProps) => {
           </div>
           <div className="flex gap-[4vw]">
             <DeckPile
+              type={CardType.CharacterCard}
+              label="Characters"
+              count={gameParameters.decksConfig.character.total}
+              onClick={() => setDeckPilePopup(CardType.CharacterCard)}
+            />
+            <DeckPile
               type={CardType.TreasureCard}
               label="Treasures"
               count={gameParameters.decksConfig.treasure.total}
               onClick={() => setDeckPilePopup(CardType.TreasureCard)}
             />
             <DeckPile
-              type={CardType.MonsterCard}
-              label="Monsters"
-              count={gameParameters.decksConfig.monster.total}
-              onClick={() => setDeckPilePopup(CardType.MonsterCard)}
-            />
-            <DeckPile
               type={CardType.LootCard}
               label="Loots"
               count={gameParameters.decksConfig.loot.total}
               onClick={() => setDeckPilePopup(CardType.LootCard)}
+            />
+            <DeckPile
+              type={CardType.MonsterCard}
+              label="Monsters"
+              count={gameParameters.decksConfig.monster.total}
+              onClick={() => setDeckPilePopup(CardType.MonsterCard)}
             />
             {gameParameters.decksConfig.bsoul && (
               <DeckPile

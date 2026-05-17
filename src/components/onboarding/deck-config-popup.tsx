@@ -7,11 +7,18 @@ import { socket } from "@/utils/socket";
 import { Button } from "../button";
 import { HotkeyScope } from "@/utils/hotkey";
 
-export type DeckTypes = "monster" | "treasure" | "loot" | "bsoul" | "room";
+export type DeckTypes =
+  | "monster"
+  | "treasure"
+  | "loot"
+  | "bsoul"
+  | "room"
+  | "character";
 
 const deckTypeLabels: Record<DeckTypes, string> = {
   monster: "Monster Cards",
   treasure: "Treasure Cards",
+  character: "Character Cards",
   loot: "Loot Cards",
   bsoul: "Bonus Souls",
   room: "Room Cards",
@@ -90,7 +97,7 @@ export const DeckConfigPopup = ({
         </div>
       </div>
 
-      <div className="flex grow flex-wrap justify-center gap-x-6 gap-y-12 overflow-auto p-4">
+      <div className="flex grow flex-wrap content-start justify-center gap-x-6 gap-y-12 overflow-auto p-4">
         {filteredCards.map((card) => (
           <div className="flex flex-col items-center gap-4" key={card.slug}>
             <CardImage
