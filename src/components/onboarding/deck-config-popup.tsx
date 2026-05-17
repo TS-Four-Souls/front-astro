@@ -1,6 +1,6 @@
 import { cn } from "@/utils/cn";
 import { Popup } from "../popup";
-import { CardImage } from "../board/card";
+import { CardImage, CardType } from "../board/card";
 import type { DeckConfigCard } from "@/shared/api";
 import { useMemo, useState } from "react";
 import { socket } from "@/utils/socket";
@@ -97,17 +97,40 @@ export const DeckConfigPopup = ({
         </div>
       </div>
 
-      <div className="flex grow flex-wrap content-start justify-center gap-x-6 gap-y-12 overflow-auto p-4">
+      <div className={cn("flex grow flex-wrap content-start justify-center gap-x-6 gap-y-12 overflow-auto p-4", filteredCards.some((card) => "eternal" in card) && "gap-x-16")}>
         {filteredCards.map((card) => (
           <div className="flex flex-col items-center gap-4" key={card.slug}>
-            <CardImage
-              card={{ slug: card.slug }}
+            <div
               className={cn(
-                "h-64 shadow-lg/30",
+                "flex flex-row items-center gap-2",
                 card.count === 0 && "brightness-50 contrast-90",
+              )}>
+              <CardImage
+                card={{ slug: card.slug }}
+                className="h-64 shadow-lg/30"
+              />
+              {"eternal" in card && (
+                <>
+                  {card.eternal === "random" ? (
+                    <div className="grid items-center gap-2">
+                      <CardImage
+                        card={CardType.CharacterCard}
+                        className="col-start-1 row-start-1 h-64 shadow-lg/30"
+                      />
+                      <p className="col-start-1 row-start-1 text-center font-main text-[800%] font-bold text-black uppercase text-shadow-amber-50 text-shadow-lg">
+                        ?
+                      </p>
+                    </div>
+                  ) : (
+                    <CardImage
+                      card={{ slug: card.eternal }}
+                      className="h-64 shadow-lg/30"
+                    />
+                  )}
+                </>
               )}
-            />
-            <div className="flex w-full">
+            </div>
+            <div className={cn("flex w-full", "eternal" in card && "w-1/2")}>
               <Button
                 onClick={() => onCardCountChange(card, card.count - 1)}
                 label="−"
