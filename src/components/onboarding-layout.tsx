@@ -1,5 +1,7 @@
+import { useEffect, useRef } from "react";
 import { useTooltip } from "./board/use-tooltip";
 import { useContactContext } from "./contexts/contact-context";
+import { cn } from "@/utils/cn";
 
 interface OnboardingLayoutProps {
   withHeader: boolean;
@@ -10,9 +12,36 @@ export const OnboardingLayout = ({
   withHeader,
   children,
 }: OnboardingLayoutProps) => {
+  const planetariumRef = useRef<HTMLDivElement>(null);
+
+  // Only animate the planetarium if there is no header and the page is visible
+  useEffect(() => {
+    const planetarium = planetariumRef.current;
+    if (!planetarium) return;
+
+    if (!withHeader) {
+      planetarium.classList.remove("animate-planetarium");
+      return;
+    }
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        planetarium.classList.add("animate-planetarium");
+      } else {
+        planetarium.classList.remove("animate-planetarium");
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    handleVisibilityChange();
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [withHeader]);
+
   return (
     <div className="flex h-screen gap-8">
-      <div className="planetarium flex flex-2 flex-col">
+      <div ref={planetariumRef} className="planetarium flex flex-2 flex-col">
         <ReportBugButton />
         {withHeader ? (
           <>

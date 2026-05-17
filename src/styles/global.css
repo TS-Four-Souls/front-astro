@@ -25,7 +25,6 @@
     url(/background/FourSoulsBackgroundStarLayer02.png),
     url(/background/FourSoulsBackgroundStarLayer01.png),
     url(/background/FourSoulsBackground.png);
-  animation: planetariumBackground 120s linear infinite;
   background-size:
     600px 400px,
     600px 400px,
@@ -33,6 +32,10 @@
     600px 400px,
     600px 400px,
     1200px 800px;
+}
+
+.animate-planetarium {
+  animation: planetariumBackground 120s linear infinite;
 }
 
 .pile-md-shadow {

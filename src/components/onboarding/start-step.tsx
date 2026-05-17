@@ -497,7 +497,7 @@ export const StartStep = ({ room, me }: StartStepProps) => {
               </>
             )}
           </div>
-          <div className="flex gap-[4vw]">
+          <div className="flex gap-[4vw] flex-wrap justify-center">
             <DeckPile
               type={CardType.CharacterCard}
               label="Characters"
