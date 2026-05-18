@@ -5,205 +5,213 @@ import { Button } from "../button";
 import { useMainMenuContext } from "./contexts/main-menu-context";
 import { HotkeyScope } from "@/utils/hotkey";
 import { useContactContext } from "../contexts/contact-context";
+import { useGameContext } from "./contexts/game-context";
 
 export const MainMenu = () => {
   const { addPrompt, removePrompt } = usePromptContext();
   const { toast } = useToastContext();
   const { closeMenu: closeMainMenu } = useMainMenuContext();
   const { openContactPopup } = useContactContext();
-  
-  const onResetPress = (confirmed?: true) => {
-    if (confirmed === undefined) {
-      const promptId = `reset-confirm-${Date.now()}`;
-      addPrompt({
-        promptId,
-        isUnique: true,
-        prompt: "Are you sure you want to reset the game?",
-        options: [
-          { type: "boolean", payload: true },
-          { type: "boolean", payload: false },
-        ],
-        minCount: 1,
-        maxCount: 1,
-        onSubmit: (selectedOptions) => {
-          if (selectedOptions[0].payload === true) {
-            onResetPress(true);
-          }
-          removePrompt(promptId);
-        },
-        onCancel: () => {
-          removePrompt(promptId);
-        },
-      });
-      return;
-    }
-    socket.emit("quitGame", (response) => {
-      switch (response.status) {
-        case 200:
-          break;
-        default:
-        case 400:
-          toast("error", "Failed to quit game", response.error);
-          break;
-      }
+  const { parameters } = useGameContext();
+
+  const onResetPress = () => {
+    const promptId = `reset-confirm-${Date.now()}`;
+    addPrompt({
+      promptId,
+      isUnique: true,
+      prompt: "Are you sure you want to quit the game?",
+      options: [
+        { type: "boolean", payload: true },
+        { type: "boolean", payload: false },
+      ],
+      minCount: 1,
+      maxCount: 1,
+      onSubmit: (selectedOptions) => {
+        if (selectedOptions[0].payload) {
+          socket.emit("quitGame", (response) => {
+            if (response.status === 200) {
+              removePrompt(promptId);
+            } else {
+              toast("error", "Failed to quit game", response.error);
+            }
+          });
+        }
+      },
+      onCancel: () => {
+        removePrompt(promptId);
+      },
     });
   };
 
   const onSaveGamePress = () => {
     socket.emit("saveGame", (response) => {
-      if (response.status === 200) {
-        const now = new Date();
-        const datePart = [
-          now.getFullYear(),
-          String(now.getMonth() + 1).padStart(2, "0"),
-          String(now.getDate()).padStart(2, "0"),
-        ].join("-");
-        const timePart = [
-          String(now.getHours()).padStart(2, "0"),
-          String(now.getMinutes()).padStart(2, "0"),
-          String(now.getSeconds()).padStart(2, "0"),
-        ].join("-");
-        const filename = `four-souls_save_${datePart}_${timePart}.log`;
+      switch (response.status) {
+        case 200:
+          const now = new Date();
+          const datePart = [
+            now.getFullYear(),
+            String(now.getMonth() + 1).padStart(2, "0"),
+            String(now.getDate()).padStart(2, "0"),
+          ].join("-");
+          const timePart = [
+            String(now.getHours()).padStart(2, "0"),
+            String(now.getMinutes()).padStart(2, "0"),
+            String(now.getSeconds()).padStart(2, "0"),
+          ].join("-");
+          const filename = `four-souls_save_${datePart}_${timePart}.log`;
 
-        const blob = new Blob([response.logs], { type: "text/plain" });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
+          const blob = new Blob([response.logs], { type: "text/plain" });
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.href = url;
+          link.download = filename;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
 
-        toast("success", "Save game", `Saved as ${filename}`);
-      } else {
-        toast("error", "Save game", response.error);
+          toast("success", "Game saved", `Saved as ${filename}`);
+          break;
+        case 400:
+          toast("error", "Failed to save game", response.error);
+          break;
       }
     });
   };
 
   const debugGainLoot = () => {
     socket.emit("debugListLoot", (response) => {
-      if (response.status === 200) {
-        const promptId = `debug-list-loot-${Date.now()}`;
-        addPrompt({
-          promptId,
-          isUnique: false,
-          prompt: "Select a loot card to loot",
-          options: response.cards.map((card) => ({
-            type: "card",
-            payload: card,
-          })),
-          minCount: 1,
-          maxCount: 50,
-          onSubmit: (selections) => {
-            socket.emit(
-              "debugLoot",
-              {
-                cards: selections.map((selection) => selection.payload),
-              },
-              (response) => {
-                if (response.status === 200) {
-                } else {
-                  toast("error", "CHEAT MODE", response.error);
-                }
-              },
-            );
-            removePrompt(promptId);
-          },
-          onCancel: () => {
-            removePrompt(promptId);
-          },
-        });
-      } else {
-        toast("error", "CHEAT MODE", response.error);
+      switch (response.status) {
+        case 200:
+          const promptId = `debug-list-loot-${Date.now()}`;
+          addPrompt({
+            promptId,
+            isUnique: false,
+            prompt: "Select a loot card to loot",
+            options: response.cards.map((card) => ({
+              type: "card",
+              payload: card,
+            })),
+            minCount: 1,
+            maxCount: 50,
+            onSubmit: (selections) => {
+              socket.emit(
+                "debugLoot",
+                {
+                  cards: selections.map((selection) => selection.payload),
+                },
+                (response) => {
+                  if (response.status === 200) {
+                    removePrompt(promptId);
+                  } else {
+                    toast("error", "Failed to gain loot cards", response.error);
+                  }
+                },
+              );
+            },
+            onCancel: () => {
+              removePrompt(promptId);
+            },
+          });
+          break;
+        case 400:
+          toast("error", "Failed to list loot", response.error);
+          break;
       }
     });
   };
 
   const rollback = () => {
     socket.emit("rollback", (response) => {
-      if (response.status === 200) {
-      } else {
-        toast("error", "Rollback", response.error);
-      }
+      if (response.status === 400)
+        toast("error", "Failed to rollback", response.error);
     });
   };
 
   const debugGainTreasure = () => {
     socket.emit("debugListTreasure", (response) => {
-      if (response.status === 200) {
-        const promptId = `debug-list-treasure-${Date.now()}`;
-        addPrompt({
-          promptId,
-          isUnique: false,
-          prompt: "Select a treasure card to gain",
-          options: response.cards.map((card) => ({
-            type: "card",
-            payload: card,
-          })),
-          minCount: 1,
-          maxCount: 50,
-          onSubmit: (selections) => {
-            socket.emit(
-              "debugGainTreasure",
-              {
-                cards: selections.map((selection) => selection.payload),
-              },
-              (response) => {
-                if (response.status === 200) {
-                } else {
-                  toast("error", "CHEAT MODE", response.error);
-                }
-              },
-            );
-            removePrompt(promptId);
-          },
-          onCancel: () => {
-            removePrompt(promptId);
-          },
-        });
-      } else {
-        toast("error", "CHEAT MODE", response.error);
+      switch (response.status) {
+        case 200:
+          const promptId = `debug-list-treasure-${Date.now()}`;
+          addPrompt({
+            promptId,
+            isUnique: false,
+            prompt: "Select a treasure card to gain",
+            options: response.cards.map((card) => ({
+              type: "card",
+              payload: card,
+            })),
+            minCount: 1,
+            maxCount: 50,
+            onSubmit: (selections) => {
+              socket.emit(
+                "debugGainTreasure",
+                {
+                  cards: selections.map((selection) => selection.payload),
+                },
+                (response) => {
+                  if (response.status === 200) {
+                    removePrompt(promptId);
+                  } else {
+                    toast(
+                      "error",
+                      "Failed to gain treasure cards",
+                      response.error,
+                    );
+                  }
+                },
+              );
+            },
+            onCancel: () => {
+              removePrompt(promptId);
+            },
+          });
+          break;
+        case 400:
+          toast("error", "Failed to list treasure", response.error);
+          break;
       }
     });
   };
 
   const debugRemoveCard = () => {
     socket.emit("debugListCardsICanRemove", (response) => {
-      if (response.status === 200) {
-        const promptId = `debug-list-cards-i-can-remove-${Date.now()}`;
-        addPrompt({
-          promptId,
-          isUnique: false,
-          prompt: "Select cards to remove",
-          options: response.cards.map((card) => ({
-            type: "card",
-            payload: card,
-          })),
-          minCount: 1,
-          maxCount: 50,
-          onSubmit: (selections) => {
-            socket.emit(
-              "debugRemoveCards",
-              {
-                cards: selections.map((selection) => selection.payload),
-              },
-              (response) => {
-                if (response.status === 200) {
-                } else {
-                  toast("error", "CHEAT MODE", response.error);
-                }
-              },
-            );
-            removePrompt(promptId);
-          },
-          onCancel: () => {
-            removePrompt(promptId);
-          },
-        });
-      } else {
-        toast("error", "CHEAT MODE", response.error);
+      switch (response.status) {
+        case 200:
+          const promptId = `debug-list-cards-i-can-remove-${Date.now()}`;
+          addPrompt({
+            promptId,
+            isUnique: false,
+            prompt: "Select cards to remove",
+            options: response.cards.map((card) => ({
+              type: "card",
+              payload: card,
+            })),
+            minCount: 1,
+            maxCount: 50,
+            onSubmit: (selections) => {
+              socket.emit(
+                "debugRemoveCards",
+                {
+                  cards: selections.map((selection) => selection.payload),
+                },
+                (response) => {
+                  if (response.status === 200) {
+                    removePrompt(promptId);
+                  } else {
+                    toast("error", "Failed to remove cards", response.error);
+                  }
+                },
+              );
+            },
+            onCancel: () => {
+              removePrompt(promptId);
+            },
+          });
+          break;
+        case 400:
+          toast("error", "Failed to list removable cards", response.error);
+          break;
       }
     });
   };
@@ -229,12 +237,12 @@ export const MainMenu = () => {
           },
           (response) => {
             if (response.status === 200) {
+              removePrompt(promptId);
             } else {
-              toast("error", "CHEAT MODE", response.error);
+              toast("error", "Failed to gain coins", response.error);
             }
           },
         );
-        removePrompt(promptId);
       },
       onCancel: () => {
         removePrompt(promptId);
@@ -244,61 +252,68 @@ export const MainMenu = () => {
 
   const debugPutMonsterCardInSlot = () => {
     socket.emit("debugListMonsterDeck", (response) => {
-      if (response.status === 200) {
-        const promptId = `debug-list-monster-deck-${Date.now()}`;
-        addPrompt({
-          promptId,
-          isUnique: false,
-          prompt: "Select a monster card to put in a slot",
-          options: response.cards.map((card) => ({
-            type: "card",
-            payload: card,
-          })),
-          minCount: 1,
-          maxCount: 1,
-          onSubmit: (selections) => {
-            const card = selections[0].payload;
-            removePrompt(promptId);
+      switch (response.status) {
+        case 200:
+          const promptId = `debug-list-monster-deck-${Date.now()}`;
+          addPrompt({
+            promptId,
+            isUnique: false,
+            prompt: "Select a monster card to put in a slot",
+            options: response.cards.map((card) => ({
+              type: "card",
+              payload: card,
+            })),
+            minCount: 1,
+            maxCount: 1,
+            onSubmit: (selections) => {
+              const card = selections[0].payload;
+              removePrompt(promptId);
 
-            const promptId2 = `debug-list-monster-cover-${Date.now()}`;
-            addPrompt({
-              promptId: promptId2,
-              isUnique: false,
-              prompt: "Select a card to cover",
-              options: response.coverable.map((card) => ({
-                type: "card",
-                payload: card,
-              })),
-              minCount: 1,
-              maxCount: 1,
-              onSubmit: (selections2) => {
-                const toCover = selections2[0].payload;
-                socket.emit(
-                  "debugPutMonsterCardInSlot",
-                  {
-                    card,
-                    toCover,
-                  },
-                  (response) => {
-                    if (response.status === 200) {
-                    } else {
-                      toast("error", "CHEAT MODE", response.error);
-                    }
-                  },
-                );
-                removePrompt(promptId2);
-              },
-              onCancel: () => {
-                removePrompt(promptId2);
-              },
-            });
-          },
-          onCancel: () => {
-            removePrompt(promptId);
-          },
-        });
-      } else {
-        toast("error", "CHEAT MODE", response.error);
+              const promptId2 = `debug-list-monster-cover-${Date.now()}`;
+              addPrompt({
+                promptId: promptId2,
+                isUnique: false,
+                prompt: "Select a card to cover",
+                options: response.coverable.map((card) => ({
+                  type: "card",
+                  payload: card,
+                })),
+                minCount: 1,
+                maxCount: 1,
+                onSubmit: (selections2) => {
+                  const toCover = selections2[0].payload;
+                  socket.emit(
+                    "debugPutMonsterCardInSlot",
+                    {
+                      card,
+                      toCover,
+                    },
+                    (response) => {
+                      if (response.status === 200) {
+                        removePrompt(promptId2);
+                      } else {
+                        toast(
+                          "error",
+                          "Failed to put monster card in slot",
+                          response.error,
+                        );
+                      }
+                    },
+                  );
+                },
+                onCancel: () => {
+                  removePrompt(promptId2);
+                },
+              });
+            },
+            onCancel: () => {
+              removePrompt(promptId);
+            },
+          });
+          break;
+        case 400:
+          toast("error", "Failed to list monster deck", response.error);
+          break;
       }
     });
   };
@@ -316,48 +331,52 @@ export const MainMenu = () => {
       </div>
       <Button
         onClick={() => {
-          // closeMainMenu();
+          closeMainMenu();
           rollback();
         }}
         hotkey="r"
         hotkeyScope={[HotkeyScope.Popup]}
         label="Rollback"
       />
-      <Button
-        onClick={() => {
-          closeMainMenu();
-          debugGainLoot();
-        }}
-        label="[CHEAT] Loot"
-      />
-      <Button
-        onClick={() => {
-          closeMainMenu();
-          debugGainTreasure();
-        }}
-        label="[CHEAT] Gain treasure"
-      />
-      <Button
-        onClick={() => {
-          closeMainMenu();
-          debugPutMonsterCardInSlot();
-        }}
-        label="[CHEAT] Put monster card in slot"
-      />
-      <Button
-        onClick={() => {
-          closeMainMenu();
-          debugGainCoins();
-        }}
-        label="[CHEAT] Gain coins"
-      />
-      <Button
-        onClick={() => {
-          closeMainMenu();
-          debugRemoveCard();
-        }}
-        label="[CHEAT] Discard card"
-      />
+      {parameters.allowCheatOptions.value && (
+        <>
+          <Button
+            onClick={() => {
+              closeMainMenu();
+              debugGainLoot();
+            }}
+            label="[CHEAT] Loot"
+          />
+          <Button
+            onClick={() => {
+              closeMainMenu();
+              debugGainTreasure();
+            }}
+            label="[CHEAT] Gain treasure"
+          />
+          <Button
+            onClick={() => {
+              closeMainMenu();
+              debugPutMonsterCardInSlot();
+            }}
+            label="[CHEAT] Put monster card in slot"
+          />
+          <Button
+            onClick={() => {
+              closeMainMenu();
+              debugGainCoins();
+            }}
+            label="[CHEAT] Gain coins"
+          />
+          <Button
+            onClick={() => {
+              closeMainMenu();
+              debugRemoveCard();
+            }}
+            label="[CHEAT] Discard card"
+          />
+        </>
+      )}
       <Button
         onClick={() => {
           closeMainMenu();

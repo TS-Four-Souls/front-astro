@@ -6,6 +6,7 @@ import { useMemo, useState } from "react";
 import { socket } from "@/utils/socket";
 import { Button } from "../button";
 import { HotkeyScope } from "@/utils/hotkey";
+import { useToastContext } from "../board/contexts/toast-context";
 
 export type DeckTypes =
   | "monster"
@@ -37,6 +38,8 @@ export const DeckConfigPopup = ({
   onPressBackdrop,
   editable,
 }: DeckConfigPopupProps) => {
+  const { toast } = useToastContext();
+
   const canUseLookup = useMemo(() => {
     return cards.length > 10;
   }, [cards]);
@@ -62,10 +65,8 @@ export const DeckConfigPopup = ({
         },
       },
       (response) => {
-        switch (response.status) {
-          case 200:
-            break;
-        }
+        if (response.status === 400)
+          toast("error", "Failed to change card count", response.error);
       },
     );
   };
@@ -97,7 +98,11 @@ export const DeckConfigPopup = ({
         </div>
       </div>
 
-      <div className={cn("flex grow flex-wrap content-start justify-center gap-x-6 gap-y-12 overflow-auto p-4", filteredCards.some((card) => "eternal" in card) && "gap-x-16")}>
+      <div
+        className={cn(
+          "flex grow flex-wrap content-start justify-center gap-x-6 gap-y-12 overflow-auto p-4",
+          filteredCards.some((card) => "eternal" in card) && "gap-x-16",
+        )}>
         {filteredCards.map((card) => (
           <div className="flex flex-col items-center gap-4" key={card.slug}>
             <div

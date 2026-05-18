@@ -1,7 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useTooltip } from "./board/use-tooltip";
 import { useContactContext } from "./contexts/contact-context";
-import { cn } from "@/utils/cn";
 
 interface OnboardingLayoutProps {
   withHeader: boolean;

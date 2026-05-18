@@ -24,7 +24,7 @@ export const Hand = () => {
           case 200:
             if (response.response.complete) {
             } else if (response.response.options.length === 0) {
-              toast("error", "Cannot play this card", "No options available");
+              toast("error", "Failed to play card", "No options available");
             } else {
               const promptId = `card-play-${index}-${selections.length}`;
               addPrompt({

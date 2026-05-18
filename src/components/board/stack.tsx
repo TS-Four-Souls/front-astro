@@ -40,14 +40,8 @@ export const Stack = () => {
 
   const resolveStack = () => {
     socket.emit("resolve", (response) => {
-      switch (response.status) {
-        case 200:
-          break;
-        default:
-        case 400:
-          toast("error", "Failed to resolve stack", response.error);
-          break;
-      }
+      if (response.status === 400)
+        toast("error", "Failed to resolve stack", response.error);
     });
   };
 
@@ -102,15 +96,8 @@ export const Stack = () => {
         "insertStackElementBefore",
         { elementToMoveStackId, targetStackId },
         (response) => {
-          switch (response.status) {
-            case 200:
-              toast("success", "Stack updated", "Stack element moved");
-              break;
-            case 400:
-            default:
-              toast("error", "Failed to move stack element", response.error);
-              break;
-          }
+          if (response.status === 400)
+            toast("error", "Failed to move stack element", response.error);
         },
       );
     },

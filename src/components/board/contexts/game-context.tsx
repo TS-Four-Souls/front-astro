@@ -1,16 +1,18 @@
-import type { DetailedState } from "@/shared/api";
+import type { DetailedState, GameParametersJson } from "@/shared/api";
 import { HotkeyScope } from "@/utils/hotkey";
 import { createContext, useContext, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
 interface GameContextProps {
   state: DetailedState;
+  parameters: GameParametersJson;
   isHandUp: boolean;
   setIsHandUp: (isHandUp: boolean) => void;
 }
 
 const GameContext = createContext<GameContextProps>({
   state: undefined as unknown as DetailedState,
+  parameters: undefined as unknown as GameParametersJson,
   isHandUp: false,
   setIsHandUp: () => {},
 });
@@ -18,9 +20,14 @@ const GameContext = createContext<GameContextProps>({
 interface GameProviderProps {
   children: React.ReactNode;
   state: DetailedState;
+  parameters: GameParametersJson;
 }
 
-export const GameProvider = ({ children, state }: GameProviderProps) => {
+export const GameProvider = ({
+  children,
+  state,
+  parameters,
+}: GameProviderProps) => {
   const [isHandUp, setIsHandUp] = useState(false);
   useHotkeys("shift", (e) => setIsHandUp(e.type === "keydown"), {
     scopes: [HotkeyScope.Main],
@@ -29,7 +36,7 @@ export const GameProvider = ({ children, state }: GameProviderProps) => {
   });
 
   return (
-    <GameContext.Provider value={{ state, isHandUp, setIsHandUp }}>
+    <GameContext.Provider value={{ state, parameters, isHandUp, setIsHandUp }}>
       {children}
     </GameContext.Provider>
   );

@@ -45,23 +45,15 @@ export const StartStep = ({ room, me }: StartStepProps) => {
 
   const onChangeGameParameter = (request: Requests.SetGameParameter) => {
     socket.emit("setGameParameter", request, (response) => {
-      switch (response.status) {
-        case 200:
-          break;
-      }
+      if (response.status === 400)
+        toast("error", "Failed to change game parameter", response.error);
     });
   };
 
   const requestStart = async () => {
     socket.emit("start", (response) => {
-      switch (response.status) {
-        case 200:
-          break;
-        case 400:
-        default:
-          toast("error", "Failed to start game", response.error);
-          break;
-      }
+      if (response.status === 400)
+        toast("error", "Failed to start game", response.error);
     });
   };
 
@@ -81,25 +73,18 @@ export const StartStep = ({ room, me }: StartStepProps) => {
     reader.onload = () => {
       const logs = reader.result;
       if (typeof logs !== "string") {
-        toast("error", "Load game", "Could not read selected file");
+        toast("error", "Failed to load game", "Could not read selected file");
         return;
       }
 
       socket.emit("loadGame", logs, (response) => {
-        switch (response.status) {
-          case 200:
-            toast("success", "Load game", "Saved game loaded successfully");
-            break;
-          case 400:
-          default:
-            toast("error", "Load game", response.error);
-            break;
-        }
+        if (response.status === 400)
+          toast("error", "Failed to load game", response.error);
       });
     };
 
     reader.onerror = () => {
-      toast("error", "Load game", "Could not read selected file");
+      toast("error", "Failed to load game", "Could not read selected file");
     };
 
     reader.readAsText(file);
@@ -163,14 +148,8 @@ export const StartStep = ({ room, me }: StartStepProps) => {
 
   const onResetPress = () => {
     socket.emit("resetGameParameters", (response) => {
-      switch (response.status) {
-        case 200:
-          break;
-        case 400:
-        default:
-          toast("error", "Failed to reset game settings", response.error);
-          break;
-      }
+      if (response.status === 400)
+        toast("error", "Failed to reset game settings", response.error);
     });
   };
 
@@ -182,10 +161,8 @@ export const StartStep = ({ room, me }: StartStepProps) => {
     const nextCharacter = room.characters[nextIndex];
 
     socket.emit("selectCharacter", { character: nextCharacter }, (response) => {
-      switch (response.status) {
-        case 200:
-          break;
-      }
+      if (response.status === 400)
+        toast("error", "Failed to select character", response.error);
     });
   };
 
@@ -201,10 +178,8 @@ export const StartStep = ({ room, me }: StartStepProps) => {
       "selectCharacter",
       { character: previousCharacter },
       (response) => {
-        switch (response.status) {
-          case 200:
-            break;
-        }
+        if (response.status === 400)
+          toast("error", "Failed to select character", response.error);
       },
     );
   };
@@ -225,13 +200,8 @@ export const StartStep = ({ room, me }: StartStepProps) => {
           "selectCharacter",
           { character: selectedOptions[0].payload },
           (response) => {
-            switch (response.status) {
-              case 200:
-                break;
-              case 400:
-                toast("error", "Failed to select character", response.error);
-                break;
-            }
+            if (response.status === 400)
+              toast("error", "Failed to select character", response.error);
           },
         );
         removePrompt("character-selection");
@@ -244,19 +214,15 @@ export const StartStep = ({ room, me }: StartStepProps) => {
 
   const onKickPlayerPress = (player: RoomPlayer) => {
     socket.emit("kickFromRoom", { name: player.name }, (response) => {
-      switch (response.status) {
-        case 200:
-          break;
-      }
+      if (response.status === 400)
+        toast("error", "Failed to kick player", response.error);
     });
   };
 
   const onLeaveRoomPress = () => {
     socket.emit("leaveRoom", (response) => {
-      switch (response.status) {
-        case 200:
-          break;
-      }
+      if (response.status === 400)
+        toast("error", "Failed to leave room", response.error);
     });
   };
 
@@ -497,7 +463,7 @@ export const StartStep = ({ room, me }: StartStepProps) => {
               </>
             )}
           </div>
-          <div className="flex gap-[4vw] flex-wrap justify-center">
+          <div className="flex flex-wrap justify-center gap-[4vw]">
             <DeckPile
               type={CardType.CharacterCard}
               label="Characters"

@@ -29,13 +29,8 @@ export const Center = ({ state }: CenterProps) => {
 
   const purchaseTreasure = (index: number | "top") => {
     socket.emit("purchase", { index }, (response) => {
-      switch (response.status) {
-        case 200:
-          break;
-        case 400:
-          toast("error", "Failed to purchase", response.error);
-          break;
-      }
+      if (response.status === 400)
+        toast("error", "Failed to purchase", response.error);
     });
   };
 
@@ -78,19 +73,12 @@ export const Center = ({ state }: CenterProps) => {
         "attackMonster",
         { index: "top", replaceIndex },
         (response) => {
-          if (response.status === 200) {
-            toast(
-              "success",
-              "Selected monster to attack",
-              "You have selected a monster to attack",
-            );
-          } else {
+          if (response.status === 400)
             toast(
               "error",
               "Failed to select monster to attack",
               response.error,
             );
-          }
         },
       );
 
@@ -98,15 +86,8 @@ export const Center = ({ state }: CenterProps) => {
     }
 
     socket.emit("attackMonster", { index }, (response) => {
-      if (response.status === 200) {
-        toast(
-          "success",
-          "Selected monster to attack",
-          "You have selected a monster to attack",
-        );
-      } else {
+      if (response.status === 400)
         toast("error", "Failed to select monster to attack", response.error);
-      }
     });
   };
 

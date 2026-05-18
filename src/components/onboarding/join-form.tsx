@@ -18,26 +18,15 @@ export const JoinForm = () => {
   const joinGame = () => {
     storage.setItem("name", name);
     socket.emit("setName", name, (response) => {
-      switch (response.status) {
-        case 200:
-          break;
-        case 400:
-        default:
-          toast("error", "Failed to join game", response.error);
-          break;
-      }
+      if (response.status === 400)
+        toast("error", "Failed to join game", response.error);
     });
   };
 
   const onLeaveRoomPress = () => {
     socket.emit("leaveRoom", (response) => {
-      switch (response.status) {
-        case 200:
-          break;
-        case 400:
-          toast("error", "Failed to leave room", response.error);
-          break;
-      }
+      if (response.status === 400)
+        toast("error", "Failed to leave room", response.error);
     });
   };
 

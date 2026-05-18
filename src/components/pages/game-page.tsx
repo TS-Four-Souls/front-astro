@@ -87,7 +87,7 @@ export const GamePage = () => {
 
   if (room?.game) {
     return (
-      <GameProvider state={room.game}>
+      <GameProvider state={room.game} parameters={room.gameParameters}>
         <BoardSelectionProvider>
           <MainMenuProvider>
             <GameAnimationProvider>
@@ -117,7 +117,7 @@ export const OnboardingPages = ({ room }: OnboardingPagesProps) => {
   const [joiningRoom, setJoiningRoom] = useState<boolean>(false);
   const { toast } = useToastContext();
 
-  // Retrieve the secret from local storage
+  // Retrieve the room ID and code from local storage
   useEffect(() => {
     const code = new URLSearchParams(window.location.search).get("code");
     const roomId = storage.getItem("roomId");
@@ -134,13 +134,8 @@ export const OnboardingPages = ({ room }: OnboardingPagesProps) => {
           case 200:
             if (name) {
               socket.emit("setName", name, (response) => {
-                switch (response.status) {
-                  case 200:
-                    break;
-                  case 400:
-                    toast("error", "Failed to join game", response.error);
-                    break;
-                }
+                if (response.status === 400)
+                  toast("error", "Failed to join game", response.error);
               });
             }
             break;
@@ -157,15 +152,8 @@ export const OnboardingPages = ({ room }: OnboardingPagesProps) => {
 
     if (userId && roomId) {
       socket.emit("enterRoom", { roomId, userId }, (response) => {
-        switch (response.status) {
-          case 200:
-            console.log("[🔌 Socket] Joined as user", userId);
-            break;
-          case 400:
-          default:
-            console.log("[🔌 Socket] Failed to join as user", response.error);
-            break;
-        }
+        if (response.status === 400)
+          console.log("[🔌 Socket] Failed to join as user", response.error);
       });
     }
     setTryingToRejoin(false);
@@ -173,7 +161,8 @@ export const OnboardingPages = ({ room }: OnboardingPagesProps) => {
 
   const createRoom = () => {
     socket.emit("createRoom", (response) => {
-      console.log("[🔌 Socket] Create room response", response);
+      if (response.status === 400)
+        toast("error", "Failed to create room", response.error);
     });
   };
 

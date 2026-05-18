@@ -44,54 +44,36 @@ export const PlayerStats = ({
 
   const declareAttack = () => {
     socket.emit("declareAttack", (response) => {
-      if (response.status === 200) {
-        toast("success", "Declared attack", "You have declared an attack");
-      } else {
+      if (response.status === 400)
         toast("error", "Failed to declare attack", response.error);
-      }
     });
   };
 
   const rollDice = () => {
     socket.emit("attackRoll", (response) => {
-      if (response.status === 200) {
-        toast("success", "Rolled dice", "You have rolled a dice");
-      } else {
+      if (response.status === 400)
         toast("error", "Failed to roll dice", response.error);
-      }
     });
   };
 
   const declarePurchase = () => {
     socket.emit("declarePurchase", (response) => {
-      if (response.status === 200) {
-        toast("success", "Declared purchase", "You have declared a purchase");
-      } else {
+      if (response.status === 400)
         toast("error", "Failed to declare purchase", response.error);
-      }
     });
   };
 
   const cancelPurchase = () => {
     socket.emit("cancelPurchase", (response) => {
-      if (response.status === 200) {
-        toast("success", "Cancelled purchase", "You have cancelled a purchase");
-      } else {
+      if (response.status === 400)
         toast("error", "Failed to cancel purchase", response.error);
-      }
     });
   };
 
   const onEndTurnPress = () => {
     socket.emit("endTurn", (response) => {
-      switch (response.status) {
-        case 200:
-          break;
-        default:
-        case 400:
-          toast("error", "Failed to end turn", response.error);
-          break;
-      }
+      if (response.status === 400)
+        toast("error", "Failed to end turn", response.error);
     });
   };
 
@@ -121,18 +103,10 @@ export const PlayerStats = ({
           "giveCoins",
           { coins: selections[0].payload, target: name },
           (response) => {
-            switch (response.status) {
-              case 200:
-                toast(
-                  "success",
-                  "Coins given",
-                  `Gave ${selections[0].payload} coins to ${name}`,
-                );
-                removePrompt(promptId);
-                break;
-              default:
-                toast("error", "Failed to give coins", response.error);
-                break;
+            if (response.status === 200) {
+              removePrompt(promptId);
+            } else {
+              toast("error", "Failed to give coins", response.error);
             }
           },
         );

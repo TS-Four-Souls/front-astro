@@ -2,7 +2,7 @@ import { Board } from "../board/board";
 import { GameProvider } from "../board/contexts/game-context";
 import { MainMenuProvider } from "../board/contexts/main-menu-context";
 import { BoardSelectionProvider } from "../board/contexts/board-selection-context";
-import type { DetailedState } from "@/shared/api";
+import type { DetailedState, GameParametersJson } from "@/shared/api";
 import { useState } from "react";
 import { OnboardingLayout } from "../onboarding-layout";
 import { Button } from "../button";
@@ -37,7 +37,9 @@ export const ReplayPage = () => {
   }
 
   return (
-    <GameProvider state={gameState}>
+    <GameProvider
+      state={gameState}
+      parameters={{ allowCheatOptions: true } as unknown as GameParametersJson}>
       <BoardSelectionProvider>
         <MainMenuProvider>
           <Board />

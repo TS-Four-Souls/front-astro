@@ -35,7 +35,7 @@ export const ContactPopup = () => {
             resetForm();
             toast("success", "Report submitted", "Thank you for your report!");
             break;
-          default:
+          case 400:
             toast("error", "Failed to report bug", response.error);
             break;
         }
