@@ -121,13 +121,6 @@ export const MainMenu = () => {
     });
   };
 
-  const rollback = () => {
-    socket.emit("rollback", (response) => {
-      if (response.status === 400)
-        toast("error", "Failed to rollback", response.error);
-    });
-  };
-
   const debugGainTreasure = () => {
     socket.emit("debugListTreasure", (response) => {
       switch (response.status) {
@@ -329,15 +322,6 @@ export const MainMenu = () => {
           label="Close"
         />
       </div>
-      <Button
-        onClick={() => {
-          closeMainMenu();
-          rollback();
-        }}
-        hotkey="r"
-        hotkeyScope={[HotkeyScope.Popup]}
-        label="Rollback"
-      />
       {parameters.allowCheatOptions.value && (
         <>
           <Button
