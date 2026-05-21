@@ -35,6 +35,8 @@ const deckNameSchema = z.union([
 ]);
 export type DeckName = z.infer<typeof deckNameSchema>;
 
+const deckTypeEnum = z.enum(["monster", "treasure", "loot", "bsoul", "room"]);
+
 const deckConfigCardSchema = z.object({
   name: z.string(),
   slug: z.string(),
@@ -350,7 +352,7 @@ const numberGameParameterSchema = z.object({
 });
 const decksConfigSchema = z.object({
   useBonusSouls: booleanGameParameterSchema,
-  useRooms: booleanGameParameterSchema,
+  useRooms: booleanGameParameterSchema.optional(),
   nbPlayerCardRestriction: booleanGameParameterSchema.optional(),
 
   character: characterDeckSchema,

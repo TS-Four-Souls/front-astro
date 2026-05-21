@@ -407,7 +407,7 @@ export const StartStep = ({ room, me }: StartStepProps) => {
 
         <div className="flex flex-col place-items-center">
           <div className="mt-[5vh] mb-[10vh] grid grid-cols-[auto_auto] items-center gap-x-12 gap-y-6">
-            <p>Use bonus souls?</p>
+            <p>{gameParameters.decksConfig.useBonusSouls.text}</p>
             <BooleanInput
               value={gameParameters.decksConfig.useBonusSouls.value}
               onChange={(value) =>
@@ -423,25 +423,44 @@ export const StartStep = ({ room, me }: StartStepProps) => {
               }
               disabled={!me.isHost}
             />
-            <p>Use rooms?</p>
-            <BooleanInput
-              value={gameParameters.decksConfig.useRooms.value}
-              onChange={(value) =>
-                onChangeGameParameter({
-                  parameter: "decksConfig",
-                  value: {
-                    useRooms: {
-                      text: gameParameters.decksConfig.useRooms.text,
-                      value,
-                    },
-                  },
-                })
-              }
-              disabled={!me.isHost}
-            />
+            {gameParameters.decksConfig.useRooms && (
+              <>
+                <p>{gameParameters.decksConfig.useRooms.text}</p>
+                <BooleanInput
+                  value={gameParameters.decksConfig.useRooms.value}
+                  onChange={(value) =>
+                    onChangeGameParameter({
+                      parameter: "decksConfig",
+                      value: {
+                        useRooms: {
+                          text: gameParameters.decksConfig.useRooms!.text,
+                          value,
+                        },
+                      },
+                    })
+                  }
+                  disabled={!me.isHost}
+                />
+              </>
+            )}
             {gameParameters.decksConfig.nbPlayerCardRestriction && (
               <>
-                <p>Restrict player cards?</p>
+                <div className="flex items-center gap-2">
+                  <p>
+                    {gameParameters.decksConfig.nbPlayerCardRestriction.text}
+                  </p>
+                  <Button
+                    label="?"
+                    tooltip={{
+                      title: "Number player card restriction",
+                      content:
+                        "Some cards are only available when there are 3 players or more.\nTurn it off if you want to play with these cards despite the minimum player requirement not being met.",
+                      enabled: true,
+                    }}
+                    className="size-8 cursor-help rounded-full text-sm shadow-sm"
+                    theme="onSpace"
+                  />
+                </div>
                 <BooleanInput
                   value={
                     gameParameters.decksConfig.nbPlayerCardRestriction.value

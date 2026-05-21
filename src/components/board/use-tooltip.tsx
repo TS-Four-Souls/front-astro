@@ -44,7 +44,9 @@ export const useTooltip = (props: Tooltip | undefined) => {
       content: (
         <>
           {title && <div className="mb-1 text-lg font-bold">{title}</div>}
-          <div className="text-sm">{content}</div>
+          <div className="text-sm leading-relaxed whitespace-pre-line">
+            {content}
+          </div>
           <div
             className={cn(
               "pointer-events-none absolute inset-0 touch-none",
