@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useTooltip } from "./board/use-tooltip";
 import { useContactContext } from "./contexts/contact-context";
+import { useMainMenuContext } from "./board/contexts/main-menu-context";
 
 interface OnboardingLayoutProps {
   withHeader: boolean;
@@ -61,20 +62,24 @@ export const OnboardingLayout = ({
   );
 };
 
-const ReportBugButton = () => {
+export const ReportBugButton = () => {
   const tooltip = useTooltip({
     enabled: true,
     title: "Contact us",
     content: "A suggestion, a bug to report?",
   });
   const { openContactPopup } = useContactContext();
+  const { closeMenu: closeMainMenu } = useMainMenuContext();
   return (
     <img
       src="/contact.png"
       className="pixelated absolute right-10 bottom-10 w-16 cursor-pointer rounded-full bg-space-500 p-2 shadow-xl/50 inset-shadow-xs inset-shadow-taupe-100/10 transition-[filter] hover:brightness-120 active:brightness-150"
       onMouseEnter={tooltip.setTooltip}
       onMouseLeave={tooltip.closeTooltip}
-      onClick={openContactPopup}
+      onClick={() => {
+        openContactPopup();
+        closeMainMenu();
+      }}
     />
   );
 };

@@ -6,6 +6,7 @@ import { useMainMenuContext } from "./contexts/main-menu-context";
 import { HotkeyScope } from "@/utils/hotkey";
 import { useContactContext } from "../contexts/contact-context";
 import { useGameContext } from "./contexts/game-context";
+import { ReportBugButton } from "../onboarding-layout";
 
 export const MainMenu = () => {
   const { addPrompt, removePrompt } = usePromptContext();
@@ -364,13 +365,6 @@ export const MainMenu = () => {
       <Button
         onClick={() => {
           closeMainMenu();
-          openContactPopup();
-        }}
-        label="Contact us"
-      />
-      <Button
-        onClick={() => {
-          closeMainMenu();
           onSaveGamePress();
         }}
         label="Save game"
@@ -382,6 +376,7 @@ export const MainMenu = () => {
         }}
         label="Quit game"
       />
+      <ReportBugButton />
     </div>
   );
 };

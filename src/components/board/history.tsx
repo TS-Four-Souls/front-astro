@@ -53,8 +53,8 @@ export const History = () => {
         tooltip={{
           title: "Rollback",
           content: parameters.allowCheatOptions.value
-            ? "Rollback the last action."
-            : "Rollback the last action.\nYou can only rollback other players' actions.",
+            ? "Undo the last action"
+            : "Undo the last action.\nYou can only rollback other players' actions.",
           enabled: true,
         }}
         theme="onDark"
