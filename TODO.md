@@ -3,7 +3,6 @@
 - Rollback button on the board
 - Able to paste a link in room id form to enter the room
 - Only keep base game
-- Define logo/domain/name
 - Background color flash when disable button turn able
 
 ## V2
