@@ -68,7 +68,7 @@ export const Card = ({
     return (
       <div
         className={cn(
-          "rounded-md shadow-sm inset-shadow-sm shadow-taupe-700 inset-shadow-taupe-700",
+          "rounded-md shadow-sm inset-shadow-sm shadow-taupe-700 inset-shadow-taupe-700 bg-taupe-600/50",
           onClick && (disabled ? "cursor-not-allowed" : "cursor-pointer"),
           className,
         )}
