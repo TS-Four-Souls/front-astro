@@ -71,7 +71,7 @@ const ReportBugButton = () => {
   return (
     <img
       src="/contact.png"
-      className="pixelated absolute right-10 bottom-10 w-16 cursor-pointer rounded-full bg-space-400 p-2 shadow-xl/50"
+      className="pixelated absolute right-10 bottom-10 w-16 cursor-pointer rounded-full bg-space-500 p-2 shadow-xl/50 inset-shadow-xs inset-shadow-taupe-100/10 transition-[filter] hover:brightness-120 active:brightness-150"
       onMouseEnter={tooltip.setTooltip}
       onMouseLeave={tooltip.closeTooltip}
       onClick={openContactPopup}

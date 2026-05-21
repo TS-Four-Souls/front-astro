@@ -57,7 +57,7 @@ export const RoomJoinForm = ({ onCancel, onSuccess }: RoomJoinFormProps) => {
             }
           }}
           type="text"
-          placeholder="Enter room ID..."
+          placeholder="Enter room code..."
           autoComplete="off"
           minLength={6}
           maxLength={6}
