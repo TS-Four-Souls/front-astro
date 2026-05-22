@@ -43,40 +43,43 @@ export const RoomJoinForm = ({ onCancel, onSuccess }: RoomJoinFormProps) => {
   };
 
   return (
-    <div className="flex flex-col gap-8 rounded-lg border-2 border-space-400 bg-space p-8 text-center">
-      <h1 className="font-main text-3xl font-bold">Join a room</h1>
-      <div className="flex flex-col gap-4">
-        <input
-          value={roomId}
-          onChange={(e) => setRoomId(e.target.value.toUpperCase())}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              joinRoom();
-            } else if (e.key === "Escape") {
-              onCancel();
-            }
-          }}
-          type="text"
-          placeholder="Enter room code..."
-          autoComplete="off"
-          minLength={6}
-          maxLength={6}
-          autoFocus
-          className="rounded-md border-2 border-space-300 bg-space-500 px-4 py-2 text-white focus:ring-2 focus:ring-space-500 focus:outline-none"
-        />
-        <Button
-          label="Join"
-          onClick={joinRoom}
-          hotkey="enter"
-          theme="onSpace"
-        />
-        <Button
-          label="Leave"
-          onClick={onCancel}
-          hotkey="escape"
-          theme="onSpace"
-        />
+    <>
+      <img src="/logo.png" alt="Logo" className="mb-16 w-[50vh]" />
+      <div className="flex flex-col gap-8 rounded-lg border-2 border-space-400 bg-space p-8 text-center text-lg">
+        <h1 className="font-main text-3xl font-bold">Join a room</h1>
+        <div className="flex flex-col gap-4">
+          <input
+            value={roomId}
+            onChange={(e) => setRoomId(e.target.value.toUpperCase())}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                joinRoom();
+              } else if (e.key === "Escape") {
+                onCancel();
+              }
+            }}
+            type="text"
+            placeholder="Enter room code..."
+            autoComplete="off"
+            minLength={6}
+            maxLength={6}
+            autoFocus
+            className="rounded-md border-2 border-space-300 bg-space-500 px-4 py-2 text-white focus:ring-2 focus:ring-space-500 focus:outline-none"
+          />
+          <Button
+            label="Join"
+            onClick={joinRoom}
+            hotkey="enter"
+            theme="onSpace"
+          />
+          <Button
+            label="Leave"
+            onClick={onCancel}
+            hotkey="escape"
+            theme="onSpace"
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 };

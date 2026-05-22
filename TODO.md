@@ -1,8 +1,3 @@
-## Release
-
-- Legal page
-- Credits
-
 ## V2
 
 - Background color flash when disable button turn able

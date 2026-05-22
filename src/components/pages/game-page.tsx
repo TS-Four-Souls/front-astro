@@ -14,6 +14,7 @@ import { storage } from "@/utils/storage";
 import { BoardSelectionProvider } from "../board/contexts/board-selection-context";
 import { GameAnimationProvider } from "../board/contexts/game-animation";
 import { useToastContext } from "../board/contexts/toast-context";
+import { About } from "../onboarding/about";
 
 export const GamePage = () => {
   const [room, setRoom] = useState<Room | null>(null);
@@ -115,6 +116,7 @@ interface OnboardingPagesProps {
 export const OnboardingPages = ({ room }: OnboardingPagesProps) => {
   const [tryingToRejoin, setTryingToRejoin] = useState<boolean>(true);
   const [joiningRoom, setJoiningRoom] = useState<boolean>(false);
+  const [viewingAbout, setViewingAbout] = useState<boolean>(false);
   const { toast } = useToastContext();
 
   // Retrieve the room ID and code from local storage
@@ -168,27 +170,41 @@ export const OnboardingPages = ({ room }: OnboardingPagesProps) => {
 
   if (tryingToRejoin) {
     return <Loading />;
-  } else if (!room && !joiningRoom) {
-    return (
-      <RoomOptions
-        onCreateRoom={createRoom}
-        onJoinRoom={() => {
-          setTimeout(() => {
-            setJoiningRoom(true);
-          }, 30);
-        }}
-      />
-    );
-  } else if (!room && joiningRoom) {
+  }
+
+  if (room) {
+    if (room.me === undefined) {
+      return <JoinForm />;
+    }
+    return <StartStep room={room} me={room.me} />;
+  }
+
+  if (viewingAbout) {
+    return <About onClose={() => setViewingAbout(false)} />;
+  }
+
+  if (joiningRoom) {
     return (
       <RoomJoinForm
         onSuccess={() => setJoiningRoom(false)}
         onCancel={() => setJoiningRoom(false)}
       />
     );
-  } else if (room && room.me === undefined) {
-    return <JoinForm />;
-  } else if (room && room.me && !room.game) {
-    return <StartStep room={room} me={room.me} />;
   }
+
+  return (
+    <RoomOptions
+      onCreateRoom={createRoom}
+      onAbout={() => {
+        setTimeout(() => {
+          setViewingAbout(true);
+        }, 30);
+      }}
+      onJoinRoom={() => {
+        setTimeout(() => {
+          setJoiningRoom(true);
+        }, 30);
+      }}
+    />
+  );
 };
