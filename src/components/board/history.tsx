@@ -39,10 +39,10 @@ export const History = () => {
   };
 
   return (
-    <div className="flex h-86 w-14 flex-col gap-2 rounded-lg bg-taupe-800 p-2 inset-shadow-sm inset-shadow-taupe-950/30">
+    <div className="flex h-86 w-14 flex-col gap-2 rounded-lg bg-taupe-800 inset-shadow-sm inset-shadow-taupe-950/30">
       <div
         ref={scrollViewRef}
-        className="no-scrollbar relative flex grow flex-col items-center gap-1.5 overflow-y-auto transition-colors duration-300">
+        className="no-scrollbar relative flex grow flex-col items-center gap-1.5 overflow-y-auto p-2 transition-colors duration-300">
         {displayedHistory.map((element, index) => (
           <StackElementIcon key={index} element={element} />
         ))}
@@ -58,7 +58,7 @@ export const History = () => {
           enabled: true,
         }}
         theme="onDark"
-        className="h-10 shrink-0 p-0"
+        className="h-10 shrink-0 p-0 m-2"
       />
     </div>
   );

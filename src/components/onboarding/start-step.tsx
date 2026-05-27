@@ -586,7 +586,9 @@ const PlayerCard = ({
   isHost: boolean;
 }) => (
   <div className="flex shrink-0 flex-col items-center gap-1">
-    <div className="flex h-8 items-center gap-1 font-bold">
+    <div
+      className="flex h-8 items-center gap-1 font-bold"
+      title={isHost ? `${player?.name} is the host` : undefined}>
       {player && (
         <>
           {isHost ? (

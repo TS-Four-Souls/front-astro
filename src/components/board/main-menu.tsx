@@ -4,7 +4,6 @@ import { useToastContext } from "./contexts/toast-context";
 import { Button } from "../button";
 import { useMainMenuContext } from "./contexts/main-menu-context";
 import { HotkeyScope } from "@/utils/hotkey";
-import { useContactContext } from "../contexts/contact-context";
 import { useGameContext } from "./contexts/game-context";
 import { ReportBugButton } from "../onboarding-layout";
 
@@ -12,7 +11,6 @@ export const MainMenu = () => {
   const { addPrompt, removePrompt } = usePromptContext();
   const { toast } = useToastContext();
   const { closeMenu: closeMainMenu } = useMainMenuContext();
-  const { openContactPopup } = useContactContext();
   const { parameters } = useGameContext();
 
   const onResetPress = () => {
