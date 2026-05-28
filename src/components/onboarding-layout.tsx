@@ -48,6 +48,11 @@ export const OnboardingLayout = ({
             <div className="flex flex-1 flex-col place-content-center place-items-center gap-6 p-12">
               {children}
             </div>
+            <a
+              href="/privacy"
+              className="mx-16 mb-2 text-center font-alt-stats text-blue-200/60 hover:underline">
+              Privacy Policy
+            </a>
             <p className="mx-16 mb-4 text-center font-alt-stats text-blue-200/60">
               This is an unofficial, fan-made website and is not affiliated with
               <br /> or endorsed by Maestro Media and Edmund McMillen.

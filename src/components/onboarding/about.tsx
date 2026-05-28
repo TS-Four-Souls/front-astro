@@ -1,6 +1,7 @@
 import { HotkeyScope } from "@/utils/hotkey";
 import { Button } from "../button";
 import { PileIndicator } from "@/icons/pile-indicator";
+import { Gear } from "@/icons/gear";
 
 interface AboutProps {
   onClose: () => void;
@@ -33,10 +34,16 @@ export const About = ({ onClose }: AboutProps) => {
             browser.
           </p>
           <p>
-            We support playing with 2 to 4 players. The game logic is fully
-            implemented: card effects, stack, turn structure... So far, we’ve
-            only implemented the base game cards, but we plan to add additional
-            sets such as <u>Four Souls+</u> and <u>Requiem</u>.
+            The board game has been duly recreated, with the added comfort of
+            all the rules, turn structure, and effects triggering on their own:
+            no need to worry about remembering your cards' passive effects or
+            how many loot plays you currently have.
+          </p>
+          <p>
+            Right now, only the base game is available. But we plan on adding
+            other sets such as Four Souls+ and Requiem. Still, you can already
+            have fun creating custom decks by having multiple instances of the
+            same card or removing unwanted cards.
           </p>
         </div>
         <h2 className="mt-8 mb-2 text-center font-main text-3xl font-bold">
@@ -114,6 +121,20 @@ export const About = ({ onClose }: AboutProps) => {
             click on the element, destination lines will appear. Click on a
             destination line to move the element there.
           </li>
+          <li>
+            Did you find a bug, have a question or suggestion? You can message
+            us by clicking on the{" "}
+            <img src="/contact.png" className="pixelated inline-block size-8" />{" "}
+            icon in the bottom-right corner. While in game, you need to open the
+            main menu (by pressing{" "}
+            <img
+              src="/input-prompts/keyboard_escape_outline.svg"
+              title="Escape"
+              className="inline-block size-8"
+            />{" "}
+            or clicking on the <Gear className="inline-block size-5" /> icon )
+            to access it.
+          </li>
         </ul>
         <h2 className="mt-8 mb-4 text-center font-main text-3xl font-bold">
           Credits
@@ -130,12 +151,6 @@ export const About = ({ onClose }: AboutProps) => {
             image="/drmint.jpg"
             link="https://github.com/drmint"
           />
-          <CreditsItem
-            name="drag.on.ink"
-            role="Additional visual assets"
-            image="/dragonink.jpg"
-            link="https://www.instagram.com/drag.on.ink"
-          />
         </ul>
         <p className="mt-4 text-center">
           The original board game,{" "}
@@ -148,55 +163,6 @@ export const About = ({ onClose }: AboutProps) => {
           </a>{" "}
           was created by Edmund McMillen and Maestro Media.
         </p>
-        <h2 className="mt-8 mb-2 text-center font-main text-3xl font-bold">
-          Legal & Privacy
-        </h2>
-        <p className="leading-relaxed">
-          This is an unofficial, fan-made website and is not affiliated with or
-          endorsed by Maestro Media and Edmund McMillen.
-        </p>
-        <div className="flex flex-col gap-2 leading-relaxed">
-          <h3 className="mt-4 mb-2 font-main text-2xl font-bold">
-            Data collection
-          </h3>
-          <p>
-            Your <strong>username</strong> is stored during the duration of the
-            game to identify you among other players. It is deleted from our
-            servers after the game is over.
-          </p>
-          <p>
-            Rooms and all associated data are deleted from our servers after 3
-            hours of inactivity or if the host leaves the room.
-          </p>
-          <p>
-            A record of your <strong>games</strong> are anonymized and archived
-            indefinitely to help us diagnose bugs.
-          </p>
-          <p>
-            If you submit a bug report, your <strong>game logs</strong> will be
-            included in the report. Your email address is optional and will not
-            be used for any other purpose than to contact you if we need more
-            information or to follow up on your report.
-          </p>
-          <p>
-            We store some information in your browser's local storage to improve
-            your experience:
-          </p>
-          <ul className="list-inside list-disc">
-            <li>
-              Your <strong>username</strong> <code>(name)</code> so that you
-              don't have to re-enter it every time you join a room
-            </li>
-            <li>
-              Your <strong>current room</strong> <code>(roomId)</code> to
-              automatically rejoin a room if you refresh the page
-            </li>
-            <li>
-              Your <strong>user ID</strong> <code>(userId)</code> to
-              authenticate your actions during the game
-            </li>
-          </ul>
-        </div>
       </div>
     </>
   );

@@ -58,7 +58,7 @@ export const History = () => {
           enabled: true,
         }}
         theme="onDark"
-        className="h-10 shrink-0 p-0 m-2"
+        className="m-2 h-10 shrink-0 p-0"
       />
     </div>
   );
