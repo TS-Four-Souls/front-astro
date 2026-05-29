@@ -41,19 +41,19 @@ export const OnboardingLayout = ({
 
   return (
     <div className="flex h-screen gap-8">
-      <div ref={planetariumRef} className="planetarium flex flex-2 flex-col">
+      <div ref={planetariumRef} className="planetarium flex flex-2 flex-col overflow-auto">
         <ReportBugButton />
         {withHeader ? (
           <>
-            <div className="flex flex-1 flex-col place-content-center place-items-center gap-6 p-12">
+            <div className="flex flex-1 flex-col place-content-center place-items-center gap-6 mb-8  p-12 max-sm:p-6">
               {children}
             </div>
             <a
               href="/privacy"
-              className="mx-16 mb-2 text-center font-alt-stats text-blue-200/60 hover:underline">
+              className="mb-2 text-center font-alt-stats text-blue-200/60 hover:underline">
               Privacy Policy
             </a>
-            <p className="mx-16 mb-4 text-center font-alt-stats text-blue-200/60">
+            <p className="mb-4 text-center font-alt-stats text-blue-200/60 max-sm:mx-0">
               This is an unofficial, fan-made website and is not affiliated with
               <br /> or endorsed by Maestro Media and Edmund McMillen.
             </p>

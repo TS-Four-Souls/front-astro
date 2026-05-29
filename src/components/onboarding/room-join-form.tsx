@@ -45,7 +45,7 @@ export const RoomJoinForm = ({ onCancel, onSuccess }: RoomJoinFormProps) => {
   return (
     <>
       <img src="/logo.png" alt="Logo" className="mb-16 w-[50vh]" />
-      <div className="flex flex-col gap-8 rounded-lg border-2 border-space-400 bg-space p-8 text-center text-lg">
+      <div className="flex flex-col gap-8 rounded-lg border-2 border-space-400 bg-space p-8 text-center text-lg max-sm:w-full max-sm:px-4">
         <h1 className="font-main text-3xl font-bold">Join a room</h1>
         <div className="flex flex-col gap-4">
           <input
