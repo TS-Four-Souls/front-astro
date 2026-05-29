@@ -10,7 +10,7 @@ interface AboutProps {
 export const About = ({ onClose }: AboutProps) => {
   return (
     <>
-      <img src="/logo.png" alt="Logo" className="mb-8 w-[20vh]" />
+      <img src="/logo.png" alt="Logo" className="mb-8 w-80" />
       <Button
         label="Close"
         onClick={onClose}
@@ -18,7 +18,7 @@ export const About = ({ onClose }: AboutProps) => {
         hotkeyScope={[HotkeyScope.Main]}
         theme="onSpace"
       />
-      <div className="flex max-h-[60vh] max-w-3xl flex-col gap-8 overflow-auto rounded-lg border-2 border-space-400 bg-space p-8 pb-16 select-text">
+      <div className="flex max-h-[calc(100vh-600px)] min-h-120 max-w-3xl flex-col gap-8 overflow-auto rounded-lg border-2 border-space-400 bg-space p-8 pb-16 select-text">
         <h1 className="mb-4 text-center font-main text-4xl font-bold">About</h1>
         <div className="flex flex-col gap-4 text-lg leading-relaxed">
           <p>
