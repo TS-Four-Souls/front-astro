@@ -45,8 +45,8 @@ export const ContactPopup = () => {
 
   if (!isContactPopupOpen) return null;
   return (
-    <Popup onPressBackdrop={closeContactPopup}>
-      <div className="flex flex-row justify-between gap-8">
+    <Popup onPressBackdrop={closeContactPopup} className="overflow-auto">
+      <div className="flex flex-row justify-between gap-8 max-xs:flex-col">
         <h1 className="font-alt-stats text-2xl leading-tight font-bold uppercase">
           Contact us
         </h1>
@@ -57,7 +57,7 @@ export const ContactPopup = () => {
           label="Close"
         />
       </div>
-      <div className="flex flex-row gap-2">
+      <div className="flex flex-row gap-2 max-sm:flex-col">
         <Button
           className="h-16 flex-1"
           label="Contact"

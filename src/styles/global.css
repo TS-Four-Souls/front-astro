@@ -225,6 +225,8 @@
 
   --color-board: #6e574e;
 
+  --breakpoint-xs: 30rem;
+
   --inset-shadow-2xs: inset 0 0.05em rgb(0 0 0 / 0.05);
   --inset-shadow-xs: inset 0 0.05em 0.05em rgb(0 0 0 / 0.05);
   --inset-shadow-sm: inset 0 0.12em 0.24em rgb(0 0 0 / 0.05);
