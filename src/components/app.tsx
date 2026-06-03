@@ -6,9 +6,10 @@ import { HotkeyScope } from "@/utils/hotkey";
 import { PopoverProvider } from "./board/contexts/popover-context";
 import { ReplayPage } from "./pages/replay-page";
 import { ContactProvider } from "./contexts/contact-context";
+import { AdminPage } from "./pages/admin-page";
 
 interface AppProps {
-  page: "game" | "replay";
+  page: "game" | "replay" | "admin";
 }
 
 export const App = ({ page }: AppProps) => (
@@ -18,7 +19,7 @@ export const App = ({ page }: AppProps) => (
         <ToastProvider>
           <ContactProvider>
             <PromptProvider>
-              {page === "game" ? <GamePage /> : <ReplayPage />}
+              {page === "game" ? <GamePage /> : page === "replay" ? <ReplayPage /> : <AdminPage />}
             </PromptProvider>
           </ContactProvider>
         </ToastProvider>
