@@ -178,7 +178,7 @@ export const AdminPostLoginPage = ({ password }: { password: string }) => {
 
 export const AdminRoomCard = ({ room }: { room: AdminRoom }) => {
   return (
-    <div className="flex flex-col gap-2 rounded-md border-2 border-space-300 bg-space-500/30 p-4">
+    <div className="flex flex-col gap-2 rounded-md border-2 border-space-300 bg-space-500/30 p-4 select-text">
       <h2 className="text-lg font-bold">{room.id}</h2>
       <p className="text-sm">
         Created at: {new Date(room.createdAt).toLocaleString()}
@@ -208,7 +208,7 @@ export const AdminMessageCard = ({
   onDownloadLogs: () => void;
 }) => {
   return (
-    <div className="flex flex-col gap-2 rounded-md border-2 border-space-300 bg-space-500/30 p-4">
+    <div className="flex flex-col gap-2 rounded-md border-2 border-space-300 bg-space-500/30 p-4 select-text">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-bold">
           Message #{message.id} ({message.type})
