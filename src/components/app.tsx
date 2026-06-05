@@ -19,7 +19,13 @@ export const App = ({ page }: AppProps) => (
         <ToastProvider>
           <ContactProvider>
             <PromptProvider>
-              {page === "game" ? <GamePage /> : page === "replay" ? <ReplayPage /> : <AdminPage />}
+              {page === "game" ? (
+                <GamePage />
+              ) : page === "replay" ? (
+                <ReplayPage />
+              ) : (
+                <AdminPage />
+              )}
             </PromptProvider>
           </ContactProvider>
         </ToastProvider>

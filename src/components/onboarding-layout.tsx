@@ -41,11 +41,13 @@ export const OnboardingLayout = ({
 
   return (
     <div className="flex h-screen gap-8">
-      <div ref={planetariumRef} className="planetarium flex flex-2 flex-col overflow-auto">
+      <div
+        ref={planetariumRef}
+        className="planetarium flex flex-2 flex-col overflow-auto">
         <ReportBugButton />
         {withHeader ? (
           <>
-            <div className="flex flex-1 flex-col place-content-center place-items-center gap-6 mb-8  p-12 max-sm:p-6">
+            <div className="mb-8 flex flex-1 flex-col place-content-center place-items-center gap-6 p-12 max-sm:p-6">
               {children}
             </div>
             <a

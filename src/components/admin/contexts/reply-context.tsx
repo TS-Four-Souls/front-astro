@@ -2,7 +2,6 @@ import { createContext, useContext, useState } from "react";
 import { ReplyPopup } from "./reply-popup";
 import type { AdminMessage } from "@/shared/api";
 
-
 interface ReplyContextProps {
   openReplyPopup: (message: AdminMessage) => void;
   closeReplyPopup: () => void;
@@ -15,12 +14,10 @@ const ReplyContext = createContext<ReplyContextProps>({
   isReplyPopupOpen: false,
 });
 
-export const ReplyProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
-  const [isReplyPopupOpen, setIsReplyPopupOpen] = useState<{ message: AdminMessage } | false>(false);
+export const ReplyProvider = ({ children }: { children: React.ReactNode }) => {
+  const [isReplyPopupOpen, setIsReplyPopupOpen] = useState<
+    { message: AdminMessage } | false
+  >(false);
 
   const openReplyPopup = (message: AdminMessage) => {
     setIsReplyPopupOpen({ message });

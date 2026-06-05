@@ -269,7 +269,7 @@ export const AdminMessageCard = ({
         <span className="text-sm text-space-100">From:</span>{" "}
         <span className="font-bold">{message.email ?? "Anonymous"}</span>
       </p>
-      <p className="border-t border-space-500 pt-6 font-mono text-sm whitespace-pre-wrap">
+      <p className="border-t border-space-500 pt-6 font-mono text-sm leading-snug whitespace-pre-wrap">
         {message.description}
       </p>
 

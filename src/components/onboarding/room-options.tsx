@@ -13,11 +13,7 @@ export const RoomOptions = ({
 }: RoomOptionsProps) => {
   return (
     <>
-      <img
-        src="/logo.png"
-        alt="Logo"
-        className="mb-16 w-140 max-sm:w-full"
-      />
+      <img src="/logo.png" alt="Logo" className="mb-16 w-140 max-sm:w-full" />
       <Button
         label="Create a room"
         onClick={onCreateRoom}

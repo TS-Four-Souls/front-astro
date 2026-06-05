@@ -1,4 +1,5 @@
 ## V2
+
 - If pending selection gone, remove ui prompt
 - Background color flash when disable button turn able
 - Able to paste a link in room id form to enter the room

@@ -405,7 +405,7 @@ export const StartStep = ({ room, me }: StartStepProps) => {
           </div>
         </div>
 
-        <div className="flex h-full w-full flex-col place-items-center overflow-auto py-[10vh] pt-[calc(50vh-400px)] gap-24 max-lg:pt-4">
+        <div className="flex h-full w-full flex-col place-items-center gap-24 overflow-auto py-[10vh] pt-[calc(50vh-400px)] max-lg:pt-4">
           <div className="grid grid-cols-[auto_auto] items-center gap-x-12 gap-y-6">
             <p>{gameParameters.decksConfig.useBonusSouls.text}</p>
             <BooleanInput

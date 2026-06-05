@@ -56,12 +56,12 @@ export const ReplyPopup = () => {
         />
       </div>
       <div className="flex flex-col gap-2">
-        <div className="flex flex-col gap-2 mb-2 bg-taupe-600 p-4 rounded-md select-text">
+        <div className="mb-2 flex flex-col gap-2 rounded-md bg-taupe-600 p-4 select-text">
           <p>
             From:{" "}
             <span className="font-bold">{isReplyPopupOpen.message.email}</span>
           </p>
-          <p className="font-mono text-sm whitespace-pre-wrap">
+          <p className="max-w-170 font-mono text-sm leading-relaxed whitespace-pre-wrap">
             {isReplyPopupOpen.message.description}
           </p>
         </div>
