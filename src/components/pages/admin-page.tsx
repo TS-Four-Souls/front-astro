@@ -1,177 +1,192 @@
-import { useCallback, useEffect, useState } from "react";
-import { BASE_URL } from "astro:env/client";
+import { useEffect, useMemo, useState } from "react";
 import type { AdminMessage, AdminResponse, AdminRoom } from "@/shared/api";
 import { OnboardingLayout } from "../onboarding-layout";
 import { Button } from "../button";
 import { useToastContext } from "../board/contexts/toast-context";
+import { socket } from "@/utils/socket";
+import { storage } from "@/utils/storage";
+import { LoginForm } from "../admin/login-form";
+import { Checkbox } from "@/icons/checkbox";
+import { Download } from "@/icons/download";
+import { Reply } from "@/icons/reply";
+import {
+  ReplyProvider,
+  useReplyContext,
+} from "../admin/contexts/reply-context";
 
 export const AdminPage = () => {
-  const [password, setPassword] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const { toast } = useToastContext();
+  const [adminResponse, setAdminResponse] = useState<AdminResponse | null>(
+    null,
+  );
 
-  const handleLogin = async () => {
-    try {
-      const response = await fetch(`${BASE_URL}/admin`, {
-        headers: {
-          "X-API-Key": password,
-        },
-      });
-      if (!response.ok) {
-        setIsLoggedIn(false);
-        toast("error", "Invalid password", "The password is incorrect");
+  useEffect(() => {
+    function onConnect() {
+      const adminPassword = storage.getItem("adminPassword");
+
+      if (!adminPassword) {
         return;
       }
-      setIsLoggedIn(true);
-    } catch (error) {
-      toast("error", "Something went wrong", "Something went wrong");
-      setIsLoggedIn(false);
-      return;
+
+      socket.emit("adminLogin", { password: adminPassword }, (response) => {
+        if (response.status === 400)
+          console.log("[🔌 Socket] Failed to login as admin", response.error);
+      });
     }
-  };
+
+    function onConnectError(error: any) {
+      console.error("[🔌 Socket] Failed to connect to socket", error);
+    }
+
+    function onDisconnect() {
+      console.log("[🔌 Socket] Disconnected from socket");
+    }
+
+    function onAdminChanged(adminResponse: AdminResponse | null) {
+      console.log("[🔌 Socket] Admin response changed", adminResponse);
+      setAdminResponse(adminResponse);
+    }
+
+    function onAnyOutgoing(event: string, ...args: any[]) {
+      console.log("[🔌 Socket] Outgoing event", event, args);
+    }
+
+    function onAnyIncoming(event: string, ...args: any[]) {
+      console.log("[🔌 Socket] Incoming event", event, args);
+    }
+
+    socket.on("connect", onConnect);
+    socket.on("connect_error", onConnectError);
+    socket.on("disconnect", onDisconnect);
+    socket.on("on:admin:changed", onAdminChanged);
+    socket.onAnyOutgoing(onAnyOutgoing);
+    socket.onAny(onAnyIncoming);
+
+    return () => {
+      socket.off("connect", onConnect);
+      socket.off("connect_error", onConnectError);
+      socket.off("disconnect", onDisconnect);
+      socket.off("on:admin:changed", onAdminChanged);
+      socket.offAnyOutgoing(onAnyOutgoing);
+      socket.offAny(onAnyIncoming);
+    };
+  }, []);
 
   return (
     <>
-      {isLoggedIn ? (
+      {adminResponse ? (
         <OnboardingLayout withHeader={false}>
-          <AdminPostLoginPage password={password} />
+          <ReplyProvider>
+            <AdminPostLoginPage adminResponse={adminResponse} />
+          </ReplyProvider>
         </OnboardingLayout>
       ) : (
-        <OnboardingLayout withHeader>
-          <img src="/logo.png" alt="Logo" className="mb-16 w-140" />
-          <div className="flex flex-col gap-8 rounded-lg border-2 border-space-400 bg-space p-8 text-center text-lg max-sm:w-full max-sm:px-4">
-            <h1 className="font-main text-3xl font-bold">Admin Login</h1>
-            <div className="flex flex-col gap-4">
-              <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                className="rounded-md border-2 border-space-300 bg-space-500 px-4 py-2 text-white focus:ring-2 focus:ring-space-500 focus:outline-none"
-                onChange={(e) => setPassword(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    handleLogin();
-                  }
-                }}
-              />
-              <Button
-                onClick={handleLogin}
-                label="Login"
-                hotkey="enter"
-                theme="onSpace"
-              />
-            </div>
-          </div>
-        </OnboardingLayout>
+        <LoginForm />
       )}
     </>
   );
 };
 
-export const AdminPostLoginPage = ({ password }: { password: string }) => {
-  const [data, setData] = useState<AdminResponse | null>(null);
+export const AdminPostLoginPage = ({
+  adminResponse: data,
+}: {
+  adminResponse: AdminResponse;
+}) => {
+  const { toast } = useToastContext();
+  const { openReplyPopup } = useReplyContext();
+  const { rooms } = data;
   const [displayingResolved, setDisplayingResolved] = useState(false);
 
-  const updateData = useCallback(async () => {
-    const response = await fetch(`${BASE_URL}/admin`, {
-      headers: {
-        "X-API-Key": password,
+  function handleStatusChange(message: AdminMessage): void {
+    socket.emit(
+      "adminChangeMessageStatus",
+      { id: message.id, resolved: !message.resolved },
+      (response) => {
+        if (response.status === 400)
+          toast("error", "Failed to change message status", response.error);
       },
+    );
+  }
+
+  function handleDownloadLogs(message: AdminMessage): void {
+    socket.emit("adminGetLogs", { id: message.id }, (response) => {
+      switch (response.status) {
+        case 200:
+          const logs = response.logs;
+          const blob = new Blob([JSON.stringify(logs, null, 2)], {
+            type: "application/json",
+          });
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.href = url;
+          link.download = message.logs ?? `logs-${message.id}.json`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(url);
+          break;
+        case 400:
+        case 500:
+          toast("error", "Failed to get logs", response.error);
+          break;
+      }
     });
-    const data: AdminResponse = await response.json();
-    setData(data);
-  }, [password]);
+  }
 
-  useEffect(() => {
-    updateData();
-  }, [updateData]);
+  function handleReply(message: AdminMessage): void {
+    openReplyPopup(message);
+  }
 
-  const messages = displayingResolved
-    ? (data?.messages ?? [])
-    : (data?.messages.filter((message) => !message.resolved) ?? []);
-
-  const handleResolve = async (id: string) => {
-    const response = await fetch(`${BASE_URL}/admin/message/${id}/resolve`, {
-      headers: {
-        "X-API-Key": password,
-      },
+  const messages = useMemo(() => {
+    return data.messages.filter((message) => {
+      if (displayingResolved) {
+        return true;
+      }
+      return !message.resolved;
     });
-    if (response.ok) {
-      setData(await response.json());
-    }
-  };
-
-  const handleDownloadLogs = async (logs: string | null) => {
-    if (!logs) return;
-    const response = await fetch(`${BASE_URL}/admin/logs/${logs}`, {
-      headers: {
-        "X-API-Key": password,
-      },
-    });
-    const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = logs;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    window.URL.revokeObjectURL(url);
-  };
+  }, [data.messages, displayingResolved]);
 
   return (
     <div className="p-4">
-      <div className="flex items-center gap-4">
-        <h1 className="font-main text-3xl font-bold">Admin Page</h1>
-        <Button onClick={updateData} label="Refresh data" theme="onSpace" />
-      </div>
-      {data ? (
-        <>
-          <div className="mt-12 min-h-64 rounded-lg border-2 border-space-400 bg-space p-4">
-            <h2 className="mb-4 font-main text-2xl font-bold">Rooms</h2>
-            <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-2">
-              {data.rooms.map((room) => (
-                <AdminRoomCard key={room.id} room={room} />
-              ))}
-              {data.rooms.length === 0 && (
-                <p className="text-sm text-gray-500">No rooms</p>
-              )}
-            </div>
-          </div>
-          <div className="mt-12 min-h-64 rounded-lg border-2 border-space-400 bg-space p-4">
-            <div className="flex items-center justify-between">
-              <h2 className="mb-4 font-main text-2xl font-bold">Messages</h2>
-              <Button
-                onClick={() => setDisplayingResolved(!displayingResolved)}
-                label={
-                  displayingResolved
-                    ? "Hide resolved messages"
-                    : "Show resolved messages"
-                }
-                theme="onSpace"
-              />
-            </div>
-            <div className="grid grid-cols-[repeat(auto-fill,minmax(500px,1fr))] gap-2">
-              {messages.map((message) => (
-                <AdminMessageCard
-                  key={message.id}
-                  message={message}
-                  onResolve={() => handleResolve(message.id)}
-                  onDownloadLogs={() => handleDownloadLogs(message.logs)}
-                />
-              ))}
-              {messages.length === 0 && (
-                <p className="text-sm text-gray-500">No messages</p>
-              )}
-            </div>
-          </div>
-        </>
-      ) : (
-        <div className="flex flex-col items-center justify-center gap-2">
-          <div className="h-16 w-16 animate-spin rounded-full border-4 border-white border-t-transparent" />
-          <p className="text-sm text-gray-500">Loading...</p>
+      <h1 className="font-main text-3xl font-bold">Admin Page</h1>
+      <div className="mt-12 min-h-64 rounded-lg border-2 border-space-400 bg-space p-4">
+        <h2 className="mb-4 font-main text-2xl font-bold">Rooms</h2>
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-2">
+          {rooms.map((room) => (
+            <AdminRoomCard key={room.id} room={room} />
+          ))}
+          {rooms.length === 0 && (
+            <p className="text-sm text-gray-500">No rooms</p>
+          )}
         </div>
-      )}
+      </div>
+      <div className="mt-12 min-h-64 rounded-lg border-2 border-space-400 bg-space p-4">
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="font-main text-2xl font-bold">Messages</h2>
+          <Button
+            onClick={() => setDisplayingResolved(!displayingResolved)}
+            label={
+              displayingResolved
+                ? "Hide resolved messages"
+                : "Show resolved messages"
+            }
+            theme="onSpace"
+          />
+        </div>
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(500px,1fr))] gap-2">
+          {messages.map((message) => (
+            <AdminMessageCard
+              key={message.id}
+              message={message}
+              onStatusToggle={() => handleStatusChange(message)}
+              onDownloadLogs={() => handleDownloadLogs(message)}
+              onReply={() => handleReply(message)}
+            />
+          ))}
+          {messages.length === 0 && (
+            <p className="text-sm text-gray-500">No messages</p>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
@@ -200,50 +215,72 @@ export const AdminRoomCard = ({ room }: { room: AdminRoom }) => {
 
 export const AdminMessageCard = ({
   message,
-  onResolve,
+  onStatusToggle,
   onDownloadLogs,
+  onReply,
 }: {
   message: AdminMessage;
-  onResolve: () => void;
+  onStatusToggle: () => void;
   onDownloadLogs: () => void;
+  onReply: () => void;
 }) => {
   return (
     <div className="flex flex-col gap-2 rounded-md border-2 border-space-300 bg-space-500/30 p-4 select-text">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-bold">
-          Message #{message.id} ({message.type})
-        </h2>
-        {message.resolved ? (
-          <span className="text-sm text-green-500">Resolved</span>
-        ) : (
-          <button
-            className="cursor-pointer rounded-md bg-green-500/30 px-2 py-1 text-white hover:bg-green-600"
-            onClick={onResolve}>
-            Mark as resolved
-          </button>
-        )}
+        <div className="flex flex-col gap-1">
+          <h2 className="text-lg font-bold">
+            Message #{message.id} ({message.type})
+          </h2>
+          <p className="text-sm text-space-100">
+            {new Date(message.createdAt).toLocaleString()}
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          {message.email && !message.reply && (
+            <div
+              onClick={onReply}
+              title="Reply"
+              className="cursor-pointer transition-transform duration-200 hover:scale-110">
+              <Reply />
+            </div>
+          )}
+          {message.logs && (
+            <div
+              onClick={onDownloadLogs}
+              title="Download Logs"
+              className="cursor-pointer transition-transform duration-200 hover:scale-110">
+              <Download />
+            </div>
+          )}
+          <div
+            onClick={onStatusToggle}
+            title={
+              message.resolved ? "Mark as unresolved" : "Mark as resolved"
+            }>
+            <Checkbox
+              checked={message.resolved}
+              className="h-8 w-8 cursor-pointer transition-transform duration-200 hover:scale-110"
+            />
+          </div>
+        </div>
       </div>
-      <p className="text-sm">
-        Created at: {new Date(message.createdAt).toLocaleString()}
+
+      <p>
+        <span className="text-sm text-space-100">From:</span>{" "}
+        <span className="font-bold">{message.email ?? "Anonymous"}</span>
       </p>
-      <p className="text-sm">
-        Logs:{" "}
-        {message.logs ? (
-          <button
-            className="cursor-pointer text-blue-500 hover:text-blue-600"
-            onClick={onDownloadLogs}>
-            Download
-          </button>
-        ) : (
-          "No logs"
-        )}
-      </p>
-      {message.email && <p className="text-sm">Email: {message.email}</p>}
-      <p className="text-sm">
-        Description:
-        <br />
+      <p className="border-t border-space-500 pt-6 font-mono text-sm whitespace-pre-wrap">
         {message.description}
       </p>
+
+      {message.reply && (
+        <div className="mt-4 rounded-md bg-space-500/30 p-4">
+          <p className="text-sm text-space-100">Reply:</p>
+          <p className="mt-4 font-mono text-sm whitespace-pre-wrap">
+            {message.reply}
+          </p>
+        </div>
+      )}
     </div>
   );
 };
