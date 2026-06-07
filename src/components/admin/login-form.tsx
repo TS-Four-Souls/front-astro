@@ -48,6 +48,14 @@ export const LoginForm = () => {
             hotkey="enter"
             theme="onSpace"
           />
+          <Button
+            label="Return"
+            onClick={() => {
+              window.location.href = "/";
+            }}
+            hotkey="escape"
+            theme="onSpace"
+          />
         </div>
       </div>
     </OnboardingLayout>

@@ -147,7 +147,17 @@ export const AdminPostLoginPage = ({
 
   return (
     <div className="p-4">
-      <h1 className="font-main text-3xl font-bold">Admin Page</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="font-main text-3xl font-bold">Admin Page</h1>
+        <Button
+          label="Logout"
+          onClick={() => {
+            storage.removeItem("adminPassword");
+            window.location.reload();
+          }}
+          theme="onSpace"
+        />
+      </div>
       <div className="mt-12 min-h-64 rounded-lg border-2 border-space-400 bg-space p-4">
         <h2 className="mb-4 font-main text-2xl font-bold">Rooms</h2>
         <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-2">
