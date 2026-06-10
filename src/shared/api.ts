@@ -874,6 +874,7 @@ export namespace Responses {
   export type AttackMonster = BasicResponse;
   export type AttackRoll = BasicResponse;
   export type DebugLoot = BasicResponse;
+  export type DebugLootTop = BasicResponse;
   export type DebugListLoot = DebugListLootResponse;
   export type DebugListMonsterDeck = DebugListMonsterDeckResponse;
   export type DebugListCardsICanRemove = DebugListCardsICanRemoveResponse;
@@ -971,6 +972,14 @@ export interface ClientToServerEvents {
 
   attackRoll: (callback: (response: Responses.AttackRoll) => void) => void;
 
+  debugLootTop: (
+    callback: (response: Responses.DebugLootTop) => void,
+  ) => void;
+
+  debugGainTreasureTop: (
+    callback: (response: Responses.DebugLootTop) => void,
+  ) => void;
+  
   debugLoot: (
     request: Requests.DebugLoot,
     callback: (response: Responses.DebugLoot) => void,

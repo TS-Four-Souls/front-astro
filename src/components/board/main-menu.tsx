@@ -79,6 +79,24 @@ export const MainMenu = () => {
     });
   };
 
+  const debugGainLootTop = () => {
+    socket.emit("debugLootTop", (response) => {
+      if (response.status === 200) {
+      } else {
+        toast("error", "Failed to loot", response.error);
+      }
+    });
+  };
+
+    const debugGainTreasureTop = () => {
+    socket.emit("debugGainTreasureTop", (response) => {
+      if (response.status === 200) {
+      } else {
+        toast("error", "Failed to gain a treasure", response.error);
+      }
+    });
+  };
+
   const debugGainLoot = () => {
     socket.emit("debugListLoot", (response) => {
       switch (response.status) {
@@ -340,19 +358,33 @@ export const MainMenu = () => {
       />
       {parameters.allowCheatOptions.value && (
         <>
+        <Button
+            onClick={() => {
+              // closeMainMenu();
+              debugGainLootTop();
+            }}
+            label="[CHEAT] Loot 1"
+          />
+          <Button
+            onClick={() => {
+              // closeMainMenu();
+              debugGainTreasureTop();
+            }}
+            label="[CHEAT] Gain 1 treasure"
+          />
           <Button
             onClick={() => {
               closeMainMenu();
               debugGainLoot();
             }}
-            label="[CHEAT] Loot"
+            label="[CHEAT] Gain any loot"
           />
           <Button
             onClick={() => {
               closeMainMenu();
               debugGainTreasure();
             }}
-            label="[CHEAT] Gain treasure"
+            label="[CHEAT] Gain any treasure"
           />
           <Button
             onClick={() => {
