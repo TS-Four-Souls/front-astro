@@ -14,14 +14,57 @@ import { storage } from "@/utils/storage";
 import { BoardSelectionProvider } from "../board/contexts/board-selection-context";
 import { GameAnimationProvider } from "../board/contexts/game-animation";
 import { useToastContext } from "../board/contexts/toast-context";
+import { About } from "../onboarding/about";
 
 export const GamePage = () => {
   const [room, setRoom] = useState<Room | null>(null);
   const { toast } = useToastContext();
+  const [tryingToRejoin, setTryingToRejoin] = useState<boolean>(true);
 
   useEffect(() => {
     function onConnect() {
       console.log("[🔌 Socket] Connected to socket");
+
+      const code = new URLSearchParams(window.location.search).get("code");
+      const roomId = storage.getItem("roomId");
+      const name = storage.getItem("name");
+
+      // Remove the code from the URL
+      if (code) {
+        const url = new URL(window.location.href);
+        url.searchParams.delete("code");
+        window.history.replaceState({}, "", url.toString());
+
+        if (code !== roomId) {
+          socket.emit("enterRoom", { roomId: code }, (response) => {
+            switch (response.status) {
+              case 200:
+                if (name) {
+                  socket.emit("setName", name, (response) => {
+                    if (response.status === 400)
+                      toast("error", "Failed to join game", response.error);
+                  });
+                }
+                break;
+              case 400:
+                toast("error", "Incorrect room link", response.error);
+                break;
+            }
+          });
+          setTryingToRejoin(false);
+          return;
+        }
+      }
+
+      const userId = storage.getItem("userId");
+
+      if (userId && roomId) {
+        socket.emit("enterRoom", { roomId, userId }, (response) => {
+          if (response.status === 400)
+            console.log("[🔌 Socket] Failed to join as user", response.error);
+        });
+      }
+      setTryingToRejoin(false);
     }
 
     function onConnectError(error: any) {
@@ -102,7 +145,7 @@ export const GamePage = () => {
   return (
     <OnboardingLayout withHeader={room?.me === undefined}>
       <BoardSelectionProvider>
-        <OnboardingPages room={room} />
+        <OnboardingPages room={room} tryingToRejoin={tryingToRejoin} />
       </BoardSelectionProvider>
     </OnboardingLayout>
   );
@@ -110,54 +153,16 @@ export const GamePage = () => {
 
 interface OnboardingPagesProps {
   room: Room | null;
+  tryingToRejoin: boolean;
 }
 
-export const OnboardingPages = ({ room }: OnboardingPagesProps) => {
-  const [tryingToRejoin, setTryingToRejoin] = useState<boolean>(true);
+export const OnboardingPages = ({
+  room,
+  tryingToRejoin,
+}: OnboardingPagesProps) => {
   const [joiningRoom, setJoiningRoom] = useState<boolean>(false);
+  const [viewingAbout, setViewingAbout] = useState<boolean>(false);
   const { toast } = useToastContext();
-
-  // Retrieve the room ID and code from local storage
-  useEffect(() => {
-    const code = new URLSearchParams(window.location.search).get("code");
-    const roomId = storage.getItem("roomId");
-    const name = storage.getItem("name");
-
-    // Remove the code from the URL
-    const url = new URL(window.location.href);
-    url.searchParams.delete("code");
-    window.history.replaceState({}, "", url.toString());
-
-    if (code && code !== roomId) {
-      socket.emit("enterRoom", { roomId: code }, (response) => {
-        switch (response.status) {
-          case 200:
-            if (name) {
-              socket.emit("setName", name, (response) => {
-                if (response.status === 400)
-                  toast("error", "Failed to join game", response.error);
-              });
-            }
-            break;
-          case 400:
-            toast("error", "Incorrect room link", response.error);
-            break;
-        }
-      });
-      setTryingToRejoin(false);
-      return;
-    }
-
-    const userId = storage.getItem("userId");
-
-    if (userId && roomId) {
-      socket.emit("enterRoom", { roomId, userId }, (response) => {
-        if (response.status === 400)
-          console.log("[🔌 Socket] Failed to join as user", response.error);
-      });
-    }
-    setTryingToRejoin(false);
-  }, []);
 
   const createRoom = () => {
     socket.emit("createRoom", (response) => {
@@ -168,27 +173,41 @@ export const OnboardingPages = ({ room }: OnboardingPagesProps) => {
 
   if (tryingToRejoin) {
     return <Loading />;
-  } else if (!room && !joiningRoom) {
-    return (
-      <RoomOptions
-        onCreateRoom={createRoom}
-        onJoinRoom={() => {
-          setTimeout(() => {
-            setJoiningRoom(true);
-          }, 30);
-        }}
-      />
-    );
-  } else if (!room && joiningRoom) {
+  }
+
+  if (room) {
+    if (room.me === undefined) {
+      return <JoinForm />;
+    }
+    return <StartStep room={room} me={room.me} />;
+  }
+
+  if (viewingAbout) {
+    return <About onClose={() => setViewingAbout(false)} />;
+  }
+
+  if (joiningRoom) {
     return (
       <RoomJoinForm
         onSuccess={() => setJoiningRoom(false)}
         onCancel={() => setJoiningRoom(false)}
       />
     );
-  } else if (room && room.me === undefined) {
-    return <JoinForm />;
-  } else if (room && room.me && !room.game) {
-    return <StartStep room={room} me={room.me} />;
   }
+
+  return (
+    <RoomOptions
+      onCreateRoom={createRoom}
+      onAbout={() => {
+        setTimeout(() => {
+          setViewingAbout(true);
+        }, 30);
+      }}
+      onJoinRoom={() => {
+        setTimeout(() => {
+          setJoiningRoom(true);
+        }, 30);
+      }}
+    />
+  );
 };

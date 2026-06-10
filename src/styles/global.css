@@ -220,8 +220,12 @@
   --color-space-400: #435093;
   --color-space-500: #3d426b;
   --color-space-300: #5f68a2;
+  --color-space-200: #7fa1d0;
+  --color-space-100: #9fa7d4;
 
   --color-board: #6e574e;
+
+  --breakpoint-xs: 30rem;
 
   --inset-shadow-2xs: inset 0 0.05em rgb(0 0 0 / 0.05);
   --inset-shadow-xs: inset 0 0.05em 0.05em rgb(0 0 0 / 0.05);

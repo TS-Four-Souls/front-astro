@@ -231,8 +231,8 @@ export const StartStep = ({ room, me }: StartStepProps) => {
   );
 
   return (
-    <div className="grid h-full grid-rows-[270px_calc(100vh-270px-3em)] gap-4 p-4">
-      <div className="flex place-items-center justify-between gap-18 rounded-lg border-2 border-space-400 bg-space p-6">
+    <div className="grid h-full grid-rows-[270px_calc(100vh-270px-3em)] gap-4 p-4 max-lg:grid-rows-none">
+      <div className="flex place-items-center justify-between gap-18 rounded-lg border-2 border-space-400 bg-space p-6 max-lg:flex-col max-lg:py-16">
         <div className="flex flex-col gap-2">
           <p className="font-main text-lg">Room</p>
           <p
@@ -256,7 +256,7 @@ export const StartStep = ({ room, me }: StartStepProps) => {
           />
         </div>
 
-        <div className="mb-3 flex gap-6">
+        <div className="mb-3 flex gap-6 max-sm:flex-col">
           <PlayerCard
             player={me}
             actions={{
@@ -327,8 +327,8 @@ export const StartStep = ({ room, me }: StartStepProps) => {
           )}
         </div>
       </div>
-      <div className="grid grid-cols-[auto_1fr] place-items-center gap-18 rounded-lg border-2 border-space-400 bg-space p-6">
-        <div className="h-full overflow-auto pr-6">
+      <div className="grid grid-cols-[auto_1fr] place-items-center gap-18 rounded-lg border-2 border-space-400 bg-space p-6 max-lg:grid-cols-1 max-lg:pt-16">
+        <div className="h-full overflow-auto pr-6 max-sm:pr-0">
           <h2 className="font-main text-2xl font-bold">Game parameters</h2>
           <div className="mt-4 mb-16 flex gap-4">
             <Button
@@ -405,9 +405,9 @@ export const StartStep = ({ room, me }: StartStepProps) => {
           </div>
         </div>
 
-        <div className="flex flex-col place-items-center">
-          <div className="mt-[5vh] mb-[10vh] grid grid-cols-[auto_auto] items-center gap-x-12 gap-y-6">
-            <p>Use bonus souls?</p>
+        <div className="flex h-full w-full flex-col place-items-center gap-24 overflow-auto py-[10vh] pt-[calc(50vh-400px)] max-lg:pt-4">
+          <div className="grid grid-cols-[auto_auto] items-center gap-x-12 gap-y-6">
+            <p>{gameParameters.decksConfig.useBonusSouls.text}</p>
             <BooleanInput
               value={gameParameters.decksConfig.useBonusSouls.value}
               onChange={(value) =>
@@ -423,25 +423,44 @@ export const StartStep = ({ room, me }: StartStepProps) => {
               }
               disabled={!me.isHost}
             />
-            <p>Use rooms?</p>
-            <BooleanInput
-              value={gameParameters.decksConfig.useRooms.value}
-              onChange={(value) =>
-                onChangeGameParameter({
-                  parameter: "decksConfig",
-                  value: {
-                    useRooms: {
-                      text: gameParameters.decksConfig.useRooms.text,
-                      value,
-                    },
-                  },
-                })
-              }
-              disabled={!me.isHost}
-            />
+            {gameParameters.decksConfig.useRooms && (
+              <>
+                <p>{gameParameters.decksConfig.useRooms.text}</p>
+                <BooleanInput
+                  value={gameParameters.decksConfig.useRooms.value}
+                  onChange={(value) =>
+                    onChangeGameParameter({
+                      parameter: "decksConfig",
+                      value: {
+                        useRooms: {
+                          text: gameParameters.decksConfig.useRooms!.text,
+                          value,
+                        },
+                      },
+                    })
+                  }
+                  disabled={!me.isHost}
+                />
+              </>
+            )}
             {gameParameters.decksConfig.nbPlayerCardRestriction && (
               <>
-                <p>Restrict player cards?</p>
+                <div className="flex items-center gap-2">
+                  <p>
+                    {gameParameters.decksConfig.nbPlayerCardRestriction.text}
+                  </p>
+                  <Button
+                    label="?"
+                    tooltip={{
+                      title: "Number player card restriction",
+                      content:
+                        "Some cards are only available when there are 3 players or more.\nTurn it off if you want to play with these cards despite the minimum player requirement not being met.",
+                      enabled: true,
+                    }}
+                    className="size-8 cursor-help rounded-full text-sm shadow-sm"
+                    theme="onSpace"
+                  />
+                </div>
                 <BooleanInput
                   value={
                     gameParameters.decksConfig.nbPlayerCardRestriction.value
@@ -463,7 +482,7 @@ export const StartStep = ({ room, me }: StartStepProps) => {
               </>
             )}
           </div>
-          <div className="flex flex-wrap justify-center gap-[4vw]">
+          <div className="flex flex-wrap justify-center gap-x-24 gap-y-16 max-xl:gap-x-16">
             <DeckPile
               type={CardType.CharacterCard}
               label="Characters"
@@ -567,7 +586,9 @@ const PlayerCard = ({
   isHost: boolean;
 }) => (
   <div className="flex shrink-0 flex-col items-center gap-1">
-    <div className="flex h-8 items-center gap-1 font-bold">
+    <div
+      className="flex h-8 items-center gap-1 font-bold"
+      title={isHost ? `${player?.name} is the host` : undefined}>
       {player && (
         <>
           {isHost ? (

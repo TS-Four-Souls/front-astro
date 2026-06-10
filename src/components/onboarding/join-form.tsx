@@ -31,40 +31,43 @@ export const JoinForm = () => {
   };
 
   return (
-    <div className="flex flex-col gap-8 rounded-lg border-2 border-space-400 bg-space p-8 text-center">
-      <h1 className="font-main text-3xl font-bold">Welcome!</h1>
-      <div className="flex flex-col gap-4">
-        <input
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              joinGame();
-            } else if (e.key === "Escape") {
-              onLeaveRoomPress();
-            }
-          }}
-          type="text"
-          placeholder="Enter your name..."
-          autoComplete="off"
-          minLength={1}
-          required
-          autoFocus
-          className="rounded-md border-2 border-space-300 bg-space-500 px-4 py-2 text-white focus:ring-2 focus:ring-space-500 focus:outline-none"
-        />
-        <Button
-          label="Join"
-          onClick={joinGame}
-          hotkey="enter"
-          theme="onSpace"
-        />
-        <Button
-          label="Leave"
-          onClick={onLeaveRoomPress}
-          hotkey="escape"
-          theme="onSpace"
-        />
+    <>
+      <img src="/logo.png" alt="Logo" className="mb-16 w-140" />
+      <div className="flex flex-col gap-8 rounded-lg border-2 border-space-400 bg-space p-8 text-center text-lg max-sm:w-full max-sm:px-4">
+        <h1 className="font-main text-3xl font-bold">Welcome!</h1>
+        <div className="flex flex-col gap-4">
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                joinGame();
+              } else if (e.key === "Escape") {
+                onLeaveRoomPress();
+              }
+            }}
+            type="text"
+            placeholder="Enter your name..."
+            autoComplete="off"
+            minLength={1}
+            required
+            autoFocus
+            className="rounded-md border-2 border-space-300 bg-space-500 px-4 py-2 text-white focus:ring-2 focus:ring-space-500 focus:outline-none"
+          />
+          <Button
+            label="Join"
+            onClick={joinGame}
+            hotkey="enter"
+            theme="onSpace"
+          />
+          <Button
+            label="Leave"
+            onClick={onLeaveRoomPress}
+            hotkey="escape"
+            theme="onSpace"
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 };

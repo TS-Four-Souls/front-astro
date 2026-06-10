@@ -14,29 +14,29 @@
     "precommit": "bun run format && bun run check"
   },
   "dependencies": {
-    "@astrojs/node": "^10.0.5",
-    "@astrojs/react": "^5.0.3",
-    "@tailwindcss/vite": "^4.2.2",
-    "astro": "^6.1.8",
-    "react": "^19.2.5",
-    "react-dom": "^19.2.5",
+    "@astrojs/node": "^10.1.1",
+    "@astrojs/react": "^5.0.5",
+    "@tailwindcss/vite": "^4.3.0",
+    "astro": "^6.3.8",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
     "react-hot-toast": "^2.6.0",
-    "react-hotkeys-hook": "^5.2.4",
+    "react-hotkeys-hook": "^5.3.2",
     "seedrandom": "^3.0.5",
     "socket.io-client": "^4.8.3",
-    "tailwind-merge": "^3.5.0",
-    "tailwindcss": "^4.2.2",
-    "zod": "^4.3.6"
+    "tailwind-merge": "^3.6.0",
+    "tailwindcss": "^4.3.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.8",
-    "@astrojs/upgrade": "^0.7.1",
-    "@types/react": "^19.2.14",
+    "@astrojs/check": "^0.9.9",
+    "@astrojs/upgrade": "^0.7.2",
+    "@types/react": "^19.2.15",
     "@types/react-dom": "^19.2.3",
     "@types/seedrandom": "^3.0.8",
-    "npm-check-updates": "^21.0.2",
+    "npm-check-updates": "^22.2.1",
     "prettier": "^3.8.3",
-    "prettier-plugin-tailwindcss": "^0.7.2",
+    "prettier-plugin-tailwindcss": "^0.8.0",
     "typescript": "^6.0.3"
   }
 }

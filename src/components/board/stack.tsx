@@ -114,7 +114,7 @@ export const Stack = () => {
       <div
         ref={scrollViewRef}
         className={cn(
-          "no-scrollbar grow place-content-start overflow-auto p-2",
+          "no-scrollbar grow place-content-start justify-center overflow-auto p-2",
           state.stack.length > 0
             ? "grid grid-cols-1"
             : "flex place-items-center",
@@ -199,11 +199,11 @@ export const Stack = () => {
           );
         })}
         {state.stack.length === 0 && (
-          <div className="flex text-center">
-            <p className="font-time-fcuk text-sm leading-normal text-taupe-600">
-              NOTHING ON THE STACK YET...
-            </p>
-          </div>
+          <p className="text-center font-time-fcuk text-sm leading-normal text-taupe-600">
+            NOTHING ON
+            <br />
+            THE STACK...
+          </p>
         )}
       </div>
       <Button

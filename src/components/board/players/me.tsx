@@ -9,14 +9,23 @@ import type { InPlayMeCard, SelectionItem } from "@/shared/api";
 import { CardHoverPreview } from "../card-hover-preview";
 import { Hand } from "../hand";
 import { useGameAnimation } from "../contexts/game-animation";
+import { useHotkeys } from "react-hotkeys-hook";
+import { useMainMenuContext } from "../contexts/main-menu-context";
+import { HotkeyScope } from "@/utils/hotkey";
 
 export const Me = () => {
   const { state, isHandUp } = useGameContext();
   const { toast, dismiss, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
   const { registerInPlayCardEl } = useGameAnimation();
+  const { openMenu } = useMainMenuContext();
 
   const pendingSelections = useRef<Map<string, string>>(new Map());
+
+  useHotkeys("escape", openMenu, {
+    scopes: [HotkeyScope.Main],
+    enabled: true,
+  });
 
   useEffect(() => {
     console.log("state", state);

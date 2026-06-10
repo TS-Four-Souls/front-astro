@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useTooltip } from "./board/use-tooltip";
 import { useContactContext } from "./contexts/contact-context";
+import { useMainMenuContext } from "./board/contexts/main-menu-context";
 
 interface OnboardingLayoutProps {
   withHeader: boolean;
@@ -40,15 +41,21 @@ export const OnboardingLayout = ({
 
   return (
     <div className="flex h-screen gap-8">
-      <div ref={planetariumRef} className="planetarium flex flex-2 flex-col">
+      <div
+        ref={planetariumRef}
+        className="planetarium flex flex-2 flex-col overflow-auto">
         <ReportBugButton />
         {withHeader ? (
           <>
-            <div className="flex flex-1 flex-col place-content-center place-items-center gap-6 p-12">
-              <img src="/logo.png" alt="Logo" className="mb-8 w-[30vw]" />
+            <div className="mb-8 flex flex-1 flex-col place-content-center place-items-center gap-6 p-12 max-sm:p-6">
               {children}
             </div>
-            <p className="mx-16 mb-4 text-center font-alt-stats text-blue-200/60">
+            <a
+              href="/privacy"
+              className="mb-2 text-center font-alt-stats text-blue-200/60 hover:underline">
+              Privacy Policy
+            </a>
+            <p className="mb-4 text-center font-alt-stats text-blue-200/60 max-sm:mx-0">
               This is an unofficial, fan-made website and is not affiliated with
               <br /> or endorsed by Maestro Media and Edmund McMillen.
             </p>
@@ -61,20 +68,24 @@ export const OnboardingLayout = ({
   );
 };
 
-const ReportBugButton = () => {
+export const ReportBugButton = () => {
   const tooltip = useTooltip({
     enabled: true,
     title: "Contact us",
     content: "A suggestion, a bug to report?",
   });
   const { openContactPopup } = useContactContext();
+  const { closeMenu: closeMainMenu } = useMainMenuContext();
   return (
     <img
       src="/contact.png"
-      className="pixelated absolute right-10 bottom-10 w-16 cursor-pointer rounded-full bg-space-400 p-2 shadow-xl/50"
+      className="pixelated absolute right-10 bottom-10 w-16 cursor-pointer rounded-full bg-space-500 p-2 shadow-xl/50 inset-shadow-xs inset-shadow-taupe-100/10 transition-[filter] hover:brightness-120 active:brightness-150"
       onMouseEnter={tooltip.setTooltip}
       onMouseLeave={tooltip.closeTooltip}
-      onClick={openContactPopup}
+      onClick={() => {
+        openContactPopup();
+        closeMainMenu();
+      }}
     />
   );
 };

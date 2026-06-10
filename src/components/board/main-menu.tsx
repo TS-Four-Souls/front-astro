@@ -4,14 +4,13 @@ import { useToastContext } from "./contexts/toast-context";
 import { Button } from "../button";
 import { useMainMenuContext } from "./contexts/main-menu-context";
 import { HotkeyScope } from "@/utils/hotkey";
-import { useContactContext } from "../contexts/contact-context";
 import { useGameContext } from "./contexts/game-context";
+import { ReportBugButton } from "../onboarding-layout";
 
 export const MainMenu = () => {
   const { addPrompt, removePrompt } = usePromptContext();
   const { toast } = useToastContext();
   const { closeMenu: closeMainMenu } = useMainMenuContext();
-  const { openContactPopup } = useContactContext();
   const { parameters } = useGameContext();
 
   const onResetPress = () => {
@@ -136,13 +135,6 @@ export const MainMenu = () => {
           toast("error", "Failed to list loot", response.error);
           break;
       }
-    });
-  };
-
-  const rollback = () => {
-    socket.emit("rollback", (response) => {
-      if (response.status === 400)
-        toast("error", "Failed to rollback", response.error);
     });
   };
 
@@ -347,15 +339,6 @@ export const MainMenu = () => {
           label="Close"
         />
       </div>
-      <Button
-        onClick={() => {
-          closeMainMenu();
-          rollback();
-        }}
-        hotkey="r"
-        hotkeyScope={[HotkeyScope.Popup]}
-        label="Rollback"
-      />
       {parameters.allowCheatOptions.value && (
         <>
         <Button
@@ -412,13 +395,6 @@ export const MainMenu = () => {
       <Button
         onClick={() => {
           closeMainMenu();
-          openContactPopup();
-        }}
-        label="Contact us"
-      />
-      <Button
-        onClick={() => {
-          closeMainMenu();
           onSaveGamePress();
         }}
         label="Save game"
@@ -430,6 +406,7 @@ export const MainMenu = () => {
         }}
         label="Quit game"
       />
+      <ReportBugButton />
     </div>
   );
 };

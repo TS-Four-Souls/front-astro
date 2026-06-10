@@ -114,12 +114,14 @@ export const Center = ({ state }: CenterProps) => {
 
   return (
     <div
-      className="flex place-items-center gap-6 rounded-3xl border-[0.3em] border-taupe-900/40 bg-board/90 p-8"
+      className="flex place-items-center gap-7 rounded-3xl border-[0.3em] border-taupe-900/40 bg-board/90 p-8"
       style={{
         background: `radial-gradient(circle at center, var(--color-board) 50%, ${currentPlayer?.color} 250%)`,
       }}>
-      <Stack />
-      <History />
+      <div className="flex gap-2">
+        <Stack />
+        <History />
+      </div>
       {state.bonusSouls && (
         <div className="flex shrink-0 flex-col place-items-center gap-2">
           {state.bonusSouls.map((soul) => (
@@ -129,7 +131,16 @@ export const Center = ({ state }: CenterProps) => {
               <Pile
                 cards={soul.granted ? [] : [soul]}
                 size={105}
-                onHoverPopover={() => <CardHoverPreview card={soul} />}
+                onHoverPopover={() => (
+                  <CardHoverPreview
+                    card={soul}
+                    tooltip={{
+                      enabled: true,
+                      title: "Bonus soul",
+                      content: "Met the conditions to receive this bonus soul.",
+                    }}
+                  />
+                )}
               />
             </div>
           ))}
@@ -182,7 +193,7 @@ export const Center = ({ state }: CenterProps) => {
         </div>
       )}
       <div className="flex flex-col gap-6">
-        <div className="flex place-items-center gap-2">
+        <div className="flex place-items-center gap-3">
           <Pile
             cards={state.treasure.discard}
             disabled={state.treasure.discard.length === 0}
@@ -271,7 +282,7 @@ export const Center = ({ state }: CenterProps) => {
             </div>
           ))}
         </div>
-        <div className="flex place-items-center gap-2">
+        <div className="flex place-items-center gap-3">
           <Pile
             cards={state.monsters.discard.map((card) => ({
               slug: card.slug,

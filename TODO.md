@@ -1,12 +1,8 @@
-## Release
-
-- Rollback button on the board
-- Able to paste a link in room id form to enter the room
-- Only keep base game
-- Background color flash when disable button turn able
-
 ## V2
 
+- If pending selection gone, remove ui prompt
+- Background color flash when disable button turn able
+- Able to paste a link in room id form to enter the room
 - Important actions -> player should hold the button for longer to confirm
   - Kick player
   - Exit game
