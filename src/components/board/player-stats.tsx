@@ -6,30 +6,19 @@ import { Gear } from "@/icons/gear";
 import { Button } from "../button";
 import { usePromptContext } from "./contexts/prompt-context";
 import { usePopoverContext } from "./contexts/popover-context";
-import type { Card as CardType } from "@/shared/api";
 import { useRef } from "react";
 import { CardImage } from "./card";
 import { useMainMenuContext } from "./contexts/main-menu-context";
 import { useGameAnimation } from "./contexts/game-animation";
 import { useTooltip } from "./use-tooltip";
+import type { Player, PlayerMe } from "@/shared/api";
 
 interface PlayerStatsProps {
-  name: string;
-  color: string;
-  coins: number;
-  souls: number;
-  soulCards: CardType[];
+  player: Player | PlayerMe;
   className?: string;
 }
 
-export const PlayerStats = ({
-  name,
-  color,
-  coins,
-  souls,
-  soulCards,
-  className,
-}: PlayerStatsProps) => {
+export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
   const { state } = useGameContext();
   const { toast, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
@@ -38,9 +27,10 @@ export const PlayerStats = ({
   const { registerPlayerAnchor } = useGameAnimation();
   const soulAnchorRef = useRef<HTMLDivElement | null>(null);
 
+  const { name, color, coins, souls, soulCards } = player;
+
   const isCurrentTurn = state.turn === name;
   const isMe = state.me.name === name;
-  const canEndTurn = isMe && state.me.capabilities.endTurn;
 
   const declareAttack = () => {
     socket.emit("declareAttack", (response) => {
@@ -74,6 +64,13 @@ export const PlayerStats = ({
     socket.emit("endTurn", (response) => {
       if (response.status === 400)
         toast("error", "Failed to end turn", response.error);
+    });
+  };
+
+  const onSwitchToCopyPress = () => {
+    socket.emit("switchToCopy", { name }, (response) => {
+      if (response.status === 400)
+        toast("error", "Failed to switch to copy", response.error);
     });
   };
 
@@ -119,7 +116,7 @@ export const PlayerStats = ({
 
   const { setTooltip: setCoinTooltip, closeTooltip: closeCoinTooltip } =
     useTooltip(
-      state.me.capabilities.canDonateCoins === true && !isMe
+      player.capabilities.canDonateCoinsTo === true && !isMe
         ? {
             enabled: true,
             title: "Donate coins",
@@ -127,7 +124,21 @@ export const PlayerStats = ({
           }
         : {
             title: "Cannot donate coins",
-            capable: state.me.capabilities.canDonateCoins,
+            capable: player.capabilities.canDonateCoinsTo,
+          },
+    );
+
+  const { setTooltip: setSwitchToTooltip, closeTooltip: closeSwitchToTooltip } =
+    useTooltip(
+      player.capabilities.canSwitchTo === true && !isMe
+        ? {
+            enabled: true,
+            title: "Switch to copy",
+            content: "You can switch to this copy.",
+          }
+        : {
+            title: "Cannot switch to copy",
+            capable: player.capabilities.canSwitchTo,
           },
     );
 
@@ -143,8 +154,16 @@ export const PlayerStats = ({
           : undefined,
       }}>
       <p
-        className="text-center font-alt-stats font-bold uppercase text-shadow-lg text-shadow-taupe-950/20"
-        style={{ color }}>
+        className={cn(
+          "text-center font-alt-stats font-bold uppercase text-shadow-lg text-shadow-taupe-950/20",
+          player.capabilities.canSwitchTo === true
+            ? "cursor-pointer"
+            : "cursor-not-allowed",
+        )}
+        style={{ color }}
+        onMouseEnter={setSwitchToTooltip}
+        onMouseLeave={closeSwitchToTooltip}
+        onClick={onSwitchToCopyPress}>
         {name}
       </p>
       <div
@@ -152,16 +171,14 @@ export const PlayerStats = ({
         onMouseLeave={closeCoinTooltip}
         className={cn(
           "flex items-center gap-1",
-          !isMe &&
-            (state.me.capabilities.canDonateCoins === true
-              ? "cursor-pointer"
-              : "cursor-not-allowed"),
+          player.capabilities.canDonateCoinsTo === true
+            ? "cursor-pointer"
+            : "cursor-not-allowed",
         )}
         onClick={() =>
-          !isMe &&
           block(
             "Cannot donate coins",
-            state.me.capabilities.canDonateCoins,
+            player.capabilities.canDonateCoinsTo,
             onCoinPress,
           )
         }>
@@ -231,7 +248,7 @@ export const PlayerStats = ({
         <div className="flex items-center gap-4">
           <Button
             className="shadow-lg shadow-taupe-800/70"
-            disabled={canEndTurn !== true}
+            disabled={state.me.capabilities.endTurn !== true}
             hotkey="e"
             onClick={() =>
               block(

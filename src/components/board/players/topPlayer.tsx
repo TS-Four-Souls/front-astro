@@ -34,14 +34,7 @@ export const TopPlayer = ({ player }: TopPlayerProps) => {
       className={
         "col-start-2 row-start-1 flex flex-col-reverse place-content-center place-items-center gap-6"
       }>
-      <PlayerStats
-        name={player.name}
-        color={player.color}
-        coins={player.coins}
-        souls={player.souls}
-        soulCards={player.soulCards}
-        className={"flex-row gap-12 px-8 py-3"}
-      />
+      <PlayerStats player={player} className={"flex-row gap-12 px-8 py-3"} />
       <div className={"flex place-content-center place-items-center gap-8"}>
         {player.handSize > 0 && <HandPile player={player} />}
         <div

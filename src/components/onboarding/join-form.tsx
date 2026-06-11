@@ -50,6 +50,7 @@ export const JoinForm = () => {
             placeholder="Enter your name..."
             autoComplete="off"
             minLength={1}
+            maxLength={16}
             required
             autoFocus
             className="rounded-md border-2 border-space-300 bg-space-500 px-4 py-2 text-white focus:ring-2 focus:ring-space-500 focus:outline-none"

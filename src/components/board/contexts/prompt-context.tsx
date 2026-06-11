@@ -44,6 +44,7 @@ interface PromptContextProps {
   prompts: Map<string, Prompt>;
   addPrompt<T extends SelectionItem = SelectionItem>(prompt: Prompt<T>): void;
   removePrompt: (promptId: string) => void;
+  clearPrompts: () => void;
 }
 
 const PromptContext = createContext<PromptContextProps>({
@@ -51,6 +52,7 @@ const PromptContext = createContext<PromptContextProps>({
   prompts: new Map(),
   addPrompt: () => {},
   removePrompt: () => {},
+  clearPrompts: () => {},
 });
 
 export const PromptProvider = ({ children }: { children: React.ReactNode }) => {
@@ -63,13 +65,6 @@ export const PromptProvider = ({ children }: { children: React.ReactNode }) => {
     // Check if a prompt with the same ID already exists
     if (prompts.has(prompt.promptId)) {
       console.warn(`Prompt with ID ${prompt.promptId} already exists`);
-      return;
-    }
-    // Check if the prompt already blocked
-    if (blockedPrompts.current.has(prompt.promptId)) {
-      console.warn(
-        `Prompt with ID ${prompt.promptId} is unique and already exists`,
-      );
       return;
     }
     // If the prompt is unique, block future prompts with the same ID
@@ -85,17 +80,25 @@ export const PromptProvider = ({ children }: { children: React.ReactNode }) => {
 
   const removePrompt = (promptId: string) => {
     setPrompts((current) => {
+      const prompt = current.get(promptId);
+      if (prompt?.isUnique) {
+        blockedPrompts.current.delete(prompt.promptId);
+      }
       const newMap = new Map(current);
       newMap.delete(promptId);
       return newMap;
     });
   };
 
+  const clearPrompts = () => {
+    setPrompts(new Map());
+  };
+
   const nextPrompt = prompts.values().next().value;
 
   return (
     <PromptContext.Provider
-      value={{ prompt: nextPrompt, prompts, addPrompt, removePrompt }}>
+      value={{ prompt: nextPrompt, prompts, addPrompt, removePrompt, clearPrompts }}>
       {children}
     </PromptContext.Provider>
   );

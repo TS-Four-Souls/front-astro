@@ -143,7 +143,7 @@ export const GamePage = () => {
   }
 
   return (
-    <OnboardingLayout withHeader={room?.me === undefined}>
+    <OnboardingLayout withHeader={room?.players.find((player) => player.isMe) === undefined}>
       <BoardSelectionProvider>
         <OnboardingPages room={room} tryingToRejoin={tryingToRejoin} />
       </BoardSelectionProvider>
@@ -175,11 +175,13 @@ export const OnboardingPages = ({
     return <Loading />;
   }
 
+  const me = room?.players.find((player) => player.isMe);
+
   if (room) {
-    if (room.me === undefined) {
+    if (me === undefined) {
       return <JoinForm />;
     }
-    return <StartStep room={room} me={room.me} />;
+    return <StartStep room={room} />;
   }
 
   if (viewingAbout) {

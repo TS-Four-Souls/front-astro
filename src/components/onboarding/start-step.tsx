@@ -7,6 +7,7 @@ import {
   type Requests,
   type Room,
   type RoomPlayer,
+  type SelectionItem,
 } from "@/shared/api";
 import { useToastContext } from "../board/contexts/toast-context";
 import { Button } from "../button";
@@ -15,21 +16,23 @@ import { CardImage, CardType } from "../board/card";
 import { cn } from "@/utils/cn";
 import { usePromptContext } from "../board/contexts/prompt-context";
 import { Crown } from "@/icons/crown";
+import { Copy } from "@/icons/copy";
 import { Pile } from "../board/pile";
 import { DeckConfigPopup, type DeckTypes } from "./deck-config-popup";
 
 interface StartStepProps {
   room: Room;
-  me: RoomPlayer;
 }
 
-export const StartStep = ({ room, me }: StartStepProps) => {
+export const StartStep = ({ room }: StartStepProps) => {
   const { gameParameters } = room;
   const { toast } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
   const loadGameInputRef = useRef<HTMLInputElement>(null);
   const loadParametersInputRef = useRef<HTMLInputElement>(null);
   const [deckPilePopup, setDeckPilePopup] = useState<DeckTypes | null>(null);
+
+  const isHost = room.players.some((player) => player.isMe && player.isHost);
 
   const downloadTextFile = (content: string, filename: string) => {
     const blob = new Blob([content], { type: "text/plain" });
@@ -153,30 +156,89 @@ export const StartStep = ({ room, me }: StartStepProps) => {
     });
   };
 
-  const onNextCharacterPress = () => {
+  const onKickPlayerPress = (player: RoomPlayer) => {
+    socket.emit("kickFromRoom", { name: player.name }, (response) => {
+      if (response.status === 400)
+        toast("error", "Failed to kick player", response.error);
+    });
+  };
+
+  const onAddCopyPress = () => {
+    const promptId = "add-copy";
+    const options: Extract<SelectionItem, { type: "string" }>[] =
+      room.players.flatMap((player) => {
+        if (player.isCopy) return [];
+        return {
+          type: "string",
+          payload: player.name,
+        };
+      });
+
+    if (options.length === 0) {
+      return;
+    }
+
+    if (options.length === 1) {
+      socket.emit(
+        "makeCopyOfPlayer",
+        { name: options[0].payload },
+        (response) => {
+          switch (response.status) {
+            case 400:
+              toast("error", "Failed to add copy", response.error);
+              break;
+          }
+        },
+      );
+      return;
+    }
+
+    addPrompt({
+      promptId,
+      isUnique: false,
+      prompt: "Select the player to add a copy of",
+      options,
+      minCount: 1,
+      maxCount: 1,
+      onCancel: () => {
+        removePrompt(promptId);
+      },
+      onSubmit: (selectedOptions) => {
+        socket.emit(
+          "makeCopyOfPlayer",
+          { name: selectedOptions[0].payload },
+          (response) => {
+            switch (response.status) {
+              case 400:
+                toast("error", "Failed to add copy", response.error);
+                break;
+              case 200:
+                removePrompt(promptId);
+                break;
+            }
+          },
+        );
+      },
+    });
+  };
+
+  const onLeaveRoomPress = () => {
+    socket.emit("leaveRoom", (response) => {
+      if (response.status === 400)
+        toast("error", "Failed to leave room", response.error);
+    });
+  };
+
+  const onNextCharacterPress = (user: RoomPlayer) => {
     const currentIndex = room.characters.findIndex(
-      (character) => character.character === me.character.character,
+      (character) => character.character === user.character.character,
     );
     const nextIndex = (currentIndex + 1) % room.characters.length;
     const nextCharacter = room.characters[nextIndex];
 
-    socket.emit("selectCharacter", { character: nextCharacter }, (response) => {
-      if (response.status === 400)
-        toast("error", "Failed to select character", response.error);
-    });
-  };
-
-  const onPreviousCharacterPress = () => {
-    const currentIndex = room.characters.findIndex(
-      (character) => character.character === me.character.character,
-    );
-    const previousIndex =
-      (currentIndex - 1 + room.characters.length) % room.characters.length;
-    const previousCharacter = room.characters[previousIndex];
-
     socket.emit(
       "selectCharacter",
-      { character: previousCharacter },
+      { name: user.name, character: nextCharacter },
       (response) => {
         if (response.status === 400)
           toast("error", "Failed to select character", response.error);
@@ -184,7 +246,25 @@ export const StartStep = ({ room, me }: StartStepProps) => {
     );
   };
 
-  const onCharacterSelectionPress = () => {
+  const onPreviousCharacterPress = (user: RoomPlayer) => {
+    const currentIndex = room.characters.findIndex(
+      (character) => character.character === user.character.character,
+    );
+    const previousIndex =
+      (currentIndex - 1 + room.characters.length) % room.characters.length;
+    const previousCharacter = room.characters[previousIndex];
+
+    socket.emit(
+      "selectCharacter",
+      { name: user.name, character: previousCharacter },
+      (response) => {
+        if (response.status === 400)
+          toast("error", "Failed to select character", response.error);
+      },
+    );
+  };
+
+  const onCharacterSelectionPress = (user: RoomPlayer) => {
     addPrompt({
       promptId: "character-selection",
       isUnique: false,
@@ -198,7 +278,7 @@ export const StartStep = ({ room, me }: StartStepProps) => {
       onSubmit: (selectedOptions) => {
         socket.emit(
           "selectCharacter",
-          { character: selectedOptions[0].payload },
+          { name: user.name, character: selectedOptions[0].payload },
           (response) => {
             if (response.status === 400)
               toast("error", "Failed to select character", response.error);
@@ -212,21 +292,7 @@ export const StartStep = ({ room, me }: StartStepProps) => {
     });
   };
 
-  const onKickPlayerPress = (player: RoomPlayer) => {
-    socket.emit("kickFromRoom", { name: player.name }, (response) => {
-      if (response.status === 400)
-        toast("error", "Failed to kick player", response.error);
-    });
-  };
-
-  const onLeaveRoomPress = () => {
-    socket.emit("leaveRoom", (response) => {
-      if (response.status === 400)
-        toast("error", "Failed to leave room", response.error);
-    });
-  };
-
-  const playerSlots = Array.from({ length: 3 }).map<RoomPlayer | undefined>(
+  const playerSlots = Array.from({ length: 4 }).map<RoomPlayer | undefined>(
     (_, index) => room.players[index] ?? undefined,
   );
 
@@ -257,36 +323,52 @@ export const StartStep = ({ room, me }: StartStepProps) => {
         </div>
 
         <div className="mb-3 flex gap-6 max-sm:flex-col">
-          <PlayerCard
-            player={me}
-            actions={{
-              onPreviousCharacterPress,
-              onNextCharacterPress,
-              onCharacterSelectionPress,
-            }}
-            bottomButton={{
-              label: "Leave",
-              onClick: onLeaveRoomPress,
-            }}
-            index={1}
-            isHost={me.isHost}
-          />
           {playerSlots.map((player, index) => (
             <PlayerCard
               key={index}
               player={player}
-              bottomButton={
-                player && me.isHost
+              actions={
+                player?.isMe
                   ? {
-                      label: "Kick",
-                      onClick: () => onKickPlayerPress(player),
+                      onPreviousCharacterPress: () =>
+                        onPreviousCharacterPress(player),
+                      onNextCharacterPress: () => onNextCharacterPress(player),
+                      onCharacterSelectionPress: () =>
+                        onCharacterSelectionPress(player),
                     }
                   : undefined
               }
-              index={index + 2}
-              isHost={player?.isHost ?? false}
+              bottomButton={
+                player && (isHost || (player.isMe && !player.isCopy))
+                  ? {
+                      label: player.isCopy
+                        ? "Remove"
+                        : player.isMe
+                          ? "Leave"
+                          : "Kick",
+                      onClick: () => {
+                        if (player.isMe && !player.isCopy) {
+                          onLeaveRoomPress();
+                        } else {
+                          onKickPlayerPress(player);
+                        }
+                      },
+                    }
+                  : undefined
+              }
+              index={index + 1}
             />
           ))}
+          {isHost && (
+            <div className="self-center">
+              <Button
+                label="Add copy"
+                onClick={onAddCopyPress}
+                theme="onSpace"
+                disabled={room.players.length === 4}
+              />
+            </div>
+          )}
         </div>
         <div className="flex flex-col gap-4">
           <Button
@@ -294,14 +376,14 @@ export const StartStep = ({ room, me }: StartStepProps) => {
             hotkey="enter"
             label="Start"
             className="p-4 px-8 font-alt-stats text-lg"
-            disabled={!me.isHost}
+            disabled={!isHost}
             theme="onSpace"
             tooltip={{
               title: "Cannot start the game",
-              capable: me.isHost ? true : "Only the host can start the game",
+              capable: isHost ? true : "Only the host can start the game",
             }}
           />
-          {me.isHost && (
+          {isHost && (
             <>
               <Button
                 onClick={onLoadGamePress}
@@ -342,10 +424,10 @@ export const StartStep = ({ room, me }: StartStepProps) => {
               label="Reset"
               className="flex-1"
               theme="onSpace"
-              disabled={!me.isHost}
+              disabled={!isHost}
               tooltip={{
                 title: "Cannot reset game settings",
-                capable: me.isHost
+                capable: isHost
                   ? true
                   : "Only the host can reset game settings",
               }}
@@ -355,12 +437,10 @@ export const StartStep = ({ room, me }: StartStepProps) => {
               label="Load"
               className="flex-1"
               theme="onSpace"
-              disabled={!me.isHost}
+              disabled={!isHost}
               tooltip={{
                 title: "Cannot load game settings",
-                capable: me.isHost
-                  ? true
-                  : "Only the host can load game settings",
+                capable: isHost ? true : "Only the host can load game settings",
               }}
             />
           </div>
@@ -380,7 +460,7 @@ export const StartStep = ({ room, me }: StartStepProps) => {
                             value,
                           });
                         }}
-                        disabled={!me.isHost}
+                        disabled={!isHost}
                       />
                     </>
                   ) : (
@@ -395,7 +475,7 @@ export const StartStep = ({ room, me }: StartStepProps) => {
                               value,
                             });
                           }}
-                          disabled={!me.isHost}
+                          disabled={!isHost}
                         />
                       </>
                     )
@@ -421,7 +501,7 @@ export const StartStep = ({ room, me }: StartStepProps) => {
                   },
                 })
               }
-              disabled={!me.isHost}
+              disabled={!isHost}
             />
             {gameParameters.decksConfig.useRooms && (
               <>
@@ -439,7 +519,7 @@ export const StartStep = ({ room, me }: StartStepProps) => {
                       },
                     })
                   }
-                  disabled={!me.isHost}
+                  disabled={!isHost}
                 />
               </>
             )}
@@ -477,7 +557,7 @@ export const StartStep = ({ room, me }: StartStepProps) => {
                       },
                     })
                   }
-                  disabled={!me.isHost}
+                  disabled={!isHost}
                 />
               </>
             )}
@@ -531,7 +611,7 @@ export const StartStep = ({ room, me }: StartStepProps) => {
           type={deckPilePopup}
           cards={gameParameters.decksConfig[deckPilePopup].cards}
           onPressBackdrop={() => setDeckPilePopup(null)}
-          editable={me.isHost}
+          editable={isHost}
         />
       )}
     </div>
@@ -570,7 +650,6 @@ const PlayerCard = ({
   actions,
   bottomButton,
   index,
-  isHost,
 }: {
   player?: RoomPlayer;
   actions?: {
@@ -583,15 +662,22 @@ const PlayerCard = ({
     onClick: () => void;
   };
   index: number;
-  isHost: boolean;
 }) => (
   <div className="flex shrink-0 flex-col items-center gap-1">
     <div
       className="flex h-8 items-center gap-1 font-bold"
-      title={isHost ? `${player?.name} is the host` : undefined}>
+      title={
+        player?.isCopy
+          ? `${player?.name} is a copy of another player`
+          : player?.isHost
+            ? `${player?.name} is the host`
+            : undefined
+      }>
       {player && (
         <>
-          {isHost ? (
+          {player.isCopy ? (
+            <Copy className="size-4" />
+          ) : player.isHost ? (
             <Crown className="size-4" />
           ) : (
             <Person className="size-4" />

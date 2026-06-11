@@ -14,10 +14,10 @@ export const MainMenu = () => {
   const { parameters } = useGameContext();
 
   const onResetPress = () => {
-    const promptId = `reset-confirm-${Date.now()}`;
+    const promptId = `reset-confirm`;
     addPrompt({
       promptId,
-      isUnique: true,
+      isUnique: false,
       prompt: "Are you sure you want to quit the game?",
       options: [
         { type: "boolean", payload: true },

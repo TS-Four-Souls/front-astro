@@ -16,11 +16,12 @@ import { HotkeyScope } from "@/utils/hotkey";
 export const Me = () => {
   const { state, isHandUp } = useGameContext();
   const { toast, dismiss, block } = useToastContext();
-  const { addPrompt, removePrompt } = usePromptContext();
+  const { addPrompt, removePrompt, clearPrompts } = usePromptContext();
   const { registerInPlayCardEl } = useGameAnimation();
   const { openMenu } = useMainMenuContext();
 
-  const pendingSelections = useRef<Map<string, string>>(new Map());
+  const pendingSelectionsToastIds = useRef<Map<string, string>>(new Map());
+  const pendingSelectionsPrompts = useRef<string | undefined>(undefined);
 
   useHotkeys("escape", openMenu, {
     scopes: [HotkeyScope.Main],
@@ -28,11 +29,23 @@ export const Me = () => {
   });
 
   useEffect(() => {
+    clearPrompts();
+  }, [state.me.name]);
+
+  useEffect(() => {
     console.log("state", state);
-    console.log("pendingSelections", pendingSelections.current);
+    console.log("pendingSelections", pendingSelectionsToastIds.current);
+
+    for (const [playerName, promptId] of pendingSelectionsToastIds.current) {
+      if (!state.players.some((player) => player.name === playerName)) {
+        dismiss(promptId);
+        pendingSelectionsToastIds.current.delete(playerName);
+      }
+    }
+
     for (const player of state.players) {
       if (player.pendingSelection) {
-        if (pendingSelections.current.has(player.name)) {
+        if (pendingSelectionsToastIds.current.has(player.name)) {
           continue;
         }
         const toastId = toast(
@@ -41,12 +54,12 @@ export const Me = () => {
           "Please wait for them to finish their selection",
           { duration: Infinity },
         );
-        pendingSelections.current.set(player.name, toastId);
+        pendingSelectionsToastIds.current.set(player.name, toastId);
       } else {
-        const toastId = pendingSelections.current.get(player.name);
+        const toastId = pendingSelectionsToastIds.current.get(player.name);
         if (toastId) {
           dismiss(toastId);
-          pendingSelections.current.delete(player.name);
+          pendingSelectionsToastIds.current.delete(player.name);
         }
       }
     }
@@ -55,8 +68,10 @@ export const Me = () => {
   useEffect(() => {
     const pendingSelection = state.me.pendingSelection;
     if (pendingSelection) {
+      const promptId = `pending-selection-${pendingSelection.requestId}`;
+      pendingSelectionsPrompts.current = promptId;
       addPrompt({
-        promptId: pendingSelection.requestId,
+        promptId,
         isUnique: true,
         prompt: pendingSelection.description,
         options: pendingSelection.options,
@@ -73,7 +88,7 @@ export const Me = () => {
             (response) => {
               switch (response.status) {
                 case 200:
-                  removePrompt(pendingSelection.requestId);
+                  removePrompt(promptId);
                   break;
                 case 400:
                   toast("error", "Failed to submit selection", response.error);
@@ -181,13 +196,7 @@ export const Me = () => {
 
   return (
     <div className="col-start-2 row-start-3 flex flex-col place-content-center place-items-center gap-6">
-      <PlayerStats
-        name={state.me.name}
-        color={state.me.color}
-        coins={state.me.coins}
-        souls={state.me.souls}
-        soulCards={state.me.soulCards}
-      />
+      <PlayerStats player={state.me} />
       <div
         className="grid gap-2"
         style={{
