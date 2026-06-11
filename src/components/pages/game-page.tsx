@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { JoinForm } from "../onboarding/join-form";
+import { CreateRoomForm } from "../onboarding/create-room-form";
 import { StartStep } from "../onboarding/start-step";
 import { Board } from "../board/board";
 import { socket } from "@/utils/socket";
@@ -25,44 +25,18 @@ export const GamePage = () => {
     function onConnect() {
       console.log("[🔌 Socket] Connected to socket");
 
-      const code = new URLSearchParams(window.location.search).get("code");
       const roomId = storage.getItem("roomId");
-      const name = storage.getItem("name");
-
-      // Remove the code from the URL
-      if (code) {
-        const url = new URL(window.location.href);
-        url.searchParams.delete("code");
-        window.history.replaceState({}, "", url.toString());
-
-        if (code !== roomId) {
-          socket.emit("enterRoom", { roomId: code }, (response) => {
-            switch (response.status) {
-              case 200:
-                if (name) {
-                  socket.emit("setName", name, (response) => {
-                    if (response.status === 400)
-                      toast("error", "Failed to join game", response.error);
-                  });
-                }
-                break;
-              case 400:
-                toast("error", "Incorrect room link", response.error);
-                break;
-            }
-          });
-          setTryingToRejoin(false);
-          return;
-        }
-      }
-
       const userId = storage.getItem("userId");
 
       if (userId && roomId) {
-        socket.emit("enterRoom", { roomId, userId }, (response) => {
-          if (response.status === 400)
-            console.log("[🔌 Socket] Failed to join as user", response.error);
-        });
+        socket.emit(
+          "enterRoom",
+          { type: "rejoin", roomId, userId },
+          (response) => {
+            if (response.status === 400)
+              console.log("[🔌 Socket] Failed to join as user", response.error);
+          },
+        );
       }
       setTryingToRejoin(false);
     }
@@ -143,7 +117,8 @@ export const GamePage = () => {
   }
 
   return (
-    <OnboardingLayout withHeader={room?.players.find((player) => player.isMe) === undefined}>
+    <OnboardingLayout
+      withHeader={room?.players.find((player) => player.isMe) === undefined}>
       <BoardSelectionProvider>
         <OnboardingPages room={room} tryingToRejoin={tryingToRejoin} />
       </BoardSelectionProvider>
@@ -160,54 +135,64 @@ export const OnboardingPages = ({
   room,
   tryingToRejoin,
 }: OnboardingPagesProps) => {
-  const [joiningRoom, setJoiningRoom] = useState<boolean>(false);
-  const [viewingAbout, setViewingAbout] = useState<boolean>(false);
-  const { toast } = useToastContext();
+  const [subPage, setSubPage] = useState<
+    | { type: "join"; code: string }
+    | { type: "create" }
+    | { type: "about" }
+    | undefined
+  >();
 
-  const createRoom = () => {
-    socket.emit("createRoom", (response) => {
-      if (response.status === 400)
-        toast("error", "Failed to create room", response.error);
-    });
-  };
+  useEffect(() => {
+    const code = new URLSearchParams(window.location.search).get("code");
+    if (code) {
+      const url = new URL(window.location.href);
+      url.searchParams.delete("code");
+      window.history.replaceState({}, "", url.toString());
+      setSubPage({ type: "join", code });
+    }
+  }, []);
 
   if (tryingToRejoin) {
     return <Loading />;
   }
 
-  const me = room?.players.find((player) => player.isMe);
-
   if (room) {
-    if (me === undefined) {
-      return <JoinForm />;
-    }
     return <StartStep room={room} />;
   }
 
-  if (viewingAbout) {
-    return <About onClose={() => setViewingAbout(false)} />;
+  if (subPage?.type === "about") {
+    return <About onClose={() => setSubPage(undefined)} />;
   }
 
-  if (joiningRoom) {
+  if (subPage?.type === "join") {
     return (
       <RoomJoinForm
-        onSuccess={() => setJoiningRoom(false)}
-        onCancel={() => setJoiningRoom(false)}
+        code={subPage.code}
+        onSuccess={() => setSubPage(undefined)}
+        onCancel={() => setSubPage(undefined)}
       />
     );
   }
 
+  if (subPage?.type === "create") {
+    return <CreateRoomForm onCancel={() => setSubPage(undefined)} />;
+  }
+
   return (
     <RoomOptions
-      onCreateRoom={createRoom}
+      onCreateRoom={() =>
+        setTimeout(() => {
+          setSubPage({ type: "create" });
+        }, 30)
+      }
       onAbout={() => {
         setTimeout(() => {
-          setViewingAbout(true);
+          setSubPage({ type: "about" });
         }, 30);
       }}
       onJoinRoom={() => {
         setTimeout(() => {
-          setJoiningRoom(true);
+          setSubPage({ type: "join", code: "" });
         }, 30);
       }}
     />

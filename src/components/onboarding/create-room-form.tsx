@@ -4,7 +4,11 @@ import { Button } from "../button";
 import { useEffect, useState } from "react";
 import { storage } from "@/utils/storage";
 
-export const JoinForm = () => {
+interface CreateRoomFormProps {
+  onCancel: () => void;
+}
+
+export const CreateRoomForm = ({ onCancel }: CreateRoomFormProps) => {
   const [name, setName] = useState("");
   const { toast } = useToastContext();
 
@@ -15,18 +19,11 @@ export const JoinForm = () => {
     }
   }, []);
 
-  const joinGame = () => {
+  const createRoom = () => {
     storage.setItem("name", name);
-    socket.emit("setName", name, (response) => {
+    socket.emit("createRoom", { name }, (response) => {
       if (response.status === 400)
-        toast("error", "Failed to join game", response.error);
-    });
-  };
-
-  const onLeaveRoomPress = () => {
-    socket.emit("leaveRoom", (response) => {
-      if (response.status === 400)
-        toast("error", "Failed to leave room", response.error);
+        toast("error", "Failed to create room", response.error);
     });
   };
 
@@ -41,9 +38,9 @@ export const JoinForm = () => {
             onChange={(e) => setName(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
-                joinGame();
+                createRoom();
               } else if (e.key === "Escape") {
-                onLeaveRoomPress();
+                onCancel();
               }
             }}
             type="text"
@@ -57,13 +54,13 @@ export const JoinForm = () => {
           />
           <Button
             label="Join"
-            onClick={joinGame}
+            onClick={createRoom}
             hotkey="enter"
             theme="onSpace"
           />
           <Button
             label="Leave"
-            onClick={onLeaveRoomPress}
+            onClick={onCancel}
             hotkey="escape"
             theme="onSpace"
           />

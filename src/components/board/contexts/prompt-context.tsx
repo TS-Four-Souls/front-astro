@@ -98,7 +98,13 @@ export const PromptProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <PromptContext.Provider
-      value={{ prompt: nextPrompt, prompts, addPrompt, removePrompt, clearPrompts }}>
+      value={{
+        prompt: nextPrompt,
+        prompts,
+        addPrompt,
+        removePrompt,
+        clearPrompts,
+      }}>
       {children}
     </PromptContext.Provider>
   );

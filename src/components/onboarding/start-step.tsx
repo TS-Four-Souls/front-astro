@@ -682,7 +682,7 @@ const PlayerCard = ({
           ) : (
             <Person className="size-4" />
           )}
-          {player.name ?? "Joining..."}
+          {player.name}
         </>
       )}
     </div>
@@ -702,7 +702,6 @@ const PlayerCard = ({
               card={CardType.CharacterCard}
               className={cn(
                 "col-start-1 row-start-1 h-32 shadow-lg/30",
-                player.name ? "opacity-100" : "opacity-50",
                 actions && "cursor-pointer",
               )}
               onClick={actions?.onCharacterSelectionPress}
@@ -714,11 +713,7 @@ const PlayerCard = ({
         ) : (
           <CardImage
             card={{ slug: player.character.character }}
-            className={cn(
-              "h-32 shadow-lg/30",
-              player.name ? "opacity-100" : "opacity-50",
-              actions && "cursor-pointer",
-            )}
+            className={cn("h-32 shadow-lg/30", actions && "cursor-pointer")}
             onClick={actions?.onCharacterSelectionPress}
           />
         )}

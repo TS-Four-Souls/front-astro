@@ -347,6 +347,7 @@ const booleanGameParameterSchema = z.object({
 const numberGameParameterSchema = z.object({
   text: z.string(),
   value: z.number(),
+  replaceZeroWith: z.string().optional(),
 });
 const decksConfigSchema = z.object({
   useBonusSouls: booleanGameParameterSchema,
@@ -432,6 +433,10 @@ export function isNumberParameterKey(
 export function isParameterKey(key: string): key is keyof GameParametersJson {
   return key in gameParametersSchema.shape;
 }
+
+const createRoomRequestSchema = z.object({
+  name: z.string(),
+});
 
 const setNameRequestSchema = z.string();
 
@@ -790,10 +795,18 @@ const saveGameResponseSchema = z.union([
 ]);
 export type SaveGameResponse = z.infer<typeof saveGameResponseSchema>;
 
-const enterRoomRequestSchema = z.object({
-  roomId: z.string(),
-  userId: z.string().optional(),
-});
+const enterRoomRequestSchema = z.discriminatedUnion("type", [
+  z.object({
+    type: z.literal("rejoin"),
+    roomId: z.string(),
+    userId: z.string(),
+  }),
+  z.object({
+    type: z.literal("join"),
+    roomId: z.string(),
+    name: z.string(),
+  }),
+]);
 
 const loadGameRequestSchema = z.string();
 
@@ -910,6 +923,7 @@ export type AdminReplyToMessageResponse = z.infer<
 export const schemas = {
   issuer: issuerSchema,
   room: roomSchema,
+  createRoomRequest: createRoomRequestSchema,
   setNameRequest: setNameRequestSchema,
   attackMonsterRequest: attackMonsterSchema,
   debugLootRequest: debugLootRequestSchema,
@@ -940,6 +954,7 @@ export const schemas = {
 };
 
 export namespace Requests {
+  export type CreateRoom = z.infer<typeof createRoomRequestSchema>;
   export type SetName = z.infer<typeof setNameRequestSchema>;
   export type SetGameParameter = z.infer<typeof setGameParameterRequestSchema>;
   export type SubmitSelection = z.infer<typeof submitSelectionSchema>;
@@ -1036,7 +1051,10 @@ export interface ServerToClientEvents {
 }
 
 export interface ClientToServerEvents {
-  createRoom: (callback: (response: Responses.CreateRoom) => void) => void;
+  createRoom: (
+    request: Requests.CreateRoom,
+    callback: (response: Responses.CreateRoom) => void,
+  ) => void;
 
   enterRoom: (
     request: Requests.EnterRoom,
@@ -1109,14 +1127,12 @@ export interface ClientToServerEvents {
 
   attackRoll: (callback: (response: Responses.AttackRoll) => void) => void;
 
-  debugLootTop: (
-    callback: (response: Responses.DebugLootTop) => void,
-  ) => void;
+  debugLootTop: (callback: (response: Responses.DebugLootTop) => void) => void;
 
   debugGainTreasureTop: (
     callback: (response: Responses.DebugLootTop) => void,
   ) => void;
-  
+
   debugLoot: (
     request: Requests.DebugLoot,
     callback: (response: Responses.DebugLoot) => void,

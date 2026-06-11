@@ -1,16 +1,30 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../button";
 import { socket } from "@/utils/socket";
 import { useToastContext } from "../board/contexts/toast-context";
+import { storage } from "@/utils/storage";
 
 interface RoomJoinFormProps {
+  code: string;
   onCancel: () => void;
   onSuccess: () => void;
 }
 
-export const RoomJoinForm = ({ onCancel, onSuccess }: RoomJoinFormProps) => {
-  const [roomId, setRoomId] = useState<string>("");
+export const RoomJoinForm = ({
+  code,
+  onCancel,
+  onSuccess,
+}: RoomJoinFormProps) => {
+  const [roomId, setRoomId] = useState<string>(code);
+  const [name, setName] = useState<string>("");
   const { toast } = useToastContext();
+
+  useEffect(() => {
+    const name = storage.getItem("name");
+    if (name) {
+      setName(name);
+    }
+  }, []);
 
   const joinRoom = () => {
     if (roomId.length !== 6) {
@@ -30,7 +44,8 @@ export const RoomJoinForm = ({ onCancel, onSuccess }: RoomJoinFormProps) => {
       return;
     }
 
-    socket.emit("enterRoom", { roomId }, (response) => {
+    socket.emit("enterRoom", { type: "join", roomId, name }, (response) => {
+      storage.setItem("name", name);
       switch (response.status) {
         case 200:
           onSuccess();
@@ -51,6 +66,20 @@ export const RoomJoinForm = ({ onCancel, onSuccess }: RoomJoinFormProps) => {
           <input
             value={roomId}
             onChange={(e) => setRoomId(e.target.value.toUpperCase())}
+            onPaste={(e) => {
+              const text = e.clipboardData.getData("text").toUpperCase();
+              try {
+                const url = new URL(text);
+                console.log(url);
+                const code = url.searchParams.get("CODE");
+                if (code) {
+                  setRoomId(code);
+                }
+                e.preventDefault();
+              } catch (error) {
+                console.warn("Didn't paste a valid URL");
+              }
+            }}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 joinRoom();
@@ -63,7 +92,23 @@ export const RoomJoinForm = ({ onCancel, onSuccess }: RoomJoinFormProps) => {
             autoComplete="off"
             minLength={6}
             maxLength={6}
-            autoFocus
+            autoFocus={code === ""}
+            className="rounded-md border-2 border-space-300 bg-space-500 px-4 py-2 text-white focus:ring-2 focus:ring-space-500 focus:outline-none"
+          />
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                joinRoom();
+              }
+            }}
+            type="text"
+            placeholder="Enter your name..."
+            autoComplete="off"
+            minLength={1}
+            maxLength={16}
+            autoFocus={code !== ""}
             className="rounded-md border-2 border-space-300 bg-space-500 px-4 py-2 text-white focus:ring-2 focus:ring-space-500 focus:outline-none"
           />
           <Button

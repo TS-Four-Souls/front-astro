@@ -87,7 +87,7 @@ export const MainMenu = () => {
     });
   };
 
-    const debugGainTreasureTop = () => {
+  const debugGainTreasureTop = () => {
     socket.emit("debugGainTreasureTop", (response) => {
       if (response.status === 200) {
       } else {
@@ -341,7 +341,7 @@ export const MainMenu = () => {
       </div>
       {parameters.allowCheatOptions.value && (
         <>
-        <Button
+          <Button
             onClick={() => {
               // closeMainMenu();
               debugGainLootTop();
