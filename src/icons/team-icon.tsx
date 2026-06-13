@@ -1,0 +1,89 @@
+import { Team } from "@/shared/api";
+
+/**
+ * Team 1 is Heart
+ * Team 2 is Coin
+ * Team 3 is Pill
+ * Team 4 is Bomb
+ */
+
+export const TeamIcon = ({
+  team,
+  className,
+}: {
+  team: Team;
+  className?: string;
+}) => {
+  switch (team) {
+    case Team.Team1:
+      return (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="32"
+          height="32"
+          viewBox="0 0 24 24"
+          className={className}>
+          <path
+            fill="currentColor"
+            d="m12 21l-1.45-1.3q-2.525-2.275-4.175-3.925T3.75 12.812T2.388 10.4T2 8.15Q2 5.8 3.575 4.225T7.5 2.65q1.3 0 2.475.55T12 4.75q.85-1 2.025-1.55t2.475-.55q2.35 0 3.925 1.575T22 8.15q0 1.15-.387 2.25t-1.363 2.412t-2.625 2.963T13.45 19.7zm0-2.7q2.4-2.15 3.95-3.687t2.45-2.675t1.25-2.026T20 8.15q0-1.5-1-2.5t-2.5-1q-1.175 0-2.175.662T12.95 7h-1.9q-.375-1.025-1.375-1.687T7.5 4.65q-1.5 0-2.5 1t-1 2.5q0 .875.35 1.763t1.25 2.025t2.45 2.675T12 18.3m0-6.825"
+          />
+        </svg>
+      );
+    case Team.Team2:
+      return (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="32"
+          height="32"
+          viewBox="0 0 24 24"
+          className={className}>
+          <circle
+            cx="12"
+            cy="12"
+            r="9.5"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          />
+          <text
+            x="11.5"
+            y="17.8"
+            textAnchor="middle"
+            fontSize="16"
+            fontFamily="sans-serif"
+            fontWeight="bold"
+            fill="currentColor">
+            ¢
+          </text>
+        </svg>
+      );
+    case Team.Team3:
+      return (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="32"
+          height="32"
+          viewBox="0 0 24 24"
+          className={className}>
+          <path
+            fill="currentColor"
+            d="M8.625 21q-2.35 0-3.988-1.638T3 15.376q0-1.125.425-2.15T4.65 11.4l6.75-6.75q.8-.8 1.825-1.225T15.375 3q2.35 0 3.988 1.637T21 8.625q0 1.125-.425 2.15T19.35 12.6l-6.75 6.75q-.8.8-1.825 1.225T8.625 21m6.65-7.15l2.675-2.65q.5-.5.775-1.175t.275-1.4q0-1.5-1.062-2.562T15.375 5q-.725 0-1.4.275T12.8 6.05l-2.65 2.675zM8.625 19q.725 0 1.4-.275t1.175-.775l2.65-2.675l-5.125-5.125L6.05 12.8q-.5.5-.775 1.175T5 15.375q0 1.5 1.063 2.563T8.625 19"
+          />
+        </svg>
+      );
+    case Team.Team4:
+      return (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="32"
+          height="32"
+          viewBox="0 0 24 24"
+          className={className}>
+          <path
+            fill="currentColor"
+            d="M8.65 22.8q-3.125 0-5.312-2.212T1.15 15.25t2.163-5.288T8.6 7.8h.325L9.6 6.625q.3-.55.9-.712t1.15.162l.75.425l.125-.2q.575-1.075 1.8-1.4t2.3.3l.875.5l-1 1.725l-.875-.5q-.35-.2-.763-.088t-.612.463l-.125.2l1 .575q.525.3.688.9t-.138 1.125L15 11.3q.575.9.863 1.913t.287 2.087q0 3.125-2.187 5.313T8.65 22.8m0-2q2.275 0 3.888-1.612T14.15 15.3q0-.775-.213-1.525T13.3 12.35l-.65-1.025l1.05-1.8l-2.6-1.5l-1.05 1.8h-1.1q-2.35 0-4.087 1.5T3.125 15.25q0 2.3 1.613 3.925T8.65 20.8M20 8.8v-2h3v2zm-5.5-5.5v-3h2v3zm4.875 2.025l-1.4-1.4L20.1 1.8l1.4 1.4zM8.65 15.3"
+          />
+        </svg>
+      );
+  }
+};

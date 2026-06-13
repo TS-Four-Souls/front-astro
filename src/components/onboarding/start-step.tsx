@@ -4,6 +4,7 @@ import {
   isBooleanParameterKey,
   isNumberParameterKey,
   isParameterKey,
+  Team,
   type Requests,
   type Room,
   type RoomPlayer,
@@ -19,6 +20,7 @@ import { Crown } from "@/icons/crown";
 import { Copy } from "@/icons/copy";
 import { Pile } from "../board/pile";
 import { DeckConfigPopup, type DeckTypes } from "./deck-config-popup";
+import { TeamIcon } from "@/icons/team-icon";
 
 interface StartStepProps {
   room: Room;
@@ -264,6 +266,13 @@ export const StartStep = ({ room }: StartStepProps) => {
     );
   };
 
+  const onTeamSelectionPress = (user: RoomPlayer, team: Team) => {
+    socket.emit("setTeam", { name: user.name, team }, (response) => {
+      if (response.status === 400)
+        toast("error", "Failed to select team", response.error);
+    });
+  };
+
   const onCharacterSelectionPress = (user: RoomPlayer) => {
     addPrompt({
       promptId: "character-selection",
@@ -297,7 +306,7 @@ export const StartStep = ({ room }: StartStepProps) => {
   );
 
   return (
-    <div className="grid h-full grid-rows-[270px_calc(100vh-270px-3em)] gap-4 p-4 max-lg:grid-rows-none">
+    <div className="grid h-full grid-rows-[300px_calc(100vh-300px-3em)] gap-4 p-4 max-lg:grid-rows-none">
       <div className="flex place-items-center justify-between gap-18 rounded-lg border-2 border-space-400 bg-space p-6 max-lg:flex-col max-lg:py-16">
         <div className="flex flex-col gap-2">
           <p className="font-main text-lg">Room</p>
@@ -322,7 +331,7 @@ export const StartStep = ({ room }: StartStepProps) => {
           />
         </div>
 
-        <div className="mb-3 flex gap-6 max-sm:flex-col">
+        <div className="mb-3 flex gap-8 max-sm:flex-col">
           {playerSlots.map((player, index) => (
             <PlayerCard
               key={index}
@@ -330,9 +339,8 @@ export const StartStep = ({ room }: StartStepProps) => {
               actions={
                 player?.isMe
                   ? {
-                      onPreviousCharacterPress: () =>
-                        onPreviousCharacterPress(player),
-                      onNextCharacterPress: () => onNextCharacterPress(player),
+                      onTeamSelectionPress: (team: Team) =>
+                        onTeamSelectionPress(player, team),
                       onCharacterSelectionPress: () =>
                         onCharacterSelectionPress(player),
                     }
@@ -485,7 +493,7 @@ export const StartStep = ({ room }: StartStepProps) => {
           </div>
         </div>
 
-        <div className="flex h-full w-full flex-col place-items-center gap-24 overflow-auto py-[10vh] pt-[calc(50vh-400px)] max-lg:pt-4">
+        <div className="flex h-full w-full flex-col place-content-center-safe place-items-center gap-24 overflow-auto max-lg:pt-4">
           <div className="grid grid-cols-[auto_auto] items-center gap-x-12 gap-y-6">
             <p>{gameParameters.decksConfig.useBonusSouls.text}</p>
             <BooleanInput
@@ -610,7 +618,7 @@ export const StartStep = ({ room }: StartStepProps) => {
         <DeckConfigPopup
           type={deckPilePopup}
           cards={gameParameters.decksConfig[deckPilePopup].cards}
-          onPressBackdrop={() => setDeckPilePopup(null)}
+          onClose={() => setDeckPilePopup(null)}
           editable={isHost}
         />
       )}
@@ -653,9 +661,8 @@ const PlayerCard = ({
 }: {
   player?: RoomPlayer;
   actions?: {
-    onPreviousCharacterPress: () => void;
-    onNextCharacterPress: () => void;
     onCharacterSelectionPress: () => void;
+    onTeamSelectionPress: (team: Team) => void;
   };
   bottomButton?: {
     label: string;
@@ -663,9 +670,9 @@ const PlayerCard = ({
   };
   index: number;
 }) => (
-  <div className="flex shrink-0 flex-col items-center gap-1">
+  <div className="flex shrink-0 flex-col items-center">
     <div
-      className="flex h-8 items-center gap-1 font-bold"
+      className="mb-1 ml-10 flex h-8 items-center gap-1 font-bold"
       title={
         player?.isCopy
           ? `${player?.name} is a copy of another player`
@@ -687,21 +694,39 @@ const PlayerCard = ({
       )}
     </div>
     {player ? (
-      <div className="flex items-center gap-1">
-        {actions && (
-          <Button
-            label="<"
-            onClick={actions.onPreviousCharacterPress}
-            className="size-8"
-            theme="onSpace"
+      <div className="flex items-center gap-2">
+        <div className="flex flex-col justify-center gap-1">
+          <TeamButton
+            team={Team.Team1}
+            active={player.team === Team.Team1}
+            onClick={actions?.onTeamSelectionPress}
+            player={player}
           />
-        )}
+          <TeamButton
+            team={Team.Team2}
+            active={player.team === Team.Team2}
+            onClick={actions?.onTeamSelectionPress}
+            player={player}
+          />
+          <TeamButton
+            team={Team.Team3}
+            active={player.team === Team.Team3}
+            onClick={actions?.onTeamSelectionPress}
+            player={player}
+          />
+          <TeamButton
+            onClick={actions?.onTeamSelectionPress}
+            team={Team.Team4}
+            active={player.team === Team.Team4}
+            player={player}
+          />
+        </div>
         {player.character.character === "random" ? (
           <div className="grid items-center gap-2">
             <CardImage
               card={CardType.CharacterCard}
               className={cn(
-                "col-start-1 row-start-1 h-32 shadow-lg/30",
+                "col-start-1 row-start-1 h-40 shadow-lg/30",
                 actions && "cursor-pointer",
               )}
               onClick={actions?.onCharacterSelectionPress}
@@ -713,21 +738,13 @@ const PlayerCard = ({
         ) : (
           <CardImage
             card={{ slug: player.character.character }}
-            className={cn("h-32 shadow-lg/30", actions && "cursor-pointer")}
+            className={cn("h-40 shadow-lg/30", actions && "cursor-pointer")}
             onClick={actions?.onCharacterSelectionPress}
-          />
-        )}
-        {actions && (
-          <Button
-            label=">"
-            onClick={actions.onNextCharacterPress}
-            className="size-8"
-            theme="onSpace"
           />
         )}
       </div>
     ) : (
-      <div className="aspect-750/1024 h-32 place-content-center rounded-md bg-space-500/30 inset-shadow-sm inset-shadow-black">
+      <div className="aspect-750/1024 h-40 place-content-center rounded-md bg-space-500/30 inset-shadow-sm inset-shadow-black">
         <p className="text-center text-6xl font-bold text-space-400/30">
           {index}
         </p>
@@ -738,10 +755,56 @@ const PlayerCard = ({
         label={bottomButton.label}
         onClick={bottomButton.onClick}
         theme="onSpace"
+        className="mt-2 ml-10"
       />
     )}
   </div>
 );
+
+const teamNames: Record<Team, string> = {
+  [Team.Team1]: "Heart",
+  [Team.Team2]: "Coin",
+  [Team.Team3]: "Pill",
+  [Team.Team4]: "Bomb",
+};
+
+const TeamButton = ({
+  team,
+  active,
+  onClick,
+  player,
+}: {
+  team: Team;
+  active: boolean;
+  onClick?: (team: Team) => void;
+  player: RoomPlayer;
+}) => {
+  const isDisabled = onClick === undefined;
+  return (
+    <Button
+      onClick={() => onClick?.(team)}
+      label={<TeamIcon team={team} className="size-5 shrink-0" />}
+      active={active}
+      tooltip={{
+        title: `Team ${teamNames[team]}`,
+        content:
+          active && player.isMe
+            ? `You have selected team ${teamNames[team]}`
+            : active
+              ? `${player.name} is on the team ${teamNames[team]}`
+              : "Click to select this team",
+        enabled: player.isMe || active,
+      }}
+      theme="onSpace"
+      className={cn(
+        "size-8",
+        isDisabled &&
+          (active ? "opacity-100 filter-none" : "opacity-20 filter-none"),
+      )}
+      disabled={isDisabled}
+    />
+  );
+};
 
 const NumericInput = ({
   value,

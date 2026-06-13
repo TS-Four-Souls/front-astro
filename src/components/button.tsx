@@ -8,7 +8,7 @@ interface ButtonProps {
   disabled?: boolean;
   active?: boolean;
   className?: string;
-  label?: string;
+  label?: React.ReactNode;
   hotkey?: string;
   hotkeyScope?: HotkeyScope[];
   type?: "button" | "submit" | "reset" | undefined;

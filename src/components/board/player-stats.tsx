@@ -12,6 +12,7 @@ import { useMainMenuContext } from "./contexts/main-menu-context";
 import { useGameAnimation } from "./contexts/game-animation";
 import { useTooltip } from "./use-tooltip";
 import type { Player, PlayerMe } from "@/shared/api";
+import { TeamIcon } from "@/icons/team-icon";
 
 interface PlayerStatsProps {
   player: Player | PlayerMe;
@@ -155,7 +156,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
       }}>
       <p
         className={cn(
-          "text-center font-alt-stats font-bold uppercase text-shadow-lg text-shadow-taupe-950/20",
+          "inline-flex place-items-center gap-1 text-center font-alt-stats font-bold uppercase text-shadow-lg text-shadow-taupe-950/20",
           player.capabilities.canSwitchTo === true
             ? "cursor-pointer"
             : "cursor-not-allowed",
@@ -164,6 +165,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
         onMouseEnter={setSwitchToTooltip}
         onMouseLeave={closeSwitchToTooltip}
         onClick={onSwitchToCopyPress}>
+        <TeamIcon team={player.team} className="size-5 shrink-0" />
         {name}
       </p>
       <div

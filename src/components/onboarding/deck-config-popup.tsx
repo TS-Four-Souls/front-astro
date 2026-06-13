@@ -28,14 +28,14 @@ const deckTypeLabels: Record<DeckTypes, string> = {
 interface DeckConfigPopupProps {
   type: DeckTypes;
   cards: DeckConfigCard[];
-  onPressBackdrop: () => void;
+  onClose: () => void;
   editable: boolean;
 }
 
 export const DeckConfigPopup = ({
   type,
   cards,
-  onPressBackdrop,
+  onClose,
   editable,
 }: DeckConfigPopupProps) => {
   const { toast } = useToastContext();
@@ -73,7 +73,7 @@ export const DeckConfigPopup = ({
 
   return (
     <Popup
-      onPressBackdrop={onPressBackdrop}
+      onPressBackdrop={onClose}
       className={cn(canUseLookup && "h-full w-full")}>
       <div className="flex flex-row justify-between gap-8">
         <h1 className="font-alt-stats text-2xl leading-tight font-bold uppercase">
@@ -90,7 +90,7 @@ export const DeckConfigPopup = ({
             />
           )}
           <Button
-            onClick={onPressBackdrop}
+            onClick={onClose}
             hotkey="escape"
             hotkeyScope={[HotkeyScope.Popup]}
             label="Close"
