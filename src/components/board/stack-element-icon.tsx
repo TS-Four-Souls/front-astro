@@ -1,7 +1,7 @@
 import type { SelectionItem, StackElement } from "@/shared/api";
 import { cn } from "@/utils/cn";
 import { Dice } from "@/icons/dice";
-import { CardImage } from "./card";
+import { CardImage, CardType } from "./card";
 import { usePopoverContext } from "./contexts/popover-context";
 import { receiverName } from "@/utils/selection-text";
 
@@ -101,6 +101,23 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
       );
     }
 
+    case "lootStep": {
+      return (
+        <div className="flex flex-col items-center gap-3">
+          <CardImage card={CardType.LootCard} className="w-64" />
+          <div className="max-w-64 px-2 text-center leading-tight text-taupe-400">
+            <span style={{ color: element.player.color }} className="font-bold">
+              {element.player.name}
+            </span>{" "}
+            is about to loot{" "}
+            <span className="font-bold text-taupe-300">{element.nbLoots}</span>{" "}
+            card
+            {element.nbLoots > 1 ? "s" : ""}
+          </div>
+        </div>
+      );
+    }
+
     case "damage": {
       return (
         <div className="flex flex-col items-center gap-3">
@@ -196,6 +213,21 @@ const Icon = ({ element }: IconProps) => {
       );
     }
 
+    case "lootStep": {
+      return (
+        <div
+          className={cn(
+            "size-10 overflow-hidden rounded-lg border-[0.15em] bg-taupe-800/50",
+          )}
+          style={{ borderColor }}>
+          <CardImage
+            card={CardType.LootCard}
+            className="translate-y-[-17%] scale-155"
+          />
+        </div>
+      );
+    }
+
     case "damage":
       return (
         <img
@@ -233,6 +265,8 @@ const getBorderColor = (element: StackElement) => {
     case "damage":
     case "death":
       return element.from.color;
+    case "lootStep":
+      return element.player.color;
     default:
       return "border-taupe-700";
   }
@@ -285,6 +319,8 @@ export const SelectionContent = ({
           return `${selection.payload.issuer.name} - ${selection.payload.card.name}`;
         case "LootCardEffect":
           return `${selection.payload.issuer.name} used ${selection.payload.card.name}`;
+        case "lootStep":
+          return `${selection.payload.player.name} is about to loot ${selection.payload.nbLoots} card${selection.payload.nbLoots > 1 ? "s" : ""}`;
       }
     case "deck":
       return selection.payload;

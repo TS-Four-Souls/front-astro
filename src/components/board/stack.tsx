@@ -7,6 +7,7 @@ import type {
   DiceRollJson,
   EffectOnStackJson,
   LootCardOnStackJson,
+  LootStepJson,
   StackElement as StackElementType,
 } from "@/shared/api";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -281,6 +282,8 @@ const StackElementContent = ({ element }: { element: StackElementType }) => {
       return <DamageElement element={element} />;
     case "death":
       return <DeathElement element={element} />;
+    case "lootStep":
+      return <LootStepElement element={element} />;
   }
 };
 
@@ -363,6 +366,23 @@ const EffectElement = ({ element }: { element: EffectOnStackJson }) => {
           {element.issuer.name}
         </p>
         <p className="text-taupe-200">{element.card.name}</p>
+      </div>
+    </div>
+  );
+};
+
+const LootStepElement = ({ element }: { element: LootStepJson }) => {
+  return (
+    <div className="flex flex-row items-center gap-4">
+      <StackElementIcon element={element} />
+      <div className="text-sm">
+        <p className="text-taupe-200">
+          <span style={{ color: element.player.color }}>
+            {element.player.name}
+          </span>{" "}
+          is about to loot {element.nbLoots} card
+          {element.nbLoots > 1 ? "s" : ""}
+        </p>
       </div>
     </div>
   );
