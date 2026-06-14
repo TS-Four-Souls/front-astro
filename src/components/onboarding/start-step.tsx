@@ -535,6 +535,44 @@ export const StartStep = ({ room }: StartStepProps) => {
                 />
               </>
             )}
+            {gameParameters.decksConfig.useFSP2Cards && (
+              <>
+                <div className="flex items-center gap-2">
+                  <p>
+                    {gameParameters.decksConfig.useFSP2Cards.text}
+                  </p>
+                  <Button
+                    label="?"
+                    tooltip={{
+                      title: "Use Four Souls+ Cards",
+                      content:
+                        "Play with cards from the Four Souls+ expansion.",
+                      enabled: true,
+                    }}
+                    className="size-8 cursor-help rounded-full text-sm shadow-sm"
+                    theme="onSpace"
+                  />
+                </div>
+                <BooleanInput
+                  value={
+                    gameParameters.decksConfig.useFSP2Cards.value
+                  }
+                  onChange={(value) =>
+                    onChangeGameParameter({
+                      parameter: "decksConfig",
+                      value: {
+                        useFSP2Cards: {
+                          text: gameParameters.decksConfig
+                            .useFSP2Cards!.text,
+                          value,
+                        },
+                      },
+                    })
+                  }
+                  disabled={!isHost}
+                />
+              </>
+            )}
           </div>
           <div className="flex flex-wrap justify-center gap-x-24 gap-y-16 max-xl:gap-x-16">
             <DeckPile
