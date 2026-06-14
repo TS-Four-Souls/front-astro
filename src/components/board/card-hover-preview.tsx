@@ -1,10 +1,20 @@
 import { cn } from "@/utils/cn";
-import { CardImage, type CardType } from "./card";
+import { Card, CardType } from "./card";
 import type { Tooltip } from "./use-tooltip";
+import { Pile } from "./pile";
+import type { TemporaryEffect } from "@/shared/api";
 
 interface CardHoverPreviewProps {
   card: { slug: string } | CardType;
+  stats?: {
+    healthPoints: number;
+    attackPoints: number;
+    evasionPoints?: number;
+  };
+  effects?: TemporaryEffect[];
+  counter?: number;
   tooltip?: Tooltip | Tooltip[];
+  isEternal?: boolean;
 }
 
 const TooltipAboveCard = ({ tooltip }: { tooltip: Tooltip }) => {
@@ -48,15 +58,37 @@ const normalizeTooltips = (
   return Array.isArray(tooltip) ? tooltip : [tooltip];
 };
 
-export const CardHoverPreview = ({ card, tooltip }: CardHoverPreviewProps) => {
+export const CardHoverPreview = ({
+  card,
+  stats,
+  tooltip,
+  effects,
+  counter,
+  isEternal,
+}: CardHoverPreviewProps) => {
   const tooltips = normalizeTooltips(tooltip);
   const hasTooltips =
     tooltips.length > 0 &&
     tooltips.some((t) => ("enabled" in t ? t.enabled : t.capable !== true));
 
   return (
-    <div className="flex w-64 flex-col items-stretch gap-2.5">
-      <CardImage card={card} className="w-64" />
+    <div className="flex w-min flex-col items-stretch gap-2.5">
+      {isEternal && (
+        <div className="rounded-md bg-taupe-200 p-2 text-center font-main text-sm text-black uppercase">
+          -Eternal-
+        </div>
+      )}
+      <div>
+        {typeof card === "object" && "slug" in card && (
+          <Card
+            card={{ slug: card.slug }}
+            stats={stats}
+            effects={effects}
+            counter={counter}
+            size={22}
+          />
+        )}
+      </div>
       {hasTooltips ? (
         <div className="flex flex-col gap-2">
           {tooltips.map((t, index) => (

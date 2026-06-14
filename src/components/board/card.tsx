@@ -150,7 +150,7 @@ export const Card = ({
 
         {counter !== undefined && (
           <div
-            className="absolute bottom-[3%] left-[50%] flex items-center justify-center rounded-full font-statblock text-black shadow-lg"
+            className="absolute bottom-[3%] left-[50%] flex items-center justify-center rounded-full font-statblock text-black"
             style={{
               fontSize: size * 0.09 + "em",
               width: "0%",

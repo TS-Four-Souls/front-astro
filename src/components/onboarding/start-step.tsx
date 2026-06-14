@@ -538,9 +538,7 @@ export const StartStep = ({ room }: StartStepProps) => {
             {gameParameters.decksConfig.useFSP2Cards && (
               <>
                 <div className="flex items-center gap-2">
-                  <p>
-                    {gameParameters.decksConfig.useFSP2Cards.text}
-                  </p>
+                  <p>{gameParameters.decksConfig.useFSP2Cards.text}</p>
                   <Button
                     label="?"
                     tooltip={{
@@ -554,16 +552,13 @@ export const StartStep = ({ room }: StartStepProps) => {
                   />
                 </div>
                 <BooleanInput
-                  value={
-                    gameParameters.decksConfig.useFSP2Cards.value
-                  }
+                  value={gameParameters.decksConfig.useFSP2Cards.value}
                   onChange={(value) =>
                     onChangeGameParameter({
                       parameter: "decksConfig",
                       value: {
                         useFSP2Cards: {
-                          text: gameParameters.decksConfig
-                            .useFSP2Cards!.text,
+                          text: gameParameters.decksConfig.useFSP2Cards!.text,
                           value,
                         },
                       },

@@ -343,31 +343,29 @@ export const MainMenu = () => {
         <>
           <Button
             onClick={() => {
-              // closeMainMenu();
               debugGainLootTop();
             }}
-            label="[CHEAT] Loot 1"
-          />
-          <Button
-            onClick={() => {
-              // closeMainMenu();
-              debugGainTreasureTop();
-            }}
-            label="[CHEAT] Gain 1 treasure"
+            label="[CHEAT] Loot a card"
           />
           <Button
             onClick={() => {
               closeMainMenu();
               debugGainLoot();
             }}
-            label="[CHEAT] Gain any loot"
+            label="[CHEAT] Select loot to gain"
+          />
+          <Button
+            onClick={() => {
+              debugGainTreasureTop();
+            }}
+            label="[CHEAT] Gain treasure"
           />
           <Button
             onClick={() => {
               closeMainMenu();
               debugGainTreasure();
             }}
-            label="[CHEAT] Gain any treasure"
+            label="[CHEAT] Select treasure to gain"
           />
           <Button
             onClick={() => {

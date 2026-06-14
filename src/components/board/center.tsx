@@ -416,6 +416,8 @@ export const Center = ({ state }: CenterProps) => {
                   onHoverPopover={() => (
                     <CardHoverPreview
                       card={card.top}
+                      stats={card.top.stats}
+                      effects={card.top.stats?.temporaryEffect}
                       tooltip={[
                         {
                           capable: targetable,

@@ -236,6 +236,17 @@ export const Me = () => {
               onHoverPopover={() => (
                 <CardHoverPreview
                   card={card}
+                  stats={
+                    index === 0
+                      ? {
+                          healthPoints: state.me.currentHealthPoints,
+                          attackPoints: state.me.currentAttackPoints,
+                        }
+                      : undefined
+                  }
+                  effects={index === 0 ? state.me.temporaryEffect : undefined}
+                  counter={card.counter}
+                  isEternal={card.eternal}
                   tooltip={{
                     capable: card.capabilities.activate,
                     title: "Cannot activate",

@@ -78,7 +78,22 @@ export const TopPlayer = ({ player }: TopPlayerProps) => {
                           : undefined,
                     },
                   ]}
-                  onHoverPopover={() => <CardHoverPreview card={card} />}
+                  onHoverPopover={() => (
+                    <CardHoverPreview
+                      card={card}
+                      stats={
+                        index === 0
+                          ? {
+                              healthPoints: player.currentHealthPoints,
+                              attackPoints: player.currentAttackPoints,
+                            }
+                          : undefined
+                      }
+                      effects={index === 0 ? player.temporaryEffect : undefined}
+                      counter={card.counter}
+                      isEternal={card.eternal}
+                    />
+                  )}
                 />
               </div>
             );
