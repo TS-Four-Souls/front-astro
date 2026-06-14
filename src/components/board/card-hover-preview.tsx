@@ -1,7 +1,6 @@
 import { cn } from "@/utils/cn";
 import { Card, CardType } from "./card";
 import type { Tooltip } from "./use-tooltip";
-import { Pile } from "./pile";
 import type { TemporaryEffect } from "@/shared/api";
 
 interface CardHoverPreviewProps {
