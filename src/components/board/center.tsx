@@ -137,7 +137,7 @@ export const Center = ({ state }: CenterProps) => {
                     tooltip={{
                       enabled: true,
                       title: "Bonus soul",
-                      content: "Met the conditions to receive this bonus soul.",
+                      content: "Meet the conditions to receive this bonus soul.",
                     }}
                   />
                 )}
