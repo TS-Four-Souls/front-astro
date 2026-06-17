@@ -219,6 +219,7 @@ export const AdminRoomCard = ({ room }: { room: AdminRoom }) => {
           ? "No game"
           : `Game is ongoing, ${room.game.round} round${room.game.round > 1 ? "s" : ""}, max soul: ${room.game.maxSoul}`}
       </p>
+      <p className="text-sm">They have played {room.gameCount} game{room.gameCount > 1 ? "s" : ""}</p>
     </div>
   );
 };
