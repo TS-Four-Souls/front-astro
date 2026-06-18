@@ -159,6 +159,10 @@ export const AdminPostLoginPage = ({
         />
       </div>
       <div className="mt-12 min-h-64 rounded-lg border-2 border-space-400 bg-space p-4">
+        <h2 className="mb-4 font-main text-2xl font-bold">Statistics</h2>
+        <AdminHourlyStatistics data={data} />
+      </div>
+      <div className="mt-12 min-h-64 rounded-lg border-2 border-space-400 bg-space p-4">
         <h2 className="mb-4 font-main text-2xl font-bold">Rooms</h2>
         <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-2">
           {rooms.map((room) => (
@@ -218,6 +222,9 @@ export const AdminRoomCard = ({ room }: { room: AdminRoom }) => {
         {room.game === false
           ? "No game"
           : `Game is ongoing, ${room.game.round} round${room.game.round > 1 ? "s" : ""}, max soul: ${room.game.maxSoul}`}
+      </p>
+      <p className="text-sm">
+        They have played {room.gameCount} game{room.gameCount > 1 ? "s" : ""}
       </p>
     </div>
   );
@@ -291,6 +298,50 @@ export const AdminMessageCard = ({
           </p>
         </div>
       )}
+    </div>
+  );
+};
+
+export const AdminHourlyStatistics = ({ data }: { data: AdminResponse }) => {
+  const maxGameCount = useMemo(
+    () => Math.max(1, ...data.stats.hourly.map((stat) => stat.gameCount)),
+    [data.stats.hourly],
+  );
+
+  return (
+    <div className="flex flex-col gap-4">
+      <h3 className="text-lg font-bold">Games (last 24 hours)</h3>
+      <div className="flex gap-1">
+        {data.stats.hourly.map((stat) => {
+          const heightPercent = (stat.gameCount / maxGameCount) * 100;
+          const hour = new Date(stat.date).getHours();
+          const label = new Date(stat.date).toLocaleTimeString(undefined, {
+            hour: "numeric",
+            minute: "2-digit",
+          });
+
+          return (
+            <div
+              key={stat.date}
+              className="group flex min-w-0 flex-1 flex-col items-center gap-1"
+              title={`${label}: ${stat.gameCount} game${stat.gameCount === 1 ? "" : "s"}`}>
+              <div className="flex h-48 w-full flex-col justify-end border-b border-space-400">
+                <span className="mb-1 text-center text-xs text-space-100 opacity-0 transition-opacity group-hover:opacity-100">
+                  {stat.gameCount}
+                </span>
+                <div
+                  className="w-full rounded-t bg-space-200 transition-colors group-hover:bg-space-100"
+                  style={{
+                    height: `${heightPercent}%`,
+                    minHeight: stat.gameCount > 0 ? "2px" : undefined,
+                  }}
+                />
+              </div>
+              <span className="text-[10px] text-space-100">{hour}h</span>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };
