@@ -112,7 +112,7 @@ export const Card = ({
         />
 
         {hotkey && (
-          <div className="absolute top-1 left-1 flex aspect-square size-4 place-items-center overflow-hidden rounded-sm bg-taupe-700 outline-[0.1em]">
+          <div className="pointer-events-none absolute top-1 left-1 flex aspect-square size-4 place-items-center overflow-hidden rounded-sm bg-taupe-700 outline-[0.1em]">
             <img
               src={`/input-prompts/keyboard_${hotkey.split(",")[0]}_outline.svg`}
               className="scale-150"
@@ -123,7 +123,7 @@ export const Card = ({
         {selectionIndex && (
           <SelectionIndexIndicator
             index={selectionIndex}
-            className="top-1 right-1 size-5 text-2xs outline-[0.15em]"
+            className="pointer-events-none top-1 right-1 size-5 text-2xs outline-[0.15em]"
           />
         )}
 
@@ -150,7 +150,7 @@ export const Card = ({
 
         {counter !== undefined && (
           <div
-            className="absolute bottom-[3%] left-[50%] flex items-center justify-center rounded-full font-statblock text-black"
+            className="pointer-events-none absolute bottom-[3%] left-[50%] flex items-center justify-center rounded-full font-statblock text-black"
             style={{
               fontSize: size * 0.09 + "em",
               width: "0%",
@@ -161,8 +161,10 @@ export const Card = ({
         )}
 
         {stats && !("evasionPoints" in stats) && (
-          <div style={{ fontSize: statsSize + "em" }}>
-            <div className="pointer-events-none absolute top-[57.3%] right-[28.5%] left-[27.5%]">
+          <div
+            className="pointer-events-none"
+            style={{ fontSize: statsSize + "em" }}>
+            <div className="absolute top-[57.3%] right-[28.5%] left-[27.5%]">
               <img src="/character-card-overlay.png" draggable={false} />
             </div>
             <div className="absolute top-[55.7%] left-[40.5%] font-statblock text-black">
@@ -175,8 +177,10 @@ export const Card = ({
         )}
 
         {stats && "evasionPoints" in stats && (
-          <div style={{ fontSize: statsSize + "em" }}>
-            <div className="pointer-events-none absolute top-[57.3%] right-[17.1%] left-[17.7%]">
+          <div
+            className="pointer-events-none"
+            style={{ fontSize: statsSize + "em" }}>
+            <div className="absolute top-[57.3%] right-[17.1%] left-[17.7%]">
               <img src="/monster-card-overlay.png" draggable={false} />
             </div>
 
