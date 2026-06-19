@@ -29,6 +29,11 @@ export const HandPile = ({ player }: HandPileProps) => {
           enabled: true,
           content: `${player.name} has ${player.handSize} cards in their hand.`,
         }}
+        onClickTopCard={
+          player.hand !== undefined
+            ? () => displayPileDetails(player.hand)
+            : undefined
+        }
         onPileDetailsClick={
           player.hand !== undefined
             ? () => displayPileDetails(player.hand)
