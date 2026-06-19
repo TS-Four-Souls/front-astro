@@ -735,7 +735,7 @@ const animationSchema = z.discriminatedUnion("type", [
 export type Animation = z.infer<typeof animationSchema>;
 
 const detailedStateSchema = z.object({
-me: playerMeSchema,
+  me: playerMeSchema,
   players: z.array(playerSchema),
   monsters: z.object({
     discard: z.array(cardSchema),
@@ -757,15 +757,15 @@ me: playerMeSchema,
     topDeckPrice: z.number(),
   }),
   loot: z.object({
-      discard: z.array(cardSchema),
-      deckSize: z.number(),
-      }),
-  bonusSouls: z.array(bonusSoulCardSchema).optional(),
-  room: z
-.object({
     discard: z.array(cardSchema),
     deckSize: z.number(),
-  inPlay: z.array(cardSchema),
+  }),
+  bonusSouls: z.array(bonusSoulCardSchema).optional(),
+  room: z
+    .object({
+      discard: z.array(cardSchema),
+      deckSize: z.number(),
+      inPlay: z.array(cardSchema),
     })
     .optional(),
   turn: z.string(),

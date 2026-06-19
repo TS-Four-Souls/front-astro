@@ -148,7 +148,8 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
   const nextMeInstance = state.players.find(
     (p) => p.capabilities.canSwitchTo === true,
   );
-  const isNextInstance = nextMeInstance !== undefined && nextMeInstance.name === name;
+  const isNextInstance =
+    nextMeInstance !== undefined && nextMeInstance.name === name;
 
   useHotkeys("s", onSwitchToCopyPress, {
     enabled: isNextInstance,
@@ -170,7 +171,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
         className={cn(
           "inline-flex place-items-center gap-1 text-center font-alt-stats font-bold uppercase text-shadow-lg text-shadow-taupe-950/20",
           player.capabilities.canSwitchTo === true
-            ? "cursor-pointer hover:scale-108 transition-transform duration-100"
+            ? "cursor-pointer transition-transform duration-100 hover:scale-108"
             : "cursor-not-allowed",
         )}
         style={{ color }}
