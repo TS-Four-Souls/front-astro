@@ -13,6 +13,8 @@ import { useGameAnimation } from "./contexts/game-animation";
 import { useTooltip } from "./use-tooltip";
 import type { Player, PlayerMe } from "@/shared/api";
 import { TeamIcon } from "@/icons/team-icon";
+import { useHotkeys } from "react-hotkeys-hook";
+import { HotkeyScope } from "@/utils/hotkey";
 
 interface PlayerStatsProps {
   player: Player | PlayerMe;
@@ -143,6 +145,16 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
           },
     );
 
+  const nextMeInstance = state.players.find(
+    (p) => p.capabilities.canSwitchTo === true,
+  );
+  const isNextInstance = nextMeInstance !== undefined && nextMeInstance.name === name;
+
+  useHotkeys("s", onSwitchToCopyPress, {
+    enabled: isNextInstance,
+    scopes: [HotkeyScope.Main],
+  });
+
   return (
     <div
       className={cn(
@@ -158,13 +170,16 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
         className={cn(
           "inline-flex place-items-center gap-1 text-center font-alt-stats font-bold uppercase text-shadow-lg text-shadow-taupe-950/20",
           player.capabilities.canSwitchTo === true
-            ? "cursor-pointer"
+            ? "cursor-pointer hover:scale-108 transition-transform duration-100"
             : "cursor-not-allowed",
         )}
         style={{ color }}
         onMouseEnter={setSwitchToTooltip}
         onMouseLeave={closeSwitchToTooltip}
         onClick={onSwitchToCopyPress}>
+        {isNextInstance && (
+          <img src="/input-prompts/keyboard_s_outline.svg" className="size-6" />
+        )}
         <TeamIcon team={player.team} className="size-5 shrink-0" />
         {name}
       </p>
