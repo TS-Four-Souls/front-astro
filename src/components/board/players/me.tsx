@@ -155,7 +155,12 @@ export const Me = () => {
       >;
       const effects: CardEffectSelectionItem[] = card.effects.map((effect) => ({
         type: "cardEffect",
-        payload: effect,
+        payload: {
+          card: card,
+          visualEffectBox: effect.visualEffectBox,
+          index: effect.index,
+          description: effect.description,
+        },
       }));
 
       const promptId = `select-card-effect-${card.slug}-${index}`;

@@ -21,13 +21,19 @@ const cardSchema = identifierTypeSchema;
 export type Card = z.infer<typeof cardSchema>;
 
 const shopItemSchema = cardSchema.extend({ price: z.number() });
-
-const activeEffectEntrySchema = z.object({
-  card: identifierTypeSchema,
-  visualEffectBox: z.object({
+const VisualEffectBoxSchema = z.object({
     startIndex: z.number(),
     endIndex: z.number(),
-  }),
+  });
+export type VisualEffectBox = z.infer<typeof VisualEffectBoxSchema>;
+
+const DescriptiveVisualEffectBoxSchema = VisualEffectBoxSchema.extend({
+  description: z.string(),
+});
+export type DescriptiveVisualEffectBox = z.infer<typeof DescriptiveVisualEffectBoxSchema>;
+
+const activeEffectEntrySchema = z.object({
+  visualEffectBox: VisualEffectBoxSchema,
   index: z.union([z.literal("tap"), z.number()]),
   description: z.string(),
 });
@@ -67,10 +73,7 @@ const characterDeckSchema = z.object({
 
 const cardEffectSchema = z.object({
   card: cardSchema,
-  visualEffectBox: z.object({
-    startIndex: z.number(),
-    endIndex: z.number(),
-  }),
+  visualEffectBox: VisualEffectBoxSchema,
   index: z.union([z.literal("tap"), z.number()]),
 });
 export type CardEffect = z.infer<typeof cardEffectSchema>;
@@ -113,10 +116,7 @@ export type StackElement =
 const selectionItemSchema: z.ZodType<SelectionItem> = z.lazy(() =>
   z.union([
     z.object({ type: z.literal("card"), payload: cardSchema }),
-    z.object({
-      type: z.literal("cardEffect"),
-      payload: activeEffectEntrySchema,
-    }),
+    z.object({ type: z.literal("cardEffect"), payload: cardEffectSchema }),
     z.object({ type: z.literal("stackElement"), payload: stackElementSchema }),
     z.object({ type: z.literal("player"), payload: entityTypeSchema }),
     z.object({ type: z.literal("monster"), payload: entityTypeSchema }),
