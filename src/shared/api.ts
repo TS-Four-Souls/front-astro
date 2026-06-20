@@ -23,6 +23,11 @@ export type Card = z.infer<typeof cardSchema>;
 const shopItemSchema = cardSchema.extend({ price: z.number() });
 
 const activeEffectEntrySchema = z.object({
+  card: identifierTypeSchema,
+  visualEffectBox: z.object({
+    startIndex: z.number(),
+    endIndex: z.number(),
+  }),
   index: z.union([z.literal("tap"), z.number()]),
   description: z.string(),
 });
@@ -60,15 +65,26 @@ const characterDeckSchema = z.object({
   cards: z.array(characterCardSchema),
 });
 
-export type SetCardCountRequest = {
+const cardEffectSchema = z.object({
+  card: cardSchema,
+  visualEffectBox: z.object({
+    startIndex: z.number(),
+    endIndex: z.number(),
+  }),
+  index: z.union([z.literal("tap"), z.number()]),
+});
+export type CardEffect = z.infer<typeof cardEffectSchema>;
+
+export interface SetCardCountRequest {
   slug: string;
   count: number;
-};
+}
 
 // Forward declare types for circular references
 export type SelectionItem =
   | { type: "card"; payload: Card }
   | { type: "stackElement"; payload: StackElement }
+  | { type: "cardEffect"; payload: CardEffect }
   | { type: "player"; payload: EntityType }
   | { type: "monster"; payload: EntityType }
   | { type: "animated"; payload: EntityType }
@@ -97,6 +113,10 @@ export type StackElement =
 const selectionItemSchema: z.ZodType<SelectionItem> = z.lazy(() =>
   z.union([
     z.object({ type: z.literal("card"), payload: cardSchema }),
+    z.object({
+      type: z.literal("cardEffect"),
+      payload: activeEffectEntrySchema,
+    }),
     z.object({ type: z.literal("stackElement"), payload: stackElementSchema }),
     z.object({ type: z.literal("player"), payload: entityTypeSchema }),
     z.object({ type: z.literal("monster"), payload: entityTypeSchema }),
@@ -268,6 +288,10 @@ const effectOnStackJsonSchema = z.object({
   issuer: entityTypeSchema,
   targets: z.array(selectionItemSchema),
   card: identifierTypeSchema,
+  visualEffectBox: z.object({
+    startIndex: z.number(),
+    endIndex: z.number(),
+  }),
   effect: z.string(),
   id: z.number(),
   reordering: stackReorderingInfoSchema.optional(),
@@ -289,6 +313,7 @@ export type StackElementJson = z.infer<typeof stackElementSchema>;
 const selectionItemTypeSchema = z.union([
   z.literal("card"),
   z.literal("stackElement"),
+  z.literal("cardEffect"),
   z.literal("player"),
   z.literal("monster"),
   z.literal("number"),
@@ -734,40 +759,52 @@ const animationSchema = z.discriminatedUnion("type", [
 ]);
 export type Animation = z.infer<typeof animationSchema>;
 
+const encounterSchema = z.object({
+  discard: z.array(cardSchema),
+  deckSize: z.number(),
+  capabilities: z.object({
+    targetableDeck: z.union([z.literal(true), z.string()]),
+  }),
+  inPlay: z.array(
+    z.object({
+      top: attackableCardSchema,
+      covered: z.array(cardSchema),
+    }),
+  ),
+});
+export type Encounter = z.infer<typeof encounterSchema>;
+
+const shopSchema = z.object({
+  discard: z.array(cardSchema),
+  deckSize: z.number(),
+  inPlay: z.array(shopItemSchema),
+  topDeckPrice: z.number(),
+});
+export type Shop = z.infer<typeof shopSchema>;
+
+const roomSlotSchema = z
+  .object({
+    discard: z.array(cardSchema),
+    deckSize: z.number(),
+    inPlay: z.array(cardSchema),
+  })
+  .optional();
+export type RoomSlot = z.infer<typeof roomSlotSchema>;
+
+const lootDeckSchema = z.object({
+  discard: z.array(cardSchema),
+  deckSize: z.number(),
+});
+export type LootDeck = z.infer<typeof lootDeckSchema>;
+
 const detailedStateSchema = z.object({
   me: playerMeSchema,
   players: z.array(playerSchema),
-  monsters: z.object({
-    discard: z.array(cardSchema),
-    deckSize: z.number(),
-    capabilities: z.object({
-      targetableDeck: z.union([z.literal(true), z.string()]),
-    }),
-    inPlay: z.array(
-      z.object({
-        top: attackableCardSchema,
-        covered: z.array(cardSchema),
-      }),
-    ),
-  }),
-  treasure: z.object({
-    discard: z.array(cardSchema),
-    deckSize: z.number(),
-    inPlay: z.array(shopItemSchema),
-    topDeckPrice: z.number(),
-  }),
-  loot: z.object({
-    discard: z.array(cardSchema),
-    deckSize: z.number(),
-  }),
+  monsters: encounterSchema,
+  treasure: shopSchema,
+  loot: lootDeckSchema,
   bonusSouls: z.array(bonusSoulCardSchema).optional(),
-  room: z
-    .object({
-      discard: z.array(cardSchema),
-      deckSize: z.number(),
-      inPlay: z.array(cardSchema),
-    })
-    .optional(),
+  room: roomSlotSchema,
   turn: z.string(),
   round: z.number(),
   stack: z.array(z.lazy(() => stackElementSchema)),

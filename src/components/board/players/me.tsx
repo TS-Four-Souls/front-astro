@@ -149,17 +149,17 @@ export const Me = () => {
     // First, check if the card has multiple effects
     // If it does, we need to first prompt the user to select an effect
     if (card.effects && card.effects.length > 1) {
-      type EffectOption = SelectionItem & {
-        index: number | "tap";
-      };
-      const effects: EffectOption[] = card.effects.map((effect) => ({
-        type: "string",
-        payload: effect.description,
-        index: effect.index,
+      type CardEffectSelectionItem = Extract<
+        SelectionItem,
+        { type: "cardEffect" }
+      >;
+      const effects: CardEffectSelectionItem[] = card.effects.map((effect) => ({
+        type: "cardEffect",
+        payload: effect,
       }));
 
       const promptId = `select-card-effect-${card.slug}-${index}`;
-      addPrompt<EffectOption>({
+      addPrompt<CardEffectSelectionItem>({
         promptId,
         isUnique: false,
         prompt: "Select an effect to activate",
@@ -167,7 +167,7 @@ export const Me = () => {
         minCount: 1,
         maxCount: 1,
         onSubmit: (selectedEffect) => {
-          activateCard(selectedEffect[0].index);
+          activateCard(selectedEffect[0].payload.index);
           removePrompt(promptId);
         },
         onCancel: () => {

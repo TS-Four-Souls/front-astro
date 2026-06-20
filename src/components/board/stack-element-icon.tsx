@@ -1,7 +1,7 @@
 import type { SelectionItem, StackElement } from "@/shared/api";
 import { cn } from "@/utils/cn";
 import { Dice } from "@/icons/dice";
-import { CardImage, CardType } from "./card";
+import { Card, CardImage, CardType } from "./card";
 import { usePopoverContext } from "./contexts/popover-context";
 import { receiverName } from "@/utils/selection-text";
 
@@ -84,7 +84,7 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
     case "effect": {
       return (
         <>
-          <CardImage card={element.card} className="w-64" />
+          <Card card={element.card} size={22} visualEffectBox={element.visualEffectBox} />
           <div className="mt-3 flex max-w-64 flex-col gap-2 text-center leading-tight text-taupe-400">
             <span>
               <span

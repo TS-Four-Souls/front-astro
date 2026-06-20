@@ -1,0 +1,5402 @@
+{
+  "b2-a_dime": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-a_nickel-2": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-a_nickel-3": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-a_nickel-4": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-a_nickel-5": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-a_nickel": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-a_penny": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-a_penny_2": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-a_penny_3": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-a_penny_4": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-a_penny_5": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-a_penny_6": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-ambush": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-baby_haunt": [
+    {
+      "top": 0.617,
+      "bottom": 0.261,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.739,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-battery_bum": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-belly_button": [
+    {
+      "top": 0.617,
+      "bottom": 0.221,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.779,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-big_spider": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-black_bony": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-blank_card": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-blank_rune": [
+    {
+      "top": 0.617,
+      "bottom": 0.285,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.715,
+      "bottom": 0.245,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.755,
+      "bottom": 0.205,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.795,
+      "bottom": 0.165,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.835,
+      "bottom": 0.125,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.875,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-blood_lust": [
+    {
+      "top": 0.617,
+      "bottom": 0.225,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.775,
+      "bottom": 0.136,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.864,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-bloody_penny": [
+    {
+      "top": 0.617,
+      "bottom": 0.216,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.784,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-blue_baby": [
+    {
+      "top": 0.617,
+      "bottom": 0.174,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.826,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-bobs_brain": [
+    {
+      "top": 0.617,
+      "bottom": 0.216,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.784,
+      "bottom": 0.142,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.858,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-bomb-2": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-bomb-3": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-bomb-4": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-bomb": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-book_of_belial": [
+    {
+      "top": 0.617,
+      "bottom": 0.247,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.753,
+      "bottom": 0.146,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.854,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-book_of_sin": [
+    {
+      "top": 0.617,
+      "bottom": 0.256,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.744,
+      "bottom": 0.195,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.805,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-boom_fly": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-boomerang": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-box": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-breakfast": [
+    {
+      "top": 0.617,
+      "bottom": 0.24,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.76,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-brimstone": [
+    {
+      "top": 0.617,
+      "bottom": 0.262,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.738,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-broken_ankh": [
+    {
+      "top": 0.617,
+      "bottom": 0.148,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.852,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-bum_bo": [
+    {
+      "top": 0.617,
+      "bottom": 0.311,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.689,
+      "bottom": 0.234,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.766,
+      "bottom": 0.163,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.837,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-bum_friend": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-butter_bean": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-butter_bean_2": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-butter_bean_3": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-cain": [
+    {
+      "top": 0.617,
+      "bottom": 0.258,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.742,
+      "bottom": 0.174,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.826,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-cains_eye": [
+    {
+      "top": 0.617,
+      "bottom": 0.216,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.784,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-cambion_conception": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-carrion_queen": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-champion_belt": [
+    {
+      "top": 0.617,
+      "bottom": 0.21,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.79,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-chaos": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-chaos_card": [
+    {
+      "top": 0.617,
+      "bottom": 0.192,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.808,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-charged_baby": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-cheese_grater": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-chest": [
+    {
+      "top": 0.617,
+      "bottom": 0.248,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.752,
+      "bottom": 0.175,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.825,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-chest_2": [
+    {
+      "top": 0.617,
+      "bottom": 0.248,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.752,
+      "bottom": 0.175,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.825,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-chub": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-clotty": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-cod_worm": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-compost": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-conjoined_fatty": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-conquest": [
+    {
+      "top": 0.617,
+      "bottom": 0.142,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.858,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-contract_from_below": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-counterfeit_penny": [
+    {
+      "top": 0.617,
+      "bottom": 0.216,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.784,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-crystal_ball": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-curse_of_amnesia": [
+    {
+      "top": 0.617,
+      "bottom": 0.241,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.759,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-curse_of_greed": [
+    {
+      "top": 0.617,
+      "bottom": 0.245,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.755,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-curse_of_loss": [
+    {
+      "top": 0.617,
+      "bottom": 0.245,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.755,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-curse_of_pain": [
+    {
+      "top": 0.617,
+      "bottom": 0.245,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.755,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-curse_of_the_blind": [
+    {
+      "top": 0.617,
+      "bottom": 0.245,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.755,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-curse_of_the_tower": [
+    {
+      "top": 0.617,
+      "bottom": 0.174,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.826,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-cursed_chest": [
+    {
+      "top": 0.617,
+      "bottom": 0.281,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.719,
+      "bottom": 0.225,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.775,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-cursed_fatty": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-cursed_gaper": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-cursed_horf": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-cursed_keeper_head": [
+    {
+      "top": 0.617,
+      "bottom": 0.143,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.857,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-cursed_moms_hand": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-cursed_psy_horf": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-curved_horn": [
+    {
+      "top": 0.617,
+      "bottom": 0.216,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.784,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-daddy_haunt": [
+    {
+      "top": 0.617,
+      "bottom": 0.209,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.791,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-daddy_long_legs": [
+    {
+      "top": 0.617,
+      "bottom": 0.142,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.858,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-dads_lost_coin": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-dagaz": [
+    {
+      "top": 0.617,
+      "bottom": 0.249,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.751,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-dank_globin": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-dark_bum": [
+    {
+      "top": 0.617,
+      "bottom": 0.222,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.778,
+      "bottom": 0.158,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.842,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-dark_chest": [
+    {
+      "top": 0.617,
+      "bottom": 0.25,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.75,
+      "bottom": 0.185,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.815,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-dark_chest_2": [
+    {
+      "top": 0.617,
+      "bottom": 0.251,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.749,
+      "bottom": 0.185,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.815,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-dark_one": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-dead_bird": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-death": [
+    {
+      "top": 0.617,
+      "bottom": 0.142,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.858,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-decoy": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-delirium": [
+    {
+      "top": 0.617,
+      "bottom": 0.275,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.725,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-devil_deal": [
+    {
+      "top": 0.617,
+      "bottom": 0.279,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.721,
+      "bottom": 0.227,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.773,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-dice_shard": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-dice_shard_2": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-dice_shard_3": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-dinga": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-dinner": [
+    {
+      "top": 0.617,
+      "bottom": 0.24,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.76,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-dip": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-diplopia": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-donation_machine": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-dople": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-dry_baby": [
+    {
+      "top": 0.617,
+      "bottom": 0.228,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.772,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-eden": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-edens_blessing": [
+    {
+      "top": 0.617,
+      "bottom": 0.226,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.774,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-ehwaz": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-empty_vessel": [
+    {
+      "top": 0.617,
+      "bottom": 0.226,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.774,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-envy": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-eve": [
+    {
+      "top": 0.617,
+      "bottom": 0.174,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.826,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-evil_twin": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-eye_of_greed": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-famine": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-fanny_pack": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-fat_bat": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-fatty": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-finger": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-flush": [
+    {
+      "top": 0.617,
+      "bottom": 0.194,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.806,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-fly": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-forever_alone": [
+    {
+      "top": 0.617,
+      "bottom": 0.281,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.719,
+      "bottom": 0.235,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.765,
+      "bottom": 0.191,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.809,
+      "bottom": 0.121,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.879,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-four_cents-2": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-four_cents-3": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-four_cents-4": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-four_cents-5": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-four_cents-6": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-four_cents-7": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-four_cents-8": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-four_cents-9": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-four_cents": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-gemini": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-glass_cannon": [
+    {
+      "top": 0.617,
+      "bottom": 0.159,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.841,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-gluttony": [
+    {
+      "top": 0.617,
+      "bottom": 0.143,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.857,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-goat_head": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-godhead": [
+    {
+      "top": 0.617,
+      "bottom": 0.195,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.805,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-gold_bomb": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-gold_chest": [
+    {
+      "top": 0.617,
+      "bottom": 0.219,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.781,
+      "bottom": 0.16,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.84,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-gold_chest_2": [
+    {
+      "top": 0.617,
+      "bottom": 0.219,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.781,
+      "bottom": 0.16,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.84,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-golden_horseshoe": [
+    {
+      "top": 0.617,
+      "bottom": 0.216,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.784,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-golden_razor_blade": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-greed": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-greed_event": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-greedling": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-greeds_gullet": [
+    {
+      "top": 0.617,
+      "bottom": 0.269,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.731,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-guppys_collar": [
+    {
+      "top": 0.617,
+      "bottom": 0.137,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.863,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-guppys_hairball": [
+    {
+      "top": 0.617,
+      "bottom": 0.194,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.806,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-guppys_head": [
+    {
+      "top": 0.617,
+      "bottom": 0.26,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.74,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-guppys_paw": [
+    {
+      "top": 0.617,
+      "bottom": 0.151,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.849,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-gurdy": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-gurdy_jr": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-hanger": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-holy_dinga": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-holy_dip": [
+    {
+      "top": 0.617,
+      "bottom": 0.143,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.857,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-holy_keeper_head": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-holy_moms_eye": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-holy_squirt": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-hopper": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-horf": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-host_hat": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-i_can_see_forever": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-i_the_magician": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-ii_the_high_priestess": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-iii_the_empress": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-incubus": [
+    {
+      "top": 0.617,
+      "bottom": 0.226,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.774,
+      "bottom": 0.12,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.88,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-ipecac": [
+    {
+      "top": 0.617,
+      "bottom": 0.262,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.738,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-isaac": [
+    {
+      "top": 0.617,
+      "bottom": 0.175,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.825,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-iv_the_emperor": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-ix_the_hermit": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-jawbone": [
+    {
+      "top": 0.617,
+      "bottom": 0.228,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.772,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-judas": [
+    {
+      "top": 0.617,
+      "bottom": 0.174,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.826,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-keeper_head": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-larry_jr": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-lazarus": [
+    {
+      "top": 0.617,
+      "bottom": 0.174,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.826,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-lazarus_rags": [
+    {
+      "top": 0.617,
+      "bottom": 0.214,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.786,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-leaper": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-leech": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-lil_battery": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-lil_battery_2": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-lil_battery_3": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-lil_battery_4": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-lilith": [
+    {
+      "top": 0.617,
+      "bottom": 0.174,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.826,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-little_horn": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-lost_soul": [
+    {
+      "top": 0.617,
+      "bottom": 0.15,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.85,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-lucky_foot": [
+    {
+      "top": 0.617,
+      "bottom": 0.209,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.791,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-lust": [
+    {
+      "top": 0.617,
+      "bottom": 0.143,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.857,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-maggy": [
+    {
+      "top": 0.617,
+      "bottom": 0.174,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.826,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-mask_of_infamy": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-meat": [
+    {
+      "top": 0.617,
+      "bottom": 0.223,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.777,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-mega_battery": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-mega_fatty": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-mega_troll_bomb": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-mini_mush": [
+    {
+      "top": 0.617,
+      "bottom": 0.222,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.778,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-modeling_clay": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-mom": [
+    {
+      "top": 0.617,
+      "bottom": 0.224,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.776,
+      "bottom": 0.143,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.857,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-moms_box": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-moms_bra": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-moms_coin_purse": [
+    {
+      "top": 0.617,
+      "bottom": 0.255,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.745,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-moms_dead_hand": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-moms_eye": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-moms_hand": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-moms_purse": [
+    {
+      "top": 0.617,
+      "bottom": 0.255,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.745,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-moms_razor": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-moms_shovel": [
+    {
+      "top": 0.617,
+      "bottom": 0.265,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.735,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-monster_manual": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-monstro": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-monstros_tooth": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-mr_boom": [
+    {
+      "top": 0.617,
+      "bottom": 0.263,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.737,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-mulliboom": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-mulligan": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-mystery_sack": [
+    {
+      "top": 0.617,
+      "bottom": 0.192,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.808,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-no": [
+    {
+      "top": 0.617,
+      "bottom": 0.202,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.798,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-o_the_fool": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-pale_fatty": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-pandoras_box": [
+    {
+      "top": 0.617,
+      "bottom": 0.258,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.742,
+      "bottom": 0.211,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.789,
+      "bottom": 0.163,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.837,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-pay_to_play": [
+    {
+      "top": 0.617,
+      "bottom": 0.214,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.786,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-peep": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-pestilence": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-pills": [
+    {
+      "top": 0.617,
+      "bottom": 0.258,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.742,
+      "bottom": 0.187,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.813,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-pills_2": [
+    {
+      "top": 0.617,
+      "bottom": 0.24,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.76,
+      "bottom": 0.167,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.833,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-pills_3": [
+    {
+      "top": 0.617,
+      "bottom": 0.239,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.761,
+      "bottom": 0.139,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.861,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-pin": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-placebo": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-polydactyly": [
+    {
+      "top": 0.617,
+      "bottom": 0.234,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.766,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-pooter": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-portable_slot_machine": [
+    {
+      "top": 0.617,
+      "bottom": 0.193,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.807,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-portal": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-potato_peeler": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-pride": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-psy_horf": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-purple_heart": [
+    {
+      "top": 0.617,
+      "bottom": 0.216,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.784,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-rag_man": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-rage_creep": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-razor_blade": [
+    {
+      "top": 0.617,
+      "bottom": 0.217,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.783,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-red_host": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-remote_detonator": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-restock": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-ring_of_flies": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-sack_head": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-sack_of_pennies": [
+    {
+      "top": 0.617,
+      "bottom": 0.268,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.732,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-sacred_heart": [
+    {
+      "top": 0.617,
+      "bottom": 0.248,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.752,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-samson": [
+    {
+      "top": 0.617,
+      "bottom": 0.174,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.826,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-satan": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-scolex": [
+    {
+      "top": 0.617,
+      "bottom": 0.142,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.858,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-secret_room": [
+    {
+      "top": 0.617,
+      "bottom": 0.271,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.729,
+      "bottom": 0.22,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.78,
+      "bottom": 0.167,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.833,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-shadow": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-shiny_rock": [
+    {
+      "top": 0.617,
+      "bottom": 0.228,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.772,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-shop_upgrade": [
+    {
+      "top": 0.617,
+      "bottom": 0.244,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.756,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-sleight_of_hand": [
+    {
+      "top": 0.617,
+      "bottom": 0.22,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.78,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-sloth": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-smelter": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-soul_heart": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-soul_heart_2": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-soul_of_gluttony": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-soul_of_greed": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-soul_of_guppy": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-spider": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-spider_mod": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-spoon_bender": [
+    {
+      "top": 0.617,
+      "bottom": 0.267,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.733,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-squirt": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-starter_deck": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-steamy_sale": [
+    {
+      "top": 0.617,
+      "bottom": 0.244,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.756,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-stoney": [
+    {
+      "top": 0.617,
+      "bottom": 0.278,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.722,
+      "bottom": 0.228,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.772,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-suicide_king": [
+    {
+      "top": 0.617,
+      "bottom": 0.278,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.722,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-swallowed_penny": [
+    {
+      "top": 0.617,
+      "bottom": 0.216,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.784,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-swarm_of_flies": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-synthoil": [
+    {
+      "top": 0.617,
+      "bottom": 0.242,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.758,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-tarot_cloth": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-tech_x": [
+    {
+      "top": 0.617,
+      "bottom": 0.268,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.732,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-the_battery": [
+    {
+      "top": 0.617,
+      "bottom": 0.233,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.767,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-the_bloat": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-the_blue_map": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-the_bone": [
+    {
+      "top": 0.617,
+      "bottom": 0.333,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.667,
+      "bottom": 0.269,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.731,
+      "bottom": 0.2,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.8,
+      "bottom": 0.113,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.887,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-the_chest": [
+    {
+      "top": 0.617,
+      "bottom": 0.262,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.738,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-the_compass": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-the_curse": [
+    {
+      "top": 0.617,
+      "bottom": 0.254,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.746,
+      "bottom": 0.13,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.87,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-the_d10": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-the_d100": [
+    {
+      "top": 0.617,
+      "bottom": 0.292,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.708,
+      "bottom": 0.242,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.758,
+      "bottom": 0.162,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.838,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-the_d20": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-the_d4": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-the_d6": [
+    {
+      "top": 0.617,
+      "bottom": 0.23,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.77,
+      "bottom": 0.136,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.864,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-the_dead_cat": [
+    {
+      "top": 0.617,
+      "bottom": 0.287,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.713,
+      "bottom": 0.146,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.854,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-the_duke_of_flies": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-the_forgotten": [
+    {
+      "top": 0.617,
+      "bottom": 0.174,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.826,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-the_habit": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-the_haunt": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-the_lamb": [
+    {
+      "top": 0.617,
+      "bottom": 0.221,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.779,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-the_map": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-the_midas_touch": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-the_polaroid": [
+    {
+      "top": 0.617,
+      "bottom": 0.242,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.758,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-the_poop": [
+    {
+      "top": 0.617,
+      "bottom": 0.246,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.754,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-the_relic": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-the_shovel": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-theres_options": [
+    {
+      "top": 0.617,
+      "bottom": 0.205,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.795,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-three_cents-10": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-three_cents-11": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-three_cents-12": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-three_cents-13": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-three_cents-14": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-three_cents-15": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-three_cents-2": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-three_cents-3": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-three_cents-4": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-three_cents-5": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-three_cents-6": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-three_cents-7": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-three_cents-8": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-three_cents-9": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-three_cents": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-trinity_shield": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-trite": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-troll_bombs": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-two_cents-10": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-two_cents-11": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-two_cents-12": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-two_cents-2": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-two_cents-3": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-two_cents-4": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-two_cents-5": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-two_cents-6": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-two_cents-7": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-two_cents-8": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-two_cents-9": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-two_cents": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-two_of_clubs": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-v_the_hierophant": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-vi_the_lovers": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-vii_the_chariot": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-viii_justice": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-war": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-we_need_to_go_deeper": [
+    {
+      "top": 0.617,
+      "bottom": 0.21,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.79,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-wizoob": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-wrath": [
+    {
+      "top": 0.617,
+      "bottom": 0.223,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.777,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-x_wheel_of_fortune": [
+    {
+      "top": 0.617,
+      "bottom": 0.282,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.718,
+      "bottom": 0.235,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.765,
+      "bottom": 0.188,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.812,
+      "bottom": 0.141,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.859,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-xi_strength": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-xii_the_hanged_man": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-xiii_death": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-xiv_temperance": [
+    {
+      "top": 0.617,
+      "bottom": 0.197,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.803,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-xix_the_sun": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-xl_floor": [
+    {
+      "top": 0.617,
+      "bottom": 0.244,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.756,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-xv_the_devil": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-xvi_the_tower": [
+    {
+      "top": 0.617,
+      "bottom": 0.246,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.754,
+      "bottom": 0.162,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.838,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-xvii_the_stars": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-xviii_the_moon": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-xx_judgement": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-xxi_the_world": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "b2-yum_heart": [
+    {
+      "top": 0.617,
+      "bottom": 0.222,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.778,
+      "bottom": 0.134,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.866,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-1_up": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-20_20": [
+    {
+      "top": 0.617,
+      "bottom": 0.236,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.764,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-a_nickel": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-a_penny": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-a_penny_2": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-a_penny_3": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-aaa_battery": [
+    {
+      "top": 0.617,
+      "bottom": 0.213,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.787,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-abaddon": [
+    {
+      "top": 0.617,
+      "bottom": 0.244,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.756,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-angel_room": [
+    {
+      "top": 0.617,
+      "bottom": 0.251,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.749,
+      "bottom": 0.183,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.817,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-ansuz": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-athame": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-bag_o_trash": [
+    {
+      "top": 0.617,
+      "bottom": 0.213,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.787,
+      "bottom": 0.133,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.867,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-black_candle": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-black_rune": [
+    {
+      "top": 0.617,
+      "bottom": 0.232,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.768,
+      "bottom": 0.181,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.819,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-blastocyst": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-bomb": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-bony": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-boss_rush": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-brain": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-bum_bo": [
+    {
+      "top": 0.617,
+      "bottom": 0.174,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.826,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-butter_bean": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-curse_of_blood_lust": [
+    {
+      "top": 0.617,
+      "bottom": 0.245,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.755,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-curse_of_impulse": [
+    {
+      "top": 0.617,
+      "bottom": 0.223,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.777,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-cursed_eye": [
+    {
+      "top": 0.617,
+      "bottom": 0.241,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.759,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-cursed_globin": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-cursed_tumor": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-daddy_long_legs": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-dark_arts": [
+    {
+      "top": 0.617,
+      "bottom": 0.261,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.739,
+      "bottom": 0.148,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.852,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-dark_judas": [
+    {
+      "top": 0.617,
+      "bottom": 0.174,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.826,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-dice_shard": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-dingle": [
+    {
+      "top": 0.617,
+      "bottom": 0.232,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.768,
+      "bottom": 0.191,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.809,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-distant_admiration": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-divorce_papers": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-euthanasia": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-flaming_hopper": [
+    {
+      "top": 0.617,
+      "bottom": 0.143,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.857,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-forget_me_now": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-four_cents": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-four_cents_2": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-game_breaking_bug": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-get_out_of_jail_card": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-gimpy": [
+    {
+      "top": 0.617,
+      "bottom": 0.253,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.747,
+      "bottom": 0.178,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.822,
+      "bottom": 0.129,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.871,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-globin": [
+    {
+      "top": 0.617,
+      "bottom": 0.2,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.8,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-gold_key": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-guppy": [
+    {
+      "top": 0.617,
+      "bottom": 0.174,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.826,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-guppys_eye": [
+    {
+      "top": 0.617,
+      "bottom": 0.171,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.829,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-head_of_krampus": [
+    {
+      "top": 0.617,
+      "bottom": 0.206,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.794,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-head_of_the_keeper": [
+    {
+      "top": 0.617,
+      "bottom": 0.245,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.755,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-head_trauma": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-headless_horseman": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-holy_bony": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-holy_chest": [
+    {
+      "top": 0.617,
+      "bottom": 0.201,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.799,
+      "bottom": 0.154,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.846,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-holy_mulligan": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-hourglass": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-infestation": [
+    {
+      "top": 0.617,
+      "bottom": 0.217,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.783,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-isaac": [
+    {
+      "top": 0.617,
+      "bottom": 0.143,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.857,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-krampus": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-lard": [
+    {
+      "top": 0.617,
+      "bottom": 0.264,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.736,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-libra": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-lil_battery": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-magnet": [
+    {
+      "top": 0.617,
+      "bottom": 0.215,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.785,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-mama_haunt": [
+    {
+      "top": 0.617,
+      "bottom": 0.222,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.778,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-moms_eye_shadow": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-moms_heart": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-monstro_ii": [
+    {
+      "top": 0.617,
+      "bottom": 0.212,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.788,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-mutant_spider": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-nerve_ending": [
+    {
+      "top": 0.617,
+      "bottom": 0.143,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.857,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-perthro": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-phd": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-pills": [
+    {
+      "top": 0.617,
+      "bottom": 0.211,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.789,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-pills_2": [
+    {
+      "top": 0.617,
+      "bottom": 0.284,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.716,
+      "bottom": 0.235,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.765,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-pills_3": [
+    {
+      "top": 0.617,
+      "bottom": 0.229,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.771,
+      "bottom": 0.138,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.862,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-poker_chip": [
+    {
+      "top": 0.617,
+      "bottom": 0.212,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.788,
+      "bottom": 0.131,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.869,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-polyphemus": [
+    {
+      "top": 0.617,
+      "bottom": 0.248,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.752,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-questionmark_card": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-rainbow_baby": [
+    {
+      "top": 0.617,
+      "bottom": 0.24,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.76,
+      "bottom": 0.18,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.82,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-red_candle": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-roundy": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-rubber_cement": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-smart_fly": [
+    {
+      "top": 0.617,
+      "bottom": 0.212,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.788,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-spiked_chest": [
+    {
+      "top": 0.617,
+      "bottom": 0.265,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.735,
+      "bottom": 0.175,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.825,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-sucker": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-swarmer": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-tape_worm": [
+    {
+      "top": 0.617,
+      "bottom": 0.206,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.794,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-telepathy_for_dummies": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-the_fallen": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-the_left_hand": [
+    {
+      "top": 0.617,
+      "bottom": 0.216,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.784,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-the_wiz": [
+    {
+      "top": 0.617,
+      "bottom": 0.257,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.743,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-three_cents": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-three_cents_2": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-three_cents_3": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-three_cents_4": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-troll_bombs": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-tumor": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-two_cents": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-two_cents_2": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-two_cents_3": [
+    {
+      "top": 0.617,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-whore_of_babylon": [
+    {
+      "top": 0.617,
+      "bottom": 0.174,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.826,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ],
+  "fsp2-widow": [
+    {
+      "top": 0.617,
+      "bottom": 0.144,
+      "left": 0.089,
+      "right": 0.081
+    },
+    {
+      "top": 0.856,
+      "bottom": 0.067,
+      "left": 0.089,
+      "right": 0.081
+    }
+  ]
+}

@@ -4,7 +4,7 @@ import type { SelectionItem } from "@/shared/api";
 import { cn } from "@/utils/cn";
 import { HotkeyScope } from "@/utils/hotkey";
 import { useHotkeys } from "react-hotkeys-hook";
-import { CardImage, CardType } from "../card";
+import { Card, CardImage, CardType } from "../card";
 import { Person } from "@/icons/person";
 import { Sword } from "@/icons/sword";
 import { StackElement } from "../stack";
@@ -217,6 +217,15 @@ export const GenericOption = ({
           children={children}
         />
       );
+    case "cardEffect":
+      return (
+        <CardEffectOption
+          option={option}
+          onPress={onPress}
+          selected={selected}
+          children={children}
+        />
+      );
     case "string":
       return (
         <StringOption
@@ -304,6 +313,31 @@ interface TemplateOptionProps<T extends SelectionItem["type"]> {
   onPress: (() => void) | undefined;
   children: React.ReactNode;
 }
+
+export const CardEffectOption = ({
+  option,
+  onPress,
+  children,
+  selected,
+}: TemplateOptionProps<"cardEffect">) => {
+  console.log(option.payload);
+  return (
+    <div
+      className={cn(
+        "relative flex flex-col items-center gap-2 p-2",
+        onPress && "cursor-pointer",
+      )}
+      onClick={onPress}>
+      <Card
+        card={option.payload.card}
+        className={cn("shadow-lg/30", selected && "outline-6 outline-blue-400")}
+        size={22}
+        visualEffectBox={option.payload.visualEffectBox}
+      />
+      <div className="absolute inset-4">{children}</div>
+    </div>
+  );
+};
 
 export const PlayerOption = ({
   option,

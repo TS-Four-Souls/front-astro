@@ -4,6 +4,7 @@ import { TemporaryEffectCard } from "./temporary-effect-card";
 import { SELF_BASE_URL } from "astro:env/client";
 import { PileIndicator } from "@/icons/pile-indicator";
 import { SelectionIndexIndicator } from "./selection-index-indicator";
+import boxes from "@/data/boxes.json";
 
 export enum CardType {
   BonusSoul = "bsoul",
@@ -25,6 +26,10 @@ interface CardProps {
   hotkey?: string;
   selectionIndex?: number;
   effects?: TemporaryEffect[];
+  visualEffectBox?: {
+    startIndex: number;
+    endIndex: number;
+  };
   onPileDetailsClick?: () => void;
   onClick?: () => void;
   disabled?: boolean;
@@ -60,6 +65,7 @@ export const Card = ({
   size = 160,
   aspectRatio = 750 / 1024,
   effects,
+  visualEffectBox,
   counter,
   onMouseEnter,
   onMouseLeave,
@@ -119,6 +125,23 @@ export const Card = ({
             />
           </div>
         )}
+
+        {typeof card === "object" &&
+          visualEffectBox &&
+          card.slug in boxes &&
+          boxes[card.slug as keyof typeof boxes]
+            .slice(visualEffectBox.startIndex, visualEffectBox.endIndex + 1)
+            .map((box, index) => (
+              <div
+                key={index}
+                className="absolute rounded-[0.3em] shadow-xl/50 inset-shadow-sm inset-shadow-white backdrop-brightness-120"
+                style={{
+                  top: box.top * 100 - 0.5 + "%",
+                  bottom: box.bottom * 100 - 0.5 + "%",
+                  left: "5%",
+                  right: "5%",
+                }}></div>
+            ))}
 
         {selectionIndex && (
           <SelectionIndexIndicator
