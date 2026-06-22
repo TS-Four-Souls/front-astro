@@ -592,6 +592,11 @@ const cardActivationSchema = z.object({
   effectIndex: z.union([z.number(), z.literal("tap")]),
   targetChoices: z.array(selectionItemSchema).optional(),
 });
+const cardActivationWithIdSchema = z.object({
+  index: z.number(),
+  effectIndex: z.number(),
+  targetChoices: z.array(selectionItemSchema).optional(),
+});
 
 const setGameParameterRequestSchema = z.discriminatedUnion("parameter", [
   z.object({
@@ -1011,6 +1016,7 @@ export const schemas = {
   insertStackElementBeforeRequest: insertStackElementBeforeSchema,
   playCardRequest: cardActivationSchema,
   activateRequest: cardActivationSchema,
+  activateWithIDRequest: cardActivationWithIdSchema,
   activateRoomRequest: cardActivationSchema,
   purchaseRequest: purchaseSchema,
   giveCoinsRequest: giveCoinsSchema,
@@ -1039,6 +1045,7 @@ export namespace Requests {
   >;
   export type PlayCard = z.infer<typeof cardActivationSchema>;
   export type Activate = z.infer<typeof cardActivationSchema>;
+  export type ActivateWithID = z.infer<typeof cardActivationWithIdSchema>;
   export type ActivateRoom = z.infer<typeof cardActivationSchema>;
   export type Purchase = z.infer<typeof purchaseSchema>;
   export type GiveCoins = z.infer<typeof giveCoinsSchema>;
@@ -1189,6 +1196,11 @@ export interface ClientToServerEvents {
 
   activate: (
     request: Requests.Activate,
+    callback: (response: Responses.Activate) => void,
+  ) => void;
+
+  activateWithID: (
+    request: Requests.ActivateWithID,
     callback: (response: Responses.Activate) => void,
   ) => void;
 

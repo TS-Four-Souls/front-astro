@@ -103,11 +103,12 @@ export const Me = () => {
 
   const onInPlayCardClick = (card: InPlayMeCard, index: number) => {
     const activateCard = (
-      effectIndex: number | "tap",
+      effectIndex: number,
       selections: SelectionItem[] = [],
     ) => {
+      console.log("Activating card", card.slug, "effectIndex", effectIndex, "selections", selections);
       socket.emit(
-        "activate",
+        "activateWithID",
         { index, effectIndex, targetChoices: selections },
         (response) => {
           switch (response.status) {
@@ -172,7 +173,7 @@ export const Me = () => {
         minCount: 1,
         maxCount: 1,
         onSubmit: (selectedEffect) => {
-          activateCard(selectedEffect[0].payload.index);
+          activateCard(selectedEffect[0].payload.visualEffectBox.startIndex);
           removePrompt(promptId);
         },
         onCancel: () => {
@@ -180,7 +181,7 @@ export const Me = () => {
         },
       });
     } else if (card.effects && card.effects.length === 1) {
-      activateCard(card.effects[0].index);
+      activateCard(card.effects[0].visualEffectBox.startIndex);
     }
   };
 
