@@ -99,12 +99,12 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
           removePrompt(promptId);
           return;
         }
+        removePrompt(promptId);
         socket.emit(
           "giveCoins",
           { coins: selections[0].payload, target: name },
           (response) => {
             if (response.status === 200) {
-              removePrompt(promptId);
             } else {
               toast("error", "Failed to give coins", response.error);
             }
