@@ -10,9 +10,15 @@ export interface PopoverProps {
     height: number;
   };
   className?: string;
+  withWrapper?: boolean;
 }
 
-export const Popover = ({ children, anchor, className }: PopoverProps) => {
+export const Popover = ({
+  children,
+  anchor,
+  className,
+  withWrapper = true,
+}: PopoverProps) => {
   const popoverRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [position, setPosition] = useState<{
@@ -72,13 +78,17 @@ export const Popover = ({ children, anchor, className }: PopoverProps) => {
         top: position?.top ?? -9999,
         left: position?.left ?? -9999,
       }}>
-      <div
-        className={cn(
-          "rounded-3xl border-3 border-taupe-700 bg-taupe-950 p-3",
-          className,
-        )}>
-        {children}
-      </div>
+      {withWrapper ? (
+        <div
+          className={cn(
+            "rounded-3xl border-3 border-taupe-700 bg-taupe-950 p-3",
+            className,
+          )}>
+          {children}
+        </div>
+      ) : (
+        children
+      )}
     </div>
   );
 };

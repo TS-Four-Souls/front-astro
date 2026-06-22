@@ -106,7 +106,6 @@ export const Me = () => {
       effectIndex: number,
       selections: SelectionItem[] = [],
     ) => {
-      console.log("Activating card", card.slug, "effectIndex", effectIndex, "selections", selections);
       socket.emit(
         "activateWithID",
         { index, effectIndex, targetChoices: selections },

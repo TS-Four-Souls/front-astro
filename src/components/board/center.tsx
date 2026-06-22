@@ -227,8 +227,9 @@ export const Center = ({ state }: CenterProps) => {
               globalId={SpecialGlobalIds.Treasure}
               cards={Array.from({ length: state.treasure.deckSize }).map(
                 (_, index) =>
-                  index === state.treasure.deckSize - 1
-                    ? (state.firstCardTreasureDeck ?? CardType.TreasureCard)
+                  index === state.treasure.deckSize - 1 &&
+                  state.firstCardTreasureDeck
+                    ? state.firstCardTreasureDeck
                     : CardType.TreasureCard,
               )}
               onClickTopCardHotkey={
@@ -244,10 +245,36 @@ export const Center = ({ state }: CenterProps) => {
                   () => purchaseTreasure("top"),
                 )
               }
-              tooltip={{
-                capable: state.me.capabilities.buyTreasure,
-                title: "Cannot buy this card",
-              }}
+              tooltip={[
+                {
+                  capable: state.me.capabilities.buyTreasure,
+                  title: "Cannot buy this card",
+                },
+                {
+                  enabled: true,
+                  title: `Price: ${state.treasure.topDeckPrice}¢`,
+                  type: "gold",
+                },
+              ]}
+              onHoverPopover={
+                state.firstCardTreasureDeck &&
+                (() => (
+                  <CardHoverPreview
+                    card={state.firstCardTreasureDeck ?? CardType.TreasureCard}
+                    tooltip={[
+                      {
+                        capable: state.me.capabilities.buyTreasure,
+                        title: "Cannot buy this card",
+                      },
+                      {
+                        enabled: true,
+                        title: `Price: ${state.treasure.topDeckPrice}¢`,
+                        type: "gold",
+                      },
+                    ]}
+                  />
+                ))
+              }
             />
           </div>
           {state.treasure.inPlay.map((card, index) => (
@@ -273,10 +300,17 @@ export const Center = ({ state }: CenterProps) => {
                 onHoverPopover={() => (
                   <CardHoverPreview
                     card={card}
-                    tooltip={{
-                      capable: state.me.capabilities.buyTreasure,
-                      title: "Cannot buy this card",
-                    }}
+                    tooltip={[
+                      {
+                        capable: state.me.capabilities.buyTreasure,
+                        title: "Cannot buy this card",
+                      },
+                      {
+                        enabled: true,
+                        title: `Price: ${card.price}¢`,
+                        type: "gold",
+                      },
+                    ]}
                   />
                 )}
               />

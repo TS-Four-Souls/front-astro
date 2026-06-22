@@ -8,6 +8,7 @@ interface Popover {
     width: number;
     height: number;
   };
+  withWrapper?: boolean;
   content: React.ReactNode;
   className?: string;
 }
@@ -36,7 +37,10 @@ export const PopoverProvider = ({
     <PopoverContext.Provider value={{ setPopover, closePopover }}>
       {children}
       {popover && (
-        <Popover anchor={popover.anchor} className={popover.className}>
+        <Popover
+          anchor={popover.anchor}
+          className={popover.className}
+          withWrapper={popover.withWrapper}>
           {popover.content}
         </Popover>
       )}

@@ -22,15 +22,17 @@ export type Card = z.infer<typeof cardSchema>;
 
 const shopItemSchema = cardSchema.extend({ price: z.number() });
 const VisualEffectBoxSchema = z.object({
-    startIndex: z.number(),
-    endIndex: z.number(),
-  });
+  startIndex: z.number(),
+  endIndex: z.number(),
+});
 export type VisualEffectBox = z.infer<typeof VisualEffectBoxSchema>;
 
 const DescriptiveVisualEffectBoxSchema = VisualEffectBoxSchema.extend({
   description: z.string(),
 });
-export type DescriptiveVisualEffectBox = z.infer<typeof DescriptiveVisualEffectBoxSchema>;
+export type DescriptiveVisualEffectBox = z.infer<
+  typeof DescriptiveVisualEffectBoxSchema
+>;
 
 const activeEffectEntrySchema = z.object({
   visualEffectBox: VisualEffectBoxSchema,

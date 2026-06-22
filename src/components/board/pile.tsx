@@ -56,7 +56,7 @@ interface PileProps {
   onClickTopCardHotkey?: string;
   onPileDetailsClick?: () => void;
   onHoverPopover?: () => React.ReactNode;
-  tooltip?: Tooltip;
+  tooltip?: Tooltip | Tooltip[] | undefined;
   enableRandomRotation?: boolean;
   globalId?: number;
   style?: React.CSSProperties;
