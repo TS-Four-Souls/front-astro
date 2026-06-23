@@ -6,6 +6,7 @@ import type {
   DeathOnStackJson,
   DiceRollJson,
   EffectOnStackJson,
+  EndOfTurnJson,
   LootCardOnStackJson,
   LootStepJson,
   StackElement as StackElementType,
@@ -284,6 +285,8 @@ const StackElementContent = ({ element }: { element: StackElementType }) => {
       return <DeathElement element={element} />;
     case "lootStep":
       return <LootStepElement element={element} />;
+    case "endOfTurn":
+      return <EndOfTurnElement element={element} />;
   }
 };
 
@@ -382,6 +385,22 @@ const LootStepElement = ({ element }: { element: LootStepJson }) => {
           </span>{" "}
           is about to loot {element.nbLoots} card
           {element.nbLoots > 1 ? "s" : ""}
+        </p>
+      </div>
+    </div>
+  );
+};
+
+const EndOfTurnElement = ({ element }: { element: EndOfTurnJson }) => {
+  return (
+    <div className="flex flex-row items-center gap-4">
+      <StackElementIcon element={element} />
+      <div className="text-sm">
+        <p className="text-taupe-200">
+          <span style={{ color: element.player.color }}>
+            {element.player.name}
+          </span>{" "}
+          is about to end their turn.
         </p>
       </div>
     </div>

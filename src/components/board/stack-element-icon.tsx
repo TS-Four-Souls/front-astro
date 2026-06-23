@@ -122,6 +122,20 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
       );
     }
 
+    case "endOfTurn": {
+      return (
+        <div className="flex flex-col items-center gap-3">
+          <CardImage card={CardType.CharacterCard} className="w-64" />
+          <div className="max-w-64 px-2 text-center leading-tight text-taupe-400">
+            <span style={{ color: element.player.color }} className="font-bold">
+              {element.player.name}
+            </span>{" "}
+            is about to end their turn.
+          </div>
+        </div>
+      );
+    }
+
     case "damage": {
       return (
         <div className="flex flex-col items-center gap-3">
@@ -232,6 +246,21 @@ const Icon = ({ element }: IconProps) => {
       );
     }
 
+    case "endOfTurn": {
+      return (
+        <div
+          className={cn(
+            "size-10 overflow-hidden rounded-lg border-[0.15em] bg-taupe-800/50",
+          )}
+          style={{ borderColor }}>
+          <CardImage
+            card={CardType.CharacterCard}
+            className="translate-y-[-17%] scale-155"
+          />
+        </div>
+      );
+    }
+
     case "damage":
       return (
         <img
@@ -270,6 +299,7 @@ const getBorderColor = (element: StackElement) => {
     case "death":
       return element.from.color;
     case "lootStep":
+    case "endOfTurn":
       return element.player.color;
     default:
       return "border-taupe-700";
@@ -325,6 +355,8 @@ export const SelectionContent = ({
           return `${selection.payload.issuer.name} used ${selection.payload.card.name}`;
         case "lootStep":
           return `${selection.payload.player.name} is about to loot ${selection.payload.nbLoots} card${selection.payload.nbLoots > 1 ? "s" : ""}`;
+        case "endOfTurn":
+          return `${selection.payload.player.name} is about to end their turn.`;
       }
     case "deck":
       return selection.payload;
