@@ -126,13 +126,6 @@ export const Card = ({
           </div>
         )}
 
-        {typeof card === "object" && visualEffectBox && (
-          <VisualEffectBoxComponent
-            card={card}
-            visualEffectBox={visualEffectBox}
-          />
-        )}
-
         {selectionIndex && (
           <SelectionIndexIndicator
             index={selectionIndex}

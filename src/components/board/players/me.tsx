@@ -103,11 +103,11 @@ export const Me = () => {
 
   const onInPlayCardClick = (card: InPlayMeCard, index: number) => {
     const activateCard = (
-      effectIndex: number,
+      effectIndex: number | "tap",
       selections: SelectionItem[] = [],
     ) => {
       socket.emit(
-        "activateWithID",
+        "activate",
         { index, effectIndex, targetChoices: selections },
         (response) => {
           switch (response.status) {
@@ -149,22 +149,17 @@ export const Me = () => {
     // First, check if the card has multiple effects
     // If it does, we need to first prompt the user to select an effect
     if (card.effects && card.effects.length > 1) {
-      type CardEffectSelectionItem = Extract<
-        SelectionItem,
-        { type: "cardEffect" }
-      >;
-      const effects: CardEffectSelectionItem[] = card.effects.map((effect) => ({
-        type: "cardEffect",
-        payload: {
-          card: card,
-          visualEffectBox: effect.visualEffectBox,
-          index: effect.index,
-          description: effect.description,
-        },
+      type EffectOption = SelectionItem & {
+        index: number | "tap";
+      };
+      const effects: EffectOption[] = card.effects.map((effect) => ({
+        type: "string",
+        payload: effect.description,
+        index: effect.index,
       }));
 
       const promptId = `select-card-effect-${card.slug}-${index}`;
-      addPrompt<CardEffectSelectionItem>({
+      addPrompt<EffectOption>({
         promptId,
         isUnique: false,
         prompt: "Select an effect to activate",
@@ -172,7 +167,7 @@ export const Me = () => {
         minCount: 1,
         maxCount: 1,
         onSubmit: (selectedEffect) => {
-          activateCard(selectedEffect[0].payload.visualEffectBox.startIndex);
+          activateCard(selectedEffect[0].index);
           removePrompt(promptId);
         },
         onCancel: () => {
@@ -180,7 +175,7 @@ export const Me = () => {
         },
       });
     } else if (card.effects && card.effects.length === 1) {
-      activateCard(card.effects[0].visualEffectBox.startIndex);
+      activateCard(card.effects[0].index);
     }
   };
 
