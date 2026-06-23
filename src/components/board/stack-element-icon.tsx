@@ -108,15 +108,13 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
     case "lootStep": {
       return (
         <div className="flex flex-col items-center gap-3">
-          <CardImage card={CardType.LootCard} className="w-64" />
+          {/* <CardImage card={CardType.LootCard} className="w-64" /> */}
           <div className="max-w-64 px-2 text-center leading-tight text-taupe-400">
             <span style={{ color: element.player.color }} className="font-bold">
               {element.player.name}
             </span>{" "}
-            is about to loot{" "}
-            <span className="font-bold text-taupe-300">{element.nbLoots}</span>{" "}
-            card
-            {element.nbLoots > 1 ? "s" : ""}
+            loots{" "}
+            <span className="font-bold text-taupe-300">{element.nbLoots}</span>.
           </div>
         </div>
       );
@@ -125,12 +123,13 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
     case "endOfTurn": {
       return (
         <div className="flex flex-col items-center gap-3">
-          <CardImage card={CardType.CharacterCard} className="w-64" />
+          {/* <CardImage card={CardType.CharacterCard} className="w-64" /> */}
           <div className="max-w-64 px-2 text-center leading-tight text-taupe-400">
+            End of{" "}
             <span style={{ color: element.player.color }} className="font-bold">
               {element.player.name}
-            </span>{" "}
-            is about to end their turn.
+            </span>
+            's turn
           </div>
         </div>
       );
@@ -356,7 +355,7 @@ export const SelectionContent = ({
         case "lootStep":
           return `${selection.payload.player.name} is about to loot ${selection.payload.nbLoots} card${selection.payload.nbLoots > 1 ? "s" : ""}`;
         case "endOfTurn":
-          return `${selection.payload.player.name} is about to end their turn.`;
+          return `${selection.payload.player.name}'s turn is about to end.`;
       }
     case "deck":
       return selection.payload;

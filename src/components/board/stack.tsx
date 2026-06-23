@@ -399,8 +399,7 @@ const EndOfTurnElement = ({ element }: { element: EndOfTurnJson }) => {
         <p className="text-taupe-200">
           <span style={{ color: element.player.color }}>
             {element.player.name}
-          </span>{" "}
-          is about to end their turn.
+          </span>'s turn is about to end.
         </p>
       </div>
     </div>
