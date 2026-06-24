@@ -228,8 +228,8 @@ export const Center = ({ state }: CenterProps) => {
               cards={Array.from({ length: state.treasure.deckSize }).map(
                 (_, index) =>
                   index === state.treasure.deckSize - 1 &&
-                  state.firstCardTreasureDeck
-                    ? state.firstCardTreasureDeck
+                  state.treasure.firstCardTreasureDeck
+                    ? state.treasure.firstCardTreasureDeck
                     : CardType.TreasureCard,
               )}
               onClickTopCardHotkey={
@@ -257,10 +257,10 @@ export const Center = ({ state }: CenterProps) => {
                 },
               ]}
               onHoverPopover={
-                state.firstCardTreasureDeck &&
+                state.treasure.firstCardTreasureDeck &&
                 (() => (
                   <CardHoverPreview
-                    card={state.firstCardTreasureDeck ?? CardType.TreasureCard}
+                    card={state.treasure.firstCardTreasureDeck ?? CardType.TreasureCard}
                     tooltip={[
                       {
                         capable: state.me.capabilities.buyTreasure,
