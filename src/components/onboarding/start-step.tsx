@@ -443,6 +443,7 @@ export const StartStep = ({ room }: StartStepProps) => {
                         <p>{gameParameters[parameter].text}</p>
                         <NumericInput
                           value={gameParameters[parameter].value}
+                          replaceZeroWith={gameParameters[parameter].replaceZeroWith}
                           onChange={(value) => {
                             onChangeGameParameter({
                               parameter: parameter,
@@ -817,10 +818,12 @@ const TeamButton = ({
 
 const NumericInput = ({
   value,
+  replaceZeroWith,
   onChange,
   disabled,
 }: {
   value: number;
+  replaceZeroWith: string | undefined;
   onChange: (value: number) => void;
   disabled: boolean;
 }) => {
@@ -838,7 +841,7 @@ const NumericInput = ({
         }}
       />
       <p className="flex h-10 min-w-13 items-center justify-center border-y-2 border-space-500 text-center font-bold">
-        {value}
+        {value === 0 && replaceZeroWith !== undefined ? replaceZeroWith : value}
       </p>
       <Button
         onClick={() => onChange(value + 1)}
