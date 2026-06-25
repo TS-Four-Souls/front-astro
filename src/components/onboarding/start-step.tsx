@@ -337,10 +337,11 @@ export const StartStep = ({ room }: StartStepProps) => {
           </div>
           {isHost && (
             <Button
+              hotkey="a"
               label="Add copy"
               onClick={onAddCopyPress}
               theme="onSpace"
-              disabled={room.players.length === 4}
+              disabled={room.players.length >= 4}
             />
           )}
         </div>
@@ -361,6 +362,7 @@ export const StartStep = ({ room }: StartStepProps) => {
             <>
               <Button
                 onClick={onLoadGamePress}
+                hotkey="l"
                 label="Load game"
                 className="w-full"
                 theme="onSpace"
