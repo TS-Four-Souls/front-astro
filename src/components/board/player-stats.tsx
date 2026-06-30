@@ -15,6 +15,7 @@ import type { Player, PlayerMe } from "@/shared/api";
 import { TeamIcon } from "@/icons/team-icon";
 import { useHotkeys } from "react-hotkeys-hook";
 import { HotkeyScope } from "@/utils/hotkey";
+import { RoundCounter } from "@/icons/RoundCounter";
 
 interface PlayerStatsProps {
   player: Player | PlayerMe;
@@ -264,6 +265,8 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
 
       {isMe && (
         <div className="flex items-center gap-4">
+          <RoundCounter
+          value={state.round}></RoundCounter>
           <Button
             className="shadow-lg shadow-taupe-800/70"
             disabled={state.me.capabilities.endTurn !== true}
