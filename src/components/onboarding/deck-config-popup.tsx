@@ -1,12 +1,13 @@
-import { cn } from "@/utils/cn";
-import { Popup } from "../popup";
-import { CardImage, CardType } from "../board/card";
 import type { DeckConfigCard } from "@/shared/api";
-import { useMemo, useState } from "react";
-import { socket } from "@/utils/socket";
-import { Button } from "../button";
+import { cn } from "@/utils/cn";
 import { HotkeyScope } from "@/utils/hotkey";
+import { socket } from "@/utils/socket";
+import { useMemo, useState } from "react";
+import { CardImage, CardType } from "../board/card";
 import { useToastContext } from "../board/contexts/toast-context";
+import { Button } from "../button";
+import { Popup } from "../popup";
+import { t, toSeriTrans, translateError } from "../translation/translate";
 
 export type DeckTypes =
   | "monster"
@@ -17,12 +18,12 @@ export type DeckTypes =
   | "character";
 
 const deckTypeLabels: Record<DeckTypes, string> = {
-  monster: "Monster Cards",
-  treasure: "Treasure Cards",
-  character: "Character Cards",
-  loot: "Loot Cards",
-  bsoul: "Bonus Souls",
-  room: "Room Cards",
+  monster: t(toSeriTrans("front.monsterCards")),
+  treasure: t(toSeriTrans("front.treasureCards")),
+  character: t(toSeriTrans("front.characterCards")),
+  loot: t(toSeriTrans("front.lootCards")),
+  bsoul: t(toSeriTrans("front.bsoulCards")),
+  room: t(toSeriTrans("front.roomCards")),
 };
 
 interface DeckConfigPopupProps {
@@ -66,7 +67,7 @@ export const DeckConfigPopup = ({
       },
       (response) => {
         if (response.status === 400)
-          toast("error", "Failed to change card count", response.error);
+          toast("error", toSeriTrans("front.failChangeCardCount"), translateError(response.error));
       },
     );
   };
@@ -84,7 +85,7 @@ export const DeckConfigPopup = ({
           {canUseLookup && (
             <input
               className="w-48 rounded-md border-2 border-taupe-500 px-4"
-              placeholder="Search..."
+              placeholder={t(toSeriTrans("front.search"))}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -93,7 +94,7 @@ export const DeckConfigPopup = ({
             onClick={onClose}
             hotkey="escape"
             hotkeyScope={[HotkeyScope.Popup]}
-            label="Close"
+            label={t(toSeriTrans("front.close"))}
           />
         </div>
       </div>
@@ -138,14 +139,14 @@ export const DeckConfigPopup = ({
             <div className={cn("flex w-full", "eternal" in card && "w-1/2")}>
               <Button
                 onClick={() => onCardCountChange(card, card.count - 1)}
-                label="−"
+                label={t(toSeriTrans("front.minus"))}
                 className="rounded-r-none font-sans shadow-none"
                 disabled={!editable}
                 tooltip={{
-                  title: "Cannot change card count",
+                  title: toSeriTrans("front.cannotChangeCardCount"),
                   capable: editable
                     ? true
-                    : "Only the host can change card count",
+                    : toSeriTrans("front.onlyHostCanChangeCardCount"),
                 }}
               />
               <p className="flex h-10 min-w-13 grow items-center justify-center border-y-2 border-taupe-600 text-center font-bold">
@@ -153,14 +154,14 @@ export const DeckConfigPopup = ({
               </p>
               <Button
                 onClick={() => onCardCountChange(card, card.count + 1)}
-                label="+"
+                label={t(toSeriTrans("front.plus"))}
                 className="rounded-l-none font-sans shadow-none"
                 disabled={!editable}
                 tooltip={{
-                  title: "Cannot change card count",
+                  title: toSeriTrans("front.cannotChangeCardCount"),
                   capable: editable
                     ? true
-                    : "Only the host can change card count",
+                    : toSeriTrans("front.onlyHostCanChangeCardCount"),
                 }}
               />
             </div>

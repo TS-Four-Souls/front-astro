@@ -1,6 +1,3 @@
-import { socket } from "@/utils/socket";
-import { useGameContext } from "./contexts/game-context";
-import { useToastContext } from "./contexts/toast-context";
 import type {
   DamageOnStackJson,
   DeathOnStackJson,
@@ -11,18 +8,22 @@ import type {
   LootStepJson,
   StackElement as StackElementType,
 } from "@/shared/api";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { Button } from "../button";
 import { cn } from "@/utils/cn";
+import { HotkeyScope, shouldUseKey } from "@/utils/hotkey";
 import { receiverName } from "@/utils/selection-text";
-import { StackElementIcon } from "./stack-element-icon";
+import { socket } from "@/utils/socket";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
+import { Button } from "../button";
+import { t, toSeriTrans, translateError } from "../translation/translate";
 import {
   stackElementIdShift,
   useBoardSelectionContext,
 } from "./contexts/board-selection-context";
-import { useHotkeys } from "react-hotkeys-hook";
-import { HotkeyScope, shouldUseKey } from "@/utils/hotkey";
 import { useGameAnimation } from "./contexts/game-animation";
+import { useGameContext } from "./contexts/game-context";
+import { useToastContext } from "./contexts/toast-context";
+import { StackElementIcon } from "./stack-element-icon";
 
 export const Stack = () => {
   const { state } = useGameContext();
@@ -43,7 +44,7 @@ export const Stack = () => {
   const resolveStack = () => {
     socket.emit("resolve", (response) => {
       if (response.status === 400)
-        toast("error", "Failed to resolve stack", response.error);
+        toast("error", toSeriTrans("front.failResolveStack"), translateError(response.error));
     });
   };
 
@@ -99,7 +100,7 @@ export const Stack = () => {
         { elementToMoveStackId, targetStackId },
         (response) => {
           if (response.status === 400)
-            toast("error", "Failed to move stack element", response.error);
+            toast("error", toSeriTrans("front.failMoveStackElement"), translateError(response.error));
         },
       );
     },
@@ -156,7 +157,7 @@ export const Stack = () => {
                 !isSelectedElement && (
                   <InsertionBar
                     onClick={() => moveStackElementBefore("start")}
-                    label="Move here"
+                    label={t(toSeriTrans("front.moveHere"))}
                   />
                 )}
               <StackElement
@@ -194,7 +195,7 @@ export const Stack = () => {
                     onClick={() =>
                       moveStackElementBefore(state.stack[index].id)
                     }
-                    label="Move here"
+                    label={t(toSeriTrans("front.moveHere"))}
                   />
                 )}
             </div>
@@ -212,17 +213,17 @@ export const Stack = () => {
         hotkey="space"
         onClick={() =>
           block(
-            "Cannot resolve stack",
+            toSeriTrans("front.cannotResolveStack"),
             state.me.capabilities.resolve,
             resolveStack,
           )
         }
         disabled={state.me.capabilities.resolve !== true}
         tooltip={{
-          title: "Cannot resolve stack",
+          title: toSeriTrans("front.cannotResolveStack"),
           capable: state.me.capabilities.resolve,
         }}
-        label="Resolve"
+        label={t(toSeriTrans("front.resolve"))}
         theme="onDark"
       />
     </div>
@@ -323,12 +324,12 @@ const DiceRollElement = ({ element }: { element: DiceRollJson }) => {
       <StackElementIcon element={element} />
       <div className="flex flex-col">
         <p className="text-2xs leading-6 text-taupe-500">
-          {element.card?.name ?? "Attack roll"}
+          {element.card ? t(element.card.nameKey) : "Attack roll"}
         </p>
 
         <p className="text-taupe-200">
           <span style={{ color: element.issuer.color }}>
-            {element.issuer.name}
+            {t(element.issuer.nameKey)}
           </span>{" "}
           rolled a {element.diceRoll}{" "}
           {element.modifier !== 0 ? `(+${element.modifier})` : ""}
@@ -349,9 +350,9 @@ const LootCardEffectElement = ({
       <div className="text-sm">
         <p className="text-taupe-200">
           <span style={{ color: element.issuer.color }}>
-            {element.issuer.name}
+            {t(element.issuer.nameKey)}
           </span>{" "}
-          used {element.card.name}
+          used {t(element.card.nameKey)}
         </p>
       </div>
     </div>
@@ -366,9 +367,9 @@ const EffectElement = ({ element }: { element: EffectOnStackJson }) => {
         <p
           className="text-xs leading-6"
           style={{ color: element.issuer.color }}>
-          {element.issuer.name}
+          {t(element.issuer.nameKey)}
         </p>
-        <p className="text-taupe-200">{element.card.name}</p>
+        <p className="text-taupe-200">{t(element.card.nameKey)}</p>
       </div>
     </div>
   );
@@ -381,7 +382,7 @@ const LootStepElement = ({ element }: { element: LootStepJson }) => {
       <div className="text-sm">
         <p className="text-taupe-200">
           <span style={{ color: element.player.color }}>
-            {element.player.name}
+            {t(element.player.nameKey)}
           </span>{" "}
           is about to loot {element.nbLoots} card
           {element.nbLoots > 1 ? "s" : ""}
@@ -398,7 +399,7 @@ const EndOfTurnElement = ({ element }: { element: EndOfTurnJson }) => {
       <div className="text-sm">
         <p className="text-taupe-200">
           <span style={{ color: element.player.color }}>
-            {element.player.name}
+            {t(element.player.nameKey)}
           </span>'s turn is about to end.
         </p>
       </div>
@@ -412,7 +413,9 @@ const DamageElement = ({ element }: { element: DamageOnStackJson }) => {
       <StackElementIcon element={element} />
       <div className="text-sm">
         <p className="text-taupe-200">
-          <span style={{ color: element.from.color }}>{element.from.name}</span>{" "}
+          <span style={{ color: element.from.color }}>
+            {t(element.from.nameKey)}
+          </span>{" "}
           dealt {element.damage} damage to{" "}
           <span style={{ color: element.receiver.color }}>
             {receiverName(element)}
@@ -429,7 +432,9 @@ const DeathElement = ({ element }: { element: DeathOnStackJson }) => {
       <StackElementIcon element={element} />
       <div className="text-sm">
         <p className="text-taupe-200">
-          <span style={{ color: element.from.color }}>{element.from.name}</span>{" "}
+          <span style={{ color: element.from.color }}>
+            {t(element.from.nameKey)}
+          </span>{" "}
           killed{" "}
           <span style={{ color: element.receiver.color }}>
             {receiverName(element)}

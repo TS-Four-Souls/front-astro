@@ -1,18 +1,19 @@
-import { useEffect, useMemo, useState } from "react";
-import type { AdminMessage, AdminResponse, AdminRoom } from "@/shared/api";
-import { OnboardingLayout } from "../onboarding-layout";
-import { Button } from "../button";
-import { useToastContext } from "../board/contexts/toast-context";
-import { socket } from "@/utils/socket";
-import { storage } from "@/utils/storage";
-import { LoginForm } from "../admin/login-form";
 import { Checkbox } from "@/icons/checkbox";
 import { Download } from "@/icons/download";
 import { Reply } from "@/icons/reply";
+import type { AdminMessage, AdminResponse, AdminRoom } from "@/shared/api";
+import { socket } from "@/utils/socket";
+import { storage } from "@/utils/storage";
+import { useEffect, useMemo, useState } from "react";
 import {
   ReplyProvider,
   useReplyContext,
 } from "../admin/contexts/reply-context";
+import { LoginForm } from "../admin/login-form";
+import { useToastContext } from "../board/contexts/toast-context";
+import { Button } from "../button";
+import { OnboardingLayout } from "../onboarding-layout";
+import { t, toSeriTrans, translateError } from "../translation/translate";
 
 export const AdminPage = () => {
   const [adminResponse, setAdminResponse] = useState<AdminResponse | null>(
@@ -29,7 +30,7 @@ export const AdminPage = () => {
 
       socket.emit("adminLogin", { password: adminPassword }, (response) => {
         if (response.status === 400)
-          console.log("[🔌 Socket] Failed to login as admin", response.error);
+          console.log("[🔌 Socket] Failed to login as admin", translateError(response.error));
       });
     }
 
@@ -102,7 +103,7 @@ export const AdminPostLoginPage = ({
       { id: message.id, resolved: !message.resolved },
       (response) => {
         if (response.status === 400)
-          toast("error", "Failed to change message status", response.error);
+          toast("error", toSeriTrans("front.failChangeMessageStatus"), translateError(response.error));
       },
     );
   }
@@ -126,7 +127,7 @@ export const AdminPostLoginPage = ({
           break;
         case 400:
         case 500:
-          toast("error", "Failed to get logs", response.error);
+          toast("error", toSeriTrans("front.failGetLogs"), translateError(response.error));
           break;
       }
     });
@@ -150,7 +151,7 @@ export const AdminPostLoginPage = ({
       <div className="flex items-center justify-between">
         <h1 className="font-main text-3xl font-bold">Admin Page</h1>
         <Button
-          label="Logout"
+          label={t(toSeriTrans("front.logout"))}
           onClick={() => {
             storage.removeItem("adminPassword");
             window.location.reload();

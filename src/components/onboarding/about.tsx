@@ -1,7 +1,8 @@
+import { Gear } from "@/icons/gear";
+import { PileIndicator } from "@/icons/pile-indicator";
 import { HotkeyScope } from "@/utils/hotkey";
 import { Button } from "../button";
-import { PileIndicator } from "@/icons/pile-indicator";
-import { Gear } from "@/icons/gear";
+import { t, toSeriTrans } from "../translation/translate";
 
 interface AboutProps {
   onClose: () => void;
@@ -12,7 +13,7 @@ export const About = ({ onClose }: AboutProps) => {
     <>
       <img src="/logo.png" alt="Logo" className="mb-8 w-80" />
       <Button
-        label="Close"
+        label={t(toSeriTrans("front.close"))}
         onClick={onClose}
         hotkey="escape"
         hotkeyScope={[HotkeyScope.Main]}

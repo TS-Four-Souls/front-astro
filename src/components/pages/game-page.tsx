@@ -1,20 +1,21 @@
-import { useEffect, useState } from "react";
-import { CreateRoomForm } from "../onboarding/create-room-form";
-import { StartStep } from "../onboarding/start-step";
-import { Board } from "../board/board";
-import { socket } from "@/utils/socket";
 import { type Room, type RoomBroadcast } from "@/shared/api";
-import { GameProvider } from "../board/contexts/game-context";
-import { Loading } from "../onboarding/loading";
-import { MainMenuProvider } from "../board/contexts/main-menu-context";
-import { RoomOptions } from "../onboarding/room-options";
-import { RoomJoinForm } from "../onboarding/room-join-form";
-import { OnboardingLayout } from "../onboarding-layout";
+import { socket } from "@/utils/socket";
 import { storage } from "@/utils/storage";
+import { useEffect, useState } from "react";
+import { Board } from "../board/board";
 import { BoardSelectionProvider } from "../board/contexts/board-selection-context";
 import { GameAnimationProvider } from "../board/contexts/game-animation";
+import { GameProvider } from "../board/contexts/game-context";
+import { MainMenuProvider } from "../board/contexts/main-menu-context";
 import { useToastContext } from "../board/contexts/toast-context";
+import { OnboardingLayout } from "../onboarding-layout";
 import { About } from "../onboarding/about";
+import { CreateRoomForm } from "../onboarding/create-room-form";
+import { Loading } from "../onboarding/loading";
+import { RoomJoinForm } from "../onboarding/room-join-form";
+import { RoomOptions } from "../onboarding/room-options";
+import { StartStep } from "../onboarding/start-step";
+import { t, translateError } from "../translation/translate";
 
 export const GamePage = () => {
   const [room, setRoom] = useState<Room | null>(null);
@@ -34,7 +35,7 @@ export const GamePage = () => {
           { type: "rejoin", roomId, userId },
           (response) => {
             if (response.status === 400)
-              console.log("[🔌 Socket] Failed to join as user", response.error);
+              console.log("[🔌 Socket] Failed to join as user", translateError(response.error));
           },
         );
       }

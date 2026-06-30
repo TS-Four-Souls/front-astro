@@ -1,10 +1,12 @@
+import { socket } from "@/utils/socket";
+import { useEffect, useRef } from "react";
+import { Button } from "../button";
+import { translateError, t } from "../translation/translate";
 import { useGameContext } from "./contexts/game-context";
 import { useHistoryContext } from "./contexts/history-context";
-import { useRef, useEffect } from "react";
-import { StackElementIcon } from "./stack-element-icon";
-import { Button } from "../button";
-import { socket } from "@/utils/socket";
 import { useToastContext } from "./contexts/toast-context";
+import { StackElementIcon } from "./stack-element-icon";
+import { toSeriTrans } from "../translation/translate";
 
 export const History = () => {
   const { state, parameters } = useGameContext();
@@ -34,7 +36,7 @@ export const History = () => {
   const rollback = () => {
     socket.emit("rollback", (response) => {
       if (response.status === 400)
-        toast("error", "Failed to rollback", response.error);
+        toast("error", toSeriTrans("front.failRollback"), translateError(response.error));
     });
   };
 
@@ -51,10 +53,10 @@ export const History = () => {
         hotkey="backspace"
         onClick={rollback}
         tooltip={{
-          title: "Rollback",
+          title: toSeriTrans("front.rollback"),
           content: parameters.allowCheatOptions.value
-            ? "Undo the last action"
-            : "Undo the last action.\nYou can only rollback other players' actions.",
+            ? toSeriTrans("front.rollbackDef")
+            : toSeriTrans("front.rollbackDefNoCheat"),
           enabled: true,
         }}
         theme="onDark"

@@ -1,6 +1,8 @@
+import type { SerializedTranslation } from "@/shared/api";
 import { cn } from "@/utils/cn";
 import { createContext, useContext } from "react";
 import toastLib, { Toaster, type ToastOptions } from "react-hot-toast";
+import { t as trans} from "../../translation/translate";
 
 type ToastType = "info" | "error" | "success" | "warning" | "victory";
 
@@ -79,8 +81,8 @@ const Icon = ({ type, className }: { type: ToastType; className?: string }) => {
 interface ToastContextProps {
   toast: (
     type: ToastType,
-    title: string,
-    message: string,
+    title: SerializedTranslation,
+    message: SerializedTranslation,
     options?: ToastOptions,
   ) => string;
   dismiss: (toastId: string) => void;
@@ -90,7 +92,7 @@ interface ToastContextProps {
    * @param capable - The message of the toast. If true, the action is not blocked.
    * @param callback - The callback to call if the action is not blocked.
    */
-  block: (title: string, capable: string | true, callback: () => void) => void;
+  block: (title: SerializedTranslation, capable: SerializedTranslation | true, callback: () => void) => void;
 }
 
 const ToastContext = createContext<ToastContextProps>({
@@ -102,8 +104,8 @@ const ToastContext = createContext<ToastContextProps>({
 export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
   const addToast = (
     type: ToastType,
-    title: string,
-    message: string,
+    title: SerializedTranslation,
+    message: SerializedTranslation,
     options?: ToastOptions,
   ) => {
     return toastLib.custom(
@@ -115,8 +117,8 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
           )}>
           <Icon type={type} className="size-8 shrink-0" />
           <div className="flex flex-col gap-1">
-            <h1 className="text-lg font-bold">{title}</h1>
-            <p className="text-sm">{message}</p>
+            <h1 className="text-lg font-bold">{trans(title)}</h1>
+            <p className="text-sm">{trans(message)}</p>
           </div>
           <div
             className={cn(
@@ -140,8 +142,8 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const block = (
-    title: string,
-    capable: string | true,
+    title: SerializedTranslation,
+    capable: SerializedTranslation | true,
     callback: () => void,
   ) => {
     if (typeof capable === "string") {

@@ -1,21 +1,23 @@
-import { cn } from "@/utils/cn";
-import { useGameContext } from "./contexts/game-context";
-import { socket } from "@/utils/socket";
-import { useToastContext } from "./contexts/toast-context";
 import { Gear } from "@/icons/gear";
-import { Button } from "../button";
-import { usePromptContext } from "./contexts/prompt-context";
-import { usePopoverContext } from "./contexts/popover-context";
-import { useRef } from "react";
-import { CardImage } from "./card";
-import { useMainMenuContext } from "./contexts/main-menu-context";
-import { useGameAnimation } from "./contexts/game-animation";
-import { useTooltip } from "./use-tooltip";
-import type { Player, PlayerMe } from "@/shared/api";
-import { TeamIcon } from "@/icons/team-icon";
-import { useHotkeys } from "react-hotkeys-hook";
-import { HotkeyScope } from "@/utils/hotkey";
 import { RoundCounter } from "@/icons/RoundCounter";
+import { TeamIcon } from "@/icons/team-icon";
+import type { Player, PlayerMe } from "@/shared/api";
+import { cn } from "@/utils/cn";
+import { HotkeyScope } from "@/utils/hotkey";
+import { socket } from "@/utils/socket";
+import { useRef } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
+import { Button } from "../button";
+import { t, translateError } from "../translation/translate";
+import { CardImage } from "./card";
+import { useGameAnimation } from "./contexts/game-animation";
+import { useGameContext } from "./contexts/game-context";
+import { useMainMenuContext } from "./contexts/main-menu-context";
+import { usePopoverContext } from "./contexts/popover-context";
+import { usePromptContext } from "./contexts/prompt-context";
+import { useToastContext } from "./contexts/toast-context";
+import { useTooltip } from "./use-tooltip";
+import { toSeriTrans } from "../translation/translate";
 
 interface PlayerStatsProps {
   player: Player | PlayerMe;
@@ -39,48 +41,48 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
   const declareAttack = () => {
     socket.emit("declareAttack", (response) => {
       if (response.status === 400)
-        toast("error", "Failed to declare attack", response.error);
+        toast("error", toSeriTrans("front.failDeclareAttack"), translateError(response.error));
     });
   };
 
   const rollDice = () => {
     socket.emit("attackRoll", (response) => {
       if (response.status === 400)
-        toast("error", "Failed to roll dice", response.error);
+        toast("error", toSeriTrans("front.failRollDice"), translateError(response.error));
     });
   };
 
   const declarePurchase = () => {
     socket.emit("declarePurchase", (response) => {
       if (response.status === 400)
-        toast("error", "Failed to declare purchase", response.error);
+        toast("error", toSeriTrans("front.failDeclarePurchase"), translateError(response.error));
     });
   };
 
   const cancelPurchase = () => {
     socket.emit("cancelPurchase", (response) => {
       if (response.status === 400)
-        toast("error", "Failed to cancel purchase", response.error);
+        toast("error", toSeriTrans("front.failCancelPurchase"), translateError(response.error));
     });
   };
 
   const onEndTurnPress = () => {
     socket.emit("endTurn", (response) => {
       if (response.status === 400)
-        toast("error", "Failed to end turn", response.error);
+        toast("error", toSeriTrans("front.failEndTurn"), translateError(response.error));
     });
   };
 
   const onSwitchToCopyPress = () => {
     socket.emit("switchToCopy", { name }, (response) => {
       if (response.status === 400)
-        toast("error", "Failed to switch to copy", response.error);
+        toast("error", toSeriTrans("front.failSwitchToCopy"), translateError(response.error));
     });
   };
 
   const onCoinPress = () => {
     if (state.me.coins === 0) {
-      toast("error", "Cannot give coins", "You have no coins to give");
+      toast("error", toSeriTrans("front.failGiveCoins"), toSeriTrans("front.youHaveNoCoinsToGive"));
       return;
     }
 
@@ -88,7 +90,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
     addPrompt<{ type: "number"; payload: number }>({
       promptId: `coin-prompt-${Date.now()}`,
       isUnique: false,
-      prompt: "How many coins do you want to give?",
+      prompt: t(toSeriTrans("front.selectAmountOfCoinsToGive")),
       options: Array.from({ length: state.me.coins }, (_, index) => ({
         type: "number",
         payload: index + 1,
@@ -107,7 +109,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
           (response) => {
             if (response.status === 200) {
             } else {
-              toast("error", "Failed to give coins", response.error);
+              toast("error", toSeriTrans("front.failGiveCoins"), translateError(response.error));
             }
           },
         );
@@ -123,11 +125,11 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
       player.capabilities.canDonateCoinsTo === true && !isMe
         ? {
             enabled: true,
-            title: "Donate coins",
-            content: "You can donate coins to this player.",
+            title: toSeriTrans("front.donateCoins"),
+            content: toSeriTrans("front.canDonate"),
           }
         : {
-            title: "Cannot donate coins",
+            title: toSeriTrans("front.cannotDonate"),
             capable: player.capabilities.canDonateCoinsTo,
           },
     );
@@ -137,11 +139,11 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
       player.capabilities.canSwitchTo === true && !isMe
         ? {
             enabled: true,
-            title: "Switch to copy",
-            content: "You can switch to this copy.",
+            title: toSeriTrans("capability.SwitchToCopy"),
+            content: toSeriTrans("capability.switchOk"),
           }
         : {
-            title: "Cannot switch to copy",
+            title: toSeriTrans("capability.cannotSwitchToCopy"),
             capable: player.capabilities.canSwitchTo,
           },
     );
@@ -196,7 +198,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
         )}
         onClick={() =>
           block(
-            "Cannot donate coins",
+            toSeriTrans("front.cannotDonate"),
             player.capabilities.canDonateCoinsTo,
             onCoinPress,
           )
@@ -234,7 +236,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
                       card={card}
                       className="w-64 shrink-0"
                       key={index}
-                      tooltip={card.name}
+                      tooltip={t(card.nameKey)}
                     />
                   ))}
                 </div>
@@ -273,7 +275,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
             hotkey="e"
             onClick={() =>
               block(
-                "Cannot end turn",
+                toSeriTrans("front.cannotEndTurn"),
                 state.me.capabilities.endTurn,
                 onEndTurnPress,
               )
@@ -282,54 +284,51 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
               state.me.capabilities.endTurn === true
                 ? {
                     enabled: state.me.numberOfCardsOverMaxHandSize > 0,
-                    title: "Excess loot cards",
-                    content:
-                      "You have " +
-                      state.me.numberOfCardsOverMaxHandSize +
-                      " cards over the max hand size.",
+                    title: toSeriTrans("front.excessLoot"),
+                    content:toSeriTrans("front.excessLootContent", {value: String(state.me.numberOfCardsOverMaxHandSize)}),
                     type: "warning",
                   }
                 : {
-                    title: "Cannot end turn",
+                    title: toSeriTrans("front.cannotEndTurn"),
                     capable: state.me.capabilities.endTurn,
                   }
             }
-            label="End turn"
+            label={t(toSeriTrans("front.endTurn"))}
           />
           {!state.me.isEngagedInPurchase && (
             <Button
-              label="Declare purchase"
+              label={t(toSeriTrans("front.declarePurchase"))}
               className="shadow-lg shadow-taupe-800/70"
               disabled={state.me.capabilities.declarePurchase !== true}
               hotkey="p"
               onClick={() =>
                 block(
-                  "Cannot declare purchase",
+                  toSeriTrans("front.cannotDeclarePurchase"),
                   state.me.capabilities.declarePurchase,
                   declarePurchase,
                 )
               }
               tooltip={{
-                title: "Cannot declare purchase",
+                title: toSeriTrans("front.cannotDeclarePurchase"),
                 capable: state.me.capabilities.declarePurchase,
               }}
             />
           )}
           {state.me.isEngagedInPurchase && (
             <Button
-              label="Abandon purchase"
+              label={t(toSeriTrans("front.abandonPurchase"))}
               className="shadow-lg shadow-taupe-800/70"
               disabled={state.me.capabilities.buyTreasure === true}
               tooltip={{
-                title: "Cannot abandon purchase while able to buy treasure.",
+                title: toSeriTrans("front.cannotAbandonPurchase"),
                 capable: state.me.capabilities.buyTreasure,
               }}
               hotkey="p"
               onClick={() =>
                 block(
-                  "Abandon purchase",
+                  toSeriTrans("front.abandonPurchase"),
                   state.me.capabilities.buyTreasure === true
-                    ? "Cannot abandon purchase while able to buy treasure."
+                    ? toSeriTrans("front.cannotAbandonPurchase")
                     : true,
                   cancelPurchase,
                 )
@@ -338,36 +337,36 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
           )}
           {!state.me.isEngagedInCombat && (
             <Button
-              label="Declare attack"
+              label={t(toSeriTrans("front.declareAttack"))}
               className="shadow-lg shadow-taupe-800/70"
               disabled={state.me.capabilities.declareAttack !== true}
               hotkey="a"
               onClick={() =>
                 block(
-                  "Cannot declare attack",
+                  toSeriTrans("front.cannotDeclareAttack"),
                   state.me.capabilities.declareAttack,
                   declareAttack,
                 )
               }
               tooltip={{
-                title: "Cannot declare attack",
+                title: toSeriTrans("front.cannotDeclareAttack"),
                 capable: state.me.capabilities.declareAttack,
               }}
             />
           )}
           {state.me.isEngagedInCombat && (
             <Button
-              label="Roll dice"
+              label={t(toSeriTrans("front.rollDice"))}
               className="shadow-lg shadow-taupe-800/70"
               disabled={state.me.capabilities.rollDice !== true}
               tooltip={{
-                title: "Cannot roll dice",
+                title: toSeriTrans("front.cannotRollDice"),
                 capable: state.me.capabilities.rollDice,
               }}
               hotkey="a"
               onClick={() =>
                 block(
-                  "Cannot roll dice",
+                  toSeriTrans("front.cannotRollDice"),
                   state.me.capabilities.rollDice,
                   rollDice,
                 )

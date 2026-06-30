@@ -1,8 +1,9 @@
 import { socket } from "@/utils/socket";
+import { storage } from "@/utils/storage";
+import { useEffect, useState } from "react";
 import { useToastContext } from "../board/contexts/toast-context";
 import { Button } from "../button";
-import { useEffect, useState } from "react";
-import { storage } from "@/utils/storage";
+import { t, toSeriTrans, translateError } from "../translation/translate";
 
 interface CreateRoomFormProps {
   onCancel: () => void;
@@ -23,7 +24,7 @@ export const CreateRoomForm = ({ onCancel }: CreateRoomFormProps) => {
     storage.setItem("name", name);
     socket.emit("createRoom", { name }, (response) => {
       if (response.status === 400)
-        toast("error", "Failed to create room", response.error);
+        toast("error", toSeriTrans("front.failCreateRoom"), translateError(response.error));
     });
   };
 
@@ -44,7 +45,7 @@ export const CreateRoomForm = ({ onCancel }: CreateRoomFormProps) => {
               }
             }}
             type="text"
-            placeholder="Enter your name..."
+            placeholder={t(toSeriTrans("front.enterYourName"))}
             autoComplete="off"
             minLength={1}
             maxLength={16}
@@ -53,13 +54,13 @@ export const CreateRoomForm = ({ onCancel }: CreateRoomFormProps) => {
             className="rounded-md border-2 border-space-300 bg-space-500 px-4 py-2 text-white focus:ring-2 focus:ring-space-500 focus:outline-none"
           />
           <Button
-            label="Join"
+            label={t(toSeriTrans("front.join"))}
             onClick={createRoom}
             hotkey="enter"
             theme="onSpace"
           />
           <Button
-            label="Leave"
+            label={t(toSeriTrans("front.leave"))}
             onClick={onCancel}
             hotkey="escape"
             theme="onSpace"

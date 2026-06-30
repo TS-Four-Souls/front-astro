@@ -1,3 +1,4 @@
+import { t } from "@/components/translation/translate";
 import type { IdentifierType } from "@/shared/api";
 
 export const receiverName = ({
@@ -7,5 +8,5 @@ export const receiverName = ({
   from: IdentifierType;
   receiver: IdentifierType;
 }) => {
-  return from.name === receiver.name ? "themselves" : receiver.name;
+  return t(from.nameKey) === t(receiver.nameKey) ? "themselves" : t(receiver.nameKey);
 };

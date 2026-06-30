@@ -1,18 +1,20 @@
 import { cn } from "@/utils/cn";
 import { usePopoverContext } from "./contexts/popover-context";
+import type { SerializedTranslation } from "@/shared/api";
+import { t } from "../translation/translate";
 
 type TooltipType = "denied" | "warning" | "gold";
 
 export type Tooltip =
   | {
       enabled: boolean;
-      title?: string;
-      content?: string;
+      title?: SerializedTranslation;
+      content?: SerializedTranslation;
       type?: TooltipType;
     }
   | {
-      capable: string | true;
-      title?: string;
+      capable: SerializedTranslation | true;
+      title?: SerializedTranslation;
       type?: TooltipType;
     };
 
@@ -78,10 +80,10 @@ export const TooltipComponent = ({ tooltip }: { tooltip: Tooltip }) => {
             "text-lg font-bold",
             type === "gold" && "text-yellow-500",
           )}>
-          {title}
+          {t(title)}
         </div>
       )}
-      {content && <div className="text-sm">{content}</div>}
+      {content && <div className="text-sm">{t(content)}</div>}
       <div
         className={cn(
           "pointer-events-none absolute inset-0 touch-none",

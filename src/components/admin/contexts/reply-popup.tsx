@@ -4,7 +4,9 @@ import { Popup } from "../../popup";
 import { useReplyContext } from "./reply-context";
 import { HotkeyScope } from "@/utils/hotkey";
 import { useState } from "react";
+import { translateError, t } from "../../translation/translate";
 import { useToastContext } from "../../board/contexts/toast-context";
+import { toSeriTrans } from "../../translation/translate";
 
 export const ReplyPopup = () => {
   const { toast } = useToastContext();
@@ -25,15 +27,15 @@ export const ReplyPopup = () => {
         switch (response.status) {
           case 400:
           case 500:
-            toast("error", "Failed to reply to message", response.error);
+            toast("error", toSeriTrans("front.failReplyToMessage"), translateError(response.error));
             break;
           case 200:
             closeReplyPopup();
             resetForm();
             toast(
               "success",
-              "Reply sent",
-              "Your reply has been sent to the user.",
+              toSeriTrans("front.replySent"),
+              toSeriTrans("front.yourReplyHasBeenSent"),
             );
             break;
         }
@@ -52,7 +54,7 @@ export const ReplyPopup = () => {
           onClick={closeReplyPopup}
           hotkey="escape"
           hotkeyScope={[HotkeyScope.Popup]}
-          label="Close"
+          label={t(toSeriTrans("front.close"))}
         />
       </div>
       <div className="flex flex-col gap-2">
@@ -67,14 +69,14 @@ export const ReplyPopup = () => {
         </div>
         <textarea
           className="h-64 w-full rounded-md border-2 border-taupe-600 bg-taupe-800 px-4 py-2"
-          placeholder="What is your reply?"
+          placeholder={t(toSeriTrans("front.yourReply"))}
           value={response}
           onChange={(e) => setResponse(e.target.value)}
         />
       </div>
       <Button
         className="h-16"
-        label="Submit"
+        label={t(toSeriTrans("front.submit"))}
         theme="onLight"
         onClick={submitReply}
         disabled={response.length < 1}

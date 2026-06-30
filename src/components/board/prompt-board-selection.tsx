@@ -1,9 +1,9 @@
 import type { SelectionItem } from "@/shared/api";
-import { Button } from "../button";
 import { HotkeyScope } from "@/utils/hotkey";
 import { useEffect } from "react";
 import { useHotkeysContext } from "react-hotkeys-hook";
-
+import { Button } from "../button";
+import { t, toSeriTrans } from "../translation/translate";
 interface PromptBoardSelectionProps {
   onCancel?: () => void | undefined;
   prompt: string;
@@ -52,7 +52,7 @@ export const PromptBoardSelection = ({
         </div>
         {toggleMode && (
           <Button
-            label="Use menu selection"
+            label={t(toSeriTrans("front.useMenuSelection"))}
             onClick={toggleMode}
             hotkey="tab"
             hotkeyScope={[HotkeyScope.Selection]}
@@ -60,14 +60,14 @@ export const PromptBoardSelection = ({
         )}
         {onCancel && (
           <Button
-            label="Cancel"
+            label={t(toSeriTrans("front.cancel"))}
             onClick={onCancel}
             hotkey="escape"
             hotkeyScope={[HotkeyScope.Selection]}
           />
         )}
         <Button
-          label="Submit"
+          label={t(toSeriTrans("front.submit"))}
           onClick={() => onSubmit(selectedOptions)}
           disabled={
             selectedOptions.length < minCount ||

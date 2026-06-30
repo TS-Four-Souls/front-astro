@@ -1,3 +1,4 @@
+import { toSeriTrans } from "../translation/translate";
 import type { Player } from "@/shared/api";
 import { Pile } from "./pile";
 import { usePileDetails } from "./use-pile-details";
@@ -27,7 +28,7 @@ export const HandPile = ({ player }: HandPileProps) => {
         }
         tooltip={{
           enabled: true,
-          content: `${player.name} has ${player.handSize} cards in their hand.`,
+          content: toSeriTrans("front.playerHandSize", {player: player.name, value: String(player.handSize)}),
         }}
         onClickTopCard={
           player.hand !== undefined

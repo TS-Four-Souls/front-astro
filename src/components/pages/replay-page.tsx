@@ -1,11 +1,12 @@
-import { Board } from "../board/board";
-import { GameProvider } from "../board/contexts/game-context";
-import { MainMenuProvider } from "../board/contexts/main-menu-context";
-import { BoardSelectionProvider } from "../board/contexts/board-selection-context";
 import type { DetailedState, GameParametersJson } from "@/shared/api";
 import { useState } from "react";
-import { OnboardingLayout } from "../onboarding-layout";
+import { Board } from "../board/board";
+import { BoardSelectionProvider } from "../board/contexts/board-selection-context";
+import { GameProvider } from "../board/contexts/game-context";
+import { MainMenuProvider } from "../board/contexts/main-menu-context";
 import { Button } from "../button";
+import { OnboardingLayout } from "../onboarding-layout";
+import { t, toSeriTrans } from "../translation/translate";
 
 export const ReplayPage = () => {
   const [text, setText] = useState<string>("");
@@ -21,14 +22,15 @@ export const ReplayPage = () => {
             value={text}
             onChange={(e) => setText(e.target.value)}
             autoComplete="off"
-            placeholder="Paste a detailed state JSON here..."></textarea>
+            placeholder={t(toSeriTrans("front.pasteState"))}
+          />
           <Button
             onClick={() => {
               const gameState = JSON.parse(text) as DetailedState;
               setGameState(gameState);
             }}
             hotkey="enter"
-            label="Let's go!"
+            label={t(toSeriTrans("front.letsGo"))}
             className="h-16 w-120 font-alt-stats text-xl font-bold"
           />
         </div>

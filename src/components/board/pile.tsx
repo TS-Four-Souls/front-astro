@@ -1,16 +1,17 @@
-import { useRef } from "react";
-import { cn } from "../../utils/cn";
-import { Card, CardType } from "./card";
-import seedrandom from "seedrandom";
-import { clamp } from "@/utils/numbers";
 import type { TemporaryEffect } from "@/shared/api";
-import { usePopoverContext } from "./contexts/popover-context";
 import { HotkeyScope, shouldUseKey } from "@/utils/hotkey";
+import { clamp } from "@/utils/numbers";
+import { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
+import seedrandom from "seedrandom";
+import { cn } from "../../utils/cn";
+import { toSeriTrans } from "../translation/translate";
+import { Card, CardType } from "./card";
+import { useBoardSelectionContext } from "./contexts/board-selection-context";
+import { usePopoverContext } from "./contexts/popover-context";
+import { useToastContext } from "./contexts/toast-context";
 import type { Tooltip } from "./use-tooltip";
 import { useTooltip } from "./use-tooltip";
-import { useBoardSelectionContext } from "./contexts/board-selection-context";
-import { useToastContext } from "./contexts/toast-context";
 
 type CardMetadata = {
   isRequiredAttack?: boolean;
@@ -101,10 +102,9 @@ export const Pile = ({
         }
       : () => {
           block(
-            "Cannot select this card",
-            "You cannot select this card",
+            toSeriTrans("front.cannotSelectCard"),
+            toSeriTrans("front.cannotSelectThisCard"),
             () => {
-              console.log("Cannot select this card");
             },
           );
         }

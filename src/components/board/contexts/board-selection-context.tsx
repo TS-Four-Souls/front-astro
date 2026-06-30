@@ -10,6 +10,7 @@ import {
   useState,
 } from "react";
 import { PromptHandler } from "../prompt-handler/prompt-handler";
+import { t, toSeriTrans } from "../../translation/translate";
 
 export enum SpecialGlobalIds {
   Loot = -1,
@@ -73,7 +74,6 @@ export const BoardSelectionProvider = ({
 
   const boardSelectionState = useMemo(() => {
     if (prompt === undefined) {
-      console.log("prompt is undefined");
       return undefined;
     }
 
@@ -82,7 +82,6 @@ export const BoardSelectionProvider = ({
     }
 
     if (!prompt.options.every(isSupportedSelectionItem)) {
-      console.log("prompt.options.every(isSupportedSelectionItem) is false");
       return undefined;
     }
 
@@ -205,6 +204,6 @@ const convertDeckToGlobalId = (deck: string): GlobalId => {
     case "monster":
       return SpecialGlobalIds.Monster;
     default:
-      throw new Error(`Invalid deck: ${deck}`);
+      throw new Error(t(toSeriTrans("error.invalidDeckType", {deckType: deck})));
   }
 };

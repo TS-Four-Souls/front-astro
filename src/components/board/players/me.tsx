@@ -1,17 +1,19 @@
-import { PlayerStats } from "../player-stats";
-import { Pile } from "../pile";
-import { useEffect, useRef } from "react";
-import { useGameContext } from "../contexts/game-context";
-import { usePromptContext } from "../contexts/prompt-context";
-import { socket } from "@/utils/socket";
-import { useToastContext } from "../contexts/toast-context";
 import type { InPlayMeCard, SelectionItem } from "@/shared/api";
-import { CardHoverPreview } from "../card-hover-preview";
-import { Hand } from "../hand";
-import { useGameAnimation } from "../contexts/game-animation";
-import { useHotkeys } from "react-hotkeys-hook";
-import { useMainMenuContext } from "../contexts/main-menu-context";
 import { HotkeyScope } from "@/utils/hotkey";
+import { socket } from "@/utils/socket";
+import { useEffect, useRef } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
+import { t, translateError } from "../../translation/translate";
+import { CardHoverPreview } from "../card-hover-preview";
+import { useGameAnimation } from "../contexts/game-animation";
+import { useGameContext } from "../contexts/game-context";
+import { useMainMenuContext } from "../contexts/main-menu-context";
+import { usePromptContext } from "../contexts/prompt-context";
+import { useToastContext } from "../contexts/toast-context";
+import { Hand } from "../hand";
+import { Pile } from "../pile";
+import { PlayerStats } from "../player-stats";
+import { toSeriTrans } from "../../translation/translate";
 
 export const Me = () => {
   const { state, isHandUp } = useGameContext();
@@ -50,8 +52,8 @@ export const Me = () => {
         }
         const toastId = toast(
           "info",
-          `${player.name} is busy`,
-          "Please wait for them to finish their selection",
+          toSeriTrans("front.playerIsBusy", {player: player.name}),
+          toSeriTrans("front.pleaseWaitForThemToFinishTheirSelection"),
           { duration: Infinity },
         );
         pendingSelectionsToastIds.current.set(player.name, toastId);
@@ -73,7 +75,7 @@ export const Me = () => {
       addPrompt({
         promptId,
         isUnique: true,
-        prompt: pendingSelection.description,
+        prompt: t(pendingSelection.description),
         options: pendingSelection.options,
         minCount: pendingSelection.min,
         maxCount: pendingSelection.max,
@@ -91,7 +93,7 @@ export const Me = () => {
                   removePrompt(promptId);
                   break;
                 case 400:
-                  toast("error", "Failed to submit selection", response.error);
+                  toast("error", toSeriTrans("front.failSubmit"), translateError(response.error));
                   break;
               }
             },
@@ -114,13 +116,13 @@ export const Me = () => {
             case 200:
               if (response.response.complete) {
               } else if (response.response.options.length === 0) {
-                toast("error", "Cannot play this card", "No options available");
+                toast("error", toSeriTrans("front.cannotPlay"), toSeriTrans("front.noOptionsAvailable"));
               } else {
                 const promptId = `card-activation-${card.slug}-${index}-${effectIndex}-${selections.length}`;
                 addPrompt({
                   promptId,
                   isUnique: false,
-                  prompt: response.response.description,
+                  prompt: t(response.response.description),
                   options: response.response.options,
                   minCount: response.response.min,
                   maxCount: response.response.max,
@@ -139,7 +141,7 @@ export const Me = () => {
               break;
             case 400:
             default:
-              toast("error", "Failed to activate card", response.error);
+              toast("error", toSeriTrans("front.failActivateCard"), translateError(response.error));
               break;
           }
         },
@@ -162,7 +164,7 @@ export const Me = () => {
       addPrompt<EffectOption>({
         promptId,
         isUnique: false,
-        prompt: "Select an effect to activate",
+        prompt: t(toSeriTrans("front.selectEffectToActivate")),
         options: effects,
         minCount: 1,
         maxCount: 1,
@@ -249,13 +251,13 @@ export const Me = () => {
                   isEternal={card.eternal}
                   tooltip={{
                     capable: card.capabilities.activate,
-                    title: "Cannot activate",
+                    title: toSeriTrans("front.cannotActivateTitle"),
                   }}
                 />
               )}
               onClickTopCard={() =>
                 block(
-                  "Cannot activate this card",
+                  toSeriTrans("capability.cannotActivate"),
                   card.capabilities.activate,
                   () => onInPlayCardClick(card, index),
                 )

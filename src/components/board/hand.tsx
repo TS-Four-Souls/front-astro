@@ -1,12 +1,14 @@
-import { socket } from "@/utils/socket";
-import { useGameContext } from "./contexts/game-context";
-import { useToastContext } from "./contexts/toast-context";
-import { usePromptContext } from "./contexts/prompt-context";
+import { toSeriTrans } from "../translation/translate";
 import type { SelectionItem } from "@/shared/api";
 import { cn } from "@/utils/cn";
-import { Pile } from "./pile";
+import { socket } from "@/utils/socket";
+import { t, translateError } from "../translation/translate";
 import { CardHoverPreview } from "./card-hover-preview";
 import { useGameAnimation } from "./contexts/game-animation";
+import { useGameContext } from "./contexts/game-context";
+import { usePromptContext } from "./contexts/prompt-context";
+import { useToastContext } from "./contexts/toast-context";
+import { Pile } from "./pile";
 
 export const Hand = () => {
   const { state, isHandUp, setIsHandUp } = useGameContext();
@@ -24,13 +26,13 @@ export const Hand = () => {
           case 200:
             if (response.response.complete) {
             } else if (response.response.options.length === 0) {
-              toast("error", "Failed to play card", "No options available");
+              toast("error", toSeriTrans("front.failPlayCard"), toSeriTrans("front.noOptionsAvailable"));
             } else {
               const promptId = `card-play-${index}-${selections.length}`;
               addPrompt({
                 promptId,
                 isUnique: false,
-                prompt: response.response.description,
+                prompt: t(response.response.description),
                 options: response.response.options,
                 minCount: response.response.min,
                 maxCount: response.response.max,
@@ -45,7 +47,7 @@ export const Hand = () => {
             }
             break;
           case 400:
-            toast("error", "Failed to play card", response.error);
+            toast("error", toSeriTrans("front.failPlayCard"), translateError(response.error));
             break;
         }
       },
@@ -84,7 +86,7 @@ export const Hand = () => {
                   card={card}
                   tooltip={{
                     capable: state.me.capabilities.useLoot,
-                    title: "Cannot play this card",
+                    title: toSeriTrans("front.cannotPlay"),
                   }}
                 />
               )}
@@ -96,7 +98,7 @@ export const Hand = () => {
               disabled={state.me.capabilities.useLoot !== true}
               onClickTopCard={() =>
                 block(
-                  "Cannot play this card",
+                  toSeriTrans("front.cannotPlay"),
                   state.me.capabilities.useLoot,
                   () => playCard(index),
                 )

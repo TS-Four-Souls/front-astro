@@ -1,9 +1,11 @@
-import { OnboardingLayout } from "../onboarding-layout";
-import { Button } from "../button";
-import { useEffect, useState } from "react";
 import { socket } from "@/utils/socket";
-import { useToastContext } from "../board/contexts/toast-context";
 import { storage } from "@/utils/storage";
+import { useEffect, useState } from "react";
+import { useToastContext } from "../board/contexts/toast-context";
+import { Button } from "../button";
+import { OnboardingLayout } from "../onboarding-layout";
+import { translateError } from "../translation/translate";
+import { t, toSeriTrans } from "../translation/translate";
 
 export const LoginForm = () => {
   const { toast } = useToastContext();
@@ -20,7 +22,7 @@ export const LoginForm = () => {
     storage.setItem("adminPassword", password);
     socket.emit("adminLogin", { password }, (response) => {
       if (response.status === 400)
-        toast("error", "Failed to login as admin", response.error);
+        toast("error", toSeriTrans("front.failLoginAsAdmin"), translateError(response.error));
     });
   };
 
@@ -32,7 +34,7 @@ export const LoginForm = () => {
         <div className="flex flex-col gap-4">
           <input
             type="password"
-            placeholder="Password"
+            placeholder={t(toSeriTrans("front.password"))}
             value={password}
             className="rounded-md border-2 border-space-300 bg-space-500 px-4 py-2 text-white focus:ring-2 focus:ring-space-500 focus:outline-none"
             onChange={(e) => setPassword(e.target.value)}
@@ -44,12 +46,12 @@ export const LoginForm = () => {
           />
           <Button
             onClick={onLogin}
-            label="Login"
+            label={t(toSeriTrans("front.login"))}
             hotkey="enter"
             theme="onSpace"
           />
           <Button
-            label="Return"
+            label={t(toSeriTrans("front.return"))}
             onClick={() => {
               window.location.href = "/";
             }}
