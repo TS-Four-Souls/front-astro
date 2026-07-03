@@ -21,7 +21,7 @@ import { useToastContext } from "../board/contexts/toast-context";
 import { Pile } from "../board/pile";
 import { useTooltip } from "../board/use-tooltip";
 import { Button } from "../button";
-import { t, translateError, toSeriTrans } from "../translation/translate";
+import { ts, translateError, t } from "../../utils/translate";
 import { DeckConfigPopup, type DeckTypes } from "./deck-config-popup";
 
 interface StartStepProps {
@@ -53,14 +53,22 @@ export const StartStep = ({ room }: StartStepProps) => {
   const onChangeGameParameter = (request: Requests.SetGameParameter) => {
     socket.emit("setGameParameter", request, (response) => {
       if (response.status === 400)
-        toast("error", toSeriTrans("front.failChangeGameParameter"), translateError(response.error));
+        toast(
+          "error",
+          t("front.failChangeGameParameter"),
+          translateError(response.error),
+        );
     });
   };
 
   const requestStart = async () => {
     socket.emit("start", (response) => {
       if (response.status === 400)
-        toast("error", toSeriTrans("front.failStartGame"), translateError(response.error));
+        toast(
+          "error",
+          t("front.failStartGame"),
+          translateError(response.error),
+        );
     });
   };
 
@@ -80,18 +88,30 @@ export const StartStep = ({ room }: StartStepProps) => {
     reader.onload = () => {
       const logs = reader.result;
       if (typeof logs !== "string") {
-        toast("error", toSeriTrans("front.failLoadGame"), toSeriTrans("front.couldNotReadSelectedFile"));
+        toast(
+          "error",
+          t("front.failLoadGame"),
+          t("front.couldNotReadSelectedFile"),
+        );
         return;
       }
 
       socket.emit("loadGame", logs, (response) => {
         if (response.status === 400)
-          toast("error", toSeriTrans("front.failLoadGame"), translateError(response.error));
+          toast(
+            "error",
+            t("front.failLoadGame"),
+            translateError(response.error),
+          );
       });
     };
 
     reader.onerror = () => {
-      toast("error", toSeriTrans("front.failLoadGame"), toSeriTrans("front.couldNotReadSelectedFile"));
+      toast(
+        "error",
+        t("front.failLoadGame"),
+        t("front.couldNotReadSelectedFile"),
+      );
     };
 
     reader.readAsText(file);
@@ -114,21 +134,37 @@ export const StartStep = ({ room }: StartStepProps) => {
     reader.onload = () => {
       const settings = reader.result;
       if (typeof settings !== "string") {
-        toast("error", toSeriTrans("front.loadParameters"), toSeriTrans("front.couldNotReadSelectedFile"));
+        toast(
+          "error",
+          t("front.loadParameters"),
+          t("front.couldNotReadSelectedFile"),
+        );
         return;
       }
 
       socket.emit("loadGameParameters", settings, (response) => {
         if (response.status === 200) {
-          toast("success", toSeriTrans("front.loadParameters"), toSeriTrans("front.gameParametersLoaded"));
+          toast(
+            "success",
+            t("front.loadParameters"),
+            t("front.gameParametersLoaded"),
+          );
         } else {
-          toast("error", toSeriTrans("front.loadParameters"), translateError(response.error));
+          toast(
+            "error",
+            t("front.loadParameters"),
+            translateError(response.error),
+          );
         }
       });
     };
 
     reader.onerror = () => {
-      toast("error", toSeriTrans("front.loadParameters"), toSeriTrans("front.couldNotReadSelectedFile"));
+      toast(
+        "error",
+        t("front.loadParameters"),
+        t("front.couldNotReadSelectedFile"),
+      );
     };
 
     reader.readAsText(file);
@@ -150,20 +186,32 @@ export const StartStep = ({ room }: StartStepProps) => {
     const filename = `four-souls_settings_${datePart}_${timePart}.txt`;
 
     downloadTextFile(JSON.stringify(gameParameters, null, 2), filename);
-    toast("success", toSeriTrans("front.saveParameters"), toSeriTrans("front.parametersSaved", {filename: filename}));
+    toast(
+      "success",
+      t("front.saveParameters"),
+      t("front.parametersSaved", { filename: filename }),
+    );
   };
 
   const onResetPress = () => {
     socket.emit("resetGameParameters", (response) => {
       if (response.status === 400)
-        toast("error", toSeriTrans("front.failResetGameSettings"), translateError(response.error));
+        toast(
+          "error",
+          t("front.failResetGameSettings"),
+          translateError(response.error),
+        );
     });
   };
 
   const onKickPlayerPress = (player: RoomPlayer) => {
     socket.emit("kickFromRoom", { name: player.name }, (response) => {
       if (response.status === 400)
-        toast("error", toSeriTrans("front.failKickPlayer"), translateError(response.error));
+        toast(
+          "error",
+          t("front.failKickPlayer"),
+          translateError(response.error),
+        );
     });
   };
 
@@ -189,7 +237,11 @@ export const StartStep = ({ room }: StartStepProps) => {
         (response) => {
           switch (response.status) {
             case 400:
-              toast("error", toSeriTrans("front.failAddCopy"), translateError(response.error));
+              toast(
+                "error",
+                t("front.failAddCopy"),
+                translateError(response.error),
+              );
               break;
           }
         },
@@ -200,7 +252,7 @@ export const StartStep = ({ room }: StartStepProps) => {
     addPrompt({
       promptId,
       isUnique: false,
-      prompt: t(toSeriTrans("front.selectPlayerToAddCopyOf")),
+      prompt: t("front.selectPlayerToAddCopyOf"),
       options,
       minCount: 1,
       maxCount: 1,
@@ -214,7 +266,11 @@ export const StartStep = ({ room }: StartStepProps) => {
           (response) => {
             switch (response.status) {
               case 400:
-                toast("error", toSeriTrans("front.failAddCopy"), translateError(response.error));
+                toast(
+                  "error",
+                  t("front.failAddCopy"),
+                  translateError(response.error),
+                );
                 break;
               case 200:
                 removePrompt(promptId);
@@ -229,14 +285,22 @@ export const StartStep = ({ room }: StartStepProps) => {
   const onLeaveRoomPress = () => {
     socket.emit("leaveRoom", (response) => {
       if (response.status === 400)
-        toast("error", toSeriTrans("front.failLeaveRoom"), translateError(response.error));
+        toast(
+          "error",
+          t("front.failLeaveRoom"),
+          translateError(response.error),
+        );
     });
   };
 
   const onTeamSelectionPress = (user: RoomPlayer, team: Team) => {
     socket.emit("setTeam", { name: user.name, team }, (response) => {
       if (response.status === 400)
-        toast("error", toSeriTrans("front.failSelectTeam"), translateError(response.error));
+        toast(
+          "error",
+          t("front.failSelectTeam"),
+          translateError(response.error),
+        );
     });
   };
 
@@ -244,7 +308,7 @@ export const StartStep = ({ room }: StartStepProps) => {
     addPrompt({
       promptId: "character-selection",
       isUnique: false,
-      prompt: t(toSeriTrans("front.selectChara")),
+      prompt: t("front.selectChara"),
       options: room.characters.map((character) => ({
         type: "character",
         payload: character,
@@ -257,7 +321,11 @@ export const StartStep = ({ room }: StartStepProps) => {
           { name: user.name, character: selectedOptions[0].payload },
           (response) => {
             if (response.status === 400)
-              toast("error", toSeriTrans("front.failSelectCharacter"), translateError(response.error));
+              toast(
+                "error",
+                t("front.failSelectCharacter"),
+                translateError(response.error),
+              );
           },
         );
         removePrompt("character-selection");
@@ -281,18 +349,26 @@ export const StartStep = ({ room }: StartStepProps) => {
             className="mb-2 cursor-pointer text-3xl font-bold"
             onClick={() => {
               navigator.clipboard.writeText(room.id);
-              toast("success", toSeriTrans("front.copiedCode"), toSeriTrans("front.copiedCodeClip"));
+              toast(
+                "success",
+                t("front.copiedCode"),
+                t("front.copiedCodeClip"),
+              );
             }}>
             {room.id}
           </p>
           <Button
-            label={t(toSeriTrans("front.copyLink"))}
+            label={t("front.copyLink")}
             hotkey="c"
             onClick={() => {
               const currentUrl = new URL(window.location.href);
               const link = new URL(`/?code=${room.id}`, currentUrl.origin);
               navigator.clipboard.writeText(link.toString());
-              toast("success", toSeriTrans("front.copiedLink"), toSeriTrans("front.copiedLinkClip"));
+              toast(
+                "success",
+                t("front.copiedLink"),
+                t("front.copiedLinkClip"),
+              );
             }}
             theme="onSpace"
           />
@@ -339,7 +415,7 @@ export const StartStep = ({ room }: StartStepProps) => {
           {isHost && (
             <Button
               hotkey="a"
-              label={t(toSeriTrans("front.addCopy"))}
+              label={t("front.addCopy")}
               onClick={onAddCopyPress}
               theme="onSpace"
               disabled={room.players.length >= 4}
@@ -350,13 +426,13 @@ export const StartStep = ({ room }: StartStepProps) => {
           <Button
             onClick={requestStart}
             hotkey="enter"
-            label={t(toSeriTrans("front.start"))}
+            label={t("front.start")}
             className="p-4 px-8 font-alt-stats text-lg"
             disabled={!isHost}
             theme="onSpace"
             tooltip={{
-              title: toSeriTrans("front.cannotStartGame"),
-              capable: isHost ? true : toSeriTrans("front.onlyHostCanStartGame"),
+              title: t("front.cannotStartGame"),
+              capable: isHost ? true : t("front.onlyHostCanStartGame"),
             }}
           />
           {isHost && (
@@ -364,7 +440,7 @@ export const StartStep = ({ room }: StartStepProps) => {
               <Button
                 onClick={onLoadGamePress}
                 hotkey="l"
-                label={t(toSeriTrans("front.loadGame"))}
+                label={t("front.loadGame")}
                 className="w-full"
                 theme="onSpace"
               />
@@ -392,32 +468,32 @@ export const StartStep = ({ room }: StartStepProps) => {
           <div className="mt-4 mb-16 flex gap-4">
             <Button
               onClick={onSaveParametersPress}
-              label={t(toSeriTrans("front.save"))}
+              label={t("front.save")}
               className="flex-1"
               theme="onSpace"
             />
             <Button
               onClick={onResetPress}
-              label={t(toSeriTrans("front.reset"))}
+              label={t("front.reset")}
               className="flex-1"
               theme="onSpace"
               disabled={!isHost}
               tooltip={{
-                title: toSeriTrans("front.cannotResetGameSettings"),
+                title: t("front.cannotResetGameSettings"),
                 capable: isHost
                   ? true
-                  : toSeriTrans("front.onlyHostCanResetGameSettings"),
+                  : t("front.onlyHostCanResetGameSettings"),
               }}
             />
             <Button
               onClick={onLoadParametersPress}
-              label={t(toSeriTrans("front.load"))}
+              label={t("front.load")}
               className="flex-1"
               theme="onSpace"
               disabled={!isHost}
               tooltip={{
-                title: toSeriTrans("front.cannotLoadGameSettings"),
-                capable: isHost ? true : toSeriTrans("front.onlyHostCanLoadGameSettings"),
+                title: t("front.cannotLoadGameSettings"),
+                capable: isHost ? true : t("front.onlyHostCanLoadGameSettings"),
               }}
             />
           </div>
@@ -428,7 +504,7 @@ export const StartStep = ({ room }: StartStepProps) => {
                 <Fragment key={parameter}>
                   {isBooleanParameterKey(parameter) ? (
                     <>
-                      <p>{t(gameParameters[parameter].translationKey)}</p>
+                      <p>{ts(gameParameters[parameter].translationKey)}</p>
                       <BooleanInput
                         value={gameParameters[parameter].value}
                         onChange={(value) => {
@@ -443,10 +519,12 @@ export const StartStep = ({ room }: StartStepProps) => {
                   ) : (
                     isNumberParameterKey(parameter) && (
                       <>
-                        <p>{t(gameParameters[parameter].translationKey)}</p>
+                        <p>{ts(gameParameters[parameter].translationKey)}</p>
                         <NumericInput
                           value={gameParameters[parameter].value}
-                          replaceZeroWith={gameParameters[parameter].replaceZeroWith}
+                          replaceZeroWith={
+                            gameParameters[parameter].replaceZeroWith
+                          }
                           onChange={(value) => {
                             onChangeGameParameter({
                               parameter: parameter,
@@ -465,7 +543,7 @@ export const StartStep = ({ room }: StartStepProps) => {
 
         <div className="flex h-full w-full flex-col place-content-center-safe place-items-center gap-24 overflow-auto max-lg:pt-4">
           <div className="grid grid-cols-[auto_auto] items-center gap-x-12 gap-y-6">
-            <p>{t(gameParameters.decksConfig.useBonusSouls.translationKey)}</p>
+            <p>{ts(gameParameters.decksConfig.useBonusSouls.translationKey)}</p>
             <BooleanInput
               value={gameParameters.decksConfig.useBonusSouls.value}
               onChange={(value) =>
@@ -474,7 +552,8 @@ export const StartStep = ({ room }: StartStepProps) => {
                   value: {
                     useBonusSouls: {
                       text: gameParameters.decksConfig.useBonusSouls.text,
-                      translationKey: gameParameters.decksConfig.useBonusSouls.translationKey,
+                      translationKey:
+                        gameParameters.decksConfig.useBonusSouls.translationKey,
                       value,
                     },
                   },
@@ -484,7 +563,7 @@ export const StartStep = ({ room }: StartStepProps) => {
             />
             {gameParameters.decksConfig.useRooms && (
               <>
-                <p>{t(gameParameters.decksConfig.useRooms.translationKey)}</p>
+                <p>{ts(gameParameters.decksConfig.useRooms.translationKey)}</p>
                 <BooleanInput
                   value={gameParameters.decksConfig.useRooms.value}
                   onChange={(value) =>
@@ -493,7 +572,8 @@ export const StartStep = ({ room }: StartStepProps) => {
                       value: {
                         useRooms: {
                           text: gameParameters.decksConfig.useRooms!.text,
-                          translationKey: gameParameters.decksConfig.useRooms!.translationKey,
+                          translationKey:
+                            gameParameters.decksConfig.useRooms!.translationKey,
                           value,
                         },
                       },
@@ -507,14 +587,16 @@ export const StartStep = ({ room }: StartStepProps) => {
               <>
                 <div className="flex items-center gap-2">
                   <p>
-                    {t(gameParameters.decksConfig.nbPlayerCardRestriction.translationKey)}
+                    {ts(
+                      gameParameters.decksConfig.nbPlayerCardRestriction
+                        .translationKey,
+                    )}
                   </p>
                   <Button
-                    label={t(toSeriTrans("front.help"))}
+                    label={t("front.help")}
                     tooltip={{
-                      title: toSeriTrans("gameParams.nbPlayerCardRestriction"),
-                      content:
-                        toSeriTrans("front.cardRestrDef"),
+                      title: t("gameParams.nbPlayerCardRestriction"),
+                      content: t("front.cardRestrDef"),
                       enabled: true,
                     }}
                     className="size-8 cursor-help rounded-full text-sm shadow-sm"
@@ -532,8 +614,9 @@ export const StartStep = ({ room }: StartStepProps) => {
                         nbPlayerCardRestriction: {
                           text: gameParameters.decksConfig
                             .nbPlayerCardRestriction!.text,
-                          translationKey: gameParameters.decksConfig
-                            .nbPlayerCardRestriction!.translationKey,
+                          translationKey:
+                            gameParameters.decksConfig.nbPlayerCardRestriction!
+                              .translationKey,
                           value,
                         },
                       },
@@ -546,12 +629,14 @@ export const StartStep = ({ room }: StartStepProps) => {
             {gameParameters.decksConfig.useFSP2Cards && (
               <>
                 <div className="flex items-center gap-2">
-                  <p>{t(gameParameters.decksConfig.useFSP2Cards.translationKey)}</p>
+                  <p>
+                    {ts(gameParameters.decksConfig.useFSP2Cards.translationKey)}
+                  </p>
                   <Button
-                    label={t(toSeriTrans("front.help"))}
+                    label={t("front.help")}
                     tooltip={{
-                      title: toSeriTrans("gameParams.useFSP2Cards"),
-                      content: toSeriTrans("front.fsp2CardsDef"),
+                      title: t("gameParams.useFSP2Cards"),
+                      content: t("front.fsp2CardsDef"),
                       enabled: true,
                     }}
                     className="size-8 cursor-help rounded-full text-sm shadow-sm"
@@ -566,7 +651,9 @@ export const StartStep = ({ room }: StartStepProps) => {
                       value: {
                         useFSP2Cards: {
                           text: gameParameters.decksConfig.useFSP2Cards!.text,
-                          translationKey: gameParameters.decksConfig.useFSP2Cards!.translationKey,
+                          translationKey:
+                            gameParameters.decksConfig.useFSP2Cards!
+                              .translationKey,
                           value,
                         },
                       },
@@ -580,32 +667,32 @@ export const StartStep = ({ room }: StartStepProps) => {
           <div className="flex flex-wrap justify-center gap-x-24 gap-y-16 max-xl:gap-x-16">
             <DeckPile
               type={CardType.CharacterCard}
-              label={t(toSeriTrans("front.chara"))}
+              label={t("front.chara")}
               count={gameParameters.decksConfig.character.total}
               onClick={() => setDeckPilePopup(CardType.CharacterCard)}
             />
             <DeckPile
               type={CardType.TreasureCard}
-              label={t(toSeriTrans("front.treasures"))}
+              label={t("front.treasures")}
               count={gameParameters.decksConfig.treasure.total}
               onClick={() => setDeckPilePopup(CardType.TreasureCard)}
             />
             <DeckPile
               type={CardType.LootCard}
-              label={t(toSeriTrans("front.loots"))}
+              label={t("front.loots")}
               count={gameParameters.decksConfig.loot.total}
               onClick={() => setDeckPilePopup(CardType.LootCard)}
             />
             <DeckPile
               type={CardType.MonsterCard}
-              label={t(toSeriTrans("front.monsters"))}
+              label={t("front.monsters")}
               count={gameParameters.decksConfig.monster.total}
               onClick={() => setDeckPilePopup(CardType.MonsterCard)}
             />
             {gameParameters.decksConfig.bsoul && (
               <DeckPile
                 type={CardType.BonusSoul}
-                label={t(toSeriTrans("front.bonusSouls"))}
+                label={t("front.bonusSouls")}
                 count={gameParameters.decksConfig.bsoul.total}
                 onClick={() => setDeckPilePopup(CardType.BonusSoul)}
               />
@@ -613,7 +700,7 @@ export const StartStep = ({ room }: StartStepProps) => {
             {gameParameters.decksConfig.room && (
               <DeckPile
                 type={CardType.RoomCard}
-                label={t(toSeriTrans("front.rooms"))}
+                label={t("front.rooms")}
                 count={gameParameters.decksConfig.room.total}
                 onClick={() => setDeckPilePopup(CardType.RoomCard)}
               />
@@ -678,8 +765,8 @@ const PlayerCard = ({
   index: number;
 }) => {
   const { setTooltip, closeTooltip } = useTooltip({
-    title: toSeriTrans("front.selectChara"),
-    content: toSeriTrans("front.clickToSelectCharacter"),
+    title: t("front.selectChara"),
+    content: t("front.clickToSelectCharacter"),
     enabled: actions?.onCharacterSelectionPress !== undefined,
   });
 
@@ -803,13 +890,16 @@ const TeamButton = ({
       label={<TeamIcon team={team} className="size-5 shrink-0" />}
       active={active}
       tooltip={{
-        title: toSeriTrans("front.team", {team: teamNames[team]}),
+        title: t("front.team", { team: teamNames[team] }),
         content:
           active && player.isMe
-            ? toSeriTrans("front.youHaveSelectedTeam", {team: teamNames[team]})
+            ? t("front.youHaveSelectedTeam", { team: teamNames[team] })
             : active
-              ? toSeriTrans("front.playerOnTeam", {player: player.name, team: teamNames[team]})
-              : toSeriTrans("front.clickToJoinTeam"),
+              ? t("front.playerOnTeam", {
+                  player: player.name,
+                  team: teamNames[team],
+                })
+              : t("front.clickToJoinTeam"),
         enabled: player.isMe || active,
       }}
       theme="onSpace"
@@ -838,13 +928,13 @@ const NumericInput = ({
     <div className="flex items-center justify-end">
       <Button
         onClick={() => onChange(value - 1)}
-        label={t(toSeriTrans("front.minus"))}
+        label={t("front.minus")}
         className="rounded-r-none font-sans font-bold shadow-none"
         theme="onSpace"
         disabled={disabled}
         tooltip={{
-          title: toSeriTrans("front.cannotChangeGameParameter"),
-          capable: disabled ? toSeriTrans("front.onlyHostCanChangeGameParameter") : true,
+          title: t("front.cannotChangeGameParameter"),
+          capable: disabled ? t("front.onlyHostCanChangeGameParameter") : true,
         }}
       />
       <p className="flex h-10 min-w-13 items-center justify-center border-y-2 border-space-500 text-center font-bold">
@@ -852,13 +942,13 @@ const NumericInput = ({
       </p>
       <Button
         onClick={() => onChange(value + 1)}
-        label={t(toSeriTrans("front.plus"))}
+        label={t("front.plus")}
         className="rounded-l-none font-sans font-bold shadow-none"
         theme="onSpace"
         disabled={disabled}
         tooltip={{
-          title: toSeriTrans("front.cannotChangeGameParameter"),
-          capable: disabled ? toSeriTrans("front.onlyHostCanChangeGameParameter") : true,
+          title: t("front.cannotChangeGameParameter"),
+          capable: disabled ? t("front.onlyHostCanChangeGameParameter") : true,
         }}
       />
     </div>
@@ -886,8 +976,8 @@ const BooleanInput = ({
       theme="onSpace"
       disabled={disabled}
       tooltip={{
-        title: toSeriTrans("front.cannotToggleGameParameter"),
-        capable: disabled ? toSeriTrans("front.onlyHostCanToggleGameParameter") : true,
+        title: t("front.cannotToggleGameParameter"),
+        capable: disabled ? t("front.onlyHostCanToggleGameParameter") : true,
       }}
     />
   );

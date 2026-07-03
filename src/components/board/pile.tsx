@@ -5,7 +5,7 @@ import { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import seedrandom from "seedrandom";
 import { cn } from "../../utils/cn";
-import { toSeriTrans } from "../translation/translate";
+import { t } from "../../utils/translate";
 import { Card, CardType } from "./card";
 import { useBoardSelectionContext } from "./contexts/board-selection-context";
 import { usePopoverContext } from "./contexts/popover-context";
@@ -102,10 +102,9 @@ export const Pile = ({
         }
       : () => {
           block(
-            toSeriTrans("front.cannotSelectCard"),
-            toSeriTrans("front.cannotSelectThisCard"),
-            () => {
-            },
+            t("front.cannotSelectCard"),
+            { key: "front.cannotSelectThisCard" },
+            () => {},
           );
         }
     : propsOnClickTopCard;

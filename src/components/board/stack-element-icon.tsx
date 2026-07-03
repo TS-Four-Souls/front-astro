@@ -4,7 +4,7 @@ import { Dice } from "@/icons/dice";
 import { Card, CardImage, CardType } from "./card";
 import { usePopoverContext } from "./contexts/popover-context";
 import { receiverName } from "@/utils/selection-text";
-import { t } from "../translation/translate";
+import { ts } from "../../utils/translate";
 interface StackElementIconProps {
   element: StackElement;
 }
@@ -45,7 +45,7 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
               <span
                 className="font-bold"
                 style={{ color: element.issuer.color }}>
-                {t(element.issuer.nameKey)}
+                {ts(element.issuer.nameKey)}
               </span>{" "}
               rolled a
             </span>
@@ -55,7 +55,9 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
             </span>
             <span>for</span>
             <span className="font-bold whitespace-pre-line text-taupe-300">
-              {element.card !== undefined ? t(element.card.nameKey) : "an attack roll"}
+              {element.card !== undefined
+                ? ts(element.card.nameKey)
+                : "an attack roll"}
             </span>
           </div>
         </div>
@@ -71,7 +73,7 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
               <span
                 className="font-bold"
                 style={{ color: element.issuer.color }}>
-                {t(element.issuer.nameKey)}
+                {ts(element.issuer.nameKey)}
               </span>{" "}
               used this card
             </span>
@@ -94,7 +96,7 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
               <span
                 style={{ color: element.issuer.color }}
                 className="font-bold">
-                {t(element.issuer.nameKey)}
+                {ts(element.issuer.nameKey)}
               </span>{" "}
               selected
             </span>
@@ -111,7 +113,7 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
           {/* <CardImage card={CardType.LootCard} className="w-64" /> */}
           <div className="max-w-64 px-2 text-center leading-tight text-taupe-400">
             <span style={{ color: element.player.color }} className="font-bold">
-              {t(element.player.nameKey)}
+              {ts(element.player.nameKey)}
             </span>{" "}
             loots{" "}
             <span className="font-bold text-taupe-300">{element.nbLoots}</span>.
@@ -127,7 +129,7 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
           <div className="max-w-64 px-2 text-center leading-tight text-taupe-400">
             End of{" "}
             <span style={{ color: element.player.color }} className="font-bold">
-              {t(element.player.nameKey)}
+              {ts(element.player.nameKey)}
             </span>
             's turn
           </div>
@@ -145,7 +147,7 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
             <span
               style={{ color: element.from.color }}
               className="font-bold text-taupe-300">
-              {t(element.from.nameKey)}
+              {ts(element.from.nameKey)}
             </span>{" "}
             dealt{" "}
             <span className="font-bold text-taupe-300">{element.damage}</span>{" "}
@@ -158,7 +160,7 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
             using{" "}
             <span className="font-bold text-taupe-300">
               {"slug" in element.source
-                ? t(element.source.nameKey)
+                ? ts(element.source.nameKey)
                 : "an attack roll"}
             </span>
           </div>
@@ -176,7 +178,7 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
             <span
               style={{ color: element.from.color }}
               className="font-bold text-taupe-300">
-              {t(element.from.nameKey)}
+              {ts(element.from.nameKey)}
             </span>{" "}
             killed{" "}
             <span
@@ -187,7 +189,7 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
             using{" "}
             <span className="font-bold text-taupe-300">
               {"slug" in element.source
-                ? t(element.source.nameKey)
+                ? ts(element.source.nameKey)
                 : "an attack roll"}
             </span>
           </div>
@@ -339,36 +341,36 @@ export const SelectionContent = ({
 }): React.ReactNode => {
   switch (selection.type) {
     case "card":
-      return t(selection.payload.nameKey);
+      return ts(selection.payload.nameKey);
     case "stackElement":
       switch (selection.payload.type) {
         case "death":
-          return `${t(selection.payload.from.nameKey)} killed ${receiverName(selection.payload)}`;
+          return `${ts(selection.payload.from.nameKey)} killed ${receiverName(selection.payload)}`;
         case "diceRoll":
-          return `${selection.payload.card ? t(selection.payload.card.nameKey) : "an attack roll"} - ${t(selection.payload.issuer.nameKey)} rolled a ${selection.payload.diceRoll}`;
+          return `${selection.payload.card ? ts(selection.payload.card.nameKey) : "an attack roll"} - ${ts(selection.payload.issuer.nameKey)} rolled a ${selection.payload.diceRoll}`;
         case "damage":
-          return `${t(selection.payload.from.nameKey)} dealt ${selection.payload.damage} damage to ${receiverName(selection.payload)}`;
+          return `${ts(selection.payload.from.nameKey)} dealt ${selection.payload.damage} damage to ${receiverName(selection.payload)}`;
         case "effect":
-          return `${t(selection.payload.issuer.nameKey)} - ${t(selection.payload.card.nameKey)}`;
+          return `${ts(selection.payload.issuer.nameKey)} - ${ts(selection.payload.card.nameKey)}`;
         case "LootCardEffect":
-          return `${t(selection.payload.issuer.nameKey)} used ${t(selection.payload.card.nameKey)}`;
+          return `${ts(selection.payload.issuer.nameKey)} used ${ts(selection.payload.card.nameKey)}`;
         case "lootStep":
-          return `${t(selection.payload.player.nameKey)} is about to loot ${selection.payload.nbLoots} card${selection.payload.nbLoots > 1 ? "s" : ""}`;
+          return `${ts(selection.payload.player.nameKey)} is about to loot ${selection.payload.nbLoots} card${selection.payload.nbLoots > 1 ? "s" : ""}`;
         case "endOfTurn":
-          return `${t(selection.payload.player.nameKey)}'s turn is about to end.`;
+          return `${ts(selection.payload.player.nameKey)}'s turn is about to end.`;
       }
     case "deck":
       return selection.payload;
     case "player":
       return (
         <span style={{ color: selection.payload.color }}>
-          {t(selection.payload.nameKey)}
+          {ts(selection.payload.nameKey)}
         </span>
       );
     case "monster":
       return (
         <span style={{ color: selection.payload.color }}>
-          {t(selection.payload.nameKey)}
+          {ts(selection.payload.nameKey)}
         </span>
       );
     case "string":
@@ -378,7 +380,7 @@ export const SelectionContent = ({
     case "boolean":
       return selection.payload;
     case "couplePlayerHand":
-      return `${t(selection.payload.player.nameKey)} hand`;
+      return `${ts(selection.payload.player.nameKey)} hand`;
     case "object":
     case "character":
     case "array":

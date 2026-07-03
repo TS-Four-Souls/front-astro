@@ -1,6 +1,6 @@
 import type { Card, DetailedState } from "@/shared/api";
 import { socket } from "@/utils/socket";
-import { t, translateError, toSeriTrans } from "../translation/translate";
+import { translateError, t } from "@/utils/translate";
 import { CardType } from "./card";
 import { CardHoverPreview } from "./card-hover-preview";
 import { SpecialGlobalIds } from "./contexts/board-selection-context";
@@ -30,7 +30,7 @@ export const Center = ({ state }: CenterProps) => {
   const purchaseTreasure = (index: number | "top") => {
     socket.emit("purchase", { index }, (response) => {
       if (response.status === 400)
-        toast("error", toSeriTrans("front.failPurchase"), translateError(response.error));
+        toast("error", t("front.failPurchase"), translateError(response.error));
     });
   };
 
@@ -50,7 +50,7 @@ export const Center = ({ state }: CenterProps) => {
         addPrompt<ReplaceIndexOption>({
           promptId,
           isUnique: false,
-          prompt: t(toSeriTrans("front.selectMonsterToCover")),
+          prompt: t("front.selectMonsterToCover"),
           options: state.monsters.inPlay.map((card, index) => ({
             type: "card",
             payload: card.top,
@@ -76,7 +76,7 @@ export const Center = ({ state }: CenterProps) => {
           if (response.status === 400)
             toast(
               "error",
-              toSeriTrans("front.failSelectMonsterToAttack"),
+              t("front.failSelectMonsterToAttack"),
               translateError(response.error),
             );
         },
@@ -87,7 +87,11 @@ export const Center = ({ state }: CenterProps) => {
 
     socket.emit("attackMonster", { index }, (response) => {
       if (response.status === 400)
-        toast("error", toSeriTrans("front.failSelectMonsterToAttack"), translateError(response.error));
+        toast(
+          "error",
+          t("front.failSelectMonsterToAttack"),
+          translateError(response.error),
+        );
     });
   };
 
@@ -136,9 +140,8 @@ export const Center = ({ state }: CenterProps) => {
                     card={soul}
                     tooltip={{
                       enabled: true,
-                      title: toSeriTrans("front.bsoulCard"),
-                      content:
-                        toSeriTrans("front.bonusSoulCondition"),
+                      title: t("front.bsoulCard"),
+                      content: t("front.bonusSoulCondition"),
                     }}
                   />
                 )}
@@ -240,7 +243,7 @@ export const Center = ({ state }: CenterProps) => {
               disabled={state.me.capabilities.buyTreasure !== true}
               onClickTopCard={() =>
                 block(
-                  toSeriTrans("front.cannotBuy"),
+                  t("front.cannotBuy"),
                   state.me.capabilities.buyTreasure,
                   () => purchaseTreasure("top"),
                 )
@@ -248,11 +251,13 @@ export const Center = ({ state }: CenterProps) => {
               tooltip={[
                 {
                   capable: state.me.capabilities.buyTreasure,
-                  title: toSeriTrans("front.cannotBuy"),
+                  title: t("front.cannotBuy"),
                 },
                 {
                   enabled: true,
-                  title: toSeriTrans("front.price", {value: String(state.treasure.topDeckPrice)}),
+                  title: t("front.price", {
+                    value: String(state.treasure.topDeckPrice),
+                  }),
                   type: "gold",
                 },
               ]}
@@ -260,15 +265,20 @@ export const Center = ({ state }: CenterProps) => {
                 state.treasure.firstCardTreasureDeck &&
                 (() => (
                   <CardHoverPreview
-                    card={state.treasure.firstCardTreasureDeck ?? CardType.TreasureCard}
+                    card={
+                      state.treasure.firstCardTreasureDeck ??
+                      CardType.TreasureCard
+                    }
                     tooltip={[
                       {
                         capable: state.me.capabilities.buyTreasure,
-                        title: toSeriTrans("front.cannotBuy"),
+                        title: t("front.cannotBuy"),
                       },
                       {
                         enabled: true,
-                        title: toSeriTrans("front.price", {value: String(state.treasure.topDeckPrice)}),
+                        title: t("front.price", {
+                          value: String(state.treasure.topDeckPrice),
+                        }),
                         type: "gold",
                       },
                     ]}
@@ -292,7 +302,7 @@ export const Center = ({ state }: CenterProps) => {
                 }
                 onClickTopCard={() =>
                   block(
-                    toSeriTrans("front.cannotBuy"),
+                    t("front.cannotBuy"),
                     state.me.capabilities.buyTreasure,
                     () => purchaseTreasure(index),
                   )
@@ -303,11 +313,11 @@ export const Center = ({ state }: CenterProps) => {
                     tooltip={[
                       {
                         capable: state.me.capabilities.buyTreasure,
-                        title: toSeriTrans("front.cannotBuy"),
+                        title: t("front.cannotBuy"),
                       },
                       {
                         enabled: true,
-                        title: toSeriTrans("front.price", {value: String(card.price)}),
+                        title: t("front.price", { value: String(card.price) }),
                         type: "gold",
                       },
                     ]}
@@ -369,12 +379,14 @@ export const Center = ({ state }: CenterProps) => {
                       tooltip={[
                         {
                           capable: state.monsters.capabilities.targetableDeck,
-                          title: toSeriTrans("front.cannotAttackThisCard"),
+                          title: t("front.cannotAttackThisCard"),
                         },
                         {
                           enabled: true,
-                          title: toSeriTrans("front.attackRequired"),
-                          content: toSeriTrans("front.attackRequiredContent", {card: monsterDeckAttackRequirement.source.nameKey}),
+                          title: t("front.attackRequired"),
+                          content: t("front.attackRequiredContent", {
+                            card: monsterDeckAttackRequirement.source.nameKey,
+                          }),
                         },
                       ]}
                     />
@@ -388,7 +400,7 @@ export const Center = ({ state }: CenterProps) => {
             }
             onClickTopCard={() =>
               block(
-                toSeriTrans("front.cannotAttackThisCard"),
+                t("front.cannotAttackThisCard"),
                 state.monsters.capabilities.targetableDeck,
                 () => {
                   selectMonsterToAttack("top");
@@ -397,14 +409,13 @@ export const Center = ({ state }: CenterProps) => {
             }
             tooltip={{
               capable: state.monsters.capabilities.targetableDeck,
-              title: toSeriTrans("front.cannotAttackThisCard"),
+              title: t("front.cannotAttackThisCard"),
             }}
           />
           {state.monsters.inPlay.map((card, index) => {
             const targetable =
               card.top.stats?.capabilities.targetable ??
-              toSeriTrans("front.notAMonsterCard");
-
+              t("front.notAMonsterCard");
             const attackRequirement = state.me.attackRequirements.find(
               (requirement) =>
                 requirement.target !== "topDeck" &&
@@ -434,7 +445,7 @@ export const Center = ({ state }: CenterProps) => {
                       : undefined
                   }
                   onClickTopCard={() =>
-                    block(toSeriTrans("front.cannotAttackThisCard"), targetable, () =>
+                    block(t("front.cannotAttackThisCard"), targetable, () =>
                       selectMonsterToAttack(index),
                     )
                   }
@@ -456,12 +467,14 @@ export const Center = ({ state }: CenterProps) => {
                       tooltip={[
                         {
                           capable: targetable,
-                          title: toSeriTrans("front.cannotAttackThisCard"),
+                          title: t("front.cannotAttackThisCard"),
                         },
                         {
                           enabled: attackRequirement !== undefined,
-                          title: toSeriTrans("front.attackRequired"),
-                          content: toSeriTrans("front.attackRequiredContent", {card: attackRequirement!.source.nameKey}),
+                          title: t("front.attackRequired"),
+                          content: t("front.attackRequiredContent", {
+                            card: attackRequirement!.source.nameKey,
+                          }),
                         },
                       ]}
                     />

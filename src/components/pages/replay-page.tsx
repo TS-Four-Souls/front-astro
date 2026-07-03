@@ -6,7 +6,7 @@ import { GameProvider } from "../board/contexts/game-context";
 import { MainMenuProvider } from "../board/contexts/main-menu-context";
 import { Button } from "../button";
 import { OnboardingLayout } from "../onboarding-layout";
-import { t, toSeriTrans } from "../translation/translate";
+import { t } from "../../utils/translate";
 
 export const ReplayPage = () => {
   const [text, setText] = useState<string>("");
@@ -22,7 +22,7 @@ export const ReplayPage = () => {
             value={text}
             onChange={(e) => setText(e.target.value)}
             autoComplete="off"
-            placeholder={t(toSeriTrans("front.pasteState"))}
+            placeholder={t("front.pasteState")}
           />
           <Button
             onClick={() => {
@@ -30,7 +30,7 @@ export const ReplayPage = () => {
               setGameState(gameState);
             }}
             hotkey="enter"
-            label={t(toSeriTrans("front.letsGo"))}
+            label={t("front.letsGo")}
             className="h-16 w-120 font-alt-stats text-xl font-bold"
           />
         </div>

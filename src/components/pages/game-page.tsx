@@ -15,7 +15,7 @@ import { Loading } from "../onboarding/loading";
 import { RoomJoinForm } from "../onboarding/room-join-form";
 import { RoomOptions } from "../onboarding/room-options";
 import { StartStep } from "../onboarding/start-step";
-import { t, translateError } from "../translation/translate";
+import { translateError, ts } from "../../utils/translate";
 
 export const GamePage = () => {
   const [room, setRoom] = useState<Room | null>(null);
@@ -35,7 +35,10 @@ export const GamePage = () => {
           { type: "rejoin", roomId, userId },
           (response) => {
             if (response.status === 400)
-              console.log("[🔌 Socket] Failed to join as user", translateError(response.error));
+              console.log(
+                "[🔌 Socket] Failed to join as user",
+                translateError(response.error),
+              );
           },
         );
       }
@@ -79,7 +82,7 @@ export const GamePage = () => {
 
     function onRoomBroadcast(broadcast: RoomBroadcast) {
       console.log("[🔌 Socket] Room broadcast", broadcast);
-      toast(broadcast.type, broadcast.title, broadcast.message);
+      toast(broadcast.type, ts(broadcast.title), ts(broadcast.message));
     }
 
     socket.on("connect", onConnect);

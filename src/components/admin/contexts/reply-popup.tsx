@@ -4,9 +4,9 @@ import { Popup } from "../../popup";
 import { useReplyContext } from "./reply-context";
 import { HotkeyScope } from "@/utils/hotkey";
 import { useState } from "react";
-import { translateError, t } from "../../translation/translate";
+import { translateError } from "../../../utils/translate";
 import { useToastContext } from "../../board/contexts/toast-context";
-import { toSeriTrans } from "../../translation/translate";
+import { t } from "../../../utils/translate";
 
 export const ReplyPopup = () => {
   const { toast } = useToastContext();
@@ -27,15 +27,19 @@ export const ReplyPopup = () => {
         switch (response.status) {
           case 400:
           case 500:
-            toast("error", toSeriTrans("front.failReplyToMessage"), translateError(response.error));
+            toast(
+              "error",
+              t("front.failReplyToMessage"),
+              translateError(response.error),
+            );
             break;
           case 200:
             closeReplyPopup();
             resetForm();
             toast(
               "success",
-              toSeriTrans("front.replySent"),
-              toSeriTrans("front.yourReplyHasBeenSent"),
+              t("front.replySent"),
+              t("front.yourReplyHasBeenSent"),
             );
             break;
         }
@@ -54,7 +58,7 @@ export const ReplyPopup = () => {
           onClick={closeReplyPopup}
           hotkey="escape"
           hotkeyScope={[HotkeyScope.Popup]}
-          label={t(toSeriTrans("front.close"))}
+          label={t("front.close")}
         />
       </div>
       <div className="flex flex-col gap-2">
@@ -69,14 +73,14 @@ export const ReplyPopup = () => {
         </div>
         <textarea
           className="h-64 w-full rounded-md border-2 border-taupe-600 bg-taupe-800 px-4 py-2"
-          placeholder={t(toSeriTrans("front.yourReply"))}
+          placeholder={t("front.yourReply")}
           value={response}
           onChange={(e) => setResponse(e.target.value)}
         />
       </div>
       <Button
         className="h-16"
-        label={t(toSeriTrans("front.submit"))}
+        label={t("front.submit")}
         theme="onLight"
         onClick={submitReply}
         disabled={response.length < 1}

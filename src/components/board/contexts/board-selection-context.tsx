@@ -10,7 +10,7 @@ import {
   useState,
 } from "react";
 import { PromptHandler } from "../prompt-handler/prompt-handler";
-import { t, toSeriTrans } from "../../translation/translate";
+import { t } from "../../../utils/translate";
 
 export enum SpecialGlobalIds {
   Loot = -1,
@@ -204,6 +204,6 @@ const convertDeckToGlobalId = (deck: string): GlobalId => {
     case "monster":
       return SpecialGlobalIds.Monster;
     default:
-      throw new Error(t(toSeriTrans("error.invalidDeckType", {deckType: deck})));
+      throw new Error(t("error.invalidDeckType", { deckType: deck }));
   }
 };

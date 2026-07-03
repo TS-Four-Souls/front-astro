@@ -6,7 +6,7 @@ import { useToastContext } from "./board/contexts/toast-context";
 import { Button } from "./button";
 import { useContactContext } from "./contexts/contact-context";
 import { Popup } from "./popup";
-import { t, translateError, toSeriTrans } from "./translation/translate";
+import { translateError, t } from "../utils/translate";
 
 export const ContactPopup = () => {
   const { isContactPopupOpen, closeContactPopup } = useContactContext();
@@ -34,10 +34,14 @@ export const ContactPopup = () => {
           case 200:
             closeContactPopup();
             resetForm();
-            toast("success", toSeriTrans("front.reportTitle"), toSeriTrans("front.reportMessage"));
+            toast("success", t("front.reportTitle"), t("front.reportMessage"));
             break;
           case 400:
-            toast("error", toSeriTrans("front.failReport"), translateError(response.error));
+            toast(
+              "error",
+              t("front.failReport"),
+              translateError(response.error),
+            );
             break;
         }
       },
@@ -55,25 +59,25 @@ export const ContactPopup = () => {
           onClick={closeContactPopup}
           hotkey="escape"
           hotkeyScope={[HotkeyScope.Popup]}
-          label={t(toSeriTrans("front.close"))}
+          label={t("front.close")}
         />
       </div>
       <div className="flex flex-row gap-2 max-sm:flex-col">
         <Button
           className="h-16 flex-1"
-          label={t(toSeriTrans("front.contact"))}
+          label={t("front.contact")}
           onClick={() => setType("contact")}
           active={type === "contact"}
         />
         <Button
           className="h-16 flex-1"
-          label={t(toSeriTrans("front.suggestion"))}
+          label={t("front.suggestion")}
           onClick={() => setType("suggestion")}
           active={type === "suggestion"}
         />
         <Button
           className="h-16 flex-1"
-          label={t(toSeriTrans("front.bug"))}
+          label={t("front.bug")}
           onClick={() => setType("bug")}
           active={type === "bug"}
         />
@@ -98,7 +102,7 @@ export const ContactPopup = () => {
       <div className="flex flex-col gap-2">
         <textarea
           className="h-64 w-full rounded-md border-2 border-taupe-600 bg-taupe-800 px-4 py-2"
-          placeholder={t(toSeriTrans("front.tellUs"))}
+          placeholder={t("front.tellUs")}
           value={description}
           minLength={1}
           maxLength={3000}
@@ -117,7 +121,7 @@ export const ContactPopup = () => {
       <input
         type="email"
         className="w-full rounded-md border-2 border-taupe-600 bg-taupe-800 px-4 py-2"
-        placeholder={t(toSeriTrans("front.yourEmail"))}
+        placeholder={t("front.yourEmail")}
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
@@ -129,7 +133,7 @@ export const ContactPopup = () => {
       )}
       <Button
         className="h-16"
-        label={t(toSeriTrans("front.submit"))}
+        label={t("front.submit")}
         theme="onLight"
         onClick={() => submitReport()}
         disabled={description.length < 1 || description.length > 3000}

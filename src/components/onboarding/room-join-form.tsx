@@ -3,7 +3,7 @@ import { storage } from "@/utils/storage";
 import { useEffect, useState } from "react";
 import { useToastContext } from "../board/contexts/toast-context";
 import { Button } from "../button";
-import { t, toSeriTrans, translateError } from "../translation/translate";
+import { t, translateError } from "../../utils/translate";
 
 interface RoomJoinFormProps {
   code: string;
@@ -29,19 +29,11 @@ export const RoomJoinForm = ({
 
   const joinRoom = () => {
     if (roomId.length !== 6) {
-      toast(
-        "error",
-        toSeriTrans("front.invalidRoomId"),
-        toSeriTrans("front.roomIdLength")
-      );
+      toast("error", t("front.invalidRoomId"), t("front.roomIdLength"));
       return;
     }
     if (!/^[A-Z0-9]+$/.test(roomId)) {
-      toast(
-        "error",
-        toSeriTrans("front.invalidRoomId"),
-        toSeriTrans("front.roomIdCharacters")
-      );
+      toast("error", t("front.invalidRoomId"), t("front.roomIdCharacters"));
       return;
     }
 
@@ -52,7 +44,11 @@ export const RoomJoinForm = ({
           onSuccess();
           break;
         case 400:
-          toast("error", toSeriTrans("front.failJoinRoom"), translateError(response.error));
+          toast(
+            "error",
+            t("front.failJoinRoom"),
+            translateError(response.error),
+          );
           break;
       }
     });
@@ -89,7 +85,7 @@ export const RoomJoinForm = ({
               }
             }}
             type="text"
-            placeholder={t(toSeriTrans("front.enterRoomCode"))}
+            placeholder={t("front.enterRoomCode")}
             autoComplete="off"
             minLength={6}
             maxLength={6}
@@ -105,7 +101,7 @@ export const RoomJoinForm = ({
               }
             }}
             type="text"
-            placeholder={t(toSeriTrans("front.enterYourName"))}
+            placeholder={t("front.enterYourName")}
             autoComplete="off"
             minLength={1}
             maxLength={16}
@@ -113,13 +109,13 @@ export const RoomJoinForm = ({
             className="rounded-md border-2 border-space-300 bg-space-500 px-4 py-2 text-white focus:ring-2 focus:ring-space-500 focus:outline-none"
           />
           <Button
-            label={t(toSeriTrans("front.join"))}
+            label={t("front.join")}
             onClick={joinRoom}
             hotkey="enter"
             theme="onSpace"
           />
           <Button
-            label={t(toSeriTrans("front.leave"))}
+            label={t("front.leave")}
             onClick={onCancel}
             hotkey="escape"
             theme="onSpace"

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { toSeriTrans } from "./translation/translate";
+import { t } from "../utils/translate";
 import { useMainMenuContext } from "./board/contexts/main-menu-context";
 import { useTooltip } from "./board/use-tooltip";
 import { useContactContext } from "./contexts/contact-context";
@@ -72,8 +72,8 @@ export const OnboardingLayout = ({
 export const ReportBugButton = () => {
   const tooltip = useTooltip({
     enabled: true,
-    title: toSeriTrans("front.contact"),
-    content: toSeriTrans("front.suggestionBug"),
+    title: t("front.contact"),
+    content: t("front.suggestionBug"),
   });
   const { openContactPopup } = useContactContext();
   const { closeMenu: closeMainMenu } = useMainMenuContext();

@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { useToastContext } from "../board/contexts/toast-context";
 import { Button } from "../button";
 import { OnboardingLayout } from "../onboarding-layout";
-import { translateError } from "../translation/translate";
-import { t, toSeriTrans } from "../translation/translate";
+import { translateError } from "../../utils/translate";
+import { t } from "../../utils/translate";
 
 export const LoginForm = () => {
   const { toast } = useToastContext();
@@ -22,7 +22,11 @@ export const LoginForm = () => {
     storage.setItem("adminPassword", password);
     socket.emit("adminLogin", { password }, (response) => {
       if (response.status === 400)
-        toast("error", toSeriTrans("front.failLoginAsAdmin"), translateError(response.error));
+        toast(
+          "error",
+          t("front.failLoginAsAdmin"),
+          translateError(response.error),
+        );
     });
   };
 
@@ -34,7 +38,7 @@ export const LoginForm = () => {
         <div className="flex flex-col gap-4">
           <input
             type="password"
-            placeholder={t(toSeriTrans("front.password"))}
+            placeholder={t("front.password")}
             value={password}
             className="rounded-md border-2 border-space-300 bg-space-500 px-4 py-2 text-white focus:ring-2 focus:ring-space-500 focus:outline-none"
             onChange={(e) => setPassword(e.target.value)}
@@ -46,12 +50,12 @@ export const LoginForm = () => {
           />
           <Button
             onClick={onLogin}
-            label={t(toSeriTrans("front.login"))}
+            label={t("front.login")}
             hotkey="enter"
             theme="onSpace"
           />
           <Button
-            label={t(toSeriTrans("front.return"))}
+            label={t("front.return")}
             onClick={() => {
               window.location.href = "/";
             }}

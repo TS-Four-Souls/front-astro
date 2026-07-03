@@ -1,12 +1,12 @@
 import { socket } from "@/utils/socket";
 import { useEffect, useRef } from "react";
 import { Button } from "../button";
-import { translateError, t } from "../translation/translate";
+import { translateError } from "../../utils/translate";
 import { useGameContext } from "./contexts/game-context";
 import { useHistoryContext } from "./contexts/history-context";
 import { useToastContext } from "./contexts/toast-context";
 import { StackElementIcon } from "./stack-element-icon";
-import { toSeriTrans } from "../translation/translate";
+import { t } from "../../utils/translate";
 
 export const History = () => {
   const { state, parameters } = useGameContext();
@@ -36,7 +36,7 @@ export const History = () => {
   const rollback = () => {
     socket.emit("rollback", (response) => {
       if (response.status === 400)
-        toast("error", toSeriTrans("front.failRollback"), translateError(response.error));
+        toast("error", t("front.failRollback"), translateError(response.error));
     });
   };
 
@@ -53,10 +53,10 @@ export const History = () => {
         hotkey="backspace"
         onClick={rollback}
         tooltip={{
-          title: toSeriTrans("front.rollback"),
+          title: t("front.rollback"),
           content: parameters.allowCheatOptions.value
-            ? toSeriTrans("front.rollbackDef")
-            : toSeriTrans("front.rollbackDefNoCheat"),
+            ? t("front.rollbackDef")
+            : t("front.rollbackDefNoCheat"),
           enabled: true,
         }}
         theme="onDark"

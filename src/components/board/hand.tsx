@@ -1,8 +1,8 @@
-import { toSeriTrans } from "../translation/translate";
+import { t } from "../../utils/translate";
 import type { SelectionItem } from "@/shared/api";
 import { cn } from "@/utils/cn";
 import { socket } from "@/utils/socket";
-import { t, translateError } from "../translation/translate";
+import { ts, translateError } from "../../utils/translate";
 import { CardHoverPreview } from "./card-hover-preview";
 import { useGameAnimation } from "./contexts/game-animation";
 import { useGameContext } from "./contexts/game-context";
@@ -26,13 +26,17 @@ export const Hand = () => {
           case 200:
             if (response.response.complete) {
             } else if (response.response.options.length === 0) {
-              toast("error", toSeriTrans("front.failPlayCard"), toSeriTrans("front.noOptionsAvailable"));
+              toast(
+                "error",
+                t("front.failPlayCard"),
+                t("front.noOptionsAvailable"),
+              );
             } else {
               const promptId = `card-play-${index}-${selections.length}`;
               addPrompt({
                 promptId,
                 isUnique: false,
-                prompt: t(response.response.description),
+                prompt: ts(response.response.description),
                 options: response.response.options,
                 minCount: response.response.min,
                 maxCount: response.response.max,
@@ -47,7 +51,11 @@ export const Hand = () => {
             }
             break;
           case 400:
-            toast("error", toSeriTrans("front.failPlayCard"), translateError(response.error));
+            toast(
+              "error",
+              t("front.failPlayCard"),
+              translateError(response.error),
+            );
             break;
         }
       },
@@ -86,7 +94,7 @@ export const Hand = () => {
                   card={card}
                   tooltip={{
                     capable: state.me.capabilities.useLoot,
-                    title: toSeriTrans("front.cannotPlay"),
+                    title: t("front.cannotPlay"),
                   }}
                 />
               )}
@@ -98,7 +106,7 @@ export const Hand = () => {
               disabled={state.me.capabilities.useLoot !== true}
               onClickTopCard={() =>
                 block(
-                  toSeriTrans("front.cannotPlay"),
+                  t("front.cannotPlay"),
                   state.me.capabilities.useLoot,
                   () => playCard(index),
                 )

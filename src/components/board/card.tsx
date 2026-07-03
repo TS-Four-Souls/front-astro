@@ -65,7 +65,6 @@ export const Card = ({
   size = 160,
   aspectRatio = 750 / 1024,
   effects,
-  visualEffectBox,
   counter,
   onMouseEnter,
   onMouseLeave,

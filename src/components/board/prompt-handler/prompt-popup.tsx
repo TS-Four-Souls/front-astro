@@ -10,7 +10,7 @@ import { Sword } from "@/icons/sword";
 import { StackElement } from "../stack";
 import { SelectionIndexIndicator } from "../selection-index-indicator";
 import { useMemo, useState } from "react";
-import { t, toSeriTrans } from "../../translation/translate";
+import { ts, t } from "../../../utils/translate";
 interface PromptPopupProps {
   onCancel?: () => void | undefined;
   prompt: string;
@@ -76,7 +76,7 @@ export const PromptPopup = ({
           {canUseLookup && (
             <input
               className="w-48 rounded-md border-2 border-taupe-500 px-4"
-              placeholder={t(toSeriTrans("front.search"))}
+              placeholder={t("front.search")}
               onChange={(e) => setSearch(e.target.value)}
             />
           )}
@@ -85,7 +85,7 @@ export const PromptPopup = ({
               onClick={toggleMode}
               hotkey="tab"
               hotkeyScope={[HotkeyScope.Popup]}
-              label={t(toSeriTrans("front.useBoardSelection"))}
+              label={t("front.useBoardSelection")}
             />
           )}
           {onCancel && (
@@ -149,7 +149,7 @@ export const PromptPopup = ({
           theme="onLight"
           hotkey="enter"
           hotkeyScope={[HotkeyScope.Popup]}
-          label={t(toSeriTrans("front.submit"))}
+          label={t("front.submit")}
         />
       )}
     </Popup>
@@ -355,7 +355,7 @@ export const PlayerOption = ({
       <div className="flex flex-row items-center gap-2">
         <Person className="size-6" />
         <p className="text-center font-main font-bold uppercase">
-          {t(option.payload.nameKey)}
+          {ts(option.payload.nameKey)}
         </p>
       </div>
       <div className="relative">
@@ -388,7 +388,7 @@ export const MonsterOption = ({
       <div className="flex flex-row items-center gap-2">
         <Sword className="size-6" />
         <p className="text-center font-main font-bold uppercase">
-          {t(option.payload.nameKey)}
+          {ts(option.payload.nameKey)}
         </p>
       </div>
       <div className="relative">
@@ -597,7 +597,7 @@ export const CouplePlayerHandOption = ({
         <div className="flex flex-row items-center gap-2">
           <Person className="size-6" />
           <p className="text-center text-lg font-bold">
-            {t(option.payload.player.nameKey)}
+            {ts(option.payload.player.nameKey)}
           </p>
         </div>
         <CardImage card={option.payload.player} className="h-64 shadow-lg/30" />

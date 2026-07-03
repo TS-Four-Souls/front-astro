@@ -1,6 +1,5 @@
-import { t, toSeriTrans } from "../translation/translate";
+import { t } from "../../utils/translate";
 
 export const Loading = () => {
-  return t(toSeriTrans("front.loading"));
-  return t(toSeriTrans("front.loading"));
+  return t("front.loading");
 };

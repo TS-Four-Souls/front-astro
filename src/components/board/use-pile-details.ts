@@ -1,5 +1,5 @@
 import type { Card } from "@/shared/api";
-import { t, toSeriTrans } from "../translation/translate";
+import { t } from "../../utils/translate";
 import { usePromptContext } from "./contexts/prompt-context";
 
 export const usePileDetails = () => {
@@ -14,7 +14,7 @@ export const usePileDetails = () => {
     addPrompt({
       promptId,
       isUnique: false,
-      prompt: t(toSeriTrans("front.pileDetails")),
+      prompt: t("front.pileDetails"),
       options: cards.map((card) => ({
         type: "card",
         payload: card,

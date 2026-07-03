@@ -2,12 +2,12 @@ import { HotkeyScope } from "@/utils/hotkey";
 import { socket } from "@/utils/socket";
 import { Button } from "../button";
 import { ReportBugButton } from "../onboarding-layout";
-import { translateError, t } from "../translation/translate";
+import { translateError } from "../../utils/translate";
 import { useGameContext } from "./contexts/game-context";
 import { useMainMenuContext } from "./contexts/main-menu-context";
 import { usePromptContext } from "./contexts/prompt-context";
 import { useToastContext } from "./contexts/toast-context";
-import { toSeriTrans } from "../translation/translate";
+import { t } from "../../utils/translate";
 
 export const MainMenu = () => {
   const { addPrompt, removePrompt } = usePromptContext();
@@ -20,7 +20,7 @@ export const MainMenu = () => {
     addPrompt({
       promptId,
       isUnique: false,
-      prompt: t(toSeriTrans("front.confirmQuitGame")),
+      prompt: t("front.confirmQuitGame"),
       options: [
         { type: "boolean", payload: true },
         { type: "boolean", payload: false },
@@ -33,7 +33,11 @@ export const MainMenu = () => {
             if (response.status === 200) {
               removePrompt(promptId);
             } else {
-              toast("error", toSeriTrans("front.failQuitGame"), translateError(response.error));
+              toast(
+                "error",
+                t("front.failQuitGame"),
+                translateError(response.error),
+              );
             }
           });
         }
@@ -71,10 +75,18 @@ export const MainMenu = () => {
           document.body.removeChild(link);
           URL.revokeObjectURL(url);
 
-          toast("success", toSeriTrans("front.saveTitle"), toSeriTrans("front.saveMessage", { filename }));
+          toast(
+            "success",
+            t("front.saveTitle"),
+            t("front.saveMessage", { filename }),
+          );
           break;
         case 400:
-          toast("error", toSeriTrans("front.failSaveGame"), translateError(response.error));
+          toast(
+            "error",
+            t("front.failSaveGame"),
+            translateError(response.error),
+          );
           break;
       }
     });
@@ -84,7 +96,7 @@ export const MainMenu = () => {
     socket.emit("debugLootTop", (response) => {
       if (response.status === 200) {
       } else {
-        toast("error", toSeriTrans("front.failLoot"), translateError(response.error));
+        toast("error", t("front.failLoot"), translateError(response.error));
       }
     });
   };
@@ -93,7 +105,11 @@ export const MainMenu = () => {
     socket.emit("debugGainTreasureTop", (response) => {
       if (response.status === 200) {
       } else {
-        toast("error", toSeriTrans("front.failGainTreasure"), translateError(response.error));
+        toast(
+          "error",
+          t("front.failGainTreasure"),
+          translateError(response.error),
+        );
       }
     });
   };
@@ -106,8 +122,7 @@ export const MainMenu = () => {
           addPrompt({
             promptId,
             isUnique: false,
-            prompt: t(toSeriTrans("front.selectCardToLoot"))
-            ,
+            prompt: t("front.selectCardToLoot"),
             options: response.cards.map((card) => ({
               type: "card",
               payload: card,
@@ -124,7 +139,11 @@ export const MainMenu = () => {
                   if (response.status === 200) {
                     removePrompt(promptId);
                   } else {
-                    toast("error", toSeriTrans("front.failGainLootCards"), translateError(response.error));
+                    toast(
+                      "error",
+                      t("front.failGainLootCards"),
+                      translateError(response.error),
+                    );
                   }
                 },
               );
@@ -135,7 +154,11 @@ export const MainMenu = () => {
           });
           break;
         case 400:
-          toast("error", toSeriTrans("front.failListLoot"), translateError(response.error));
+          toast(
+            "error",
+            t("front.failListLoot"),
+            translateError(response.error),
+          );
           break;
       }
     });
@@ -149,7 +172,7 @@ export const MainMenu = () => {
           addPrompt({
             promptId,
             isUnique: false,
-            prompt: t(toSeriTrans("front.selectTreasureToGain")),
+            prompt: t("front.selectTreasureToGain"),
             options: response.cards.map((card) => ({
               type: "card",
               payload: card,
@@ -168,7 +191,7 @@ export const MainMenu = () => {
                   } else {
                     toast(
                       "error",
-                      toSeriTrans("front.failGainTreasureCards"),
+                      t("front.failGainTreasureCards"),
                       translateError(response.error),
                     );
                   }
@@ -181,7 +204,11 @@ export const MainMenu = () => {
           });
           break;
         case 400:
-          toast("error", toSeriTrans("front.failListTreasure"), translateError(response.error));
+          toast(
+            "error",
+            t("front.failListTreasure"),
+            translateError(response.error),
+          );
           break;
       }
     });
@@ -195,7 +222,7 @@ export const MainMenu = () => {
           addPrompt({
             promptId,
             isUnique: false,
-            prompt: t(toSeriTrans("front.selectCardsToRemove")),
+            prompt: t("front.selectCardsToRemove"),
             options: response.cards.map((card) => ({
               type: "card",
               payload: card,
@@ -212,7 +239,11 @@ export const MainMenu = () => {
                   if (response.status === 200) {
                     removePrompt(promptId);
                   } else {
-                    toast("error", toSeriTrans("front.failRemoveCards"), translateError(response.error));
+                    toast(
+                      "error",
+                      t("front.failRemoveCards"),
+                      translateError(response.error),
+                    );
                   }
                 },
               );
@@ -223,7 +254,11 @@ export const MainMenu = () => {
           });
           break;
         case 400:
-          toast("error", toSeriTrans("front.failListRemovableCards"), translateError(response.error));
+          toast(
+            "error",
+            t("front.failListRemovableCards"),
+            translateError(response.error),
+          );
           break;
       }
     });
@@ -234,7 +269,7 @@ export const MainMenu = () => {
     addPrompt({
       promptId,
       isUnique: false,
-      prompt: t(toSeriTrans("front.selectAmountOfCoinsToGain")),
+      prompt: t("front.selectAmountOfCoinsToGain"),
       options: Array.from({ length: 10 }, (_, i) => ({
         type: "number",
         payload: i + 1,
@@ -252,7 +287,11 @@ export const MainMenu = () => {
             if (response.status === 200) {
               removePrompt(promptId);
             } else {
-              toast("error", toSeriTrans("front.failGainCoins"), translateError(response.error));
+              toast(
+                "error",
+                t("front.failGainCoins"),
+                translateError(response.error),
+              );
             }
           },
         );
@@ -271,7 +310,7 @@ export const MainMenu = () => {
           addPrompt({
             promptId,
             isUnique: false,
-            prompt: t(toSeriTrans("front.selectMonsterCardToPutInSlot")),
+            prompt: t("front.selectMonsterCardToPutInSlot"),
             options: response.cards.map((card) => ({
               type: "card",
               payload: card,
@@ -286,7 +325,7 @@ export const MainMenu = () => {
               addPrompt({
                 promptId: promptId2,
                 isUnique: false,
-                prompt: t(toSeriTrans("front.selectCardToCover")),
+                prompt: t("front.selectCardToCover"),
                 options: response.coverable.map((card) => ({
                   type: "card",
                   payload: card,
@@ -307,7 +346,7 @@ export const MainMenu = () => {
                       } else {
                         toast(
                           "error",
-                          toSeriTrans("front.FailPutMonster"),
+                          t("front.FailPutMonster"),
                           translateError(response.error),
                         );
                       }
@@ -325,7 +364,11 @@ export const MainMenu = () => {
           });
           break;
         case 400:
-          toast("error", toSeriTrans("front.failListMonsterDeck"), translateError(response.error));
+          toast(
+            "error",
+            t("front.failListMonsterDeck"),
+            translateError(response.error),
+          );
           break;
       }
     });
@@ -339,7 +382,7 @@ export const MainMenu = () => {
           hotkey="escape"
           hotkeyScope={[HotkeyScope.Popup]}
           onClick={closeMainMenu}
-          label={t(toSeriTrans("front.close"))}
+          label={t("front.close")}
         />
       </div>
       {parameters.allowCheatOptions.value && (
@@ -348,48 +391,48 @@ export const MainMenu = () => {
             onClick={() => {
               debugGainLootTop();
             }}
-            label={t(toSeriTrans("front.cheatLoot"))}
+            label={t("front.cheatLoot")}
           />
           <Button
             onClick={() => {
               closeMainMenu();
               debugGainLoot();
             }}
-            label={t(toSeriTrans("front.cheatSelectLoot"))}
+            label={t("front.cheatSelectLoot")}
           />
           <Button
             onClick={() => {
               debugGainTreasureTop();
             }}
-            label={t(toSeriTrans("front.cheatGainTreasure"))}
+            label={t("front.cheatGainTreasure")}
           />
           <Button
             onClick={() => {
               closeMainMenu();
               debugGainTreasure();
             }}
-            label={t(toSeriTrans("front.cheatSelectTreasure"))}
+            label={t("front.cheatSelectTreasure")}
           />
           <Button
             onClick={() => {
               closeMainMenu();
               debugPutMonsterCardInSlot();
             }}
-            label={t(toSeriTrans("front.cheatPutMonster"))}
+            label={t("front.cheatPutMonster")}
           />
           <Button
             onClick={() => {
               closeMainMenu();
               debugGainCoins();
             }}
-            label={t(toSeriTrans("front.cheatGainCoins"))}
+            label={t("front.cheatGainCoins")}
           />
           <Button
             onClick={() => {
               closeMainMenu();
               debugRemoveCard();
             }}
-            label={t(toSeriTrans("front.cheatDiscardCard"))}
+            label={t("front.cheatDiscardCard")}
           />
         </>
       )}
@@ -398,14 +441,14 @@ export const MainMenu = () => {
           closeMainMenu();
           onSaveGamePress();
         }}
-        label={t(toSeriTrans("front.saveGame"))}
+        label={t("front.saveGame")}
       />
       <Button
         onClick={() => {
           closeMainMenu();
           onResetPress();
         }}
-        label={t(toSeriTrans("front.quitGame"))}
+        label={t("front.quitGame")}
       />
       <ReportBugButton />
     </div>

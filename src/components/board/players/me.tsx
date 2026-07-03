@@ -3,7 +3,7 @@ import { HotkeyScope } from "@/utils/hotkey";
 import { socket } from "@/utils/socket";
 import { useEffect, useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { t, translateError } from "../../translation/translate";
+import { ts, translateError } from "../../../utils/translate";
 import { CardHoverPreview } from "../card-hover-preview";
 import { useGameAnimation } from "../contexts/game-animation";
 import { useGameContext } from "../contexts/game-context";
@@ -13,7 +13,7 @@ import { useToastContext } from "../contexts/toast-context";
 import { Hand } from "../hand";
 import { Pile } from "../pile";
 import { PlayerStats } from "../player-stats";
-import { toSeriTrans } from "../../translation/translate";
+import { t } from "../../../utils/translate";
 
 export const Me = () => {
   const { state, isHandUp } = useGameContext();
@@ -52,8 +52,8 @@ export const Me = () => {
         }
         const toastId = toast(
           "info",
-          toSeriTrans("front.playerIsBusy", {player: player.name}),
-          toSeriTrans("front.pleaseWaitForThemToFinishTheirSelection"),
+          t("front.playerIsBusy", { player: player.name }),
+          t("front.pleaseWaitForThemToFinishTheirSelection"),
           { duration: Infinity },
         );
         pendingSelectionsToastIds.current.set(player.name, toastId);
@@ -75,7 +75,7 @@ export const Me = () => {
       addPrompt({
         promptId,
         isUnique: true,
-        prompt: t(pendingSelection.description),
+        prompt: ts(pendingSelection.description),
         options: pendingSelection.options,
         minCount: pendingSelection.min,
         maxCount: pendingSelection.max,
@@ -93,7 +93,11 @@ export const Me = () => {
                   removePrompt(promptId);
                   break;
                 case 400:
-                  toast("error", toSeriTrans("front.failSubmit"), translateError(response.error));
+                  toast(
+                    "error",
+                    t("front.failSubmit"),
+                    translateError(response.error),
+                  );
                   break;
               }
             },
@@ -116,13 +120,17 @@ export const Me = () => {
             case 200:
               if (response.response.complete) {
               } else if (response.response.options.length === 0) {
-                toast("error", toSeriTrans("front.cannotPlay"), toSeriTrans("front.noOptionsAvailable"));
+                toast(
+                  "error",
+                  t("front.cannotPlay"),
+                  t("front.noOptionsAvailable"),
+                );
               } else {
                 const promptId = `card-activation-${card.slug}-${index}-${effectIndex}-${selections.length}`;
                 addPrompt({
                   promptId,
                   isUnique: false,
-                  prompt: t(response.response.description),
+                  prompt: ts(response.response.description),
                   options: response.response.options,
                   minCount: response.response.min,
                   maxCount: response.response.max,
@@ -141,7 +149,11 @@ export const Me = () => {
               break;
             case 400:
             default:
-              toast("error", toSeriTrans("front.failActivateCard"), translateError(response.error));
+              toast(
+                "error",
+                t("front.failActivateCard"),
+                translateError(response.error),
+              );
               break;
           }
         },
@@ -164,7 +176,7 @@ export const Me = () => {
       addPrompt<EffectOption>({
         promptId,
         isUnique: false,
-        prompt: t(toSeriTrans("front.selectEffectToActivate")),
+        prompt: t("front.selectEffectToActivate"),
         options: effects,
         minCount: 1,
         maxCount: 1,
@@ -251,13 +263,13 @@ export const Me = () => {
                   isEternal={card.eternal}
                   tooltip={{
                     capable: card.capabilities.activate,
-                    title: toSeriTrans("front.cannotActivateTitle"),
+                    title: t("front.cannotActivateTitle"),
                   }}
                 />
               )}
               onClickTopCard={() =>
                 block(
-                  toSeriTrans("capability.cannotActivate"),
+                  t("capability.cannotActivate"),
                   card.capabilities.activate,
                   () => onInPlayCardClick(card, index),
                 )

@@ -15,7 +15,7 @@ import { socket } from "@/utils/socket";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { Button } from "../button";
-import { t, toSeriTrans, translateError } from "../translation/translate";
+import { ts, t, translateError } from "../../utils/translate";
 import {
   stackElementIdShift,
   useBoardSelectionContext,
@@ -44,7 +44,11 @@ export const Stack = () => {
   const resolveStack = () => {
     socket.emit("resolve", (response) => {
       if (response.status === 400)
-        toast("error", toSeriTrans("front.failResolveStack"), translateError(response.error));
+        toast(
+          "error",
+          t("front.failResolveStack"),
+          translateError(response.error),
+        );
     });
   };
 
@@ -100,7 +104,11 @@ export const Stack = () => {
         { elementToMoveStackId, targetStackId },
         (response) => {
           if (response.status === 400)
-            toast("error", toSeriTrans("front.failMoveStackElement"), translateError(response.error));
+            toast(
+              "error",
+              t("front.failMoveStackElement"),
+              translateError(response.error),
+            );
         },
       );
     },
@@ -157,7 +165,7 @@ export const Stack = () => {
                 !isSelectedElement && (
                   <InsertionBar
                     onClick={() => moveStackElementBefore("start")}
-                    label={t(toSeriTrans("front.moveHere"))}
+                    label={t("front.moveHere")}
                   />
                 )}
               <StackElement
@@ -195,7 +203,7 @@ export const Stack = () => {
                     onClick={() =>
                       moveStackElementBefore(state.stack[index].id)
                     }
-                    label={t(toSeriTrans("front.moveHere"))}
+                    label={t("front.moveHere")}
                   />
                 )}
             </div>
@@ -213,17 +221,17 @@ export const Stack = () => {
         hotkey="space"
         onClick={() =>
           block(
-            toSeriTrans("front.cannotResolveStack"),
+            t("front.cannotResolveStack"),
             state.me.capabilities.resolve,
             resolveStack,
           )
         }
         disabled={state.me.capabilities.resolve !== true}
         tooltip={{
-          title: toSeriTrans("front.cannotResolveStack"),
+          title: t("front.cannotResolveStack"),
           capable: state.me.capabilities.resolve,
         }}
-        label={t(toSeriTrans("front.resolve"))}
+        label={t("front.resolve")}
         theme="onDark"
       />
     </div>
@@ -261,7 +269,7 @@ export const StackElement = ({
       <StackElementContent element={element} />
 
       {hotkey && (
-        <div className="absolute top-0 left-0 flex aspect-square w-5 place-items-center overflow-hidden rounded-sm bg-taupe-700 outline-[0.1em] -outline-offset-[0.1em]">
+        <div className="absolute top-0 left-0 flex aspect-square w-5 place-items-center overflow-hidden rounded-sm bg-taupe-700 outline-[0.1em] outline-offset-[-0.1em]">
           <img
             src={`/input-prompts/keyboard_${hotkey.split(",")[0]}_outline.svg`}
             className="scale-150"
@@ -324,12 +332,12 @@ const DiceRollElement = ({ element }: { element: DiceRollJson }) => {
       <StackElementIcon element={element} />
       <div className="flex flex-col">
         <p className="text-2xs leading-6 text-taupe-500">
-          {element.card ? t(element.card.nameKey) : "Attack roll"}
+          {element.card ? ts(element.card.nameKey) : "Attack roll"}
         </p>
 
         <p className="text-taupe-200">
           <span style={{ color: element.issuer.color }}>
-            {t(element.issuer.nameKey)}
+            {ts(element.issuer.nameKey)}
           </span>{" "}
           rolled a {element.diceRoll}{" "}
           {element.modifier !== 0 ? `(+${element.modifier})` : ""}
@@ -350,9 +358,9 @@ const LootCardEffectElement = ({
       <div className="text-sm">
         <p className="text-taupe-200">
           <span style={{ color: element.issuer.color }}>
-            {t(element.issuer.nameKey)}
+            {ts(element.issuer.nameKey)}
           </span>{" "}
-          used {t(element.card.nameKey)}
+          used {ts(element.card.nameKey)}
         </p>
       </div>
     </div>
@@ -367,9 +375,9 @@ const EffectElement = ({ element }: { element: EffectOnStackJson }) => {
         <p
           className="text-xs leading-6"
           style={{ color: element.issuer.color }}>
-          {t(element.issuer.nameKey)}
+          {ts(element.issuer.nameKey)}
         </p>
-        <p className="text-taupe-200">{t(element.card.nameKey)}</p>
+        <p className="text-taupe-200">{ts(element.card.nameKey)}</p>
       </div>
     </div>
   );
@@ -382,7 +390,7 @@ const LootStepElement = ({ element }: { element: LootStepJson }) => {
       <div className="text-sm">
         <p className="text-taupe-200">
           <span style={{ color: element.player.color }}>
-            {t(element.player.nameKey)}
+            {ts(element.player.nameKey)}
           </span>{" "}
           is about to loot {element.nbLoots} card
           {element.nbLoots > 1 ? "s" : ""}
@@ -399,8 +407,9 @@ const EndOfTurnElement = ({ element }: { element: EndOfTurnJson }) => {
       <div className="text-sm">
         <p className="text-taupe-200">
           <span style={{ color: element.player.color }}>
-            {t(element.player.nameKey)}
-          </span>'s turn is about to end.
+            {ts(element.player.nameKey)}
+          </span>
+          's turn is about to end.
         </p>
       </div>
     </div>
@@ -414,7 +423,7 @@ const DamageElement = ({ element }: { element: DamageOnStackJson }) => {
       <div className="text-sm">
         <p className="text-taupe-200">
           <span style={{ color: element.from.color }}>
-            {t(element.from.nameKey)}
+            {ts(element.from.nameKey)}
           </span>{" "}
           dealt {element.damage} damage to{" "}
           <span style={{ color: element.receiver.color }}>
@@ -433,7 +442,7 @@ const DeathElement = ({ element }: { element: DeathOnStackJson }) => {
       <div className="text-sm">
         <p className="text-taupe-200">
           <span style={{ color: element.from.color }}>
-            {t(element.from.nameKey)}
+            {ts(element.from.nameKey)}
           </span>{" "}
           killed{" "}
           <span style={{ color: element.receiver.color }}>
