@@ -13,7 +13,7 @@ export const About = ({ onClose }: AboutProps) => {
     <>
       <img src="/logo.png" alt="Logo" className="mb-8 w-80" />
       <Button
-        label={t("front.close")}
+        label={t("common.closeButton")}
         onClick={onClose}
         hotkey="escape"
         hotkeyScope={[HotkeyScope.Main]}

@@ -102,8 +102,8 @@ export const Pile = ({
         }
       : () => {
           block(
-            t("front.cannotSelectCard"),
-            { key: "front.cannotSelectThisCard" },
+            t("gameStep.boardSelection.blockedTooltip.title"),
+            { key: "gameStep.boardSelection.blockedTooltip.message" },
             () => {},
           );
         }

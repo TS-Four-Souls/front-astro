@@ -43,7 +43,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
       if (response.status === 400)
         toast(
           "error",
-          t("front.failDeclareAttack"),
+          t("gameStep.declareAttackButton.errorToast.title"),
           translateError(response.error),
         );
     });
@@ -52,7 +52,11 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
   const rollDice = () => {
     socket.emit("attackRoll", (response) => {
       if (response.status === 400)
-        toast("error", t("front.failRollDice"), translateError(response.error));
+        toast(
+          "error",
+          t("gameStep.rollDiceButton.errorToast.title"),
+          translateError(response.error),
+        );
     });
   };
 
@@ -61,7 +65,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
       if (response.status === 400)
         toast(
           "error",
-          t("front.failDeclarePurchase"),
+          t("gameStep.purchase.declarePurchaseButton.errorToast.title"),
           translateError(response.error),
         );
     });
@@ -72,7 +76,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
       if (response.status === 400)
         toast(
           "error",
-          t("front.failCancelPurchase"),
+          t("gameStep.purchase.abandonPurchaseButton.errorToast.title"),
           translateError(response.error),
         );
     });
@@ -81,7 +85,11 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
   const onEndTurnPress = () => {
     socket.emit("endTurn", (response) => {
       if (response.status === 400)
-        toast("error", t("front.failEndTurn"), translateError(response.error));
+        toast(
+          "error",
+          t("gameStep.endTurnButton.errorToast.title"),
+          translateError(response.error),
+        );
     });
   };
 
@@ -90,7 +98,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
       if (response.status === 400)
         toast(
           "error",
-          t("front.failSwitchToCopy"),
+          t("gameStep.switchToCopy.errorToast.title"),
           translateError(response.error),
         );
     });
@@ -98,7 +106,11 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
 
   const onCoinPress = () => {
     if (state.me.coins === 0) {
-      toast("error", t("front.failGiveCoins"), t("front.youHaveNoCoinsToGive"));
+      toast(
+        "error",
+        t("gameStep.giveCoins.errorToast.title"),
+        t("gameStep.giveCoins.errorToast.noCoinsMessage"),
+      );
       return;
     }
 
@@ -106,7 +118,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
     addPrompt<{ type: "number"; payload: number }>({
       promptId: `coin-prompt-${Date.now()}`,
       isUnique: false,
-      prompt: t("front.selectAmountOfCoinsToGive"),
+      prompt: t("gameStep.giveCoins.popup.title"),
       options: Array.from({ length: state.me.coins }, (_, index) => ({
         type: "number",
         payload: index + 1,
@@ -127,7 +139,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
             } else {
               toast(
                 "error",
-                t("front.failGiveCoins"),
+                t("gameStep.giveCoins.errorToast.title"),
                 translateError(response.error),
               );
             }
@@ -145,11 +157,11 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
       player.capabilities.canDonateCoinsTo === true && !isMe
         ? {
             enabled: true,
-            title: t("front.donateCoins"),
-            content: t("front.canDonate"),
+            title: t("gameStep.giveCoins.tooltip.title"),
+            content: t("gameStep.giveCoins.tooltip.message"),
           }
         : {
-            title: t("front.cannotDonate"),
+            title: t("gameStep.giveCoins.blockedTooltip.title"),
             capable: player.capabilities.canDonateCoinsTo,
           },
     );
@@ -218,7 +230,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
         )}
         onClick={() =>
           block(
-            t("front.cannotDonate"),
+            t("gameStep.giveCoins.blockedTooltip.title"),
             player.capabilities.canDonateCoinsTo,
             onCoinPress,
           )
@@ -294,7 +306,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
             hotkey="e"
             onClick={() =>
               block(
-                t("front.cannotEndTurn"),
+                t("gameStep.endTurnButton.blockedTooltip.title"),
                 state.me.capabilities.endTurn,
                 onEndTurnPress,
               )
@@ -303,53 +315,71 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
               state.me.capabilities.endTurn === true
                 ? {
                     enabled: state.me.numberOfCardsOverMaxHandSize > 0,
-                    title: t("front.excessLoot"),
-                    content: t("front.excessLootContent", {
-                      value: String(state.me.numberOfCardsOverMaxHandSize),
-                    }),
+                    title: t("gameStep.endTurnButton.excessLootTooltip.title"),
+                    content: t(
+                      "gameStep.endTurnButton.excessLootTooltip.message",
+                      {
+                        value: String(state.me.numberOfCardsOverMaxHandSize),
+                      },
+                    ),
                     type: "warning",
                   }
                 : {
-                    title: t("front.cannotEndTurn"),
+                    title: t("gameStep.endTurnButton.blockedTooltip.title"),
                     capable: state.me.capabilities.endTurn,
                   }
             }
-            label={t("front.endTurn")}
+            label={t("gameStep.endTurnButton.label")}
           />
           {!state.me.isEngagedInPurchase && (
             <Button
-              label={t("front.declarePurchase")}
+              label={t("gameStep.purchase.declarePurchaseButton.label")}
               className="shadow-lg shadow-taupe-800/70"
               disabled={state.me.capabilities.declarePurchase !== true}
               hotkey="p"
               onClick={() =>
                 block(
-                  t("front.cannotDeclarePurchase"),
+                  t(
+                    "gameStep.purchase.declarePurchaseButton.blockedTooltip.title",
+                  ),
                   state.me.capabilities.declarePurchase,
                   declarePurchase,
                 )
               }
               tooltip={{
-                title: t("front.cannotDeclarePurchase"),
+                title: t(
+                  "gameStep.purchase.declarePurchaseButton.blockedTooltip.title",
+                ),
                 capable: state.me.capabilities.declarePurchase,
               }}
             />
           )}
           {state.me.isEngagedInPurchase && (
             <Button
-              label={t("front.abandonPurchase")}
+              label={t("gameStep.purchase.abandonPurchaseButton.label")}
               className="shadow-lg shadow-taupe-800/70"
               disabled={state.me.capabilities.buyTreasure === true}
               tooltip={{
-                title: t("front.cannotAbandonPurchase"),
-                capable: state.me.capabilities.buyTreasure,
+                title: t(
+                  "gameStep.purchase.abandonPurchaseButton.blockedTooltip.title",
+                ),
+                capable:
+                  state.me.capabilities.buyTreasure === true
+                    ? t(
+                        "gameStep.purchase.abandonPurchaseButton.blockedTooltip.ableToPurchaseMessage",
+                      )
+                    : true,
               }}
               hotkey="p"
               onClick={() =>
                 block(
-                  t("front.abandonPurchase"),
+                  t(
+                    "gameStep.purchase.abandonPurchaseButton.blockedTooltip.title",
+                  ),
                   state.me.capabilities.buyTreasure === true
-                    ? t("front.cannotAbandonPurchase")
+                    ? t(
+                        "gameStep.purchase.abandonPurchaseButton.blockedTooltip.ableToPurchaseMessage",
+                      )
                     : true,
                   cancelPurchase,
                 )
@@ -358,36 +388,36 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
           )}
           {!state.me.isEngagedInCombat && (
             <Button
-              label={t("front.declareAttack")}
+              label={t("gameStep.declareAttackButton.label")}
               className="shadow-lg shadow-taupe-800/70"
               disabled={state.me.capabilities.declareAttack !== true}
               hotkey="a"
               onClick={() =>
                 block(
-                  t("front.cannotDeclareAttack"),
+                  t("gameStep.declareAttackButton.blockedTooltip.title"),
                   state.me.capabilities.declareAttack,
                   declareAttack,
                 )
               }
               tooltip={{
-                title: t("front.cannotDeclareAttack"),
+                title: t("gameStep.declareAttackButton.blockedTooltip.title"),
                 capable: state.me.capabilities.declareAttack,
               }}
             />
           )}
           {state.me.isEngagedInCombat && (
             <Button
-              label={t("front.rollDice")}
+              label={t("gameStep.rollDiceButton.label")}
               className="shadow-lg shadow-taupe-800/70"
               disabled={state.me.capabilities.rollDice !== true}
               tooltip={{
-                title: t("front.cannotRollDice"),
+                title: t("gameStep.rollDiceButton.blockedTooltip.title"),
                 capable: state.me.capabilities.rollDice,
               }}
               hotkey="a"
               onClick={() =>
                 block(
-                  t("front.cannotRollDice"),
+                  t("gameStep.rollDiceButton.blockedTooltip.title"),
                   state.me.capabilities.rollDice,
                   rollDice,
                 )

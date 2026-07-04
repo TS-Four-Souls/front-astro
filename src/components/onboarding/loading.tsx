@@ -1,5 +1,5 @@
 import { t } from "../../utils/translate";
 
 export const Loading = () => {
-  return t("front.loading");
+  return t("introStep.loadingMessage");
 };

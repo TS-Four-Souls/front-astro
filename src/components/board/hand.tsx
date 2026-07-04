@@ -28,8 +28,8 @@ export const Hand = () => {
             } else if (response.response.options.length === 0) {
               toast(
                 "error",
-                t("front.failPlayCard"),
-                t("front.noOptionsAvailable"),
+                t("gameStep.play.errorToast.title"),
+                t("gameStep.noOptionsAvailable"),
               );
             } else {
               const promptId = `card-play-${index}-${selections.length}`;
@@ -53,7 +53,7 @@ export const Hand = () => {
           case 400:
             toast(
               "error",
-              t("front.failPlayCard"),
+              t("gameStep.play.errorToast.title"),
               translateError(response.error),
             );
             break;
@@ -94,7 +94,7 @@ export const Hand = () => {
                   card={card}
                   tooltip={{
                     capable: state.me.capabilities.useLoot,
-                    title: t("front.cannotPlay"),
+                    title: t("gameStep.play.blockedTooltip.title"),
                   }}
                 />
               )}
@@ -106,7 +106,7 @@ export const Hand = () => {
               disabled={state.me.capabilities.useLoot !== true}
               onClickTopCard={() =>
                 block(
-                  t("front.cannotPlay"),
+                  t("gameStep.play.blockedTooltip.title"),
                   state.me.capabilities.useLoot,
                   () => playCard(index),
                 )

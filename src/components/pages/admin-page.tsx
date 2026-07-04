@@ -13,7 +13,7 @@ import { LoginForm } from "../admin/login-form";
 import { useToastContext } from "../board/contexts/toast-context";
 import { Button } from "../button";
 import { OnboardingLayout } from "../onboarding-layout";
-import { t, translateError } from "../../utils/translate";
+import { translateError } from "../../utils/translate";
 
 export const AdminPage = () => {
   const [adminResponse, setAdminResponse] = useState<AdminResponse | null>(
@@ -108,7 +108,7 @@ export const AdminPostLoginPage = ({
         if (response.status === 400)
           toast(
             "error",
-            t("front.failChangeMessageStatus"),
+            "Failed to change message status",
             translateError(response.error),
           );
       },
@@ -134,11 +134,7 @@ export const AdminPostLoginPage = ({
           break;
         case 400:
         case 500:
-          toast(
-            "error",
-            t("front.failGetLogs"),
-            translateError(response.error),
-          );
+          toast("error", "Failed to get logs", translateError(response.error));
           break;
       }
     });
@@ -162,7 +158,7 @@ export const AdminPostLoginPage = ({
       <div className="flex items-center justify-between">
         <h1 className="font-main text-3xl font-bold">Admin Page</h1>
         <Button
-          label={t("front.logout")}
+          label="Logout"
           onClick={() => {
             storage.removeItem("adminPassword");
             window.location.reload();

@@ -52,8 +52,10 @@ export const Me = () => {
         }
         const toastId = toast(
           "info",
-          t("front.playerIsBusy", { player: player.name }),
-          t("front.pleaseWaitForThemToFinishTheirSelection"),
+          t("gameStep.pendingSelection.waitingForOtherPlayerToast.title", {
+            player: player.name,
+          }),
+          t("gameStep.pendingSelection.waitingForOtherPlayerToast.message"),
           { duration: Infinity },
         );
         pendingSelectionsToastIds.current.set(player.name, toastId);
@@ -95,7 +97,7 @@ export const Me = () => {
                 case 400:
                   toast(
                     "error",
-                    t("front.failSubmit"),
+                    t("gameStep.pendingSelection.errorToast.title"),
                     translateError(response.error),
                   );
                   break;
@@ -122,8 +124,8 @@ export const Me = () => {
               } else if (response.response.options.length === 0) {
                 toast(
                   "error",
-                  t("front.cannotPlay"),
-                  t("front.noOptionsAvailable"),
+                  t("gameStep.activate.errorToast.title"),
+                  t("gameStep.noOptionsAvailable"),
                 );
               } else {
                 const promptId = `card-activation-${card.slug}-${index}-${effectIndex}-${selections.length}`;
@@ -151,7 +153,7 @@ export const Me = () => {
             default:
               toast(
                 "error",
-                t("front.failActivateCard"),
+                t("gameStep.activate.errorToast.title"),
                 translateError(response.error),
               );
               break;
@@ -176,7 +178,7 @@ export const Me = () => {
       addPrompt<EffectOption>({
         promptId,
         isUnique: false,
-        prompt: t("front.selectEffectToActivate"),
+        prompt: t("gameStep.activate.popup.title"),
         options: effects,
         minCount: 1,
         maxCount: 1,
@@ -262,8 +264,8 @@ export const Me = () => {
                   counter={card.counter}
                   isEternal={card.eternal}
                   tooltip={{
+                    title: t("gameStep.activate.blockedTooltip.title"),
                     capable: card.capabilities.activate,
-                    title: t("front.cannotActivateTitle"),
                   }}
                 />
               )}

@@ -47,13 +47,19 @@ export const PromptBoardSelection = ({
         <div className="flex flex-col">
           <p className="font-main text-lg font-bold">{prompt}</p>
           <p className="text-sm text-taupe-400">
-            {selectedOptions.length} selected
-            {maxCount > 1 ? ` (min ${minCount}, max ${maxCount})` : ""}
+            {t("gameStep.boardSelection.selectedCount", {
+              count: selectedOptions.length,
+            })}
+            {maxCount > 1 &&
+              t("gameStep.boardSelection.selectionMinMax", {
+                minCount,
+                maxCount,
+              })}
           </p>
         </div>
         {toggleMode && (
           <Button
-            label={t("front.useMenuSelection")}
+            label={t("gameStep.boardSelection.useMenuSelectionButton")}
             onClick={toggleMode}
             hotkey="tab"
             hotkeyScope={[HotkeyScope.Selection]}
@@ -61,14 +67,14 @@ export const PromptBoardSelection = ({
         )}
         {onCancel && (
           <Button
-            label={t("front.cancel")}
+            label={t("gameStep.boardSelection.cancelButton")}
             onClick={onCancel}
             hotkey="escape"
             hotkeyScope={[HotkeyScope.Selection]}
           />
         )}
         <Button
-          label={t("front.submit")}
+          label={t("gameStep.boardSelection.submitButton")}
           onClick={() => onSubmit(selectedOptions)}
           disabled={
             selectedOptions.length < minCount ||

@@ -76,7 +76,7 @@ export const PromptPopup = ({
           {canUseLookup && (
             <input
               className="w-48 rounded-md border-2 border-taupe-500 px-4"
-              placeholder={t("front.search")}
+              placeholder={t("common.popup.search.placeholder")}
               onChange={(e) => setSearch(e.target.value)}
             />
           )}
@@ -85,7 +85,7 @@ export const PromptPopup = ({
               onClick={toggleMode}
               hotkey="tab"
               hotkeyScope={[HotkeyScope.Popup]}
-              label={t("front.useBoardSelection")}
+              label={t("common.popup.useBoardSelectionButton")}
             />
           )}
           {onCancel && (
@@ -93,7 +93,11 @@ export const PromptPopup = ({
               onClick={onCancel}
               hotkey="escape"
               hotkeyScope={[HotkeyScope.Popup]}
-              label={isInformational ? "Close" : "Cancel"}
+              label={
+                isInformational
+                  ? t("common.closeButton")
+                  : t("common.cancelButton")
+              }
             />
           )}
         </div>
@@ -135,7 +139,7 @@ export const PromptPopup = ({
         })}
         {sortedOptions.length === 0 && (
           <div className="text-center text-lg text-taupe-400">
-            No options available
+            {t("common.popup.emptyResults")}
           </div>
         )}
       </div>
@@ -149,7 +153,7 @@ export const PromptPopup = ({
           theme="onLight"
           hotkey="enter"
           hotkeyScope={[HotkeyScope.Popup]}
-          label={t("front.submit")}
+          label={t("common.submitButton")}
         />
       )}
     </Popup>

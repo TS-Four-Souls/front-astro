@@ -8,6 +8,8 @@ import { useContactContext } from "./contexts/contact-context";
 import { Popup } from "./popup";
 import { translateError, t } from "../utils/translate";
 
+const MAX_LENGTH = 3000;
+
 export const ContactPopup = () => {
   const { isContactPopupOpen, closeContactPopup } = useContactContext();
   const [type, setType] = useState<ContactType>("contact");
@@ -34,12 +36,16 @@ export const ContactPopup = () => {
           case 200:
             closeContactPopup();
             resetForm();
-            toast("success", t("front.reportTitle"), t("front.reportMessage"));
+            toast(
+              "success",
+              t("contactButton.popup.successToast.title"),
+              t("contactButton.popup.successToast.message"),
+            );
             break;
           case 400:
             toast(
               "error",
-              t("front.failReport"),
+              t("contactButton.popup.errorToast.title"),
               translateError(response.error),
             );
             break;
@@ -53,87 +59,75 @@ export const ContactPopup = () => {
     <Popup onPressBackdrop={closeContactPopup} className="overflow-auto">
       <div className="flex flex-row justify-between gap-8 max-xs:flex-col">
         <h1 className="font-alt-stats text-2xl leading-tight font-bold uppercase">
-          Contact us
+          {t("contactButton.popup.title")}
         </h1>
         <Button
           onClick={closeContactPopup}
           hotkey="escape"
           hotkeyScope={[HotkeyScope.Popup]}
-          label={t("front.close")}
+          label={t("common.closeButton")}
         />
       </div>
       <div className="flex flex-row gap-2 max-sm:flex-col">
         <Button
           className="h-16 flex-1"
-          label={t("front.contact")}
+          label={t("contactButton.popup.subjects.contact")}
           onClick={() => setType("contact")}
           active={type === "contact"}
         />
         <Button
           className="h-16 flex-1"
-          label={t("front.suggestion")}
+          label={t("contactButton.popup.subjects.suggestion")}
           onClick={() => setType("suggestion")}
           active={type === "suggestion"}
         />
         <Button
           className="h-16 flex-1"
-          label={t("front.bug")}
+          label={t("contactButton.popup.subjects.bug")}
           onClick={() => setType("bug")}
           active={type === "bug"}
         />
       </div>
       {type === "bug" && (
-        <p className="text-taupe-200">
-          In your report, <strong>please include these 3 things</strong>:
-          <ul className="list-inside list-disc">
-            <li>
-              Some <strong>context</strong>, what were you doing when the bug
-              happened?
-            </li>
-            <li>
-              What was the <strong>expected</strong> behavior?
-            </li>
-            <li>
-              What was the <strong>actual</strong> behavior?
-            </li>
-          </ul>
+        <p className="whitespace-pre-line text-taupe-200">
+          {t("contactButton.popup.subjectBugDescription")}
         </p>
       )}
       <div className="flex flex-col gap-2">
         <textarea
           className="h-64 w-full rounded-md border-2 border-taupe-600 bg-taupe-800 px-4 py-2"
-          placeholder={t("front.tellUs")}
+          placeholder={t("contactButton.popup.message.placeholder")}
           value={description}
           minLength={1}
-          maxLength={3000}
+          maxLength={MAX_LENGTH}
           required
           onChange={(e) => setDescription(e.target.value)}
         />
         <p className="text-right text-sm text-taupe-400">
-          {description.length} / 3000
+          {t("contactButton.popup.message.counter", {
+            length: description.length,
+            maxLength: MAX_LENGTH,
+          })}
         </p>
       </div>
       <p className="max-w-170 text-taupe-200">
-        <strong>Optional:</strong> we may contact you if we need more
-        information or to follow up on your report. Your email address will not
-        be used for any other purpose.
+        {t("contactButton.popup.email.disclaimer")}
       </p>
       <input
         type="email"
         className="w-full rounded-md border-2 border-taupe-600 bg-taupe-800 px-4 py-2"
-        placeholder={t("front.yourEmail")}
+        placeholder={t("contactButton.popup.email.placeholder")}
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
       {type === "bug" && (
         <p className="text-taupe-200">
-          <strong>Note:</strong> your game logs will automatically be included
-          in the report.
+          {t("contactButton.popup.subjectBugGameDataNote")}
         </p>
       )}
       <Button
         className="h-16"
-        label={t("front.submit")}
+        label={t("common.submitButton")}
         theme="onLight"
         onClick={() => submitReport()}
         disabled={description.length < 1 || description.length > 3000}

@@ -36,7 +36,11 @@ export const History = () => {
   const rollback = () => {
     socket.emit("rollback", (response) => {
       if (response.status === 400)
-        toast("error", t("front.failRollback"), translateError(response.error));
+        toast(
+          "error",
+          t("gameStep.rollback.errorToast.title"),
+          translateError(response.error),
+        );
     });
   };
 
@@ -53,10 +57,10 @@ export const History = () => {
         hotkey="backspace"
         onClick={rollback}
         tooltip={{
-          title: t("front.rollback"),
+          title: t("gameStep.rollback.tooltip.title"),
           content: parameters.allowCheatOptions.value
-            ? t("front.rollbackDef")
-            : t("front.rollbackDefNoCheat"),
+            ? t("gameStep.rollback.tooltip.message")
+            : t("gameStep.rollback.tooltip.cheatDisabledMessage"),
           enabled: true,
         }}
         theme="onDark"

@@ -54,11 +54,10 @@ export const OnboardingLayout = ({
             <a
               href="/privacy"
               className="mb-2 text-center font-alt-stats text-blue-200/60 hover:underline">
-              Privacy Policy
+              {t("introStep.footer.privacyPolicyLink")}
             </a>
-            <p className="mb-4 text-center font-alt-stats text-blue-200/60 max-sm:mx-0">
-              This is an unofficial, fan-made website and is not affiliated with
-              <br /> or endorsed by Maestro Media and Edmund McMillen.
+            <p className="mb-4 text-center font-alt-stats whitespace-pre-line text-blue-200/60 max-sm:mx-0">
+              {t("introStep.footer.disclaimer")}
             </p>
           </>
         ) : (
@@ -72,8 +71,8 @@ export const OnboardingLayout = ({
 export const ReportBugButton = () => {
   const tooltip = useTooltip({
     enabled: true,
-    title: t("front.contact"),
-    content: t("front.suggestionBug"),
+    title: t("contactButton.tooltip.title"),
+    content: t("contactButton.tooltip.message"),
   });
   const { openContactPopup } = useContactContext();
   const { closeMenu: closeMainMenu } = useMainMenuContext();

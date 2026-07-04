@@ -20,7 +20,7 @@ export const MainMenu = () => {
     addPrompt({
       promptId,
       isUnique: false,
-      prompt: t("front.confirmQuitGame"),
+      prompt: t("gameStep.mainMenu.quitButton.popup.title"),
       options: [
         { type: "boolean", payload: true },
         { type: "boolean", payload: false },
@@ -35,7 +35,7 @@ export const MainMenu = () => {
             } else {
               toast(
                 "error",
-                t("front.failQuitGame"),
+                t("gameStep.mainMenu.quitButton.errorToast.title"),
                 translateError(response.error),
               );
             }
@@ -77,14 +77,16 @@ export const MainMenu = () => {
 
           toast(
             "success",
-            t("front.saveTitle"),
-            t("front.saveMessage", { filename }),
+            t("gameStep.mainMenu.saveButtom.successToast.title"),
+            t("gameStep.mainMenu.saveButtom.successToast.message", {
+              filename,
+            }),
           );
           break;
         case 400:
           toast(
             "error",
-            t("front.failSaveGame"),
+            t("gameStep.mainMenu.saveButtom.errorToast.title"),
             translateError(response.error),
           );
           break;
@@ -94,20 +96,22 @@ export const MainMenu = () => {
 
   const debugGainLootTop = () => {
     socket.emit("debugLootTop", (response) => {
-      if (response.status === 200) {
-      } else {
-        toast("error", t("front.failLoot"), translateError(response.error));
+      if (response.status === 400) {
+        toast(
+          "error",
+          t("gameStep.cheats.getLootTopDeck.errorToast.title"),
+          translateError(response.error),
+        );
       }
     });
   };
 
   const debugGainTreasureTop = () => {
     socket.emit("debugGainTreasureTop", (response) => {
-      if (response.status === 200) {
-      } else {
+      if (response.status === 400) {
         toast(
           "error",
-          t("front.failGainTreasure"),
+          t("gameStep.cheats.getTreasureTopDeck.errorToast.title"),
           translateError(response.error),
         );
       }
@@ -122,7 +126,7 @@ export const MainMenu = () => {
           addPrompt({
             promptId,
             isUnique: false,
-            prompt: t("front.selectCardToLoot"),
+            prompt: t("gameStep.cheats.selectCardToLoot.popup.title"),
             options: response.cards.map((card) => ({
               type: "card",
               payload: card,
@@ -141,7 +145,9 @@ export const MainMenu = () => {
                   } else {
                     toast(
                       "error",
-                      t("front.failGainLootCards"),
+                      t(
+                        "gameStep.cheats.selectCardToLoot.popup.errorToast.title",
+                      ),
                       translateError(response.error),
                     );
                   }
@@ -156,7 +162,7 @@ export const MainMenu = () => {
         case 400:
           toast(
             "error",
-            t("front.failListLoot"),
+            t("gameStep.cheats.selectCardToLoot.errorToast.title"),
             translateError(response.error),
           );
           break;
@@ -172,7 +178,7 @@ export const MainMenu = () => {
           addPrompt({
             promptId,
             isUnique: false,
-            prompt: t("front.selectTreasureToGain"),
+            prompt: t("gameStep.cheats.selectTreasureToLoot.popup.title"),
             options: response.cards.map((card) => ({
               type: "card",
               payload: card,
@@ -191,7 +197,9 @@ export const MainMenu = () => {
                   } else {
                     toast(
                       "error",
-                      t("front.failGainTreasureCards"),
+                      t(
+                        "gameStep.cheats.selectTreasureToLoot.popup.errorToast.title",
+                      ),
                       translateError(response.error),
                     );
                   }
@@ -206,7 +214,7 @@ export const MainMenu = () => {
         case 400:
           toast(
             "error",
-            t("front.failListTreasure"),
+            t("gameStep.cheats.selectTreasureToLoot.errorToast.title"),
             translateError(response.error),
           );
           break;
@@ -222,7 +230,7 @@ export const MainMenu = () => {
           addPrompt({
             promptId,
             isUnique: false,
-            prompt: t("front.selectCardsToRemove"),
+            prompt: t("gameStep.cheats.discardCard.popup.title"),
             options: response.cards.map((card) => ({
               type: "card",
               payload: card,
@@ -241,7 +249,7 @@ export const MainMenu = () => {
                   } else {
                     toast(
                       "error",
-                      t("front.failRemoveCards"),
+                      t("gameStep.cheats.discardCard.popup.errorToast"),
                       translateError(response.error),
                     );
                   }
@@ -256,7 +264,7 @@ export const MainMenu = () => {
         case 400:
           toast(
             "error",
-            t("front.failListRemovableCards"),
+            t("gameStep.cheats.discardCard.errorToast.title"),
             translateError(response.error),
           );
           break;
@@ -269,7 +277,7 @@ export const MainMenu = () => {
     addPrompt({
       promptId,
       isUnique: false,
-      prompt: t("front.selectAmountOfCoinsToGain"),
+      prompt: t("gameStep.cheats.gainGoin.popup.title"),
       options: Array.from({ length: 10 }, (_, i) => ({
         type: "number",
         payload: i + 1,
@@ -289,7 +297,7 @@ export const MainMenu = () => {
             } else {
               toast(
                 "error",
-                t("front.failGainCoins"),
+                t("gameStep.cheats.gainGoin.popup.errorToast.title"),
                 translateError(response.error),
               );
             }
@@ -310,7 +318,7 @@ export const MainMenu = () => {
           addPrompt({
             promptId,
             isUnique: false,
-            prompt: t("front.selectMonsterCardToPutInSlot"),
+            prompt: t("gameStep.cheats.putMonsterCardInSlot.popup.title"),
             options: response.cards.map((card) => ({
               type: "card",
               payload: card,
@@ -325,7 +333,7 @@ export const MainMenu = () => {
               addPrompt({
                 promptId: promptId2,
                 isUnique: false,
-                prompt: t("front.selectCardToCover"),
+                prompt: t("gameStep.attack.popup.title"),
                 options: response.coverable.map((card) => ({
                   type: "card",
                   payload: card,
@@ -346,7 +354,9 @@ export const MainMenu = () => {
                       } else {
                         toast(
                           "error",
-                          t("front.FailPutMonster"),
+                          t(
+                            "gameStep.cheats.putMonsterCardInSlot.popup.errorToast.title",
+                          ),
                           translateError(response.error),
                         );
                       }
@@ -366,7 +376,7 @@ export const MainMenu = () => {
         case 400:
           toast(
             "error",
-            t("front.failListMonsterDeck"),
+            t("gameStep.cheats.putMonsterCardInSlot.errorToast.title"),
             translateError(response.error),
           );
           break;
@@ -377,12 +387,14 @@ export const MainMenu = () => {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
-        <h1 className="font-main text-3xl font-bold">Main menu</h1>
+        <h1 className="font-main text-3xl font-bold">
+          {t("gameStep.mainMenu.title")}
+        </h1>
         <Button
           hotkey="escape"
           hotkeyScope={[HotkeyScope.Popup]}
           onClick={closeMainMenu}
-          label={t("front.close")}
+          label={t("common.closeButton")}
         />
       </div>
       {parameters.allowCheatOptions.value && (
@@ -391,48 +403,48 @@ export const MainMenu = () => {
             onClick={() => {
               debugGainLootTop();
             }}
-            label={t("front.cheatLoot")}
+            label={t("gameStep.cheats.getLootTopDeck.label")}
           />
           <Button
             onClick={() => {
               closeMainMenu();
               debugGainLoot();
             }}
-            label={t("front.cheatSelectLoot")}
+            label={t("gameStep.cheats.selectCardToLoot.label")}
           />
           <Button
             onClick={() => {
               debugGainTreasureTop();
             }}
-            label={t("front.cheatGainTreasure")}
+            label={t("gameStep.cheats.getTreasureTopDeck.label")}
           />
           <Button
             onClick={() => {
               closeMainMenu();
               debugGainTreasure();
             }}
-            label={t("front.cheatSelectTreasure")}
+            label={t("gameStep.cheats.selectTreasureToLoot.label")}
           />
           <Button
             onClick={() => {
               closeMainMenu();
               debugPutMonsterCardInSlot();
             }}
-            label={t("front.cheatPutMonster")}
+            label={t("gameStep.cheats.putMonsterCardInSlot.label")}
           />
           <Button
             onClick={() => {
               closeMainMenu();
               debugGainCoins();
             }}
-            label={t("front.cheatGainCoins")}
+            label={t("gameStep.cheats.gainGoin.label")}
           />
           <Button
             onClick={() => {
               closeMainMenu();
               debugRemoveCard();
             }}
-            label={t("front.cheatDiscardCard")}
+            label={t("gameStep.cheats.discardCard.label")}
           />
         </>
       )}
@@ -441,14 +453,14 @@ export const MainMenu = () => {
           closeMainMenu();
           onSaveGamePress();
         }}
-        label={t("front.saveGame")}
+        label={t("gameStep.mainMenu.saveButtom.label")}
       />
       <Button
         onClick={() => {
           closeMainMenu();
           onResetPress();
         }}
-        label={t("front.quitGame")}
+        label={t("gameStep.mainMenu.quitButton.label")}
       />
       <ReportBugButton />
     </div>

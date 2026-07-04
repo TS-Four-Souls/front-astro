@@ -28,7 +28,7 @@ export const HandPile = ({ player }: HandPileProps) => {
         }
         tooltip={{
           enabled: true,
-          content: t("front.playerHandSize", {
+          content: t("gameStep.hoverPlayerHand", {
             player: player.name,
             value: String(player.handSize),
           }),

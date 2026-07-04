@@ -6,7 +6,6 @@ import { GameProvider } from "../board/contexts/game-context";
 import { MainMenuProvider } from "../board/contexts/main-menu-context";
 import { Button } from "../button";
 import { OnboardingLayout } from "../onboarding-layout";
-import { t } from "../../utils/translate";
 
 export const ReplayPage = () => {
   const [text, setText] = useState<string>("");
@@ -22,7 +21,7 @@ export const ReplayPage = () => {
             value={text}
             onChange={(e) => setText(e.target.value)}
             autoComplete="off"
-            placeholder={t("front.pasteState")}
+            placeholder="Paste a detailed state JSON here..."
           />
           <Button
             onClick={() => {
@@ -30,7 +29,7 @@ export const ReplayPage = () => {
               setGameState(gameState);
             }}
             hotkey="enter"
-            label={t("front.letsGo")}
+            label="Let's go!"
             className="h-16 w-120 font-alt-stats text-xl font-bold"
           />
         </div>

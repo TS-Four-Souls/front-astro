@@ -46,7 +46,7 @@ export const Stack = () => {
       if (response.status === 400)
         toast(
           "error",
-          t("front.failResolveStack"),
+          t("gameStep.stack.resolveButton.errorToast.title"),
           translateError(response.error),
         );
     });
@@ -106,7 +106,7 @@ export const Stack = () => {
           if (response.status === 400)
             toast(
               "error",
-              t("front.failMoveStackElement"),
+              t("gameStep.stack.reordering.errorToast.title"),
               translateError(response.error),
             );
         },
@@ -165,7 +165,7 @@ export const Stack = () => {
                 !isSelectedElement && (
                   <InsertionBar
                     onClick={() => moveStackElementBefore("start")}
-                    label={t("front.moveHere")}
+                    label={t("gameStep.stack.reordering.moveHere")}
                   />
                 )}
               <StackElement
@@ -203,7 +203,7 @@ export const Stack = () => {
                     onClick={() =>
                       moveStackElementBefore(state.stack[index].id)
                     }
-                    label={t("front.moveHere")}
+                    label={t("gameStep.stack.reordering.moveHere")}
                   />
                 )}
             </div>
@@ -221,17 +221,17 @@ export const Stack = () => {
         hotkey="space"
         onClick={() =>
           block(
-            t("front.cannotResolveStack"),
+            t("gameStep.stack.resolveButton.blockedTooltip.title"),
             state.me.capabilities.resolve,
             resolveStack,
           )
         }
         disabled={state.me.capabilities.resolve !== true}
         tooltip={{
-          title: t("front.cannotResolveStack"),
+          title: t("gameStep.stack.resolveButton.blockedTooltip.title"),
           capable: state.me.capabilities.resolve,
         }}
-        label={t("front.resolve")}
+        label={t("gameStep.stack.resolveButton.label")}
         theme="onDark"
       />
     </div>

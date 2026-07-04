@@ -18,12 +18,12 @@ export type DeckTypes =
   | "character";
 
 const deckTypeLabels: Record<DeckTypes, string> = {
-  monster: t("front.monsterCards"),
-  treasure: t("front.treasureCards"),
-  character: t("front.characterCards"),
-  loot: t("front.lootCards"),
-  bsoul: t("front.bsoulCards"),
-  room: t("front.roomCards"),
+  monster: t("startStep.gameParams.decks.monsters"),
+  treasure: t("startStep.gameParams.decks.treasures"),
+  character: t("startStep.gameParams.decks.characters"),
+  loot: t("startStep.gameParams.decks.loots"),
+  bsoul: t("startStep.gameParams.decks.bonusSouls"),
+  room: t("startStep.gameParams.decks.rooms"),
 };
 
 interface DeckConfigPopupProps {
@@ -69,7 +69,7 @@ export const DeckConfigPopup = ({
         if (response.status === 400)
           toast(
             "error",
-            t("front.failChangeCardCount"),
+            t("startStep.gameParams.inputs.cardCount.errorToast.title"),
             translateError(response.error),
           );
       },
@@ -89,7 +89,7 @@ export const DeckConfigPopup = ({
           {canUseLookup && (
             <input
               className="w-48 rounded-md border-2 border-taupe-500 px-4"
-              placeholder={t("front.search")}
+              placeholder={t("common.popup.search.placeholder")}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -98,7 +98,7 @@ export const DeckConfigPopup = ({
             onClick={onClose}
             hotkey="escape"
             hotkeyScope={[HotkeyScope.Popup]}
-            label={t("front.close")}
+            label={t("common.closeButton")}
           />
         </div>
       </div>
@@ -143,14 +143,17 @@ export const DeckConfigPopup = ({
             <div className={cn("flex w-full", "eternal" in card && "w-1/2")}>
               <Button
                 onClick={() => onCardCountChange(card, card.count - 1)}
-                label={t("front.minus")}
+                label={t("startStep.gameParams.inputs.numeric.decreaseButton")}
                 className="rounded-r-none font-sans shadow-none"
                 disabled={!editable}
                 tooltip={{
-                  title: t("front.cannotChangeCardCount"),
-                  capable: editable
-                    ? true
-                    : t("front.onlyHostCanChangeCardCount"),
+                  title: t(
+                    "startStep.gameParams.inputs.cardCount.nonHostTooltip.title",
+                  ),
+                  content: t(
+                    "startStep.gameParams.inputs.cardCount.nonHostTooltip.message",
+                  ),
+                  enabled: !editable,
                 }}
               />
               <p className="flex h-10 min-w-13 grow items-center justify-center border-y-2 border-taupe-600 text-center font-bold">
@@ -158,14 +161,17 @@ export const DeckConfigPopup = ({
               </p>
               <Button
                 onClick={() => onCardCountChange(card, card.count + 1)}
-                label={t("front.plus")}
+                label={t("startStep.gameParams.inputs.numeric.increaseButton")}
                 className="rounded-l-none font-sans shadow-none"
                 disabled={!editable}
                 tooltip={{
-                  title: t("front.cannotChangeCardCount"),
-                  capable: editable
-                    ? true
-                    : t("front.onlyHostCanChangeCardCount"),
+                  title: t(
+                    "startStep.gameParams.inputs.cardCount.nonHostTooltip.title",
+                  ),
+                  content: t(
+                    "startStep.gameParams.inputs.cardCount.nonHostTooltip.message",
+                  ),
+                  enabled: !editable,
                 }}
               />
             </div>
@@ -174,7 +180,7 @@ export const DeckConfigPopup = ({
 
         {filteredCards.length === 0 && (
           <div className="flex h-full w-full items-center justify-center text-center text-lg text-taupe-400">
-            No cards to display
+            {t("startStep.gameParams.inputs.cardCount.emptyResults")}
           </div>
         )}
       </div>

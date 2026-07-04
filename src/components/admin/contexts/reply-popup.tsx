@@ -6,7 +6,6 @@ import { HotkeyScope } from "@/utils/hotkey";
 import { useState } from "react";
 import { translateError } from "../../../utils/translate";
 import { useToastContext } from "../../board/contexts/toast-context";
-import { t } from "../../../utils/translate";
 
 export const ReplyPopup = () => {
   const { toast } = useToastContext();
@@ -29,7 +28,7 @@ export const ReplyPopup = () => {
           case 500:
             toast(
               "error",
-              t("front.failReplyToMessage"),
+              "Failed to reply to message",
               translateError(response.error),
             );
             break;
@@ -38,8 +37,8 @@ export const ReplyPopup = () => {
             resetForm();
             toast(
               "success",
-              t("front.replySent"),
-              t("front.yourReplyHasBeenSent"),
+              "Reply sent",
+              "Your reply has been sent to the user.",
             );
             break;
         }
@@ -58,7 +57,7 @@ export const ReplyPopup = () => {
           onClick={closeReplyPopup}
           hotkey="escape"
           hotkeyScope={[HotkeyScope.Popup]}
-          label={t("front.close")}
+          label="Close"
         />
       </div>
       <div className="flex flex-col gap-2">
@@ -73,14 +72,14 @@ export const ReplyPopup = () => {
         </div>
         <textarea
           className="h-64 w-full rounded-md border-2 border-taupe-600 bg-taupe-800 px-4 py-2"
-          placeholder={t("front.yourReply")}
+          placeholder="What is your reply?"
           value={response}
           onChange={(e) => setResponse(e.target.value)}
         />
       </div>
       <Button
         className="h-16"
-        label={t("front.submit")}
+        label="Submit"
         theme="onLight"
         onClick={submitReply}
         disabled={response.length < 1}

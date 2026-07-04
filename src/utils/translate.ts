@@ -2,22 +2,24 @@ import type { TranslationFunctionArgs, TranslationKeys } from "translations";
 import type { SerializedTranslation } from "../shared/api";
 import dic from "@/shared/translation_en.json";
 
-function flattenDic(
-  obj: Record<string, Record<string, string>>,
-): Record<string, string> {
-  const result: Record<string, string> = {};
-  for (const key in obj) {
-    for (const subKey in obj[key]) {
-      result[`${key}.${subKey}`] = obj[key][subKey];
-    }
-  }
-  return result;
-}
+const flattenDic = (
+  obj: Record<string, any>,
+  prefix: string = "",
+): Record<string, string> =>
+  Object.fromEntries(
+    Object.entries(obj).flatMap(([key, value]) => {
+      const newKey = `${prefix}${key}`;
+      if (typeof value === "string") {
+        return [[newKey, value]];
+      } else {
+        return Object.entries(flattenDic(value, `${newKey}.`));
+      }
+    }),
+  );
 
 const dicFlat = flattenDic(dic);
 
 export function ts(st: SerializedTranslation): string {
-  console.log("t", st);
   let txt = dicFlat[st.key];
   if (txt === undefined) {
     console.error(`Missing translation for key: ${st.key}`);

@@ -14,7 +14,7 @@ export const usePileDetails = () => {
     addPrompt({
       promptId,
       isUnique: false,
-      prompt: t("front.pileDetails"),
+      prompt: t("gameStep.pileDetails"),
       options: cards.map((card) => ({
         type: "card",
         payload: card,

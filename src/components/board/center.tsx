@@ -30,7 +30,11 @@ export const Center = ({ state }: CenterProps) => {
   const purchaseTreasure = (index: number | "top") => {
     socket.emit("purchase", { index }, (response) => {
       if (response.status === 400)
-        toast("error", t("front.failPurchase"), translateError(response.error));
+        toast(
+          "error",
+          t("gameStep.purchase.errorToast.title"),
+          translateError(response.error),
+        );
     });
   };
 
@@ -50,7 +54,7 @@ export const Center = ({ state }: CenterProps) => {
         addPrompt<ReplaceIndexOption>({
           promptId,
           isUnique: false,
-          prompt: t("front.selectMonsterToCover"),
+          prompt: t("gameStep.attack.popup.title"),
           options: state.monsters.inPlay.map((card, index) => ({
             type: "card",
             payload: card.top,
@@ -76,7 +80,7 @@ export const Center = ({ state }: CenterProps) => {
           if (response.status === 400)
             toast(
               "error",
-              t("front.failSelectMonsterToAttack"),
+              t("gameStep.attack.errorToast.title"),
               translateError(response.error),
             );
         },
@@ -89,7 +93,7 @@ export const Center = ({ state }: CenterProps) => {
       if (response.status === 400)
         toast(
           "error",
-          t("front.failSelectMonsterToAttack"),
+          t("gameStep.attack.errorToast.title"),
           translateError(response.error),
         );
     });
@@ -140,8 +144,8 @@ export const Center = ({ state }: CenterProps) => {
                     card={soul}
                     tooltip={{
                       enabled: true,
-                      title: t("front.bsoulCard"),
-                      content: t("front.bonusSoulCondition"),
+                      title: t("gameStep.bonusSouls.tooltip.title"),
+                      content: t("gameStep.bonusSouls.tooltip.message"),
                     }}
                   />
                 )}
@@ -243,7 +247,7 @@ export const Center = ({ state }: CenterProps) => {
               disabled={state.me.capabilities.buyTreasure !== true}
               onClickTopCard={() =>
                 block(
-                  t("front.cannotBuy"),
+                  t("gameStep.purchase.shop.blockedTooltip.title"),
                   state.me.capabilities.buyTreasure,
                   () => purchaseTreasure("top"),
                 )
@@ -251,11 +255,11 @@ export const Center = ({ state }: CenterProps) => {
               tooltip={[
                 {
                   capable: state.me.capabilities.buyTreasure,
-                  title: t("front.cannotBuy"),
+                  title: t("gameStep.purchase.shop.blockedTooltip.title"),
                 },
                 {
                   enabled: true,
-                  title: t("front.price", {
+                  title: t("gameStep.purchase.shop.price", {
                     value: String(state.treasure.topDeckPrice),
                   }),
                   type: "gold",
@@ -272,11 +276,11 @@ export const Center = ({ state }: CenterProps) => {
                     tooltip={[
                       {
                         capable: state.me.capabilities.buyTreasure,
-                        title: t("front.cannotBuy"),
+                        title: t("gameStep.purchase.shop.blockedTooltip.title"),
                       },
                       {
                         enabled: true,
-                        title: t("front.price", {
+                        title: t("gameStep.purchase.shop.price", {
                           value: String(state.treasure.topDeckPrice),
                         }),
                         type: "gold",
@@ -302,7 +306,7 @@ export const Center = ({ state }: CenterProps) => {
                 }
                 onClickTopCard={() =>
                   block(
-                    t("front.cannotBuy"),
+                    t("gameStep.purchase.shop.blockedTooltip.title"),
                     state.me.capabilities.buyTreasure,
                     () => purchaseTreasure(index),
                   )
@@ -313,11 +317,13 @@ export const Center = ({ state }: CenterProps) => {
                     tooltip={[
                       {
                         capable: state.me.capabilities.buyTreasure,
-                        title: t("front.cannotBuy"),
+                        title: t("gameStep.purchase.shop.blockedTooltip.title"),
                       },
                       {
                         enabled: true,
-                        title: t("front.price", { value: String(card.price) }),
+                        title: t("gameStep.purchase.shop.price", {
+                          value: String(card.price),
+                        }),
                         type: "gold",
                       },
                     ]}
@@ -379,14 +385,17 @@ export const Center = ({ state }: CenterProps) => {
                       tooltip={[
                         {
                           capable: state.monsters.capabilities.targetableDeck,
-                          title: t("front.cannotAttackThisCard"),
+                          title: t("gameStep.attack.blockedTooltip.title"),
                         },
                         {
                           enabled: true,
-                          title: t("front.attackRequired"),
-                          content: t("front.attackRequiredContent", {
-                            card: monsterDeckAttackRequirement.source.nameKey,
-                          }),
+                          title: t("gameStep.attack.requiredTooltip.title"),
+                          content: t(
+                            "gameStep.attack.requiredTooltip.message",
+                            {
+                              card: monsterDeckAttackRequirement.source.nameKey,
+                            },
+                          ),
                         },
                       ]}
                     />
@@ -400,7 +409,7 @@ export const Center = ({ state }: CenterProps) => {
             }
             onClickTopCard={() =>
               block(
-                t("front.cannotAttackThisCard"),
+                t("gameStep.attack.blockedTooltip.title"),
                 state.monsters.capabilities.targetableDeck,
                 () => {
                   selectMonsterToAttack("top");
@@ -409,13 +418,13 @@ export const Center = ({ state }: CenterProps) => {
             }
             tooltip={{
               capable: state.monsters.capabilities.targetableDeck,
-              title: t("front.cannotAttackThisCard"),
+              title: t("gameStep.attack.blockedTooltip.title"),
             }}
           />
           {state.monsters.inPlay.map((card, index) => {
             const targetable =
               card.top.stats?.capabilities.targetable ??
-              t("front.notAMonsterCard");
+              t("gameStep.attack.blockedTooltip.message");
             const attackRequirement = state.me.attackRequirements.find(
               (requirement) =>
                 requirement.target !== "topDeck" &&
@@ -445,8 +454,10 @@ export const Center = ({ state }: CenterProps) => {
                       : undefined
                   }
                   onClickTopCard={() =>
-                    block(t("front.cannotAttackThisCard"), targetable, () =>
-                      selectMonsterToAttack(index),
+                    block(
+                      t("gameStep.attack.blockedTooltip.title"),
+                      targetable,
+                      () => selectMonsterToAttack(index),
                     )
                   }
                   onPileDetailsClick={
@@ -467,14 +478,17 @@ export const Center = ({ state }: CenterProps) => {
                       tooltip={[
                         {
                           capable: targetable,
-                          title: t("front.cannotAttackThisCard"),
+                          title: t("gameStep.attack.blockedTooltip.title"),
                         },
                         {
                           enabled: attackRequirement !== undefined,
-                          title: t("front.attackRequired"),
-                          content: t("front.attackRequiredContent", {
-                            card: attackRequirement!.source.nameKey,
-                          }),
+                          title: t("gameStep.attack.requiredTooltip.title"),
+                          content: t(
+                            "gameStep.attack.requiredTooltip.message",
+                            {
+                              card: attackRequirement!.source.nameKey,
+                            },
+                          ),
                         },
                       ]}
                     />

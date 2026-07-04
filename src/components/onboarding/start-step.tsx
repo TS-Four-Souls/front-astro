@@ -55,7 +55,7 @@ export const StartStep = ({ room }: StartStepProps) => {
       if (response.status === 400)
         toast(
           "error",
-          t("front.failChangeGameParameter"),
+          t("startStep.gameParams.inputs.errorToast.title"),
           translateError(response.error),
         );
     });
@@ -66,7 +66,7 @@ export const StartStep = ({ room }: StartStepProps) => {
       if (response.status === 400)
         toast(
           "error",
-          t("front.failStartGame"),
+          t("startStep.startButton.errorToast.title"),
           translateError(response.error),
         );
     });
@@ -90,8 +90,8 @@ export const StartStep = ({ room }: StartStepProps) => {
       if (typeof logs !== "string") {
         toast(
           "error",
-          t("front.failLoadGame"),
-          t("front.couldNotReadSelectedFile"),
+          t("startStep.loadButton.errorToast.title"),
+          t("startStep.loadButton.errorToast.readErrorMessage"),
         );
         return;
       }
@@ -100,7 +100,7 @@ export const StartStep = ({ room }: StartStepProps) => {
         if (response.status === 400)
           toast(
             "error",
-            t("front.failLoadGame"),
+            t("startStep.loadButton.errorToast.title"),
             translateError(response.error),
           );
       });
@@ -109,8 +109,8 @@ export const StartStep = ({ room }: StartStepProps) => {
     reader.onerror = () => {
       toast(
         "error",
-        t("front.failLoadGame"),
-        t("front.couldNotReadSelectedFile"),
+        t("startStep.loadButton.errorToast.title"),
+        t("startStep.loadButton.errorToast.readErrorMessage"),
       );
     };
 
@@ -136,8 +136,8 @@ export const StartStep = ({ room }: StartStepProps) => {
       if (typeof settings !== "string") {
         toast(
           "error",
-          t("front.loadParameters"),
-          t("front.couldNotReadSelectedFile"),
+          t("startStep.gameParams.loadButton.errorToast.title"),
+          t("startStep.gameParams.loadButton.errorToast.readErrorMessage"),
         );
         return;
       }
@@ -146,13 +146,13 @@ export const StartStep = ({ room }: StartStepProps) => {
         if (response.status === 200) {
           toast(
             "success",
-            t("front.loadParameters"),
-            t("front.gameParametersLoaded"),
+            t("startStep.gameParams.loadButton.successToast.title"),
+            t("startStep.gameParams.loadButton.successToast.message"),
           );
         } else {
           toast(
             "error",
-            t("front.loadParameters"),
+            t("startStep.gameParams.loadButton.errorToast.title"),
             translateError(response.error),
           );
         }
@@ -162,8 +162,8 @@ export const StartStep = ({ room }: StartStepProps) => {
     reader.onerror = () => {
       toast(
         "error",
-        t("front.loadParameters"),
-        t("front.couldNotReadSelectedFile"),
+        t("startStep.gameParams.loadButton.errorToast.title"),
+        t("startStep.gameParams.loadButton.errorToast.readErrorMessage"),
       );
     };
 
@@ -188,8 +188,10 @@ export const StartStep = ({ room }: StartStepProps) => {
     downloadTextFile(JSON.stringify(gameParameters, null, 2), filename);
     toast(
       "success",
-      t("front.saveParameters"),
-      t("front.parametersSaved", { filename: filename }),
+      t("startStep.gameParams.saveButton.successToast.title"),
+      t("startStep.gameParams.saveButton.successToast.message", {
+        filename: filename,
+      }),
     );
   };
 
@@ -198,7 +200,7 @@ export const StartStep = ({ room }: StartStepProps) => {
       if (response.status === 400)
         toast(
           "error",
-          t("front.failResetGameSettings"),
+          t("startStep.gameParams.resetButton.errorToast.title"),
           translateError(response.error),
         );
     });
@@ -209,7 +211,7 @@ export const StartStep = ({ room }: StartStepProps) => {
       if (response.status === 400)
         toast(
           "error",
-          t("front.failKickPlayer"),
+          t("startStep.playerList.kickButton.errorToast.title"),
           translateError(response.error),
         );
     });
@@ -239,7 +241,7 @@ export const StartStep = ({ room }: StartStepProps) => {
             case 400:
               toast(
                 "error",
-                t("front.failAddCopy"),
+                t("startStep.playerList.addCopyButton.errorToast.title"),
                 translateError(response.error),
               );
               break;
@@ -252,7 +254,7 @@ export const StartStep = ({ room }: StartStepProps) => {
     addPrompt({
       promptId,
       isUnique: false,
-      prompt: t("front.selectPlayerToAddCopyOf"),
+      prompt: t("startStep.playerList.addCopyButton.popup.title"),
       options,
       minCount: 1,
       maxCount: 1,
@@ -268,7 +270,7 @@ export const StartStep = ({ room }: StartStepProps) => {
               case 400:
                 toast(
                   "error",
-                  t("front.failAddCopy"),
+                  t("startStep.playerList.addCopyButton.errorToast.title"),
                   translateError(response.error),
                 );
                 break;
@@ -287,7 +289,7 @@ export const StartStep = ({ room }: StartStepProps) => {
       if (response.status === 400)
         toast(
           "error",
-          t("front.failLeaveRoom"),
+          t("startStep.playerList.leaveButton.errorToast.title"),
           translateError(response.error),
         );
     });
@@ -298,7 +300,7 @@ export const StartStep = ({ room }: StartStepProps) => {
       if (response.status === 400)
         toast(
           "error",
-          t("front.failSelectTeam"),
+          t("startStep.playerList.teams.joinTeamButton.errorToast.title"),
           translateError(response.error),
         );
     });
@@ -308,7 +310,7 @@ export const StartStep = ({ room }: StartStepProps) => {
     addPrompt({
       promptId: "character-selection",
       isUnique: false,
-      prompt: t("front.selectChara"),
+      prompt: t("startStep.playerList.selectCharacterButton.popup.title"),
       options: room.characters.map((character) => ({
         type: "character",
         payload: character,
@@ -323,7 +325,9 @@ export const StartStep = ({ room }: StartStepProps) => {
             if (response.status === 400)
               toast(
                 "error",
-                t("front.failSelectCharacter"),
+                t(
+                  "startStep.playerList.selectCharacterButton.errorToast.title",
+                ),
                 translateError(response.error),
               );
           },
@@ -344,21 +348,21 @@ export const StartStep = ({ room }: StartStepProps) => {
     <div className="grid h-full grid-rows-[300px_calc(100vh-300px-3em)] gap-4 p-4 max-[85rem]:grid-rows-none">
       <div className="flex place-items-center justify-between gap-18 rounded-lg border-2 border-space-400 bg-space p-6 max-[85rem]:flex-col max-[85rem]:py-16">
         <div className="flex flex-col gap-2">
-          <p className="font-main text-lg">Room</p>
+          <p className="font-main text-lg">{t("startStep.roomInfo.title")}</p>
           <p
             className="mb-2 cursor-pointer text-3xl font-bold"
             onClick={() => {
               navigator.clipboard.writeText(room.id);
               toast(
                 "success",
-                t("front.copiedCode"),
-                t("front.copiedCodeClip"),
+                t("startStep.roomInfo.copyCodeButton.successToast.title"),
+                t("startStep.roomInfo.copyCodeButton.successToast.message"),
               );
             }}>
-            {room.id}
+            {t("startStep.roomInfo.copyCodeButton.label", { code: room.id })}
           </p>
           <Button
-            label={t("front.copyLink")}
+            label={t("startStep.roomInfo.copyLinkButton.label")}
             hotkey="c"
             onClick={() => {
               const currentUrl = new URL(window.location.href);
@@ -366,8 +370,8 @@ export const StartStep = ({ room }: StartStepProps) => {
               navigator.clipboard.writeText(link.toString());
               toast(
                 "success",
-                t("front.copiedLink"),
-                t("front.copiedLinkClip"),
+                t("startStep.roomInfo.copyLinkButton.successToast.title"),
+                t("startStep.roomInfo.copyLinkButton.successToast.message"),
               );
             }}
             theme="onSpace"
@@ -396,8 +400,8 @@ export const StartStep = ({ room }: StartStepProps) => {
                         label: player.isCopy
                           ? "Remove"
                           : player.isMe
-                            ? "Leave"
-                            : "Kick",
+                            ? t("common.leaveButton")
+                            : t("startStep.playerList.kickButton.label"),
                         onClick: () => {
                           if (player.isMe && !player.isCopy) {
                             onLeaveRoomPress();
@@ -415,7 +419,7 @@ export const StartStep = ({ room }: StartStepProps) => {
           {isHost && (
             <Button
               hotkey="a"
-              label={t("front.addCopy")}
+              label={t("startStep.playerList.addCopyButton.label")}
               onClick={onAddCopyPress}
               theme="onSpace"
               disabled={room.players.length >= 4}
@@ -426,13 +430,14 @@ export const StartStep = ({ room }: StartStepProps) => {
           <Button
             onClick={requestStart}
             hotkey="enter"
-            label={t("front.start")}
+            label={t("startStep.startButton.label")}
             className="p-4 px-8 font-alt-stats text-lg"
             disabled={!isHost}
             theme="onSpace"
             tooltip={{
-              title: t("front.cannotStartGame"),
-              capable: isHost ? true : t("front.onlyHostCanStartGame"),
+              title: t("startStep.startButton.nonHostTooltip.title"),
+              content: t("startStep.startButton.nonHostTooltip.message"),
+              enabled: !isHost,
             }}
           />
           {isHost && (
@@ -440,7 +445,7 @@ export const StartStep = ({ room }: StartStepProps) => {
               <Button
                 onClick={onLoadGamePress}
                 hotkey="l"
-                label={t("front.loadGame")}
+                label={t("startStep.loadButton.label")}
                 className="w-full"
                 theme="onSpace"
               />
@@ -464,36 +469,46 @@ export const StartStep = ({ room }: StartStepProps) => {
       </div>
       <div className="grid grid-cols-[auto_1fr] place-items-center gap-18 rounded-lg border-2 border-space-400 bg-space p-6 max-lg:grid-cols-1 max-lg:pt-16">
         <div className="h-full overflow-auto pr-6 max-sm:pr-0">
-          <h2 className="font-main text-2xl font-bold">Game parameters</h2>
+          <h2 className="font-main text-2xl font-bold">
+            {t("startStep.gameParams.title")}
+          </h2>
           <div className="mt-4 mb-16 flex gap-4">
             <Button
               onClick={onSaveParametersPress}
-              label={t("front.save")}
+              label={t("startStep.gameParams.saveButton.label")}
               className="flex-1"
               theme="onSpace"
             />
             <Button
               onClick={onResetPress}
-              label={t("front.reset")}
+              label={t("startStep.gameParams.resetButton.label")}
               className="flex-1"
               theme="onSpace"
               disabled={!isHost}
               tooltip={{
-                title: t("front.cannotResetGameSettings"),
-                capable: isHost
-                  ? true
-                  : t("front.onlyHostCanResetGameSettings"),
+                title: t(
+                  "startStep.gameParams.resetButton.nonHostTooltip.title",
+                ),
+                content: t(
+                  "startStep.gameParams.resetButton.nonHostTooltip.message",
+                ),
+                enabled: !isHost,
               }}
             />
             <Button
               onClick={onLoadParametersPress}
-              label={t("front.load")}
+              label={t("startStep.gameParams.loadButton.label")}
               className="flex-1"
               theme="onSpace"
               disabled={!isHost}
               tooltip={{
-                title: t("front.cannotLoadGameSettings"),
-                capable: isHost ? true : t("front.onlyHostCanLoadGameSettings"),
+                title: t(
+                  "startStep.gameParams.loadButton.nonHostTooltip.title",
+                ),
+                content: t(
+                  "startStep.gameParams.loadButton.nonHostTooltip.message",
+                ),
+                enabled: !isHost,
               }}
             />
           </div>
@@ -593,10 +608,15 @@ export const StartStep = ({ room }: StartStepProps) => {
                     )}
                   </p>
                   <Button
-                    label={t("front.help")}
+                    label={t("startStep.gameParams.helpButton.label")}
                     tooltip={{
-                      title: t("gameParams.nbPlayerCardRestriction"),
-                      content: t("front.cardRestrDef"),
+                      title: ts(
+                        gameParameters.decksConfig.nbPlayerCardRestriction
+                          .translationKey,
+                      ),
+                      content: t(
+                        "startStep.gameParams.helpButton.nbPlayerCardRestriction",
+                      ),
                       enabled: true,
                     }}
                     className="size-8 cursor-help rounded-full text-sm shadow-sm"
@@ -633,10 +653,14 @@ export const StartStep = ({ room }: StartStepProps) => {
                     {ts(gameParameters.decksConfig.useFSP2Cards.translationKey)}
                   </p>
                   <Button
-                    label={t("front.help")}
+                    label={t("startStep.gameParams.helpButton.label")}
                     tooltip={{
-                      title: t("gameParams.useFSP2Cards"),
-                      content: t("front.fsp2CardsDef"),
+                      title: ts(
+                        gameParameters.decksConfig.useFSP2Cards.translationKey,
+                      ),
+                      content: t(
+                        "startStep.gameParams.helpButton.useFSP2Cards",
+                      ),
                       enabled: true,
                     }}
                     className="size-8 cursor-help rounded-full text-sm shadow-sm"
@@ -667,32 +691,32 @@ export const StartStep = ({ room }: StartStepProps) => {
           <div className="flex flex-wrap justify-center gap-x-24 gap-y-16 max-xl:gap-x-16">
             <DeckPile
               type={CardType.CharacterCard}
-              label={t("front.chara")}
+              label={t("startStep.gameParams.decks.characters")}
               count={gameParameters.decksConfig.character.total}
               onClick={() => setDeckPilePopup(CardType.CharacterCard)}
             />
             <DeckPile
               type={CardType.TreasureCard}
-              label={t("front.treasures")}
+              label={t("startStep.gameParams.decks.treasures")}
               count={gameParameters.decksConfig.treasure.total}
               onClick={() => setDeckPilePopup(CardType.TreasureCard)}
             />
             <DeckPile
               type={CardType.LootCard}
-              label={t("front.loots")}
+              label={t("startStep.gameParams.decks.loots")}
               count={gameParameters.decksConfig.loot.total}
               onClick={() => setDeckPilePopup(CardType.LootCard)}
             />
             <DeckPile
               type={CardType.MonsterCard}
-              label={t("front.monsters")}
+              label={t("startStep.gameParams.decks.monsters")}
               count={gameParameters.decksConfig.monster.total}
               onClick={() => setDeckPilePopup(CardType.MonsterCard)}
             />
             {gameParameters.decksConfig.bsoul && (
               <DeckPile
                 type={CardType.BonusSoul}
-                label={t("front.bonusSouls")}
+                label={t("startStep.gameParams.decks.bonusSouls")}
                 count={gameParameters.decksConfig.bsoul.total}
                 onClick={() => setDeckPilePopup(CardType.BonusSoul)}
               />
@@ -700,7 +724,7 @@ export const StartStep = ({ room }: StartStepProps) => {
             {gameParameters.decksConfig.room && (
               <DeckPile
                 type={CardType.RoomCard}
-                label={t("front.rooms")}
+                label={t("startStep.gameParams.decks.rooms")}
                 count={gameParameters.decksConfig.room.total}
                 onClick={() => setDeckPilePopup(CardType.RoomCard)}
               />
@@ -765,8 +789,8 @@ const PlayerCard = ({
   index: number;
 }) => {
   const { setTooltip, closeTooltip } = useTooltip({
-    title: t("front.selectChara"),
-    content: t("front.clickToSelectCharacter"),
+    title: t("startStep.playerList.selectCharacterButton.tooltip.title"),
+    content: t("startStep.playerList.selectCharacterButton.tooltip.message"),
     enabled: actions?.onCharacterSelectionPress !== undefined,
   });
 
@@ -776,9 +800,13 @@ const PlayerCard = ({
         className="mb-1 ml-10 flex h-8 items-center gap-1 font-bold"
         title={
           player?.isCopy
-            ? `${player?.name} is a copy of another player`
+            ? t("startStep.playerList.hoverName.copy", {
+                playerName: player.name,
+              })
             : player?.isHost
-              ? `${player?.name} is the host`
+              ? t("startStep.playerList.hoverName.host", {
+                  playerName: player.name,
+                })
               : undefined
         }>
         {player && (
@@ -866,10 +894,10 @@ const PlayerCard = ({
 };
 
 const teamNames: Record<Team, string> = {
-  [Team.Team1]: "Heart",
-  [Team.Team2]: "Coin",
-  [Team.Team3]: "Pill",
-  [Team.Team4]: "Bomb",
+  [Team.Team1]: t("common.teams.heart"),
+  [Team.Team2]: t("common.teams.coin"),
+  [Team.Team3]: t("common.teams.pill"),
+  [Team.Team4]: t("common.teams.bomb"),
 };
 
 const TeamButton = ({
@@ -890,16 +918,18 @@ const TeamButton = ({
       label={<TeamIcon team={team} className="size-5 shrink-0" />}
       active={active}
       tooltip={{
-        title: t("front.team", { team: teamNames[team] }),
+        title: t("common.currentTeam", { team: teamNames[team] }),
         content:
           active && player.isMe
-            ? t("front.youHaveSelectedTeam", { team: teamNames[team] })
+            ? t("startStep.playerList.teams.hoverSelfSelected", {
+                team: teamNames[team],
+              })
             : active
-              ? t("front.playerOnTeam", {
+              ? t("startStep.playerList.teams.hoverPlayerSelected", {
                   player: player.name,
                   team: teamNames[team],
                 })
-              : t("front.clickToJoinTeam"),
+              : t("startStep.playerList.teams.joinTeamButton.label"),
         enabled: player.isMe || active,
       }}
       theme="onSpace"
@@ -928,13 +958,16 @@ const NumericInput = ({
     <div className="flex items-center justify-end">
       <Button
         onClick={() => onChange(value - 1)}
-        label={t("front.minus")}
+        label={t("startStep.gameParams.inputs.numeric.decreaseButton")}
         className="rounded-r-none font-sans font-bold shadow-none"
         theme="onSpace"
         disabled={disabled}
         tooltip={{
-          title: t("front.cannotChangeGameParameter"),
-          capable: disabled ? t("front.onlyHostCanChangeGameParameter") : true,
+          title: t("startStep.gameParams.inputs.numeric.nonHostTooltip.title"),
+          content: t(
+            "startStep.gameParams.inputs.numeric.nonHostTooltip.message",
+          ),
+          enabled: disabled,
         }}
       />
       <p className="flex h-10 min-w-13 items-center justify-center border-y-2 border-space-500 text-center font-bold">
@@ -942,13 +975,16 @@ const NumericInput = ({
       </p>
       <Button
         onClick={() => onChange(value + 1)}
-        label={t("front.plus")}
+        label={t("startStep.gameParams.inputs.numeric.increaseButton")}
         className="rounded-l-none font-sans font-bold shadow-none"
         theme="onSpace"
         disabled={disabled}
         tooltip={{
-          title: t("front.cannotChangeGameParameter"),
-          capable: disabled ? t("front.onlyHostCanChangeGameParameter") : true,
+          title: t("startStep.gameParams.inputs.numeric.nonHostTooltip.title"),
+          content: t(
+            "startStep.gameParams.inputs.numeric.nonHostTooltip.message",
+          ),
+          enabled: disabled,
         }}
       />
     </div>
@@ -967,7 +1003,11 @@ const BooleanInput = ({
   return (
     <Button
       onClick={() => onChange(!value)}
-      label={value ? "On" : "Off"}
+      label={
+        value
+          ? t("startStep.gameParams.inputs.boolean.enableButton")
+          : t("startStep.gameParams.inputs.boolean.disableButton")
+      }
       active={value}
       className={cn(
         "font-sans font-bold",
@@ -976,8 +1016,11 @@ const BooleanInput = ({
       theme="onSpace"
       disabled={disabled}
       tooltip={{
-        title: t("front.cannotToggleGameParameter"),
-        capable: disabled ? t("front.onlyHostCanToggleGameParameter") : true,
+        title: t("startStep.gameParams.inputs.boolean.nonHostTooltip.title"),
+        content: t(
+          "startStep.gameParams.inputs.boolean.nonHostTooltip.message",
+        ),
+        enabled: disabled,
       }}
     />
   );
