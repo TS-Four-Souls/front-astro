@@ -16,13 +16,14 @@ export const TopPlayer = ({ player }: TopPlayerProps) => {
   const { registerInPlayCardEl } = useGameAnimation();
   // Create an array of arrays of 8 elements each, fill with undefined if needed
   const grid: InPlayCard[][] = Array.from(
-    { length: Math.ceil(player.inPlay.length / MAX_COLUMNS) },
-    () => Array(Math.min(player.inPlay.length, MAX_COLUMNS)).fill(undefined),
+    { length: Math.ceil((player.inPlay.length + 1) / MAX_COLUMNS) },
+    () => Array(Math.min(player.inPlay.length + 1, MAX_COLUMNS)).fill(undefined),
   );
 
+  grid[0][0] = player.character;
   // Fill the grid with the cards
-  for (let i = 0; i < player.inPlay.length; i++) {
-    grid[Math.floor(i / MAX_COLUMNS)][i % MAX_COLUMNS] = player.inPlay[i];
+  for (let i = 1; i < player.inPlay.length + 1; i++) {
+    grid[Math.floor(i / MAX_COLUMNS)][i % MAX_COLUMNS] = player.inPlay[i-1];
   }
 
   // Turn back into a flat array
@@ -40,13 +41,13 @@ export const TopPlayer = ({ player }: TopPlayerProps) => {
         <div
           className={cn("grid grid-flow-row gap-2")}
           style={{
-            gridTemplateColumns: `repeat(${Math.min(player.inPlay.length, MAX_COLUMNS)}, 1fr)`,
+            gridTemplateColumns: `repeat(${Math.min(player.inPlay.length + 1, MAX_COLUMNS)}, 1fr)`,
           }}>
           {cards.map((card, index) => {
             if (card === undefined) {
               return <div key={`empty-${index}`} className="h-full w-full" />;
             }
-
+            const isCharacter = card === player.character;
             return (
               <div
                 key={card.globalId}
@@ -59,18 +60,18 @@ export const TopPlayer = ({ player }: TopPlayerProps) => {
                       charged: card.charged,
                       eternal: card.eternal,
                       engagedInCombat:
-                        player.inPlay[0].slug === card.slug &&
+                        isCharacter &&
                         player.isEngagedInCombat,
                       engagedInPurchase:
-                        player.inPlay[0].slug === card.slug &&
+                        isCharacter &&
                         player.isEngagedInPurchase,
                       effects:
-                        player.inPlay[0].slug === card.slug
+                        isCharacter
                           ? player.temporaryEffect
                           : undefined,
                       counter: card.counter,
                       stats:
-                        player.inPlay[0].slug === card.slug
+                        isCharacter
                           ? {
                               healthPoints: player.currentHealthPoints,
                               attackPoints: player.currentAttackPoints,
@@ -82,14 +83,14 @@ export const TopPlayer = ({ player }: TopPlayerProps) => {
                     <CardHoverPreview
                       card={card}
                       stats={
-                        index === 0
+                        isCharacter
                           ? {
                               healthPoints: player.currentHealthPoints,
                               attackPoints: player.currentAttackPoints,
                             }
                           : undefined
                       }
-                      effects={index === 0 ? player.temporaryEffect : undefined}
+                      effects={isCharacter ? player.temporaryEffect : undefined}
                       counter={card.counter}
                       isEternal={card.eternal}
                     />

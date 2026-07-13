@@ -116,7 +116,7 @@ export const Me = () => {
     ) => {
       socket.emit(
         "activate",
-        { index, effectIndex, targetChoices: selections, type: "inPlay" },
+        { index: index -1, effectIndex, targetChoices: selections, type: card === state.me.character ? "character" : "inPlay" },
         (response) => {
           switch (response.status) {
             case 200:
@@ -195,7 +195,7 @@ export const Me = () => {
     }
   };
 
-  const targetableCards = state.me.inPlay
+  const targetableCards = [state.me.character, ...state.me.inPlay]
     .filter(
       (card) =>
         !isHandUp &&
@@ -216,9 +216,11 @@ export const Me = () => {
       <div
         className="grid gap-2"
         style={{
-          gridTemplateColumns: `repeat(${Math.min(state.me.inPlay.length, 8)}, 1fr)`,
+          gridTemplateColumns: `repeat(${Math.min(state.me.inPlay.length + 1, 8)}, 1fr)`,
         }}>
-        {state.me.inPlay.map((card, index) => (
+        {[state.me.character, ...state.me.inPlay].map((card, index) => {
+          const isCharacter = state.me.character === card;
+          return (
           <div
             key={card.globalId}
             ref={(el) => registerInPlayCardEl(card.globalId, el)}>
@@ -234,13 +236,13 @@ export const Me = () => {
                   slug: card.slug,
                   charged: card.charged,
                   eternal: card.eternal,
-                  engagedInCombat: index === 0 && state.me.isEngagedInCombat,
+                  engagedInCombat: isCharacter && state.me.isEngagedInCombat,
                   engagedInPurchase:
-                    index === 0 && state.me.isEngagedInPurchase,
-                  effects: index === 0 ? state.me.temporaryEffect : undefined,
+                    isCharacter && state.me.isEngagedInPurchase,
+                  effects: isCharacter ? state.me.temporaryEffect : undefined,
                   counter: card.counter,
                   stats:
-                    index === 0
+                    isCharacter
                       ? {
                           healthPoints: state.me.currentHealthPoints,
                           attackPoints: state.me.currentAttackPoints,
@@ -253,14 +255,14 @@ export const Me = () => {
                 <CardHoverPreview
                   card={card}
                   stats={
-                    index === 0
+                    isCharacter
                       ? {
                           healthPoints: state.me.currentHealthPoints,
                           attackPoints: state.me.currentAttackPoints,
                         }
                       : undefined
                   }
-                  effects={index === 0 ? state.me.temporaryEffect : undefined}
+                  effects={isCharacter ? state.me.temporaryEffect : undefined}
                   counter={card.counter}
                   isEternal={card.eternal}
                   tooltip={{
@@ -278,7 +280,8 @@ export const Me = () => {
               }
             />
           </div>
-        ))}
+        )
+        })}
       </div>
       <Hand />
     </div>

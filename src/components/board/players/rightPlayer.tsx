@@ -10,6 +10,8 @@ interface RightPlayerProps {
   player: Player;
 }
 
+const MAX_ROWS = 3;
+
 export const RightPlayer = ({ player }: RightPlayerProps) => {
   const { registerInPlayCardEl } = useGameAnimation();
   return (
@@ -21,7 +23,7 @@ export const RightPlayer = ({ player }: RightPlayerProps) => {
       <div
         className={cn(
           "flex flex-col place-content-center place-items-center gap-8",
-          player.inPlay.length > 3 && "flex-row",
+          player.inPlay.length + 1 > MAX_ROWS && "flex-row",
         )}>
         <PlayerStats player={player} className={"flex-col gap-4 px-6 py-4"} />
         {player.handSize > 0 && <HandPile player={player} />}
@@ -33,52 +35,54 @@ export const RightPlayer = ({ player }: RightPlayerProps) => {
         <div
           className={cn("grid gap-2", "grid-flow-col")}
           style={{
-            gridTemplateRows: `repeat(${Math.min(player.inPlay.length, 3)}, 1fr)`,
+            gridTemplateRows: `repeat(${Math.min(player.inPlay.length + 1, MAX_ROWS)}, 1fr)`,
           }}>
-          {player.inPlay.map((card, index) => (
-            <div
-              key={card.globalId}
-              ref={(el) => registerInPlayCardEl(card.globalId, el)}>
-              <Pile
-                globalId={card.globalId}
-                cards={[
-                  {
-                    slug: card.slug,
-                    charged: card.charged,
-                    eternal: card.eternal,
-                    engagedInCombat: index === 0 && player.isEngagedInCombat,
-                    engagedInPurchase:
-                      index === 0 && player.isEngagedInPurchase,
-                    effects: index === 0 ? player.temporaryEffect : undefined,
-                    counter: card.counter,
-                    stats:
-                      index === 0
-                        ? {
-                            healthPoints: player.currentHealthPoints,
-                            attackPoints: player.currentAttackPoints,
-                          }
-                        : undefined,
-                  },
-                ]}
-                onHoverPopover={() => (
-                  <CardHoverPreview
-                    card={card}
-                    stats={
-                      index === 0
-                        ? {
-                            healthPoints: player.currentHealthPoints,
-                            attackPoints: player.currentAttackPoints,
-                          }
-                        : undefined
-                    }
-                    effects={index === 0 ? player.temporaryEffect : undefined}
-                    counter={card.counter}
-                    isEternal={card.eternal}
-                  />
-                )}
-              />
-            </div>
-          ))}
+          {[player.character, ...player.inPlay].map((card, index) => {
+            const isCharacter = card === player.character;
+            return (
+              <div
+                key={card.globalId}
+                ref={(el) => registerInPlayCardEl(card.globalId, el)}>
+                <Pile
+                  globalId={card.globalId}
+                  cards={[
+                    {
+                      slug: card.slug,
+                      charged: card.charged,
+                      eternal: card.eternal,
+                      engagedInCombat: isCharacter && player.isEngagedInCombat,
+                      engagedInPurchase:
+                        isCharacter && player.isEngagedInPurchase,
+                      effects: isCharacter ? player.temporaryEffect : undefined,
+                      counter: card.counter,
+                      stats:
+                        isCharacter
+                          ? {
+                              healthPoints: player.currentHealthPoints,
+                              attackPoints: player.currentAttackPoints,
+                            }
+                          : undefined,
+                    },
+                  ]}
+                  onHoverPopover={() => (
+                    <CardHoverPreview
+                      card={card}
+                      stats={
+                        isCharacter
+                          ? {
+                              healthPoints: player.currentHealthPoints,
+                              attackPoints: player.currentAttackPoints,
+                            }
+                          : undefined
+                      }
+                      effects={isCharacter ? player.temporaryEffect : undefined}
+                      counter={card.counter}
+                      isEternal={card.eternal}
+                    />
+                  )}
+                />
+              </div>
+            )})}
         </div>
       </div>
     </div>
