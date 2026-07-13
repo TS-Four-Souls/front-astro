@@ -116,7 +116,7 @@ export const Me = () => {
     ) => {
       socket.emit(
         "activate",
-        { index, effectIndex, targetChoices: selections },
+        { index, effectIndex, targetChoices: selections, type: "inPlay" },
         (response) => {
           switch (response.status) {
             case 200:

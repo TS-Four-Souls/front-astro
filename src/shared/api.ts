@@ -191,7 +191,7 @@ export type TemporaryEffect = z.infer<typeof temporaryEffectSchema>;
 const capabilitySchema = z.union([
   z.literal(true),
   serializedTranslationSchema,
-]); /// todo
+]);
 export type Capability = z.infer<typeof capabilitySchema>;
 
 const attackableCardSchema = cardSchema.extend({
@@ -632,11 +632,13 @@ const attackRequirementSchema = z.object({
 
 export type AttackRequirement = z.infer<typeof attackRequirementSchema>;
 const cardActivationSchema = z.object({
+  type: z.union([z.literal("hand"), z.literal("inPlay"), z.literal("character"), z.literal("room")]),
   index: z.number(),
   effectIndex: z.union([z.number(), z.literal("tap")]),
   targetChoices: z.array(selectionItemSchema).optional(),
 });
 const cardActivationWithIdSchema = z.object({
+  type: z.union([z.literal("hand"), z.literal("inPlay"), z.literal("character"), z.literal("room")]),
   index: z.number(),
   effectIndex: z.number(),
   targetChoices: z.array(selectionItemSchema).optional(),
@@ -1058,10 +1060,8 @@ export const schemas = {
   contactRequest: contactRequestSchema,
   submitSelectionRequest: submitSelectionSchema,
   insertStackElementBeforeRequest: insertStackElementBeforeSchema,
-  playCardRequest: cardActivationSchema,
   activateRequest: cardActivationSchema,
   activateWithIDRequest: cardActivationWithIdSchema,
-  activateRoomRequest: cardActivationSchema,
   purchaseRequest: purchaseSchema,
   giveCoinsRequest: giveCoinsSchema,
   enterRoomRequest: enterRoomRequestSchema,
@@ -1087,10 +1087,8 @@ export namespace Requests {
   export type InsertStackElementBefore = z.infer<
     typeof insertStackElementBeforeSchema
   >;
-  export type PlayCard = z.infer<typeof cardActivationSchema>;
   export type Activate = z.infer<typeof cardActivationSchema>;
   export type ActivateWithID = z.infer<typeof cardActivationWithIdSchema>;
-  export type ActivateRoom = z.infer<typeof cardActivationSchema>;
   export type Purchase = z.infer<typeof purchaseSchema>;
   export type GiveCoins = z.infer<typeof giveCoinsSchema>;
   export type AttackMonster = z.infer<typeof attackMonsterSchema>;
@@ -1133,7 +1131,6 @@ export namespace Responses {
   export type Resolve = BasicResponse;
   export type SubmitSelection = BasicResponse;
   export type InsertStackElementBefore = BasicResponse;
-  export type PlayCard = NextTargetSelectorResponse;
   export type EndTurn = BasicResponse;
   export type Activate = NextTargetSelectorResponse;
   export type Purchase = BasicResponse;
@@ -1231,11 +1228,6 @@ export interface ClientToServerEvents {
     callback: (response: Responses.InsertStackElementBefore) => void,
   ) => void;
 
-  playCard: (
-    request: Requests.PlayCard,
-    callback: (response: Responses.PlayCard) => void,
-  ) => void;
-
   endTurn: (callback: (response: Responses.EndTurn) => void) => void;
 
   activate: (
@@ -1245,11 +1237,6 @@ export interface ClientToServerEvents {
 
   activateWithID: (
     request: Requests.ActivateWithID,
-    callback: (response: Responses.Activate) => void,
-  ) => void;
-
-  activateRoom: (
-    request: Requests.ActivateRoom,
     callback: (response: Responses.Activate) => void,
   ) => void;
 
