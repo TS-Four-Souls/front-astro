@@ -8,8 +8,8 @@ import { socket } from "@/utils/socket";
 import { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { Button } from "../button";
-import { ts, translateError } from "../../utils/translate";
-import { CardImage } from "./card";
+import { translateError } from "../../utils/translate";
+import { Card } from "./card";
 import { useGameAnimation } from "./contexts/game-animation";
 import { useGameContext } from "./contexts/game-context";
 import { useMainMenuContext } from "./contexts/main-menu-context";
@@ -264,12 +264,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
               content: (
                 <div className="flex w-max flex-nowrap gap-4">
                   {soulCards.map((card, index) => (
-                    <CardImage
-                      card={card}
-                      className="w-64 shrink-0"
-                      key={index}
-                      tooltip={ts(card.nameKey)}
-                    />
+                    <Card card={card} key={index} size={22} />
                   ))}
                 </div>
               ),

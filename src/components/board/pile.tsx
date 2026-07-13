@@ -81,7 +81,7 @@ export const Pile = ({
   style,
   globalId,
   children,
-  orientation = "portrait",
+  orientation,
 }: PileProps) => {
   const size = sizePx / 16;
   const seed = useRef(Math.random().toString());
@@ -259,9 +259,7 @@ export const Pile = ({
                     ? entityBoardSelectionState?.selectionIndex
                     : undefined
                 }
-                aspectRatio={
-                  orientation === "portrait" ? 750 / 1024 : 1024 / 750
-                }
+                orientation={orientation}
               />
               {index === array.length - 1 && (
                 <div style={transformStyle}>{children}</div>
@@ -271,10 +269,10 @@ export const Pile = ({
         })}
       {cards.length === 0 && (
         <Card
+          size={size}
           onClick={onClickTopCard}
           disabled={disabled}
-          style={{ height: size + "em" }}
-          aspectRatio={orientation === "portrait" ? 750 / 1024 : 1024 / 750}
+          orientation={orientation}
           className={topCardClassName}
         />
       )}

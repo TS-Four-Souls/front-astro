@@ -30,6 +30,7 @@ export const BoxesContent = () => {
         {filteredCards.map(([slug, boxes]) => (
           <div style={{ position: "relative" }}>
             <CardImage
+              sizes="180px"
               card={{ slug }}
               style={{ height: "100%", width: "100%" }}
             />

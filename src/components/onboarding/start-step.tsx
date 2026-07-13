@@ -855,8 +855,9 @@ const PlayerCard = ({
               <div className="grid items-center gap-2">
                 <CardImage
                   card={CardType.CharacterCard}
+                  sizes="7em"
                   className={cn(
-                    "col-start-1 row-start-1 h-40 shadow-lg/30",
+                    "col-start-1 row-start-1 w-28 shadow-lg/30",
                     actions && "cursor-pointer",
                   )}
                   onClick={actions?.onCharacterSelectionPress}
@@ -868,14 +869,15 @@ const PlayerCard = ({
             ) : (
               <CardImage
                 card={{ slug: player.character.character }}
-                className={cn("h-40 shadow-lg/30", actions && "cursor-pointer")}
+                sizes="7em"
+                className={cn("w-28 shadow-lg/30", actions && "cursor-pointer")}
                 onClick={actions?.onCharacterSelectionPress}
               />
             )}
           </div>
         </div>
       ) : (
-        <div className="aspect-750/1024 h-40 place-content-center rounded-md bg-space-500/30 inset-shadow-sm inset-shadow-black">
+        <div className="aspect-750/1024 w-28 place-content-center rounded-md bg-space-500/30 inset-shadow-sm inset-shadow-black">
           <p className="text-center text-6xl font-bold text-space-400/30">
             {index}
           </p>

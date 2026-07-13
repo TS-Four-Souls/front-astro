@@ -365,6 +365,7 @@ export const PlayerOption = ({
       <div className="relative">
         <CardImage
           card={option.payload}
+          sizes="16em"
           className={cn(
             "m-2 w-64 shadow-lg/30",
             selected && "outline-6 outline-blue-400",
@@ -398,6 +399,7 @@ export const MonsterOption = ({
       <div className="relative">
         <CardImage
           card={option.payload}
+          sizes="16em"
           className={cn(
             "m-2 w-64 shadow-lg/30",
             selected && "outline-6 outline-blue-400",
@@ -430,6 +432,7 @@ export const DeckOption = ({
       <div className="relative">
         <CardImage
           card={option.payload as CardType}
+          sizes="16em"
           className={cn(
             "m-2 w-64 shadow-lg/30",
             selected && "outline-6 outline-blue-400",
@@ -524,6 +527,7 @@ export const CardOption = ({
       onClick={onPress}>
       <CardImage
         card={option.payload}
+        sizes="16em"
         className={cn(
           "m-2 w-64 shadow-lg/30",
           selected && "outline-6 outline-blue-400",
@@ -552,6 +556,7 @@ export const CharacterOption = ({
         <div className="grid items-center gap-2">
           <CardImage
             card={CardType.CharacterCard}
+            sizes="12em"
             className={cn("col-start-1 row-start-1 w-48 shadow-lg/30")}
           />
           <p className="col-start-1 row-start-1 text-center font-main text-[800%] font-bold text-black uppercase text-shadow-amber-50 text-shadow-lg">
@@ -561,6 +566,7 @@ export const CharacterOption = ({
       ) : (
         <CardImage
           card={{ slug: option.payload.character }}
+          sizes="12em"
           className={"w-48 shadow-lg/30"}
         />
       )}
@@ -568,6 +574,7 @@ export const CharacterOption = ({
         <div className="grid items-center gap-2">
           <CardImage
             card={CardType.TreasureCard}
+            sizes="12em"
             className={cn("col-start-1 row-start-1 w-48 shadow-lg/30")}
           />
           <p className="col-start-1 row-start-1 text-center font-main text-[800%] font-bold text-black uppercase text-shadow-amber-50 text-shadow-lg">
@@ -577,6 +584,7 @@ export const CharacterOption = ({
       ) : (
         <CardImage
           card={{ slug: option.payload.eternal }}
+          sizes="12em"
           className={"w-48 shadow-lg/30"}
         />
       )}
@@ -604,11 +612,20 @@ export const CouplePlayerHandOption = ({
             {ts(option.payload.player.nameKey)}
           </p>
         </div>
-        <CardImage card={option.payload.player} className="h-64 shadow-lg/30" />
+        <CardImage
+          card={option.payload.player}
+          sizes="12em"
+          className="w-48 shadow-lg/30"
+        />
       </div>
-      <div className="mx-2 h-64" />
+      <div className="mx-2 w-48" />
       {option.payload.hand.map((card) => (
-        <CardImage key={card.slug} card={card} className="h-64 shadow-lg/30" />
+        <CardImage
+          key={card.slug}
+          card={card}
+          sizes="12em"
+          className="w-48 shadow-lg/30"
+        />
       ))}
       <div className="absolute inset-1">{children}</div>
     </div>

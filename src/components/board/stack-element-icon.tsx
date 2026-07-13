@@ -39,7 +39,7 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
     case "diceRoll": {
       return (
         <div className="flex flex-col items-center gap-3">
-          {element.card && <CardImage card={element.card} className="w-64" />}
+          {element.card && <Card card={element.card} size={22} />}
           <div className="flex max-w-64 flex-wrap place-content-center gap-1 px-2 text-center leading-tight text-taupe-400">
             <span>
               <span
@@ -67,7 +67,7 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
     case "LootCardEffect": {
       return (
         <>
-          <CardImage card={element.card} className="w-64" />
+          <Card card={element.card} size={22} />
           <div className="mt-3 flex max-w-64 flex-col gap-2 text-center leading-tight text-taupe-400">
             <span>
               <span
@@ -110,7 +110,6 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
     case "lootStep": {
       return (
         <div className="flex flex-col items-center gap-3">
-          {/* <CardImage card={CardType.LootCard} className="w-64" /> */}
           <div className="max-w-64 px-2 text-center leading-tight text-taupe-400">
             <span style={{ color: element.player.color }} className="font-bold">
               {ts(element.player.nameKey)}
@@ -125,7 +124,6 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
     case "endOfTurn": {
       return (
         <div className="flex flex-col items-center gap-3">
-          {/* <CardImage card={CardType.CharacterCard} className="w-64" /> */}
           <div className="max-w-64 px-2 text-center leading-tight text-taupe-400">
             End of{" "}
             <span style={{ color: element.player.color }} className="font-bold">
@@ -140,9 +138,7 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
     case "damage": {
       return (
         <div className="flex flex-col items-center gap-3">
-          {"slug" in element.source && (
-            <CardImage card={element.source} className="w-64" />
-          )}
+          {"slug" in element.source && <Card card={element.source} size={22} />}
           <div className="max-w-64 px-2 text-center leading-tight text-taupe-400">
             <span
               style={{ color: element.from.color }}
@@ -171,9 +167,7 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
     case "death": {
       return (
         <div className="flex flex-col items-center gap-3">
-          {"slug" in element.source && (
-            <CardImage card={element.source} className="w-64" />
-          )}
+          {"slug" in element.source && <Card card={element.source} size={22} />}
           <div className="max-w-64 px-2 text-center leading-tight text-taupe-400">
             <span
               style={{ color: element.from.color }}
@@ -221,10 +215,11 @@ const Icon = ({ element }: IconProps) => {
       return (
         <div
           className={cn(
-            "size-10 overflow-hidden rounded-lg border-[0.15em] bg-taupe-800/50",
+            "aspect-square overflow-hidden rounded-lg border-[0.15em] bg-taupe-800/50",
           )}
           style={{ borderColor }}>
           <CardImage
+            sizes="2.5em"
             card={element.card}
             className="translate-y-[5%] scale-155"
           />
@@ -236,10 +231,11 @@ const Icon = ({ element }: IconProps) => {
       return (
         <div
           className={cn(
-            "size-10 overflow-hidden rounded-lg border-[0.15em] bg-taupe-800/50",
+            "aspect-square overflow-hidden rounded-lg border-[0.15em] bg-taupe-800/50",
           )}
           style={{ borderColor }}>
           <CardImage
+            sizes="2.5em"
             card={CardType.LootCard}
             className="translate-y-[-17%] scale-155"
           />
@@ -251,10 +247,11 @@ const Icon = ({ element }: IconProps) => {
       return (
         <div
           className={cn(
-            "size-10 overflow-hidden rounded-lg border-[0.15em] bg-taupe-800/50",
+            "aspect-square overflow-hidden rounded-lg border-[0.15em] bg-taupe-800/50",
           )}
           style={{ borderColor }}>
           <CardImage
+            sizes="2.5em"
             card={CardType.CharacterCard}
             className="translate-y-[-17%] scale-155"
           />

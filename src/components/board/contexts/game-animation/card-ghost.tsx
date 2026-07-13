@@ -86,6 +86,7 @@ export const CardGhost = ({
   const cardImage = (
     <CardImage
       card={cardProp}
+      sizes="256px"
       className="h-full w-full"
       style={
         cropEffect

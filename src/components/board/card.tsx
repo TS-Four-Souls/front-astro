@@ -16,6 +16,8 @@ export enum CardType {
   RoomCard = "room",
 }
 
+type Orientation = "portrait" | "landscape";
+
 interface CardProps {
   card?: { slug: string } | CardType;
   style?: React.CSSProperties;
@@ -33,8 +35,8 @@ interface CardProps {
   onPileDetailsClick?: () => void;
   onClick?: () => void;
   disabled?: boolean;
-  size?: number;
-  aspectRatio?: number;
+  size: number;
+  orientation?: Orientation;
   stats?:
     | { healthPoints: number; attackPoints: number; evasionPoints: number }
     | { healthPoints: number; attackPoints: number };
@@ -45,9 +47,24 @@ interface CardProps {
 
 const CARD_RADIUS = 5;
 
-const RX = `${CARD_RADIUS}%`;
-const RY = `${(CARD_RADIUS * 750) / 1024}%`;
-const BORDER_RADIUS = `${RX} ${RX} ${RX} ${RX} / ${RY} ${RY} ${RY} ${RY}`;
+const getOrientationParameters = (
+  orientation: Orientation,
+): { aspectRatio: number; borderRadius: string } => {
+  const aspectRatio = orientation === "portrait" ? 750 / 1024 : 1024 / 750;
+
+  const rx =
+    orientation === "portrait"
+      ? `${CARD_RADIUS}%`
+      : `${(CARD_RADIUS * 750) / 1024}%`;
+
+  const ry =
+    orientation === "portrait"
+      ? `${(CARD_RADIUS * 750) / 1024}%`
+      : `${CARD_RADIUS}%`;
+  const borderRadius = `${rx} ${rx} ${rx} ${rx} / ${ry} ${ry} ${ry} ${ry}`;
+
+  return { aspectRatio, borderRadius };
+};
 
 export const Card = ({
   card,
@@ -63,12 +80,14 @@ export const Card = ({
   disabled,
   stats,
   size = 160,
-  aspectRatio = 750 / 1024,
+  orientation = "portrait",
   effects,
   counter,
   onMouseEnter,
   onMouseLeave,
 }: CardProps) => {
+  const { aspectRatio, borderRadius } = getOrientationParameters(orientation);
+
   if (!card) {
     return (
       <div
@@ -77,7 +96,12 @@ export const Card = ({
           onClick && (disabled ? "cursor-not-allowed" : "cursor-pointer"),
           className,
         )}
-        style={{ ...style, borderRadius: BORDER_RADIUS, aspectRatio }}
+        style={{
+          ...style,
+          height: size + "em",
+          borderRadius,
+          aspectRatio,
+        }}
         onClick={onClick}
       />
     );
@@ -89,7 +113,7 @@ export const Card = ({
     <div
       className={cn("relative", containerClassName)}
       style={{
-        borderRadius: BORDER_RADIUS,
+        borderRadius,
         height: size + "em",
         aspectRatio,
         ...containerStyle,
@@ -97,12 +121,13 @@ export const Card = ({
       <div
         className={className}
         style={{
-          borderRadius: BORDER_RADIUS,
+          borderRadius,
           ...style,
         }}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}>
         <CardImage
+          sizes={`${size * aspectRatio}em`}
           card={card}
           onClick={onClick}
           className={cn(
@@ -111,9 +136,9 @@ export const Card = ({
           )}
           style={{
             filter: `brightness(${Math.max(0, brightness * brightness)})`,
-            borderRadius: BORDER_RADIUS,
+            borderRadius,
           }}
-          aspectRatio={aspectRatio}
+          orientation={orientation}
         />
 
         {hotkey && (
@@ -259,37 +284,59 @@ export const VisualEffectBoxComponent = ({
   );
 };
 
+const PORTRAIT_WIDTHS = [128, 180, 256, 360, 512];
+const LANDSCAPE_WIDTHS = [175, 245, 350, 490, 700];
+
 export const CardImage = ({
   card,
+  sizes = "256px",
   className,
   onClick,
   style,
   tooltip,
-  aspectRatio = 750 / 1024,
+  orientation = "portrait",
 }: {
   card: { slug: string } | CardType;
+  sizes: string;
   className?: string;
   onClick?: () => void;
   style?: React.CSSProperties;
   tooltip?: string;
-  aspectRatio?: number;
+  orientation?: "portrait" | "landscape";
 }) => {
+  const { aspectRatio, borderRadius } = getOrientationParameters(orientation);
+
   const src =
     typeof card === "string"
-      ? `${SELF_BASE_URL}/images/back/${card}.webp`
-      : `${SELF_BASE_URL}/images/front/${card.slug}.webp`;
+      ? `${SELF_BASE_URL}/images/back/${card}_256.webp`
+      : `${SELF_BASE_URL}/images/front/${card.slug}_256_en.webp`;
 
   const alt = typeof card === "string" ? card : card.slug;
 
+  const widths =
+    orientation === "portrait" ? PORTRAIT_WIDTHS : LANDSCAPE_WIDTHS;
+
+  const srcSet =
+    "\n" +
+    widths
+      .map((size) =>
+        typeof card === "string"
+          ? `${SELF_BASE_URL}/images/back/${card}_${size}.webp ${size}w`
+          : `${SELF_BASE_URL}/images/front/${card.slug}_${size}_en.webp ${size}w`,
+      )
+      .join(",\n");
+
   return (
     <img
+      srcSet={srcSet}
+      sizes={sizes}
       src={src}
       alt={alt}
       title={tooltip}
-      className={cn("aspect-750/1024", className)}
+      className={className}
       draggable={false}
       onClick={onClick}
-      style={{ borderRadius: BORDER_RADIUS, aspectRatio, ...style }}
+      style={{ borderRadius, aspectRatio, ...style }}
     />
   );
 };

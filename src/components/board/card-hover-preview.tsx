@@ -17,6 +17,7 @@ interface CardHoverPreviewProps {
   counter?: number;
   tooltip?: Tooltip | Tooltip[];
   isEternal?: boolean;
+  orientation?: "portrait" | "landscape";
 }
 
 export const CardHoverPreview = ({
@@ -26,6 +27,7 @@ export const CardHoverPreview = ({
   effects,
   counter,
   isEternal,
+  orientation = "portrait",
 }: CardHoverPreviewProps) => {
   const tooltips = normalizeTooltips(tooltip);
   const hasTooltips =
@@ -46,7 +48,8 @@ export const CardHoverPreview = ({
             stats={stats}
             effects={effects}
             counter={counter}
-            size={22}
+            size={orientation === "portrait" ? 22 : 16}
+            orientation={orientation}
           />
         )}
       </div>

@@ -22,7 +22,7 @@ export const LeftPlayer = ({ player }: LeftPlayerProps) => {
   // Fill the grid with the cards
   grid[0][0] = player.character;
   for (let i = 1; i < player.inPlay.length + 1; i++) {
-    grid[Math.floor(i / MAX_ROWS)][i % MAX_ROWS] = player.inPlay[i-1];
+    grid[Math.floor(i / MAX_ROWS)][i % MAX_ROWS] = player.inPlay[i - 1];
   }
 
   // Turn back into a flat array
@@ -67,24 +67,17 @@ export const LeftPlayer = ({ player }: LeftPlayerProps) => {
                       slug: card.slug,
                       charged: card.charged,
                       eternal: card.eternal,
-                      engagedInCombat:
-                        isCharacter &&
-                        player.isEngagedInCombat,
+                      engagedInCombat: isCharacter && player.isEngagedInCombat,
                       engagedInPurchase:
-                        isCharacter &&
-                        player.isEngagedInPurchase,
-                      effects:
-                        isCharacter
-                          ? player.temporaryEffect
-                          : undefined,
+                        isCharacter && player.isEngagedInPurchase,
+                      effects: isCharacter ? player.temporaryEffect : undefined,
                       counter: card.counter,
-                      stats:
-                        isCharacter
-                          ? {
-                              healthPoints: player.currentHealthPoints,
-                              attackPoints: player.currentAttackPoints,
-                            }
-                          : undefined,
+                      stats: isCharacter
+                        ? {
+                            healthPoints: player.currentHealthPoints,
+                            attackPoints: player.currentAttackPoints,
+                          }
+                        : undefined,
                     },
                   ]}
                   onHoverPopover={() => (

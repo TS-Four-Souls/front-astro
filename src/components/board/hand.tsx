@@ -20,7 +20,7 @@ export const Hand = () => {
     setIsHandUp(false);
     socket.emit(
       "activate",
-      { index, effectIndex: "tap", targetChoices: selections, type: "hand"},
+      { index, effectIndex: "tap", targetChoices: selections, type: "hand" },
       (response) => {
         switch (response.status) {
           case 200:

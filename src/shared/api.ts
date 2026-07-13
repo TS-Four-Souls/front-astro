@@ -632,13 +632,23 @@ const attackRequirementSchema = z.object({
 
 export type AttackRequirement = z.infer<typeof attackRequirementSchema>;
 const cardActivationSchema = z.object({
-  type: z.union([z.literal("hand"), z.literal("inPlay"), z.literal("character"), z.literal("room")]),
+  type: z.union([
+    z.literal("hand"),
+    z.literal("inPlay"),
+    z.literal("character"),
+    z.literal("room"),
+  ]),
   index: z.number(),
   effectIndex: z.union([z.number(), z.literal("tap")]),
   targetChoices: z.array(selectionItemSchema).optional(),
 });
 const cardActivationWithIdSchema = z.object({
-  type: z.union([z.literal("hand"), z.literal("inPlay"), z.literal("character"), z.literal("room")]),
+  type: z.union([
+    z.literal("hand"),
+    z.literal("inPlay"),
+    z.literal("character"),
+    z.literal("room"),
+  ]),
   index: z.number(),
   effectIndex: z.number(),
   targetChoices: z.array(selectionItemSchema).optional(),

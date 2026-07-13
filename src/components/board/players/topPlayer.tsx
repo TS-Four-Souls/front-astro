@@ -17,13 +17,14 @@ export const TopPlayer = ({ player }: TopPlayerProps) => {
   // Create an array of arrays of 8 elements each, fill with undefined if needed
   const grid: InPlayCard[][] = Array.from(
     { length: Math.ceil((player.inPlay.length + 1) / MAX_COLUMNS) },
-    () => Array(Math.min(player.inPlay.length + 1, MAX_COLUMNS)).fill(undefined),
+    () =>
+      Array(Math.min(player.inPlay.length + 1, MAX_COLUMNS)).fill(undefined),
   );
 
   grid[0][0] = player.character;
   // Fill the grid with the cards
   for (let i = 1; i < player.inPlay.length + 1; i++) {
-    grid[Math.floor(i / MAX_COLUMNS)][i % MAX_COLUMNS] = player.inPlay[i-1];
+    grid[Math.floor(i / MAX_COLUMNS)][i % MAX_COLUMNS] = player.inPlay[i - 1];
   }
 
   // Turn back into a flat array
@@ -59,24 +60,17 @@ export const TopPlayer = ({ player }: TopPlayerProps) => {
                       slug: card.slug,
                       charged: card.charged,
                       eternal: card.eternal,
-                      engagedInCombat:
-                        isCharacter &&
-                        player.isEngagedInCombat,
+                      engagedInCombat: isCharacter && player.isEngagedInCombat,
                       engagedInPurchase:
-                        isCharacter &&
-                        player.isEngagedInPurchase,
-                      effects:
-                        isCharacter
-                          ? player.temporaryEffect
-                          : undefined,
+                        isCharacter && player.isEngagedInPurchase,
+                      effects: isCharacter ? player.temporaryEffect : undefined,
                       counter: card.counter,
-                      stats:
-                        isCharacter
-                          ? {
-                              healthPoints: player.currentHealthPoints,
-                              attackPoints: player.currentAttackPoints,
-                            }
-                          : undefined,
+                      stats: isCharacter
+                        ? {
+                            healthPoints: player.currentHealthPoints,
+                            attackPoints: player.currentAttackPoints,
+                          }
+                        : undefined,
                     },
                   ]}
                   onHoverPopover={() => (

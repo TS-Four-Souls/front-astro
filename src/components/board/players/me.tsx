@@ -116,7 +116,12 @@ export const Me = () => {
     ) => {
       socket.emit(
         "activate",
-        { index: index -1, effectIndex, targetChoices: selections, type: card === state.me.character ? "character" : "inPlay" },
+        {
+          index: index - 1,
+          effectIndex,
+          targetChoices: selections,
+          type: card === state.me.character ? "character" : "inPlay",
+        },
         (response) => {
           switch (response.status) {
             case 200:
@@ -221,66 +226,65 @@ export const Me = () => {
         {[state.me.character, ...state.me.inPlay].map((card, index) => {
           const isCharacter = state.me.character === card;
           return (
-          <div
-            key={card.globalId}
-            ref={(el) => registerInPlayCardEl(card.globalId, el)}>
-            <Pile
-              globalId={card.globalId}
-              onClickTopCardHotkey={
-                targetableCards.includes(card.slug)
-                  ? `${targetableCards.indexOf(card.slug) + 1}`
-                  : undefined
-              }
-              cards={[
-                {
-                  slug: card.slug,
-                  charged: card.charged,
-                  eternal: card.eternal,
-                  engagedInCombat: isCharacter && state.me.isEngagedInCombat,
-                  engagedInPurchase:
-                    isCharacter && state.me.isEngagedInPurchase,
-                  effects: isCharacter ? state.me.temporaryEffect : undefined,
-                  counter: card.counter,
-                  stats:
-                    isCharacter
+            <div
+              key={card.globalId}
+              ref={(el) => registerInPlayCardEl(card.globalId, el)}>
+              <Pile
+                globalId={card.globalId}
+                onClickTopCardHotkey={
+                  targetableCards.includes(card.slug)
+                    ? `${targetableCards.indexOf(card.slug) + 1}`
+                    : undefined
+                }
+                cards={[
+                  {
+                    slug: card.slug,
+                    charged: card.charged,
+                    eternal: card.eternal,
+                    engagedInCombat: isCharacter && state.me.isEngagedInCombat,
+                    engagedInPurchase:
+                      isCharacter && state.me.isEngagedInPurchase,
+                    effects: isCharacter ? state.me.temporaryEffect : undefined,
+                    counter: card.counter,
+                    stats: isCharacter
                       ? {
                           healthPoints: state.me.currentHealthPoints,
                           attackPoints: state.me.currentAttackPoints,
                         }
                       : undefined,
-                },
-              ]}
-              disabled={card.capabilities.activate !== true}
-              onHoverPopover={() => (
-                <CardHoverPreview
-                  card={card}
-                  stats={
-                    isCharacter
-                      ? {
-                          healthPoints: state.me.currentHealthPoints,
-                          attackPoints: state.me.currentAttackPoints,
-                        }
-                      : undefined
-                  }
-                  effects={isCharacter ? state.me.temporaryEffect : undefined}
-                  counter={card.counter}
-                  isEternal={card.eternal}
-                  tooltip={{
-                    title: t("gameStep.activate.blockedTooltip.title"),
-                    capable: card.capabilities.activate,
-                  }}
-                />
-              )}
-              onClickTopCard={() =>
-                block(
-                  t("capability.cannotActivate"),
-                  card.capabilities.activate,
-                  () => onInPlayCardClick(card, index),
-                )
-              }
-            />
-          </div>
-        )
+                  },
+                ]}
+                disabled={card.capabilities.activate !== true}
+                onHoverPopover={() => (
+                  <CardHoverPreview
+                    card={card}
+                    stats={
+                      isCharacter
+                        ? {
+                            healthPoints: state.me.currentHealthPoints,
+                            attackPoints: state.me.currentAttackPoints,
+                          }
+                        : undefined
+                    }
+                    effects={isCharacter ? state.me.temporaryEffect : undefined}
+                    counter={card.counter}
+                    isEternal={card.eternal}
+                    tooltip={{
+                      title: t("gameStep.activate.blockedTooltip.title"),
+                      capable: card.capabilities.activate,
+                    }}
+                  />
+                )}
+                onClickTopCard={() =>
+                  block(
+                    t("capability.cannotActivate"),
+                    card.capabilities.activate,
+                    () => onInPlayCardClick(card, index),
+                  )
+                }
+              />
+            </div>
+          );
         })}
       </div>
       <Hand />

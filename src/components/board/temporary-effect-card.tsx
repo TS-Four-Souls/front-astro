@@ -25,7 +25,7 @@ export const TemporaryEffectCard = ({
       anchor: element.getBoundingClientRect(),
       content: (
         <div className="flex flex-col place-items-center gap-2">
-          <CardImage card={effect.card} className="w-64" />
+          <CardImage card={effect.card} sizes="16em" className="w-64" />
           <div className="flex w-64 flex-col gap-4 text-center text-taupe-300">
             <p className="text-lg font-bold">{ts(effect.card.nameKey)}</p>
             <p className="leading-tight text-taupe-400">{effect.description}</p>
@@ -44,7 +44,11 @@ export const TemporaryEffectCard = ({
       style={{ width: cardSize + "em", height: cardSize + "em" }}
       onMouseEnter={onHover}
       onMouseLeave={closePopover}>
-      <CardImage card={effect.card} className="translate-y-[5%] scale-155" />
+      <CardImage
+        sizes={cardSize + "em"}
+        card={effect.card}
+        className="translate-y-[5%] scale-155"
+      />
     </div>
   );
 };

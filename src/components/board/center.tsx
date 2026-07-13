@@ -483,12 +483,11 @@ export const Center = ({ state }: CenterProps) => {
                         {
                           enabled: attackRequirement !== undefined,
                           title: t("gameStep.attack.requiredTooltip.title"),
-                          content: attackRequirement && t(
-                            "gameStep.attack.requiredTooltip.message",
-                            {
+                          content:
+                            attackRequirement &&
+                            t("gameStep.attack.requiredTooltip.message", {
                               card: attackRequirement.source.nameKey,
-                            },
-                          ),
+                            }),
                         },
                       ]}
                     />

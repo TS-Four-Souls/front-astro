@@ -117,7 +117,8 @@ export const DeckConfigPopup = ({
               )}>
               <CardImage
                 card={{ slug: card.slug }}
-                className="h-64 shadow-lg/30"
+                sizes="12em"
+                className="w-48 shadow-lg/30"
               />
               {"eternal" in card && (
                 <>
@@ -125,7 +126,8 @@ export const DeckConfigPopup = ({
                     <div className="grid items-center gap-2">
                       <CardImage
                         card={CardType.CharacterCard}
-                        className="col-start-1 row-start-1 h-64 shadow-lg/30"
+                        sizes="12em"
+                        className="col-start-1 row-start-1 w-48 shadow-lg/30"
                       />
                       <p className="col-start-1 row-start-1 text-center font-main text-[800%] font-bold text-black uppercase text-shadow-amber-50 text-shadow-lg">
                         ?
@@ -134,7 +136,8 @@ export const DeckConfigPopup = ({
                   ) : (
                     <CardImage
                       card={{ slug: card.eternal }}
-                      className="h-64 shadow-lg/30"
+                      sizes="12em"
+                      className="w-48 shadow-lg/30"
                     />
                   )}
                 </>

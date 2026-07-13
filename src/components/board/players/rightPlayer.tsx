@@ -37,7 +37,7 @@ export const RightPlayer = ({ player }: RightPlayerProps) => {
           style={{
             gridTemplateRows: `repeat(${Math.min(player.inPlay.length + 1, MAX_ROWS)}, 1fr)`,
           }}>
-          {[player.character, ...player.inPlay].map((card, index) => {
+          {[player.character, ...player.inPlay].map((card) => {
             const isCharacter = card === player.character;
             return (
               <div
@@ -55,13 +55,12 @@ export const RightPlayer = ({ player }: RightPlayerProps) => {
                         isCharacter && player.isEngagedInPurchase,
                       effects: isCharacter ? player.temporaryEffect : undefined,
                       counter: card.counter,
-                      stats:
-                        isCharacter
-                          ? {
-                              healthPoints: player.currentHealthPoints,
-                              attackPoints: player.currentAttackPoints,
-                            }
-                          : undefined,
+                      stats: isCharacter
+                        ? {
+                            healthPoints: player.currentHealthPoints,
+                            attackPoints: player.currentAttackPoints,
+                          }
+                        : undefined,
                     },
                   ]}
                   onHoverPopover={() => (
@@ -82,7 +81,8 @@ export const RightPlayer = ({ player }: RightPlayerProps) => {
                   )}
                 />
               </div>
-            )})}
+            );
+          })}
         </div>
       </div>
     </div>
