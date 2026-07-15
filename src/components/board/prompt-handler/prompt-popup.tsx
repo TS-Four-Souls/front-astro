@@ -58,7 +58,12 @@ export const PromptPopup = ({
       return sortedOptions;
     }
     return sortedOptions.filter((option) => {
-      return JSON.stringify(option.payload)
+      let payload = JSON.stringify(option.payload);
+      if(option.payload !== null && option.payload instanceof Object && "nameKey" in option.payload && "key" in option.payload.nameKey)
+      {
+        payload = ts(option.payload.nameKey) + payload;
+      }
+      return JSON.stringify(payload)
         .toLowerCase()
         .includes(searchCleaned);
     });

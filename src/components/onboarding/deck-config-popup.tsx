@@ -7,7 +7,7 @@ import { CardImage, CardType } from "../board/card";
 import { useToastContext } from "../board/contexts/toast-context";
 import { Button } from "../button";
 import { Popup } from "../popup";
-import { t, translateError } from "../../utils/translate";
+import { t, ts, translateError } from "../../utils/translate";
 
 export type DeckTypes =
   | "monster"
@@ -49,7 +49,7 @@ export const DeckConfigPopup = ({
 
   const filteredCards = useMemo(() => {
     return cards.filter((card) =>
-      card.name.toLowerCase().includes(search.toLowerCase()),
+      ts(card.nameKey).toLowerCase().includes(search.toLowerCase()),
     );
   }, [cards, search]);
 
