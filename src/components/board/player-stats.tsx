@@ -294,7 +294,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
 
       {isMe && (
         <div className="flex items-center gap-4">
-          <RoundCounter value={state.round}></RoundCounter>
+          {/* <RoundCounter value={state.round}></RoundCounter> */}
           <Button
             className="shadow-lg shadow-taupe-800/70"
             disabled={state.me.capabilities.endTurn !== true}
