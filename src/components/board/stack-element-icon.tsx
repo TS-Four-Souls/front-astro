@@ -77,14 +77,10 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
               </span>{" "}
               will roll
             </span>
-            <span className="font-bold whitespace-pre-line text-taupe-300">
-            </span>
+            <span className="font-bold whitespace-pre-line text-taupe-300"></span>
             <span>for</span>
             <span className="font-bold whitespace-pre-line text-taupe-300">
-              {element.attackRoll
-                ? "an attack roll against "
-                : ""
-              }
+              {element.attackRoll ? "an attack roll against " : ""}
               ts(element.card.nameKey)
             </span>
           </div>
@@ -392,7 +388,7 @@ export const SelectionContent = ({
         case "endOfTurn":
           return `${ts(selection.payload.player.nameKey)}'s turn is about to end.`;
         case "diceWillRoll":
-          return `${ts(selection.payload.issuer.nameKey)}'s is about to roll a dice.`
+          return `${ts(selection.payload.issuer.nameKey)}'s is about to roll a dice.`;
       }
     case "deck":
       return selection.payload;

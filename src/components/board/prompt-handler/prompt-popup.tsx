@@ -59,13 +59,15 @@ export const PromptPopup = ({
     }
     return sortedOptions.filter((option) => {
       let payload = JSON.stringify(option.payload);
-      if(option.payload !== null && option.payload instanceof Object && "nameKey" in option.payload && "key" in option.payload.nameKey)
-      {
+      if (
+        option.payload !== null &&
+        option.payload instanceof Object &&
+        "nameKey" in option.payload &&
+        "key" in option.payload.nameKey
+      ) {
         payload = ts(option.payload.nameKey) + payload;
       }
-      return JSON.stringify(payload)
-        .toLowerCase()
-        .includes(searchCleaned);
+      return JSON.stringify(payload).toLowerCase().includes(searchCleaned);
     });
   }, [sortedOptions, search]);
 
