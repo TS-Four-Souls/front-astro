@@ -2,6 +2,7 @@ import type {
   DamageOnStackJson,
   DeathOnStackJson,
   DiceRollJson,
+  DiceWillRollJson,
   EffectOnStackJson,
   EndOfTurnJson,
   LootCardOnStackJson,
@@ -296,6 +297,8 @@ const StackElementContent = ({ element }: { element: StackElementType }) => {
       return <LootStepElement element={element} />;
     case "endOfTurn":
       return <EndOfTurnElement element={element} />;
+    case "diceWillRoll":
+      return <DiceWillRollElement element={element} />;
   }
 };
 
@@ -341,6 +344,24 @@ const DiceRollElement = ({ element }: { element: DiceRollJson }) => {
           </span>{" "}
           rolled a {element.diceRoll}{" "}
           {element.modifier !== 0 ? `(+${element.modifier})` : ""}
+        </p>
+      </div>
+    </div>
+  );
+};
+const DiceWillRollElement = ({ element }: { element: DiceWillRollJson }) => {
+  return (
+    <div className="flex flex-row items-center gap-4">
+      <StackElementIcon element={element} />
+      <div className="flex flex-col">
+        <p className="text-2xs leading-6 text-taupe-500">
+          {element.card ? ts(element.card.nameKey) : "Attack roll"}
+        </p>
+
+        <p className="text-taupe-200">
+          <span style={{ color: element.issuer.color }}>
+            {ts(element.issuer.nameKey)}
+          </span>{" is about to roll."}
         </p>
       </div>
     </div>

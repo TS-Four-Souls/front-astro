@@ -64,6 +64,34 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
       );
     }
 
+    case "diceWillRoll": {
+      return (
+        <div className="flex flex-col items-center gap-3">
+          {element.card && <Card card={element.card} size={22} />}
+          <div className="flex max-w-64 flex-wrap place-content-center gap-1 px-2 text-center leading-tight text-taupe-400">
+            <span>
+              <span
+                className="font-bold"
+                style={{ color: element.issuer.color }}>
+                {ts(element.issuer.nameKey)}
+              </span>{" "}
+              will roll
+            </span>
+            <span className="font-bold whitespace-pre-line text-taupe-300">
+            </span>
+            <span>for</span>
+            <span className="font-bold whitespace-pre-line text-taupe-300">
+              {element.attackRoll
+                ? "an attack roll against "
+                : ""
+              }
+              ts(element.card.nameKey)
+            </span>
+          </div>
+        </div>
+      );
+    }
+
     case "LootCardEffect": {
       return (
         <>
@@ -205,6 +233,14 @@ const Icon = ({ element }: IconProps) => {
       return (
         <Dice
           value={element.diceRoll}
+          className="size-10 rounded-lg border-[0.15em] bg-taupe-800/50 p-0.5 text-red-500"
+          style={{ borderColor }}
+        />
+      );
+    case "diceWillRoll":
+      return (
+        <Dice
+          value={undefined}
           className="size-10 rounded-lg border-[0.15em] bg-taupe-800/50 p-0.5 text-red-500"
           style={{ borderColor }}
         />
@@ -355,6 +391,8 @@ export const SelectionContent = ({
           return `${ts(selection.payload.player.nameKey)} is about to loot ${selection.payload.nbLoots} card${selection.payload.nbLoots > 1 ? "s" : ""}`;
         case "endOfTurn":
           return `${ts(selection.payload.player.nameKey)}'s turn is about to end.`;
+        case "diceWillRoll":
+          return `${ts(selection.payload.issuer.nameKey)}'s is about to roll a dice.`
       }
     case "deck":
       return selection.payload;
