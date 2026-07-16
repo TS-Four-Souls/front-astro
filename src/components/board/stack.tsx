@@ -7,6 +7,7 @@ import type {
   EndOfTurnJson,
   LootCardOnStackJson,
   LootStepJson,
+  SerializedTranslation,
   StackElement as StackElementType,
 } from "@/shared/api";
 import { cn } from "@/utils/cn";
@@ -25,6 +26,7 @@ import { useGameAnimation } from "./contexts/game-animation";
 import { useGameContext } from "./contexts/game-context";
 import { useToastContext } from "./contexts/toast-context";
 import { StackElementIcon } from "./stack-element-icon";
+import { replaceTokens  } from "@/utils/replaceToken";
 
 export const Stack = () => {
   const { state } = useGameContext();
@@ -211,10 +213,8 @@ export const Stack = () => {
           );
         })}
         {state.stack.length === 0 && (
-          <p className="text-center font-time-fcuk text-sm leading-normal text-taupe-600">
-            NOTHING ON
-            <br />
-            THE STACK...
+          <p className="text-balance text-center font-time-fcuk text-sm leading-normal text-taupe-600">
+            {ts({key: "gameStep.stack.stackElement.nothingOnStack"})}
           </p>
         )}
       </div>
@@ -330,38 +330,62 @@ const InsertionBar = ({
 };
 
 const DiceRollElement = ({ element }: { element: DiceRollJson }) => {
+  const result = `${element.diceRoll} ${element.modifier !== 0 ? `(+${element.modifier})` : ""}`;
+  const serialized: SerializedTranslation = {
+    key: "gameStep.stack.stackElement.cardRoll",
+    interpolates: {
+      player: `{{1}}`,
+      result: result
+    }
+  };
+  const msg = replaceTokens(
+    ts(serialized), [[
+    `{{1}}`,
+    <span key="player" style={{ color: element.issuer.color }}>
+      {`${ts(element.issuer.nameKey)}`}
+    </span>,
+    ],
+  ]);
   return (
     <div className="flex flex-row items-center gap-4">
       <StackElementIcon element={element} />
       <div className="flex flex-col">
         <p className="text-2xs leading-6 text-taupe-500">
-          {element.card ? ts(element.card.nameKey) : "Attack roll"}
+          {element.card ? ts(element.card.nameKey): ts({key:"gameStep.stack.stackElement.attackRoll"})}
         </p>
 
         <p className="text-taupe-200">
-          <span style={{ color: element.issuer.color }}>
-            {ts(element.issuer.nameKey)}
-          </span>{" "}
-          rolled a {element.diceRoll}{" "}
-          {element.modifier !== 0 ? `(+${element.modifier})` : ""}
+          {msg}
         </p>
       </div>
     </div>
   );
 };
 const DiceWillRollElement = ({ element }: { element: DiceWillRollJson }) => {
+  const serialized: SerializedTranslation = {
+    key: "gameStep.stack.stackElement.diceWillRoll",
+    interpolates: {
+      player: `{{1}}`,
+    }
+  };
+  const msg = replaceTokens(
+    ts(serialized), [[
+    `{{1}}`,
+    <span key="player" style={{ color: element.issuer.color }}>
+      {`${ts(element.issuer.nameKey)}`}
+    </span>,
+    ],
+  ]);
   return (
     <div className="flex flex-row items-center gap-4">
       <StackElementIcon element={element} />
       <div className="flex flex-col">
         <p className="text-2xs leading-6 text-taupe-500">
-          {element.card ? ts(element.card.nameKey) : "Attack roll"}
+          {element.card ? ts(element.card.nameKey) : ts({key:"gameStep.stack.stackElement.attackRoll"})}
         </p>
 
         <p className="text-taupe-200">
-          <span style={{ color: element.issuer.color }}>
-            {ts(element.issuer.nameKey)}
-          </span>{" is about to roll."}
+          {msg}
         </p>
       </div>
     </div>
@@ -373,15 +397,27 @@ const LootCardEffectElement = ({
 }: {
   element: LootCardOnStackJson;
 }) => {
+  const serialized: SerializedTranslation = {
+    key: "gameStep.stack.stackElement.lootCardEffect",
+    interpolates: {
+      player: `{{1}}`,
+      card: ts(element.card.nameKey)
+    }
+  };
+  const msg = replaceTokens(
+    ts(serialized), [[
+    `{{1}}`,
+    <span key="player" style={{ color: element.issuer.color }}>
+      {`${ts(element.issuer.nameKey)}`}
+    </span>,
+    ],
+  ]);
   return (
     <div className="flex flex-row items-center gap-4">
       <StackElementIcon element={element} />
       <div className="text-sm">
         <p className="text-taupe-200">
-          <span style={{ color: element.issuer.color }}>
-            {ts(element.issuer.nameKey)}
-          </span>{" "}
-          used {ts(element.card.nameKey)}
+          {msg}
         </p>
       </div>
     </div>
@@ -405,16 +441,27 @@ const EffectElement = ({ element }: { element: EffectOnStackJson }) => {
 };
 
 const LootStepElement = ({ element }: { element: LootStepJson }) => {
+  const serialized: SerializedTranslation = {
+    key: "gameStep.stack.stackElement.lootStep",
+    interpolates: {
+      player: `{{1}}`,
+      value: element.nbLoots.toString()
+    }
+  };
+  const msg = replaceTokens(
+    ts(serialized), [[
+    `{{1}}`,
+    <span key="player" style={{ color: element.player.color }}>
+      {`${ts(element.player.nameKey)}`}
+    </span>,
+    ],
+  ]);
   return (
     <div className="flex flex-row items-center gap-4">
       <StackElementIcon element={element} />
       <div className="text-sm">
         <p className="text-taupe-200">
-          <span style={{ color: element.player.color }}>
-            {ts(element.player.nameKey)}
-          </span>{" "}
-          is about to loot {element.nbLoots} card
-          {element.nbLoots > 1 ? "s" : ""}
+          {msg}
         </p>
       </div>
     </div>
@@ -422,15 +469,26 @@ const LootStepElement = ({ element }: { element: LootStepJson }) => {
 };
 
 const EndOfTurnElement = ({ element }: { element: EndOfTurnJson }) => {
+  const serialized: SerializedTranslation = {
+    key: "gameStep.stack.stackElement.endOfTurn",
+    interpolates: {
+      player: `{{1}}`,
+    }
+  };
+  const msg = replaceTokens(
+    ts(serialized), [[
+    `{{1}}`,
+    <span key="player" style={{ color: element.player.color }}>
+      {`${ts(element.player.nameKey)}`}
+    </span>,
+    ],
+  ]);
   return (
     <div className="flex flex-row items-center gap-4">
       <StackElementIcon element={element} />
       <div className="text-sm">
         <p className="text-taupe-200">
-          <span style={{ color: element.player.color }}>
-            {ts(element.player.nameKey)}
-          </span>
-          's turn is about to end.
+          {msg}
         </p>
       </div>
     </div>
@@ -438,18 +496,34 @@ const EndOfTurnElement = ({ element }: { element: EndOfTurnJson }) => {
 };
 
 const DamageElement = ({ element }: { element: DamageOnStackJson }) => {
+  const serialized: SerializedTranslation = {
+    key: "gameStep.stack.stackElement.damage",
+    interpolates: {
+      entity1: `{{1}}`,
+      value: element.damage.toString(),
+      entity2: `{{2}}`
+    }
+  };
+  const msg = replaceTokens(
+    ts(serialized), [[
+    `{{1}}`,
+    <span key="entity1" style={{ color: element.from.color }}>
+      {`${ts(element.from.nameKey)}`}
+    </span>,
+    ],
+    [
+      "{{2}}",
+      <span key="entity2" style={{ color: element.receiver.color }}>
+        {receiverName(element)}
+      </span>,
+    ],
+  ]);
   return (
     <div className="flex flex-row items-center gap-4">
       <StackElementIcon element={element} />
       <div className="text-sm">
         <p className="text-taupe-200">
-          <span style={{ color: element.from.color }}>
-            {ts(element.from.nameKey)}
-          </span>{" "}
-          dealt {element.damage} damage to{" "}
-          <span style={{ color: element.receiver.color }}>
-            {receiverName(element)}
-          </span>
+          {msg}
         </p>
       </div>
     </div>
@@ -457,18 +531,33 @@ const DamageElement = ({ element }: { element: DamageOnStackJson }) => {
 };
 
 const DeathElement = ({ element }: { element: DeathOnStackJson }) => {
+  const serialized: SerializedTranslation = {
+    key: "gameStep.stack.stackElement.aKilledB",
+    interpolates: {
+      entity1: `{{1}}`,
+      entity2: `{{2}}`
+    }
+  };
+  const msg = replaceTokens(
+    ts(serialized), [[
+    `{{1}}`,
+    <span key="entity1" style={{ color: element.from.color }}>
+      {`${ts(element.from.nameKey)}`}
+    </span>,
+    ],
+    [
+      "{{2}}",
+      <span key="entity2" style={{ color: element.receiver.color }}>
+        {receiverName(element)}
+      </span>,
+    ],
+  ]);
   return (
     <div className="flex flex-row items-center gap-4">
       <StackElementIcon element={element} />
       <div className="text-sm">
         <p className="text-taupe-200">
-          <span style={{ color: element.from.color }}>
-            {ts(element.from.nameKey)}
-          </span>{" "}
-          killed{" "}
-          <span style={{ color: element.receiver.color }}>
-            {receiverName(element)}
-          </span>
+          {msg}
         </p>
       </div>
     </div>
