@@ -307,6 +307,15 @@ export const GenericOption = ({
           children={children}
         />
       );
+    case "serializedTranslation":
+      return (
+        <SerializedTranslationOption
+          option={option}
+          onPress={onPress}
+          selected={selected}
+          children={children}
+        />
+      );
     case "object":
     case "array":
     case "null":
@@ -449,6 +458,29 @@ export const DeckOption = ({
   );
 };
 
+export const SerializedTranslationOption = ({
+  option,
+  selected,
+  onPress,
+  children,
+}: TemplateOptionProps<"serializedTranslation">) => {
+  return (
+    <div
+      className={cn(
+        "relative flex w-max flex-row place-items-center gap-2 rounded-md border-2 bg-taupe-600 p-2",
+        selected
+          ? "border-blue-500 outline-2 outline-blue-400"
+          : "border-taupe-500",
+        onPress && "cursor-pointer",
+      )}
+      onClick={onPress}>
+      <p className={cn("w-60 p-4 text-center text-lg font-bold")}>
+        {ts(option.payload)}
+      </p>
+      <div className="absolute inset-1">{children}</div>
+    </div>
+  );
+};
 export const StringOption = ({
   option,
   selected,
