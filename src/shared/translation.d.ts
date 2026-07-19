@@ -125,6 +125,7 @@ declare module "translations" {
 		"selector.monster": undefined;
 		"selector.triggeredAbility": undefined;
 		"selector.cardInPlayOrLoot": undefined;
+		"selector.diceWillRoll": undefined;
 		"selector.playerOrMonster": undefined;
 		"selector.deck": undefined;
 		"selector.cardGranted": undefined;
@@ -929,6 +930,18 @@ declare module "translations" {
 		"gameStep.stack.resolveButton.label": undefined;
 		"gameStep.stack.resolveButton.errorToast.title": undefined;
 		"gameStep.stack.resolveButton.blockedTooltip.title": undefined;
+		"gameStep.stack.stackElement.aKilledB": { entity1: string | number | SerializedTranslation | SerializedTranslation[];  entity2: string | number | SerializedTranslation | SerializedTranslation[] };
+		"gameStep.stack.stackElement.cardRoll": { player: string | number | SerializedTranslation | SerializedTranslation[];  result: string | number | SerializedTranslation | SerializedTranslation[] };
+		"gameStep.stack.stackElement.diceWillRoll": { player: string | number | SerializedTranslation | SerializedTranslation[] };
+		"gameStep.stack.stackElement.endOfTurn": { player: string | number | SerializedTranslation | SerializedTranslation[] };
+		"gameStep.stack.stackElement.lootStep": { player: string | number | SerializedTranslation | SerializedTranslation[];  value: string | number | SerializedTranslation | SerializedTranslation[] };
+		"gameStep.stack.stackElement.lootCardEffect": { player: string | number | SerializedTranslation | SerializedTranslation[];  card: string | number | SerializedTranslation | SerializedTranslation[] };
+		"gameStep.stack.stackElement.effect": { player: string | number | SerializedTranslation | SerializedTranslation[];  card: string | number | SerializedTranslation | SerializedTranslation[] };
+		"gameStep.stack.stackElement.damage": { entity1: string | number | SerializedTranslation | SerializedTranslation[];  value: string | number | SerializedTranslation | SerializedTranslation[];  entity2: string | number | SerializedTranslation | SerializedTranslation[] };
+		"gameStep.stack.stackElement.attackRoll": undefined;
+		"gameStep.stack.stackElement.nothingOnStack": undefined;
+		"gameStep.roundCounter.tooltip.title": { count: string | number | SerializedTranslation | SerializedTranslation[] };
+		"gameStep.roundCounter.countdownTooltip.title": { count: string | number | SerializedTranslation | SerializedTranslation[] };
 		"gameStep.rollback.tooltip.title": undefined;
 		"gameStep.rollback.tooltip.message": undefined;
 		"gameStep.rollback.tooltip.cheatDisabledMessage": undefined;

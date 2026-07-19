@@ -1159,6 +1159,14 @@
         "nothingOnStack": "NOTHING ON THE STACK..."
       }
     },
+    "roundCounter": {
+      "tooltip": {
+        "title": "Round {{count}}"
+      },
+      "countdownTooltip": {
+        "title": "{{count}} round remaining"
+      }
+    },
     "rollback": {
       "tooltip": {
         "title": "Rollback",

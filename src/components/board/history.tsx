@@ -7,6 +7,8 @@ import { useHistoryContext } from "./contexts/history-context";
 import { useToastContext } from "./contexts/toast-context";
 import { StackElementIcon } from "./stack-element-icon";
 import { t } from "../../utils/translate";
+import { RoundCounter } from "@/icons/RoundCounter";
+import { useTooltip } from "./use-tooltip";
 
 export const History = () => {
   const { state, parameters } = useGameContext();
@@ -44,28 +46,43 @@ export const History = () => {
     });
   };
 
+  const { setTooltip, closeTooltip } = useTooltip({
+    enabled: true,
+    title:
+      parameters.timer.value > 0
+        ? t("gameStep.roundCounter.countdownTooltip.title", {
+            count: state.round,
+          })
+        : t("gameStep.roundCounter.tooltip.title", { count: state.round }),
+  });
+
   return (
-    <div className="flex h-86 w-14 flex-col gap-2 rounded-lg bg-taupe-800 inset-shadow-sm inset-shadow-taupe-950/30">
-      <div
-        ref={scrollViewRef}
-        className="no-scrollbar relative flex grow flex-col items-center gap-1.5 overflow-y-auto p-2 transition-colors duration-300">
-        {displayedHistory.map((element, index) => (
-          <StackElementIcon key={index} element={element} />
-        ))}
+    <div className="flex h-86 flex-col items-center gap-2">
+      <div onMouseEnter={setTooltip} onMouseLeave={closeTooltip}>
+        <RoundCounter value={state.round} className="size-12"></RoundCounter>
       </div>
-      <Button
-        hotkey="backspace"
-        onClick={rollback}
-        tooltip={{
-          title: t("gameStep.rollback.tooltip.title"),
-          content: parameters.allowCheatOptions.value
-            ? t("gameStep.rollback.tooltip.message")
-            : t("gameStep.rollback.tooltip.cheatDisabledMessage"),
-          enabled: true,
-        }}
-        theme="onDark"
-        className="m-2 h-10 shrink-0 p-0"
-      />
+      <div className="flex h-72 w-14 flex-col gap-2 rounded-lg bg-taupe-800 inset-shadow-sm inset-shadow-taupe-950/30">
+        <div
+          ref={scrollViewRef}
+          className="no-scrollbar relative flex grow flex-col items-center gap-1.5 overflow-y-auto p-2 transition-colors duration-300">
+          {displayedHistory.map((element, index) => (
+            <StackElementIcon key={index} element={element} />
+          ))}
+        </div>
+        <Button
+          hotkey="backspace"
+          onClick={rollback}
+          tooltip={{
+            title: t("gameStep.rollback.tooltip.title"),
+            content: parameters.allowCheatOptions.value
+              ? t("gameStep.rollback.tooltip.message")
+              : t("gameStep.rollback.tooltip.cheatDisabledMessage"),
+            enabled: true,
+          }}
+          theme="onDark"
+          className="m-2 h-10 shrink-0 p-0"
+        />
+      </div>
     </div>
   );
 };
