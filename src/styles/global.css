@@ -38,6 +38,10 @@
   animation: planetariumBackground 120s linear infinite;
 }
 
+.animate-craftmine {
+  animation: craftmine 1s ease-in-out alternate infinite;
+}
+
 .pile-md-shadow {
   --pile-md-shadow: 0 0.1em 0.1em 0.1em rgb(0 0 0 / 0.5);
   box-shadow: var(--pile-md-shadow);
@@ -62,6 +66,15 @@
   box-shadow:
     var(--pile-md-shadow), var(--pile-lg-shadow), var(--pile-xl-shadow),
     var(--pile-2xl-shadow), var(--pile-3xl-shadow);
+}
+
+@keyframes craftmine {
+  from {
+    scale: 1;
+  }
+  to {
+    scale: 1.5;
+  }
 }
 
 @keyframes planetariumBackground {

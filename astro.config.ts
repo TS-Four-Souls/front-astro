@@ -12,6 +12,12 @@ export default defineConfig({
       BASE_URL: envField.string({ context: "client", access: "public" }),
       SELF_BASE_URL: envField.string({ context: "client", access: "public" }),
       SERVER_API_KEY: envField.string({ context: "client", access: "public" }),
+      ENVIRONMENT: envField.enum({
+        context: "client",
+        access: "public",
+        values: ["beta", "prod"],
+        default: "prod",
+      }),
     },
   },
 

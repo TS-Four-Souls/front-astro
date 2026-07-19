@@ -1,5 +1,6 @@
 import { Button } from "../button";
 import { t } from "../../utils/translate";
+import { ENVIRONMENT } from "astro:env/client";
 
 interface RoomOptionsProps {
   onCreateRoom: () => void;
@@ -14,7 +15,16 @@ export const RoomOptions = ({
 }: RoomOptionsProps) => {
   return (
     <>
-      <img src="/logo.png" alt="Logo" className="mb-16 w-140 max-sm:w-full" />
+      <div className="relative">
+        <img src="/logo.png" alt="Logo" className="mb-16 w-140 max-sm:w-full" />
+        {ENVIRONMENT === "beta" && (
+          <div className="absolute top-12 right-0 left-0 flex place-content-center not-sm:text-[3vw] lg:top-16 lg:translate-x-24 lg:place-content-end">
+            <p className="animate-craftmine font-time-fcuk text-yellow-300 text-shadow-[0px_0.2em_0px,0px_0.1em_0px] text-shadow-black lg:rotate-12">
+              Living on the edge!
+            </p>
+          </div>
+        )}
+      </div>
       <Button
         label={t("introStep.titleScreen.createRoomButton")}
         onClick={onCreateRoom}

@@ -1,5 +1,8 @@
 ---
 import "../styles/global.css";
+import { ENVIRONMENT } from "astro:env/client";
+
+const title = `Four Online Souls${ENVIRONMENT === "beta" ? " (Beta)": ""}`
 ---
 
 <html lang="en">
@@ -8,7 +11,7 @@ import "../styles/global.css";
     <link rel="icon" type="image/png" href="/soul-1.png" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
-    <title>Four Online Souls</title>
+    <title>{title}</title>
   </head>
   <body>
     <slot />  
