@@ -1,5 +1,4 @@
 import { Gear } from "@/icons/gear";
-import { RoundCounter } from "@/icons/RoundCounter";
 import { TeamIcon } from "@/icons/team-icon";
 import type { Player, PlayerMe } from "@/shared/api";
 import { cn } from "@/utils/cn";
@@ -294,7 +293,6 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
 
       {isMe && (
         <div className="flex items-center gap-4">
-          {/* <RoundCounter value={state.round}></RoundCounter> */}
           <Button
             className="shadow-lg shadow-taupe-800/70"
             disabled={state.me.capabilities.endTurn !== true}
