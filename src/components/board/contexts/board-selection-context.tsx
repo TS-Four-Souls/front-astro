@@ -47,8 +47,22 @@ export const BoardSelectionProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
+  const { t } = useLanguageContext();
   const { state } = useGameContext();
   const { prompt } = usePromptContext();
+
+  const convertDeckToGlobalId = (deck: string): GlobalId => {
+    switch (deck) {
+      case "loot":
+        return SpecialGlobalIds.Loot;
+      case "treasure":
+        return SpecialGlobalIds.Treasure;
+      case "monster":
+        return SpecialGlobalIds.Monster;
+      default:
+        throw new Error(t("error.invalidDeckType", { deckType: deck }));
+    }
+  };
 
   const [selectedOptions, setSelectedOptions] = useState<SelectionItem[]>([]);
 
@@ -195,18 +209,4 @@ const isSupportedSelectionItem = (
     selectionItem.type === "deck" ||
     selectionItem.type === "stackElement"
   );
-};
-
-const convertDeckToGlobalId = (deck: string): GlobalId => {
-  const { t } = useLanguageContext();
-  switch (deck) {
-    case "loot":
-      return SpecialGlobalIds.Loot;
-    case "treasure":
-      return SpecialGlobalIds.Treasure;
-    case "monster":
-      return SpecialGlobalIds.Monster;
-    default:
-      throw new Error(t("error.invalidDeckType", { deckType: deck }));
-  }
 };

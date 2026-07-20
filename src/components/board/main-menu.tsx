@@ -7,6 +7,7 @@ import { useMainMenuContext } from "./contexts/main-menu-context";
 import { usePromptContext } from "./contexts/prompt-context";
 import { useToastContext } from "./contexts/toast-context";
 import { useLanguageContext } from "../contexts/language-context";
+import { LanguageSelection } from "../language-selection";
 
 export const MainMenu = () => {
   const { addPrompt, removePrompt } = usePromptContext();
@@ -462,6 +463,7 @@ export const MainMenu = () => {
         }}
         label={t("gameStep.mainMenu.quitButton.label")}
       />
+      <LanguageSelection />
       <ReportBugButton />
     </div>
   );

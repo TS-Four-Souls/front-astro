@@ -21,7 +21,7 @@ export const RoomOptions = ({
         {ENVIRONMENT === "beta" && (
           <div className="absolute top-12 right-0 left-0 flex place-content-center not-sm:text-[3vw] lg:top-16 lg:translate-x-24 lg:place-content-end">
             <p className="animate-craftmine font-time-fcuk text-yellow-300 text-shadow-[0px_0.2em_0px,0px_0.1em_0px] text-shadow-black lg:rotate-12">
-              Living on the edge!
+              {t("introStep.titleScreen.betaIndicator")}
             </p>
           </div>
         )}

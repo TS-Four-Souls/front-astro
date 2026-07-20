@@ -83,6 +83,7 @@ export const Pile = ({
   children,
   orientation,
 }: PileProps) => {
+  const { t } = useLanguageContext();
   const size = sizePx / 16;
   const seed = useRef(Math.random().toString());
   const rng = seedrandom(seed.current);
@@ -101,8 +102,6 @@ export const Pile = ({
           toggleSelection(entityBoardSelectionState.selectionItem);
         }
       : () => {
-          const { t } = useLanguageContext();
-
           block(
             t("gameStep.boardSelection.blockedTooltip.title"),
             { key: "gameStep.boardSelection.blockedTooltip.message" },

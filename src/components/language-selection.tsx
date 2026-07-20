@@ -1,4 +1,5 @@
 import { LANGUAGE_CODE } from "../utils/translate";
+import { useTooltip } from "./board/use-tooltip";
 import { useLanguageContext } from "./contexts/language-context";
 
 const languageLabelMap: Record<LANGUAGE_CODE, string> = {
@@ -7,23 +8,25 @@ const languageLabelMap: Record<LANGUAGE_CODE, string> = {
 };
 
 export const LanguageSelection = ({}: {}) => {
-  const { language, setLanguage } = useLanguageContext();
+  const { t, language, setLanguage } = useLanguageContext();
+  const tooltip = useTooltip({
+    enabled: true,
+    title: t("languageSelectionButton.tooltip.title"),
+    content: t("languageSelectionButton.tooltip.message"),
+  });
   return (
-    <div className="absolute right-4 bottom-30 z-50">
-      <label className="sr-only" htmlFor="language-select">
-        Select language
-      </label>
-      <select
-        id="language-select"
-        value={language}
-        onChange={(event) => setLanguage(event.target.value as LANGUAGE_CODE)}
-        className="bg-space-700 rounded-md border border-space-400 px-3 py-2 text-sm text-white transition outline-none hover:border-white">
-        {Object.values(LANGUAGE_CODE).map((code) => (
-          <option key={code} value={code}>
-            {languageLabelMap[code]}
-          </option>
-        ))}
-      </select>
-    </div>
+    <select
+      onMouseEnter={tooltip.setTooltip}
+      onMouseLeave={tooltip.closeTooltip}
+      onClick={tooltip.closeTooltip}
+      value={language}
+      onChange={(event) => setLanguage(event.target.value as LANGUAGE_CODE)}
+      className="absolute right-10 bottom-10 cursor-pointer rounded-full bg-space-500 py-3 pr-2 pl-4 shadow-xl/50 inset-shadow-xs inset-shadow-taupe-100/10 transition-[filter] hover:brightness-120 active:brightness-150">
+      {Object.values(LANGUAGE_CODE).map((code) => (
+        <option key={code} value={code}>
+          {languageLabelMap[code]}
+        </option>
+      ))}
+    </select>
   );
 };

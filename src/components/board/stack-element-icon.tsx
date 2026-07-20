@@ -3,7 +3,6 @@ import { cn } from "@/utils/cn";
 import { Dice } from "@/icons/dice";
 import { Card, CardImage, CardType } from "./card";
 import { usePopoverContext } from "./contexts/popover-context";
-import { receiverName } from "@/utils/selection-text";
 import { useLanguageContext } from "../contexts/language-context";
 interface StackElementIconProps {
   element: StackElement;
@@ -90,6 +89,7 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
     }
 
     case "LootCardEffect": {
+      console.log("visualEffectBox", element.card);
       return (
         <>
           <Card card={element.card} size={22} />
@@ -176,7 +176,7 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
             <span
               style={{ color: element.receiver.color }}
               className="font-bold text-taupe-300">
-              {receiverName(element)}
+              {ts(element.receiver.nameKey)}
             </span>{" "}
             using{" "}
             <span className="font-bold text-taupe-300">
@@ -203,7 +203,7 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
             <span
               style={{ color: element.receiver.color }}
               className="font-bold text-taupe-300">
-              {receiverName(element)}
+              {ts(element.receiver.nameKey)}
             </span>{" "}
             using{" "}
             <span className="font-bold text-taupe-300">
@@ -376,11 +376,11 @@ export const SelectionContent = ({
     case "stackElement":
       switch (selection.payload.type) {
         case "death":
-          return `${ts(selection.payload.from.nameKey)} killed ${receiverName(selection.payload)}`;
+          return `${ts(selection.payload.from.nameKey)} killed ${ts(selection.payload.receiver.nameKey)}`;
         case "diceRoll":
           return `${selection.payload.card ? ts(selection.payload.card.nameKey) : "an attack roll"} - ${ts(selection.payload.issuer.nameKey)} rolled a ${selection.payload.diceRoll}`;
         case "damage":
-          return `${ts(selection.payload.from.nameKey)} dealt ${selection.payload.damage} damage to ${receiverName(selection.payload)}`;
+          return `${ts(selection.payload.from.nameKey)} dealt ${selection.payload.damage} damage to ${ts(selection.payload.receiver.nameKey)}`;
         case "effect":
           return `${ts(selection.payload.issuer.nameKey)} - ${ts(selection.payload.card.nameKey)}`;
         case "LootCardEffect":

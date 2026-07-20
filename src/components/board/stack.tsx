@@ -12,7 +12,6 @@ import type {
 } from "@/shared/api";
 import { cn } from "@/utils/cn";
 import { HotkeyScope, shouldUseKey } from "@/utils/hotkey";
-import { receiverName } from "@/utils/selection-text";
 import { socket } from "@/utils/socket";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -29,7 +28,7 @@ import { replaceTokens } from "@/utils/replaceToken";
 import { useLanguageContext } from "../contexts/language-context";
 
 export const Stack = () => {
-  const { ts, t } = useLanguageContext();
+  const { ts, t, translateError } = useLanguageContext();
   const { state } = useGameContext();
   const { toast, block } = useToastContext();
   const { setStackEl } = useGameAnimation();
@@ -46,7 +45,6 @@ export const Stack = () => {
   }, [setStackEl]);
 
   const resolveStack = () => {
-    const { translateError, t } = useLanguageContext();
     socket.emit("resolve", (response) => {
       if (response.status === 400)
         toast(
@@ -108,7 +106,6 @@ export const Stack = () => {
         "insertStackElementBefore",
         { elementToMoveStackId, targetStackId },
         (response) => {
-          const { translateError, t } = useLanguageContext();
           if (response.status === 400)
             toast(
               "error",
@@ -163,7 +160,6 @@ export const Stack = () => {
           const entityBoardSelectionState = boardSelectionState?.get(
             element.id + stackElementIdShift,
           );
-          const { t } = useLanguageContext();
 
           return (
             <div key={element.id} className="relative w-full">
@@ -217,7 +213,7 @@ export const Stack = () => {
           );
         })}
         {state.stack.length === 0 && (
-          <p className="text-center font-time-fcuk text-sm leading-normal text-balance text-taupe-600">
+          <p className="text-center font-time-fcuk text-sm leading-normal whitespace-pre-line text-taupe-600">
             {ts({ key: "gameStep.stack.stackElement.nothingOnStack" })}
           </p>
         )}
@@ -348,7 +344,7 @@ const DiceRollElement = ({ element }: { element: DiceRollJson }) => {
     [
       `{{1}}`,
       <span key="player" style={{ color: element.issuer.color }}>
-        {`${ts(element.issuer.nameKey)}`}
+        {ts(element.issuer.nameKey)}
       </span>,
     ],
   ]);
@@ -379,7 +375,7 @@ const DiceWillRollElement = ({ element }: { element: DiceWillRollJson }) => {
     [
       `{{1}}`,
       <span key="player" style={{ color: element.issuer.color }}>
-        {`${ts(element.issuer.nameKey)}`}
+        {ts(element.issuer.nameKey)}
       </span>,
     ],
   ]);
@@ -416,7 +412,7 @@ const LootCardEffectElement = ({
     [
       `{{1}}`,
       <span key="player" style={{ color: element.issuer.color }}>
-        {`${ts(element.issuer.nameKey)}`}
+        {ts(element.issuer.nameKey)}
       </span>,
     ],
   ]);
@@ -460,7 +456,7 @@ const LootStepElement = ({ element }: { element: LootStepJson }) => {
     [
       `{{1}}`,
       <span key="player" style={{ color: element.player.color }}>
-        {`${ts(element.player.nameKey)}`}
+        {ts(element.player.nameKey)}
       </span>,
     ],
   ]);
@@ -486,7 +482,7 @@ const EndOfTurnElement = ({ element }: { element: EndOfTurnJson }) => {
     [
       `{{1}}`,
       <span key="player" style={{ color: element.player.color }}>
-        {`${ts(element.player.nameKey)}`}
+        {ts(element.player.nameKey)}
       </span>,
     ],
   ]);
@@ -514,13 +510,13 @@ const DamageElement = ({ element }: { element: DamageOnStackJson }) => {
     [
       `{{1}}`,
       <span key="entity1" style={{ color: element.from.color }}>
-        {`${ts(element.from.nameKey)}`}
+        {ts(element.from.nameKey)}
       </span>,
     ],
     [
       "{{2}}",
       <span key="entity2" style={{ color: element.receiver.color }}>
-        {receiverName(element)}
+        {ts(element.receiver.nameKey)}
       </span>,
     ],
   ]);
@@ -547,13 +543,13 @@ const DeathElement = ({ element }: { element: DeathOnStackJson }) => {
     [
       `{{1}}`,
       <span key="entity1" style={{ color: element.from.color }}>
-        {`${ts(element.from.nameKey)}`}
+        {ts(element.from.nameKey)}
       </span>,
     ],
     [
       "{{2}}",
       <span key="entity2" style={{ color: element.receiver.color }}>
-        {receiverName(element)}
+        {ts(element.receiver.nameKey)}
       </span>,
     ],
   ]);
