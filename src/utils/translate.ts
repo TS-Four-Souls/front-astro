@@ -1,7 +1,7 @@
-import dic_en from "@/shared/translation_en.json";
-import dic_fr from "@/shared/translation_fr.json";
-import boxes_en from "@/data/boxes_en.json";
-import boxes_fr from "@/data/boxes.json";
+import dic_en from "../../data/translations/en.json";
+import dic_fr from "../../data/translations/fr.json";
+import boxes_en from "../../data/boxes/en.json";
+import boxes_fr from "../../data/boxes/fr.json";
 
 const flattenDic = (
   obj: Record<string, any>,
