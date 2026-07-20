@@ -2,18 +2,18 @@ import { HotkeyScope } from "@/utils/hotkey";
 import { socket } from "@/utils/socket";
 import { Button } from "../button";
 import { ReportBugButton } from "../onboarding-layout";
-import { translateError } from "../../utils/translate";
 import { useGameContext } from "./contexts/game-context";
 import { useMainMenuContext } from "./contexts/main-menu-context";
 import { usePromptContext } from "./contexts/prompt-context";
 import { useToastContext } from "./contexts/toast-context";
-import { t } from "../../utils/translate";
+import { useLanguageContext } from "../contexts/language-context";
 
 export const MainMenu = () => {
   const { addPrompt, removePrompt } = usePromptContext();
   const { toast } = useToastContext();
   const { closeMenu: closeMainMenu } = useMainMenuContext();
   const { parameters } = useGameContext();
+  const { translateError, t } = useLanguageContext();
 
   const onResetPress = () => {
     const promptId = `reset-confirm`;

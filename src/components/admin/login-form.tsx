@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useToastContext } from "../board/contexts/toast-context";
 import { Button } from "../button";
 import { OnboardingLayout } from "../onboarding-layout";
-import { translateError } from "../../utils/translate";
+import { useLanguageContext } from "../contexts/language-context";
 
 export const LoginForm = () => {
   const { toast } = useToastContext();
@@ -16,7 +16,7 @@ export const LoginForm = () => {
       setPassword(password);
     }
   }, []);
-
+  const { translateError } = useLanguageContext();
   const onLogin = () => {
     storage.setItem("adminPassword", password);
     socket.emit("adminLogin", { password }, (response) => {

@@ -2,7 +2,7 @@ import type { TemporaryEffect } from "@/shared/api";
 import { CardImage } from "./card";
 import { cn } from "@/utils/cn";
 import { usePopoverContext } from "./contexts/popover-context";
-import { ts } from "../../utils/translate";
+import { useLanguageContext } from "../contexts/language-context";
 
 interface TemporaryEffectCardProps {
   effect: TemporaryEffect;
@@ -16,6 +16,7 @@ export const TemporaryEffectCard = ({
   className,
 }: TemporaryEffectCardProps) => {
   const { setPopover, closePopover } = usePopoverContext();
+  const { ts } = useLanguageContext();
 
   const cardSize = size / 16;
 

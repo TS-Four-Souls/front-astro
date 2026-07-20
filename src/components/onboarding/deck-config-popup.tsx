@@ -7,7 +7,7 @@ import { CardImage, CardType } from "../board/card";
 import { useToastContext } from "../board/contexts/toast-context";
 import { Button } from "../button";
 import { Popup } from "../popup";
-import { t, ts, translateError } from "../../utils/translate";
+import { useLanguageContext } from "../contexts/language-context";
 
 export type DeckTypes =
   | "monster"
@@ -16,15 +16,6 @@ export type DeckTypes =
   | "bsoul"
   | "room"
   | "character";
-
-const deckTypeLabels: Record<DeckTypes, string> = {
-  monster: t("startStep.gameParams.decks.monsters"),
-  treasure: t("startStep.gameParams.decks.treasures"),
-  character: t("startStep.gameParams.decks.characters"),
-  loot: t("startStep.gameParams.decks.loots"),
-  bsoul: t("startStep.gameParams.decks.bonusSouls"),
-  room: t("startStep.gameParams.decks.rooms"),
-};
 
 interface DeckConfigPopupProps {
   type: DeckTypes;
@@ -39,6 +30,16 @@ export const DeckConfigPopup = ({
   onClose,
   editable,
 }: DeckConfigPopupProps) => {
+  const { ts, t, translateError } = useLanguageContext();
+
+  const deckTypeLabels: Record<DeckTypes, string> = {
+    monster: t("startStep.gameParams.decks.monsters"),
+    treasure: t("startStep.gameParams.decks.treasures"),
+    character: t("startStep.gameParams.decks.characters"),
+    loot: t("startStep.gameParams.decks.loots"),
+    bsoul: t("startStep.gameParams.decks.bonusSouls"),
+    room: t("startStep.gameParams.decks.rooms"),
+  };
   const { toast } = useToastContext();
 
   const canUseLookup = useMemo(() => {

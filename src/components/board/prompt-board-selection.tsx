@@ -3,7 +3,7 @@ import { HotkeyScope } from "@/utils/hotkey";
 import { useEffect } from "react";
 import { useHotkeysContext } from "react-hotkeys-hook";
 import { Button } from "../button";
-import { t } from "../../utils/translate";
+import { useLanguageContext } from "../contexts/language-context";
 
 interface PromptBoardSelectionProps {
   onCancel?: () => void | undefined;
@@ -40,6 +40,7 @@ export const PromptBoardSelection = ({
     enableSelectionScope();
     return resetScopes;
   }, []);
+  const { t } = useLanguageContext();
 
   return (
     <div className="pointer-events-none fixed top-0 right-0 left-0 z-50 flex justify-center p-6">

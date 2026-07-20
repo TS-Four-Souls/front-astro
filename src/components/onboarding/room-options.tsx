@@ -1,6 +1,6 @@
 import { Button } from "../button";
-import { t } from "../../utils/translate";
 import { ENVIRONMENT } from "astro:env/client";
+import { useLanguageContext } from "../contexts/language-context";
 
 interface RoomOptionsProps {
   onCreateRoom: () => void;
@@ -13,6 +13,7 @@ export const RoomOptions = ({
   onJoinRoom,
   onAbout,
 }: RoomOptionsProps) => {
+  const { t } = useLanguageContext();
   return (
     <>
       <div className="relative">

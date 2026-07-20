@@ -4,13 +4,14 @@ import { Popup } from "../../popup";
 import { useReplyContext } from "./reply-context";
 import { HotkeyScope } from "@/utils/hotkey";
 import { useState } from "react";
-import { translateError } from "../../../utils/translate";
 import { useToastContext } from "../../board/contexts/toast-context";
+import { useLanguageContext } from "@/components/contexts/language-context";
 
 export const ReplyPopup = () => {
   const { toast } = useToastContext();
   const { isReplyPopupOpen, closeReplyPopup } = useReplyContext();
   const [response, setResponse] = useState<string>("");
+  const { translateError } = useLanguageContext();
 
   const resetForm = () => {
     setResponse("");

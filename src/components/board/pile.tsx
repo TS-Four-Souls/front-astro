@@ -5,13 +5,13 @@ import { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import seedrandom from "seedrandom";
 import { cn } from "../../utils/cn";
-import { t } from "../../utils/translate";
 import { Card, CardType } from "./card";
 import { useBoardSelectionContext } from "./contexts/board-selection-context";
 import { usePopoverContext } from "./contexts/popover-context";
 import { useToastContext } from "./contexts/toast-context";
 import type { Tooltip } from "./use-tooltip";
 import { useTooltip } from "./use-tooltip";
+import { useLanguageContext } from "../contexts/language-context";
 
 type CardMetadata = {
   isRequiredAttack?: boolean;
@@ -101,6 +101,8 @@ export const Pile = ({
           toggleSelection(entityBoardSelectionState.selectionItem);
         }
       : () => {
+          const { t } = useLanguageContext();
+
           block(
             t("gameStep.boardSelection.blockedTooltip.title"),
             { key: "gameStep.boardSelection.blockedTooltip.message" },

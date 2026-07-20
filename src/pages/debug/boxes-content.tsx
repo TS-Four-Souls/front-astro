@@ -1,19 +1,20 @@
-import cards from "@/data/boxes.json";
 import { CardImage } from "@/components/board/card";
+import { useLanguageContext } from "@/components/contexts/language-context";
 import { useState } from "react";
 
 const colors = ["#F00", "#0F0", "#00F", "#FF0", "#F0F", "#0FF", "#000", "#FFF"];
 
 export const BoxesContent = () => {
-  const boxCount = Object.values(cards).map((boxes) => boxes.length);
+  const { boxes: all_boxes } = useLanguageContext();
+  const boxCount = Object.values(all_boxes).map((box) => box.length);
 
   const minBox = Math.min(...boxCount);
   const maxBox = Math.max(...boxCount);
 
   const [current, setCurrent] = useState(minBox);
 
-  const filteredCards = Object.entries(cards).filter(
-    ([_, boxes]) => boxes.length >= current,
+  const filteredCards = Object.entries(all_boxes).filter(
+    ([_, box]) => box.length >= current,
   );
 
   return (

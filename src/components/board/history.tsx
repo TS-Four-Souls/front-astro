@@ -1,16 +1,16 @@
 import { socket } from "@/utils/socket";
 import { useEffect, useRef } from "react";
 import { Button } from "../button";
-import { translateError } from "../../utils/translate";
 import { useGameContext } from "./contexts/game-context";
 import { useHistoryContext } from "./contexts/history-context";
 import { useToastContext } from "./contexts/toast-context";
 import { StackElementIcon } from "./stack-element-icon";
-import { t } from "../../utils/translate";
 import { RoundCounter } from "@/icons/RoundCounter";
 import { useTooltip } from "./use-tooltip";
+import { useLanguageContext } from "../contexts/language-context";
 
 export const History = () => {
+  const { translateError, t } = useLanguageContext();
   const { state, parameters } = useGameContext();
   const { isOpen } = useHistoryContext();
   const scrollViewRef = useRef<HTMLDivElement>(null);

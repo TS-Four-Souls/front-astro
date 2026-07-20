@@ -1,20 +1,20 @@
-import { t } from "../../utils/translate";
 import type { SelectionItem } from "@/shared/api";
 import { cn } from "@/utils/cn";
 import { socket } from "@/utils/socket";
-import { ts, translateError } from "../../utils/translate";
 import { CardHoverPreview } from "./card-hover-preview";
 import { useGameAnimation } from "./contexts/game-animation";
 import { useGameContext } from "./contexts/game-context";
 import { usePromptContext } from "./contexts/prompt-context";
 import { useToastContext } from "./contexts/toast-context";
 import { Pile } from "./pile";
+import { useLanguageContext } from "../contexts/language-context";
 
 export const Hand = () => {
   const { state, isHandUp, setIsHandUp } = useGameContext();
   const { toast, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
   const { registerMeHandCardEl } = useGameAnimation();
+  const { ts, t, translateError } = useLanguageContext();
 
   const playCard = (index: number, selections: SelectionItem[] = []) => {
     setIsHandUp(false);

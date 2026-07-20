@@ -1,6 +1,5 @@
 import type { Card, DetailedState } from "@/shared/api";
 import { socket } from "@/utils/socket";
-import { translateError, t } from "@/utils/translate";
 import { CardType } from "./card";
 import { CardHoverPreview } from "./card-hover-preview";
 import { SpecialGlobalIds } from "./contexts/board-selection-context";
@@ -11,6 +10,7 @@ import { History } from "./history";
 import { Pile } from "./pile";
 import { Stack } from "./stack";
 import { usePileDetails } from "./use-pile-details";
+import { useLanguageContext } from "../contexts/language-context";
 interface CenterProps {
   state: DetailedState;
 }
@@ -19,6 +19,7 @@ export const Center = ({ state }: CenterProps) => {
   const { toast, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
   const { displayPileDetails } = usePileDetails();
+  const { translateError, t } = useLanguageContext();
   const {
     registerLootDeckEl,
     registerTreasureDeckEl,

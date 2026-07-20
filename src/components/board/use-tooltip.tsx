@@ -1,7 +1,7 @@
 import { cn } from "@/utils/cn";
 import { usePopoverContext } from "./contexts/popover-context";
 import type { SerializedTranslation } from "@/shared/api";
-import { ts } from "../../utils/translate";
+import { useLanguageContext } from "../contexts/language-context";
 
 type TooltipType = "denied" | "warning" | "gold";
 
@@ -53,6 +53,7 @@ export const useTooltip = (tooltip: Tooltip | Tooltip[] | undefined) => {
 };
 
 export const TooltipComponent = ({ tooltip }: { tooltip: Tooltip }) => {
+  const { ts } = useLanguageContext();
   const enabled =
     "enabled" in tooltip ? tooltip.enabled : tooltip.capable !== true;
   if (!enabled) return null;

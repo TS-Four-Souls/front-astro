@@ -6,11 +6,12 @@ import { useToastContext } from "./board/contexts/toast-context";
 import { Button } from "./button";
 import { useContactContext } from "./contexts/contact-context";
 import { Popup } from "./popup";
-import { translateError, t } from "../utils/translate";
+import { useLanguageContext } from "./contexts/language-context";
 
 const MAX_LENGTH = 3000;
 
 export const ContactPopup = () => {
+  const { t, translateError } = useLanguageContext();
   const { isContactPopupOpen, closeContactPopup } = useContactContext();
   const [type, setType] = useState<ContactType>("contact");
   const [description, setDescription] = useState<string>("");

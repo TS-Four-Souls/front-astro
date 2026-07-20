@@ -1,4 +1,4 @@
-import { ts } from "@/utils/translate";
+import { useLanguageContext } from "@/components/contexts/language-context";
 import type { IdentifierType } from "@/shared/api";
 
 export const receiverName = ({
@@ -8,6 +8,7 @@ export const receiverName = ({
   from: IdentifierType;
   receiver: IdentifierType;
 }) => {
+  const { ts } = useLanguageContext();
   return ts(from.nameKey) === ts(receiver.nameKey)
     ? "themselves"
     : ts(receiver.nameKey);

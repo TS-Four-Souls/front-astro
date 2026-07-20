@@ -1,8 +1,9 @@
 import type { Card } from "@/shared/api";
-import { t } from "../../utils/translate";
 import { usePromptContext } from "./contexts/prompt-context";
+import { useLanguageContext } from "../contexts/language-context";
 
 export const usePileDetails = () => {
+  const { t } = useLanguageContext();
   const { addPrompt, removePrompt } = usePromptContext();
 
   const displayPileDetails = (cards?: Card[] | undefined) => {

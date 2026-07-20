@@ -24,3 +24,10 @@ pnpm-debug.log*
 .idea/
 
 public/
+cards_fr.json
+src/data/boxes_en.json
+src/scripts/obtainCardName.py
+src/scripts/uniformizeCardSlugs.py
+src/scripts/visualBoxCalculator.py
+src/shared/translation_fr.json
+tets/boxes.json

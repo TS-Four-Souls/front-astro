@@ -1,6 +1,6 @@
+import { useLanguageContext } from "@/components/contexts/language-context";
 import type { SerializedTranslation } from "@/shared/api";
 import { cn } from "@/utils/cn";
-import { ts } from "@/utils/translate";
 import { createContext, useContext } from "react";
 import toastLib, { Toaster, type ToastOptions } from "react-hot-toast";
 
@@ -106,6 +106,7 @@ const ToastContext = createContext<ToastContextProps>({
 });
 
 export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
+  const { ts } = useLanguageContext();
   const addToast = (
     type: ToastType,
     title: string,

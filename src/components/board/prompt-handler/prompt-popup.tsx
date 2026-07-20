@@ -10,7 +10,7 @@ import { Sword } from "@/icons/sword";
 import { StackElement } from "../stack";
 import { SelectionIndexIndicator } from "../selection-index-indicator";
 import { useMemo, useState } from "react";
-import { ts, t } from "../../../utils/translate";
+import { useLanguageContext } from "@/components/contexts/language-context";
 interface PromptPopupProps {
   onCancel?: () => void | undefined;
   prompt: string;
@@ -42,6 +42,7 @@ export const PromptPopup = ({
   onSubmit,
   toggleMode,
 }: PromptPopupProps) => {
+  const { ts, t } = useLanguageContext();
   const sortedOptions = options.every((o) => o.type === "stackElement")
     ? options.toReversed()
     : options;
@@ -365,6 +366,7 @@ export const PlayerOption = ({
   selected,
   children,
 }: TemplateOptionProps<"player">) => {
+  const { ts } = useLanguageContext();
   return (
     <div
       className={cn(
@@ -399,6 +401,8 @@ export const MonsterOption = ({
   onPress,
   children,
 }: TemplateOptionProps<"monster">) => {
+  const { ts } = useLanguageContext();
+
   return (
     <div
       className={cn(
@@ -466,6 +470,7 @@ export const SerializedTranslationOption = ({
   onPress,
   children,
 }: TemplateOptionProps<"serializedTranslation">) => {
+  const { ts } = useLanguageContext();
   return (
     <div
       className={cn(
@@ -637,6 +642,7 @@ export const CouplePlayerHandOption = ({
   onPress,
   children,
 }: TemplateOptionProps<"couplePlayerHand">) => {
+  const { ts } = useLanguageContext();
   return (
     <div
       className={cn(

@@ -4,7 +4,7 @@ import { TemporaryEffectCard } from "./temporary-effect-card";
 import { SELF_BASE_URL } from "astro:env/client";
 import { PileIndicator } from "@/icons/pile-indicator";
 import { SelectionIndexIndicator } from "./selection-index-indicator";
-import boxes from "@/data/boxes.json";
+import { useLanguageContext } from "../contexts/language-context";
 
 export enum CardType {
   BonusSoul = "bsoul",
@@ -261,7 +261,9 @@ export const VisualEffectBoxComponent = ({
   card: { slug: string };
   visualEffectBox: VisualEffectBox;
 }) => {
-  const cardBoxes = boxes[card.slug as keyof typeof boxes];
+  const { boxes } = useLanguageContext();
+  const dic = boxes;
+  const cardBoxes = dic[card.slug as keyof typeof dic];
   if (
     !cardBoxes ||
     visualEffectBox.startIndex < 0 ||
@@ -305,11 +307,11 @@ export const CardImage = ({
   orientation?: "portrait" | "landscape";
 }) => {
   const { aspectRatio, borderRadius } = getOrientationParameters(orientation);
-
+  const { language } = useLanguageContext();
   const src =
     typeof card === "string"
       ? `${SELF_BASE_URL}/images/back/${card}_256.webp`
-      : `${SELF_BASE_URL}/images/front/${card.slug}_256_en.webp`;
+      : `${SELF_BASE_URL}/images/front/${card.slug}_256_${language}.webp`;
 
   const alt = typeof card === "string" ? card : card.slug;
 
@@ -322,7 +324,7 @@ export const CardImage = ({
       .map((size) =>
         typeof card === "string"
           ? `${SELF_BASE_URL}/images/back/${card}_${size}.webp ${size}w`
-          : `${SELF_BASE_URL}/images/front/${card.slug}_${size}_en.webp ${size}w`,
+          : `${SELF_BASE_URL}/images/front/${card.slug}_${size}_${language}.webp ${size}w`,
       )
       .join(",\n");
 

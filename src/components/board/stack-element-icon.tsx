@@ -4,7 +4,7 @@ import { Dice } from "@/icons/dice";
 import { Card, CardImage, CardType } from "./card";
 import { usePopoverContext } from "./contexts/popover-context";
 import { receiverName } from "@/utils/selection-text";
-import { ts } from "../../utils/translate";
+import { useLanguageContext } from "../contexts/language-context";
 interface StackElementIconProps {
   element: StackElement;
 }
@@ -35,6 +35,7 @@ interface PopoverContentProps {
 }
 
 const PopoverContent = ({ element }: PopoverContentProps) => {
+  const { ts } = useLanguageContext();
   switch (element.type) {
     case "diceRoll": {
       return (
@@ -368,6 +369,7 @@ export const SelectionContent = ({
 }: {
   selection: SelectionItem;
 }): React.ReactNode => {
+  const { ts } = useLanguageContext();
   switch (selection.type) {
     case "card":
       return ts(selection.payload.nameKey);

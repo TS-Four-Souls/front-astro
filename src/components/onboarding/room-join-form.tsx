@@ -3,7 +3,7 @@ import { storage } from "@/utils/storage";
 import { useEffect, useState } from "react";
 import { useToastContext } from "../board/contexts/toast-context";
 import { Button } from "../button";
-import { t, translateError } from "../../utils/translate";
+import { useLanguageContext } from "../contexts/language-context";
 
 interface RoomJoinFormProps {
   code: string;
@@ -16,6 +16,7 @@ export const RoomJoinForm = ({
   onCancel,
   onSuccess,
 }: RoomJoinFormProps) => {
+  const { t, translateError } = useLanguageContext();
   const [roomId, setRoomId] = useState<string>(code);
   const [name, setName] = useState<string>("");
   const { toast } = useToastContext();

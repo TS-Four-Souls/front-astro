@@ -7,7 +7,6 @@ import { socket } from "@/utils/socket";
 import { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { Button } from "../button";
-import { translateError } from "../../utils/translate";
 import { Card } from "./card";
 import { useGameAnimation } from "./contexts/game-animation";
 import { useGameContext } from "./contexts/game-context";
@@ -16,7 +15,7 @@ import { usePopoverContext } from "./contexts/popover-context";
 import { usePromptContext } from "./contexts/prompt-context";
 import { useToastContext } from "./contexts/toast-context";
 import { useTooltip } from "./use-tooltip";
-import { t } from "../../utils/translate";
+import { useLanguageContext } from "../contexts/language-context";
 
 interface PlayerStatsProps {
   player: Player | PlayerMe;
@@ -24,6 +23,7 @@ interface PlayerStatsProps {
 }
 
 export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
+  const { translateError, t } = useLanguageContext();
   const { state } = useGameContext();
   const { toast, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();

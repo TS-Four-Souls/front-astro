@@ -17,7 +17,6 @@ import { socket } from "@/utils/socket";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { Button } from "../button";
-import { ts, t, translateError } from "../../utils/translate";
 import {
   stackElementIdShift,
   useBoardSelectionContext,
@@ -27,8 +26,10 @@ import { useGameContext } from "./contexts/game-context";
 import { useToastContext } from "./contexts/toast-context";
 import { StackElementIcon } from "./stack-element-icon";
 import { replaceTokens } from "@/utils/replaceToken";
+import { useLanguageContext } from "../contexts/language-context";
 
 export const Stack = () => {
+  const { ts, t } = useLanguageContext();
   const { state } = useGameContext();
   const { toast, block } = useToastContext();
   const { setStackEl } = useGameAnimation();
@@ -45,6 +46,7 @@ export const Stack = () => {
   }, [setStackEl]);
 
   const resolveStack = () => {
+    const { translateError, t } = useLanguageContext();
     socket.emit("resolve", (response) => {
       if (response.status === 400)
         toast(
@@ -106,6 +108,7 @@ export const Stack = () => {
         "insertStackElementBefore",
         { elementToMoveStackId, targetStackId },
         (response) => {
+          const { translateError, t } = useLanguageContext();
           if (response.status === 400)
             toast(
               "error",
@@ -160,6 +163,7 @@ export const Stack = () => {
           const entityBoardSelectionState = boardSelectionState?.get(
             element.id + stackElementIdShift,
           );
+          const { t } = useLanguageContext();
 
           return (
             <div key={element.id} className="relative w-full">
@@ -330,6 +334,8 @@ const InsertionBar = ({
 };
 
 const DiceRollElement = ({ element }: { element: DiceRollJson }) => {
+  const { ts } = useLanguageContext();
+
   const result = `${element.diceRoll} ${element.modifier !== 0 ? `(+${element.modifier})` : ""}`;
   const serialized: SerializedTranslation = {
     key: "gameStep.stack.stackElement.cardRoll",
@@ -362,6 +368,7 @@ const DiceRollElement = ({ element }: { element: DiceRollJson }) => {
   );
 };
 const DiceWillRollElement = ({ element }: { element: DiceWillRollJson }) => {
+  const { ts } = useLanguageContext();
   const serialized: SerializedTranslation = {
     key: "gameStep.stack.stackElement.diceWillRoll",
     interpolates: {
@@ -397,6 +404,7 @@ const LootCardEffectElement = ({
 }: {
   element: LootCardOnStackJson;
 }) => {
+  const { ts } = useLanguageContext();
   const serialized: SerializedTranslation = {
     key: "gameStep.stack.stackElement.lootCardEffect",
     interpolates: {
@@ -423,6 +431,7 @@ const LootCardEffectElement = ({
 };
 
 const EffectElement = ({ element }: { element: EffectOnStackJson }) => {
+  const { ts } = useLanguageContext();
   return (
     <div className="flex flex-row items-center gap-4">
       <StackElementIcon element={element} />
@@ -439,6 +448,7 @@ const EffectElement = ({ element }: { element: EffectOnStackJson }) => {
 };
 
 const LootStepElement = ({ element }: { element: LootStepJson }) => {
+  const { ts } = useLanguageContext();
   const serialized: SerializedTranslation = {
     key: "gameStep.stack.stackElement.lootStep",
     interpolates: {
@@ -465,6 +475,7 @@ const LootStepElement = ({ element }: { element: LootStepJson }) => {
 };
 
 const EndOfTurnElement = ({ element }: { element: EndOfTurnJson }) => {
+  const { ts } = useLanguageContext();
   const serialized: SerializedTranslation = {
     key: "gameStep.stack.stackElement.endOfTurn",
     interpolates: {
@@ -490,6 +501,7 @@ const EndOfTurnElement = ({ element }: { element: EndOfTurnJson }) => {
 };
 
 const DamageElement = ({ element }: { element: DamageOnStackJson }) => {
+  const { ts } = useLanguageContext();
   const serialized: SerializedTranslation = {
     key: "gameStep.stack.stackElement.damage",
     interpolates: {
@@ -523,6 +535,7 @@ const DamageElement = ({ element }: { element: DamageOnStackJson }) => {
 };
 
 const DeathElement = ({ element }: { element: DeathOnStackJson }) => {
+  const { ts } = useLanguageContext();
   const serialized: SerializedTranslation = {
     key: "gameStep.stack.stackElement.aKilledB",
     interpolates: {

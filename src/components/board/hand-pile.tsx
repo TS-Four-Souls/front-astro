@@ -1,10 +1,10 @@
-import { t } from "../../utils/translate";
 import type { Player } from "@/shared/api";
 import { Pile } from "./pile";
 import { usePileDetails } from "./use-pile-details";
 import { CardType } from "./card";
 import { cn } from "@/utils/cn";
 import { useGameAnimation } from "./contexts/game-animation";
+import { useLanguageContext } from "../contexts/language-context";
 
 interface HandPileProps {
   player: Player;
@@ -12,6 +12,7 @@ interface HandPileProps {
 
 export const HandPile = ({ player }: HandPileProps) => {
   const { displayPileDetails } = usePileDetails();
+  const { t } = useLanguageContext();
   const { registerOpponentHandPile } = useGameAnimation();
   return (
     <div ref={(el) => registerOpponentHandPile(player.name, el)}>

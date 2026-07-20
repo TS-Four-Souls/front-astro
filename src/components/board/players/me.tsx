@@ -3,7 +3,6 @@ import { HotkeyScope } from "@/utils/hotkey";
 import { socket } from "@/utils/socket";
 import { useEffect, useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { ts, translateError } from "../../../utils/translate";
 import { CardHoverPreview } from "../card-hover-preview";
 import { useGameAnimation } from "../contexts/game-animation";
 import { useGameContext } from "../contexts/game-context";
@@ -13,9 +12,10 @@ import { useToastContext } from "../contexts/toast-context";
 import { Hand } from "../hand";
 import { Pile } from "../pile";
 import { PlayerStats } from "../player-stats";
-import { t } from "../../../utils/translate";
+import { useLanguageContext } from "@/components/contexts/language-context";
 
 export const Me = () => {
+  const { ts, t, translateError } = useLanguageContext();
   const { state, isHandUp } = useGameContext();
   const { toast, dismiss, block } = useToastContext();
   const { addPrompt, removePrompt, clearPrompts } = usePromptContext();

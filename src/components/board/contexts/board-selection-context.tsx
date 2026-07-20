@@ -10,7 +10,7 @@ import {
   useState,
 } from "react";
 import { PromptHandler } from "../prompt-handler/prompt-handler";
-import { t } from "../../../utils/translate";
+import { useLanguageContext } from "@/components/contexts/language-context";
 
 export enum SpecialGlobalIds {
   Loot = -1,
@@ -198,6 +198,7 @@ const isSupportedSelectionItem = (
 };
 
 const convertDeckToGlobalId = (deck: string): GlobalId => {
+  const { t } = useLanguageContext();
   switch (deck) {
     case "loot":
       return SpecialGlobalIds.Loot;

@@ -15,9 +15,10 @@ import { Loading } from "../onboarding/loading";
 import { RoomJoinForm } from "../onboarding/room-join-form";
 import { RoomOptions } from "../onboarding/room-options";
 import { StartStep } from "../onboarding/start-step";
-import { translateError, ts } from "../../utils/translate";
+import { useLanguageContext } from "../contexts/language-context";
 
 export const GamePage = () => {
+  const { ts, translateError } = useLanguageContext();
   const [room, setRoom] = useState<Room | null>(null);
   const { toast } = useToastContext();
   const [tryingToRejoin, setTryingToRejoin] = useState<boolean>(true);

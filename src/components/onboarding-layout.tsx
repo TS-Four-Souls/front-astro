@@ -1,9 +1,9 @@
 import { useEffect, useRef } from "react";
-import { t } from "../utils/translate";
 import { useMainMenuContext } from "./board/contexts/main-menu-context";
 import { useTooltip } from "./board/use-tooltip";
 import { useContactContext } from "./contexts/contact-context";
-
+import { LanguageSelection } from "./language-selection";
+import { useLanguageContext } from "./contexts/language-context";
 interface OnboardingLayoutProps {
   withHeader: boolean;
   children: React.ReactNode;
@@ -14,7 +14,7 @@ export const OnboardingLayout = ({
   children,
 }: OnboardingLayoutProps) => {
   const planetariumRef = useRef<HTMLDivElement>(null);
-
+  const { t } = useLanguageContext();
   // Only animate the planetarium if there is no header and the page is visible
   useEffect(() => {
     const planetarium = planetariumRef.current;
@@ -46,6 +46,7 @@ export const OnboardingLayout = ({
         ref={planetariumRef}
         className="planetarium flex flex-2 flex-col overflow-auto">
         <ReportBugButton />
+        <LanguageSelection />
         {withHeader ? (
           <>
             <div className="mb-8 flex flex-1 flex-col place-content-center place-items-center gap-6 p-12 max-sm:p-6">
@@ -69,6 +70,7 @@ export const OnboardingLayout = ({
 };
 
 export const ReportBugButton = () => {
+  const { t } = useLanguageContext();
   const tooltip = useTooltip({
     enabled: true,
     title: t("contactButton.tooltip.title"),

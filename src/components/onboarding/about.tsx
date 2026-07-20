@@ -2,13 +2,14 @@ import { Gear } from "@/icons/gear";
 import { PileIndicator } from "@/icons/pile-indicator";
 import { HotkeyScope } from "@/utils/hotkey";
 import { Button } from "../button";
-import { t } from "../../utils/translate";
+import { useLanguageContext } from "../contexts/language-context";
 
 interface AboutProps {
   onClose: () => void;
 }
 
 export const About = ({ onClose }: AboutProps) => {
+  const { t } = useLanguageContext();
   return (
     <>
       <img src="/logo.png" alt="Logo" className="mb-8 w-80" />

@@ -21,14 +21,15 @@ import { useToastContext } from "../board/contexts/toast-context";
 import { Pile } from "../board/pile";
 import { useTooltip } from "../board/use-tooltip";
 import { Button } from "../button";
-import { ts, translateError, t } from "../../utils/translate";
 import { DeckConfigPopup, type DeckTypes } from "./deck-config-popup";
+import { useLanguageContext } from "../contexts/language-context";
 
 interface StartStepProps {
   room: Room;
 }
 
 export const StartStep = ({ room }: StartStepProps) => {
+  const { ts, t, translateError } = useLanguageContext();
   const { gameParameters } = room;
   const { toast } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
@@ -788,6 +789,7 @@ const PlayerCard = ({
   };
   index: number;
 }) => {
+  const { t } = useLanguageContext();
   const { setTooltip, closeTooltip } = useTooltip({
     title: t("startStep.playerList.selectCharacterButton.tooltip.title"),
     content: t("startStep.playerList.selectCharacterButton.tooltip.message"),
@@ -895,13 +897,6 @@ const PlayerCard = ({
   );
 };
 
-const teamNames: Record<Team, string> = {
-  [Team.Team1]: t("common.teams.heart"),
-  [Team.Team2]: t("common.teams.coin"),
-  [Team.Team3]: t("common.teams.pill"),
-  [Team.Team4]: t("common.teams.bomb"),
-};
-
 const TeamButton = ({
   team,
   active,
@@ -913,7 +908,15 @@ const TeamButton = ({
   onClick?: (team: Team) => void;
   player: RoomPlayer;
 }) => {
+  const { t } = useLanguageContext();
   const isDisabled = onClick === undefined;
+
+  const teamNames: Record<Team, string> = {
+    [Team.Team1]: t("common.teams.heart"),
+    [Team.Team2]: t("common.teams.coin"),
+    [Team.Team3]: t("common.teams.pill"),
+    [Team.Team4]: t("common.teams.bomb"),
+  };
   return (
     <Button
       onClick={() => onClick?.(team)}
@@ -956,6 +959,7 @@ const NumericInput = ({
   onChange: (value: number) => void;
   disabled: boolean;
 }) => {
+  const { t } = useLanguageContext();
   return (
     <div className="flex items-center justify-end">
       <Button
@@ -1002,6 +1006,7 @@ const BooleanInput = ({
   onChange: (value: boolean) => void;
   disabled: boolean;
 }) => {
+  const { t } = useLanguageContext();
   return (
     <Button
       onClick={() => onChange(!value)}

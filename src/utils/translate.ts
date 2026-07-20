@@ -1,6 +1,7 @@
-import type { TranslationFunctionArgs, TranslationKeys } from "translations";
-import type { SerializedTranslation } from "../shared/api";
-import dic from "@/shared/translation_en.json";
+import dic_en from "@/shared/translation_en.json";
+import dic_fr from "@/shared/translation_fr.json";
+import boxes_en from "@/data/boxes_en.json";
+import boxes_fr from "@/data/boxes.json";
 
 const flattenDic = (
   obj: Record<string, any>,
@@ -16,45 +17,29 @@ const flattenDic = (
       }
     }),
   );
+export enum LANGUAGE_CODE {
+  EN = "en",
+  FR = "fr",
+}
+export const translation_dics: Record<LANGUAGE_CODE, Record<string, string>> = {
+  en: flattenDic(dic_en),
+  fr: flattenDic(dic_fr),
+} as const;
+export const boxes_dics: Record<
+  LANGUAGE_CODE,
+  Record<string, { top: number; right: number; left: number; bottom: number }[]>
+> = { en: boxes_en, fr: boxes_fr };
+export const cards_dics: Record<LANGUAGE_CODE, string> = { en: "en", fr: "fr" };
 
-const dicFlat = flattenDic(dic);
+export const DEFAULT_LANGUAGE: LANGUAGE_CODE = LANGUAGE_CODE.EN;
 
-export function ts(st: SerializedTranslation): string {
-  let txt = dicFlat[st.key];
-  if (txt === undefined) {
-    console.error(`Missing translation for key: ${st.key}`);
-    return st.key;
-  }
-  if (st.interpolates === undefined) {
-    return txt;
-  }
-  for (let i = 0; i < Object.keys(st.interpolates).length; i++) {
-    const key = Object.keys(st.interpolates)[i];
-    const value = st.interpolates[key];
-    if (value === undefined) {
-      console.error(`Missing interpolation value for key: ${key}`);
-      continue;
-    }
-    if (typeof value === "object" && !Array.isArray(value))
-      txt = txt.replaceAll(`{{${key}}}`, ts(value));
-    else if (Array.isArray(value))
-      txt = txt.replaceAll(`{{${key}}}`, value.map((v) => ts(v)).join(", "));
-    else txt = txt.replaceAll(`{{${key}}}`, value);
-  }
-  return txt;
+const listeners = new Set<() => void>();
+
+export function isLanguageCode(s: string): s is LANGUAGE_CODE {
+  return Object.values(LANGUAGE_CODE).includes(s as LANGUAGE_CODE);
 }
 
-export function t<T extends TranslationKeys>(
-  ...args: TranslationFunctionArgs<T>
-): string {
-  const serializedTranslation: SerializedTranslation =
-    args[1] === undefined
-      ? { key: args[0] }
-      : { key: args[0], interpolates: args[1] };
-  return ts(serializedTranslation);
-}
-
-export function translateError(error: string | SerializedTranslation): string {
-  if (typeof error === "string") return error;
-  return ts(error);
+export function onLanguageChanged(listener: () => void): () => void {
+  listeners.add(listener);
+  return () => listeners.delete(listener);
 }

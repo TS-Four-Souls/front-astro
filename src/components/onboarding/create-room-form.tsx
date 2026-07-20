@@ -3,7 +3,7 @@ import { storage } from "@/utils/storage";
 import { useEffect, useState } from "react";
 import { useToastContext } from "../board/contexts/toast-context";
 import { Button } from "../button";
-import { t, translateError } from "../../utils/translate";
+import { useLanguageContext } from "../contexts/language-context";
 
 interface CreateRoomFormProps {
   onCancel: () => void;
@@ -12,6 +12,7 @@ interface CreateRoomFormProps {
 export const CreateRoomForm = ({ onCancel }: CreateRoomFormProps) => {
   const [name, setName] = useState("");
   const { toast } = useToastContext();
+  const { t, translateError } = useLanguageContext();
 
   useEffect(() => {
     const name = storage.getItem("name");

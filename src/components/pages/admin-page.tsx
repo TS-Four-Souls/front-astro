@@ -13,9 +13,10 @@ import { LoginForm } from "../admin/login-form";
 import { useToastContext } from "../board/contexts/toast-context";
 import { Button } from "../button";
 import { OnboardingLayout } from "../onboarding-layout";
-import { translateError } from "../../utils/translate";
+import { useLanguageContext } from "../contexts/language-context";
 
 export const AdminPage = () => {
+  const { translateError } = useLanguageContext();
   const [adminResponse, setAdminResponse] = useState<AdminResponse | null>(
     null,
   );
@@ -95,6 +96,7 @@ export const AdminPostLoginPage = ({
 }: {
   adminResponse: AdminResponse;
 }) => {
+  const { translateError } = useLanguageContext();
   const { toast } = useToastContext();
   const { openReplyPopup } = useReplyContext();
   const { rooms } = data;
