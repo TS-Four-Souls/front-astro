@@ -280,11 +280,35 @@ export const VisualEffectBoxComponent = ({
     return null;
   }
 
+  const minTop = Math.min(
+    ...cardBoxes
+      .slice(visualEffectBox.startIndex, visualEffectBox.endIndex + 1)
+      .map(({ top }) => top),
+  );
+
+  const minBottom = Math.min(
+    ...cardBoxes
+      .slice(visualEffectBox.startIndex, visualEffectBox.endIndex + 1)
+      .map(({ bottom }) => bottom),
+  );
+
+  const minLeft = Math.min(
+    ...cardBoxes
+      .slice(visualEffectBox.startIndex, visualEffectBox.endIndex + 1)
+      .map(({ left }) => left),
+  );
+
+  const minRight = Math.min(
+    ...cardBoxes
+      .slice(visualEffectBox.startIndex, visualEffectBox.endIndex + 1)
+      .map(({ right }) => right),
+  );
+
   const box = {
-    top: cardBoxes[visualEffectBox.startIndex].top * 100 - 0.5 + "%",
-    bottom: cardBoxes[visualEffectBox.endIndex].bottom * 100 - 0.5 + "%",
-    left: cardBoxes[visualEffectBox.endIndex].left * 100 - 0.5 + "%",
-    right: cardBoxes[visualEffectBox.endIndex].right * 100 - 0.5 + "%",
+    top: minTop * 100 - 0.5 + "%",
+    bottom: minBottom * 100 - 0.5 + "%",
+    left: minLeft * 100 - 0.5 + "%",
+    right: minRight * 100 - 0.5 + "%",
   };
 
   return (

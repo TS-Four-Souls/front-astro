@@ -133,7 +133,11 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
       ]);
       return (
         <>
-          <Card card={element.card} size={22} />
+          <Card
+            card={element.card}
+            size={22}
+            visualEffectBox={element.visualEffectBox}
+          />
           <div className="mt-3 flex max-w-64 flex-col gap-2 text-center leading-tight text-taupe-400">
             {msg}
             <SelectionsList selections={element.targets} />
@@ -143,6 +147,7 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
     }
 
     case "effect": {
+      console.log(element);
       return (
         <>
           <Card

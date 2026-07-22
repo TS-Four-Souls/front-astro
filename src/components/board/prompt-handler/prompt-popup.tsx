@@ -341,7 +341,6 @@ export const CardEffectOption = ({
   children,
   selected,
 }: TemplateOptionProps<"cardEffect">) => {
-  console.log(option.payload);
   return (
     <div
       className={cn(

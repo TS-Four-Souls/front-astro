@@ -78,7 +78,6 @@ export const RoomJoinForm = ({
               const text = e.clipboardData.getData("text").toUpperCase();
               try {
                 const url = new URL(text);
-                console.log(url);
                 const code = url.searchParams.get("CODE");
                 if (code) {
                   setRoomId(code);
