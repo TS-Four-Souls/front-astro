@@ -1,9 +1,10 @@
-import type { SelectionItem, StackElement } from "@/shared/api";
+import type { SelectionItem, SerializedTranslation, StackElement } from "@/shared/api";
 import { cn } from "@/utils/cn";
 import { Dice } from "@/icons/dice";
 import { Card, CardImage, CardType } from "./card";
 import { usePopoverContext } from "./contexts/popover-context";
 import { useLanguageContext } from "../contexts/language-context";
+import { replaceTokens } from "@/utils/replaceToken";
 interface StackElementIconProps {
   element: StackElement;
 }
@@ -34,54 +35,63 @@ interface PopoverContentProps {
 }
 
 const PopoverContent = ({ element }: PopoverContentProps) => {
-  const { ts } = useLanguageContext();
+  const { ts, t, } = useLanguageContext();
   switch (element.type) {
     case "diceRoll": {
+      const result = `${element.diceRoll} ${element.modifier !== 0 ? `(+${element.modifier})` : ""}`;
+      const serialized: SerializedTranslation = {
+        key: "gameStep.stack.stackElement.cardRoll",
+        interpolates: {
+          player: `{{1}}`,
+          result: result,
+        },
+      };
+      const msg = replaceTokens(ts(serialized), [
+        [
+          `{{1}}`,
+          <span key="player" style={{ color: element.issuer.color }}>
+            {ts(element.issuer.nameKey)}
+          </span>,
+        ],
+      ]);
       return (
         <div className="flex flex-col items-center gap-3">
           {element.card && <Card card={element.card} visualEffectBox={element.visualEffectBox} size={22} />}
           <div className="flex max-w-64 flex-wrap place-content-center gap-1 px-2 text-center leading-tight text-taupe-400">
-            <span>
-              <span
-                className="font-bold"
-                style={{ color: element.issuer.color }}>
-                {ts(element.issuer.nameKey)}
-              </span>{" "}
-              rolled a
-            </span>
-            <span className="font-bold whitespace-pre-line text-taupe-300">
-              {element.diceRoll}
-              {element.modifier !== 0 ? ` (+${element.modifier})` : ""}
-            </span>
-            <span>for</span>
-            <span className="font-bold whitespace-pre-line text-taupe-300">
-              {element.card !== undefined
-                ? ts(element.card.nameKey)
-                : "an attack roll"}
-            </span>
+            {msg}
           </div>
         </div>
       );
     }
 
     case "diceWillRoll": {
+      const serialized: SerializedTranslation = {
+      key: element.attackRoll ? "gameStep.stack.stackElement.diceWillRollForAttack" : "gameStep.stack.stackElement.diceWillRollForCard",
+        interpolates: {
+          player: `{{1}}`,
+          card: `{{2}}`
+        },
+      };
+      const msg = replaceTokens(ts(serialized), [
+        [
+          `{{1}}`,
+          <span key="player" style={{ color: element.issuer.color }}>
+            {ts(element.issuer.nameKey)}
+          </span>,
+        ],
+        [
+          `{{2}}`,
+          <span key="card" style={{ color: "white" }}>
+            {ts(element.card!.nameKey)}
+          </span>,
+        ],
+      ]);
       return (
         <div className="flex flex-col items-center gap-3">
           {element.card && <Card card={element.card} size={22} />}
           <div className="flex max-w-64 flex-wrap place-content-center gap-1 px-2 text-center leading-tight text-taupe-400">
             <span>
-              <span
-                className="font-bold"
-                style={{ color: element.issuer.color }}>
-                {ts(element.issuer.nameKey)}
-              </span>{" "}
-              will roll
-            </span>
-            <span className="font-bold whitespace-pre-line text-taupe-300"></span>
-            <span>for</span>
-            <span className="font-bold whitespace-pre-line text-taupe-300">
-              {element.attackRoll ? "an attack roll against " : ""}
-              ts(element.card.nameKey)
+              {msg}
             </span>
           </div>
         </div>
@@ -89,19 +99,32 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
     }
 
     case "LootCardEffect": {
-      console.log("visualEffectBox", element.card);
+      const serialized: SerializedTranslation = {
+        key: "gameStep.stack.stackElement.lootCardEffect",
+        interpolates: {
+          player: `{{1}}`,
+          card: `{{2}}`,
+        },
+      };
+      const msg = replaceTokens(ts(serialized), [
+        [
+          `{{1}}`,
+          <span key="player" style={{ color: element.issuer.color }}>
+            {ts(element.issuer.nameKey)}
+          </span>,
+        ],
+        [
+          `{{2}}`,
+          <span key="player" style={{ color: "white" }}>
+            {ts(element.card.nameKey)}
+          </span>,
+        ],
+      ]);
       return (
         <>
           <Card card={element.card} size={22} />
           <div className="mt-3 flex max-w-64 flex-col gap-2 text-center leading-tight text-taupe-400">
-            <span>
-              <span
-                className="font-bold"
-                style={{ color: element.issuer.color }}>
-                {ts(element.issuer.nameKey)}
-              </span>{" "}
-              used this card
-            </span>
+              {msg}
             <SelectionsList selections={element.targets} />
           </div>
         </>
@@ -117,15 +140,11 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
             visualEffectBox={element.visualEffectBox}
           />
           <div className="mt-3 flex max-w-64 flex-col gap-2 text-center leading-tight text-taupe-400">
-            <span>
               <span
                 style={{ color: element.issuer.color }}
                 className="font-bold">
                 {ts(element.issuer.nameKey)}
-              </span>{" "}
-              selected
-            </span>
-            <span className="font-bold text-taupe-300">{element.effect}</span>
+              </span>
             <SelectionsList selections={element.targets} />
           </div>
         </>
@@ -133,84 +152,132 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
     }
 
     case "lootStep": {
+      const serialized: SerializedTranslation = {
+        key: "gameStep.stack.stackElement.loots",
+        interpolates: {
+          player: `{{1}}`,
+          value: element.nbLoots.toString(),
+        },
+      };
+      const msg = replaceTokens(ts(serialized), [
+        [
+          `{{1}}`,
+          <span className="font-bold" style={{ color: element.player.color } }>
+            {ts(element.player.nameKey)}
+          </span>,
+        ],
+      ]);
       return (
         <div className="flex flex-col items-center gap-3">
           <div className="max-w-64 px-2 text-center leading-tight text-taupe-400">
-            <span style={{ color: element.player.color }} className="font-bold">
-              {ts(element.player.nameKey)}
-            </span>{" "}
-            loots{" "}
-            <span className="font-bold text-taupe-300">{element.nbLoots}</span>.
+              {msg}
           </div>
         </div>
       );
     }
 
     case "endOfTurn": {
+      const serialized: SerializedTranslation = {
+        key: "gameStep.stack.stackElement.turnEnded",
+        interpolates: {
+          player: `{{1}}`,
+        },
+      };
+      const msg = replaceTokens(ts(serialized), [
+        [
+          `{{1}}`,
+          <span className="font-bold" style={{ color: element.player.color } }>
+            {ts(element.player.nameKey)}
+          </span>,
+        ],
+      ]);
       return (
         <div className="flex flex-col items-center gap-3">
           <div className="max-w-64 px-2 text-center leading-tight text-taupe-400">
-            End of{" "}
-            <span style={{ color: element.player.color }} className="font-bold">
-              {ts(element.player.nameKey)}
-            </span>
-            's turn
+            {msg}
           </div>
         </div>
       );
     }
 
     case "damage": {
+      const serialized: SerializedTranslation = {
+        key: "gameStep.stack.stackElement.damageUsing",
+        interpolates: {
+          entity1: `{{1}}`,
+          value: element.damage.toString(),
+          entity2: `{{2}}`,
+          cardOrAttackRoll: `{{3}}`,
+        },
+      };
+      const msg = replaceTokens(ts(serialized), [
+        [
+          `{{1}}`,
+          <span className="font-bold" style={{ color: element.from.color } }>
+            {ts(element.from.nameKey)}
+          </span>,
+        ],
+        [
+          `{{2}}`,
+          <span className="font-bold" style={{ color: element.receiver.color } }>
+            {ts(element.receiver.nameKey)}
+          </span>,
+        ],
+        [
+          `{{3}}`,
+          <span style={{ color: "white" } }>
+            {"slug" in element.source
+                ? ts(element.source.nameKey)
+                : t("gameStep.stack.stackElement.anAttackRoll")}
+          </span>,
+        ],
+      ]);
       return (
         <div className="flex flex-col items-center gap-3">
           {"slug" in element.source && <Card card={element.source} size={22} />}
           <div className="max-w-64 px-2 text-center leading-tight text-taupe-400">
-            <span
-              style={{ color: element.from.color }}
-              className="font-bold text-taupe-300">
-              {ts(element.from.nameKey)}
-            </span>{" "}
-            dealt{" "}
-            <span className="font-bold text-taupe-300">{element.damage}</span>{" "}
-            damage to{" "}
-            <span
-              style={{ color: element.receiver.color }}
-              className="font-bold text-taupe-300">
-              {ts(element.receiver.nameKey)}
-            </span>{" "}
-            using{" "}
-            <span className="font-bold text-taupe-300">
-              {"slug" in element.source
-                ? ts(element.source.nameKey)
-                : "an attack roll"}
-            </span>
+            {msg}
           </div>
         </div>
       );
     }
 
     case "death": {
+      const serialized: SerializedTranslation = {
+        key: "gameStep.stack.stackElement.aKilledBusing",
+        interpolates: {
+          entity1: `{{1}}`,
+          entity2: `{{2}}`,
+          cardOrAttackRoll: `{{3}}`,
+        },
+      };
+      const msg = replaceTokens(ts(serialized), [
+        [
+          `{{1}}`,
+          <span className="font-bold" style={{ color: element.from.color } }>
+            {ts(element.from.nameKey)}
+          </span>,
+        ],
+        [
+          `{{2}}`,
+          <span className="font-bold" style={{ color: element.receiver.color } }>
+            {ts(element.receiver.nameKey)}
+          </span>,
+        ],
+        [
+          `{{3}}`,
+          <span style={{ color: "white" } }>
+            {"slug" in element.source
+                ? ts(element.source.nameKey)
+                : t("gameStep.stack.stackElement.anAttackRoll")}
+          </span>,
+        ],
+      ]);
       return (
         <div className="flex flex-col items-center gap-3">
           {"slug" in element.source && <Card card={element.source} size={22} />}
           <div className="max-w-64 px-2 text-center leading-tight text-taupe-400">
-            <span
-              style={{ color: element.from.color }}
-              className="font-bold text-taupe-300">
-              {ts(element.from.nameKey)}
-            </span>{" "}
-            killed{" "}
-            <span
-              style={{ color: element.receiver.color }}
-              className="font-bold text-taupe-300">
-              {ts(element.receiver.nameKey)}
-            </span>{" "}
-            using{" "}
-            <span className="font-bold text-taupe-300">
-              {"slug" in element.source
-                ? ts(element.source.nameKey)
-                : "an attack roll"}
-            </span>
+            {msg}
           </div>
         </div>
       );
@@ -369,28 +436,28 @@ export const SelectionContent = ({
 }: {
   selection: SelectionItem;
 }): React.ReactNode => {
-  const { ts } = useLanguageContext();
+  const { ts, t } = useLanguageContext();
   switch (selection.type) {
     case "card":
       return ts(selection.payload.nameKey);
     case "stackElement":
       switch (selection.payload.type) {
         case "death":
-          return `${ts(selection.payload.from.nameKey)} killed ${ts(selection.payload.receiver.nameKey)}`;
+          return t("gameStep.stack.stackElement.aKilledB", {entity1: selection.payload.from.nameKey, entity2: selection.payload.receiver.nameKey});
         case "diceRoll":
           return `${selection.payload.card ? ts(selection.payload.card.nameKey) : "an attack roll"} - ${ts(selection.payload.issuer.nameKey)} rolled a ${selection.payload.diceRoll}`;
         case "damage":
-          return `${ts(selection.payload.from.nameKey)} dealt ${selection.payload.damage} damage to ${ts(selection.payload.receiver.nameKey)}`;
+          return t("gameStep.stack.stackElement.damage", {entity1: selection.payload.from.nameKey, value: selection.payload.damage, entity2: selection.payload.receiver.nameKey});
         case "effect":
           return `${ts(selection.payload.issuer.nameKey)} - ${ts(selection.payload.card.nameKey)}`;
         case "LootCardEffect":
-          return `${ts(selection.payload.issuer.nameKey)} used ${ts(selection.payload.card.nameKey)}`;
+          return t("gameStep.stack.stackElement.lootCardEffect", {player: selection.payload.issuer.nameKey, card: selection.payload.card.nameKey});
         case "lootStep":
-          return `${ts(selection.payload.player.nameKey)} is about to loot ${selection.payload.nbLoots} card${selection.payload.nbLoots > 1 ? "s" : ""}`;
+          return t("gameStep.stack.stackElement.lootStep", {player: selection.payload.player.nameKey, value: selection.payload.nbLoots});
         case "endOfTurn":
-          return `${ts(selection.payload.player.nameKey)}'s turn is about to end.`;
+          return t("gameStep.stack.stackElement.endOfTurn", {player: selection.payload.player.nameKey});
         case "diceWillRoll":
-          return `${ts(selection.payload.issuer.nameKey)}'s is about to roll a dice.`;
+          return t("gameStep.stack.stackElement.endOfTurn", {player: selection.payload.issuer.nameKey});
       }
     case "deck":
       return selection.payload;
