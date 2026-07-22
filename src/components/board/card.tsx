@@ -143,7 +143,7 @@ export const Card = ({
         />
 
         {hotkey && (
-          <div className="pointer-events-none absolute top-1 left-1 flex aspect-square size-4 place-items-center overflow-hidden rounded-sm bg-taupe-700 outline-[0.1em]">
+          <div className="pointer-events-none absolute top-1 left-1 flex size-4 place-items-center overflow-hidden rounded-sm bg-taupe-700 outline-[0.1em]">
             <img
               src={`/input-prompts/keyboard_${hotkey.split(",")[0]}_outline.svg`}
               className="scale-150"
@@ -265,9 +265,15 @@ export const Card = ({
 export const VisualEffectBoxComponent = ({
   card,
   visualEffectBox,
+  className,
+  onClick,
+  children,
 }: {
   card: { slug: string };
+  onClick?: () => void;
   visualEffectBox: VisualEffectBox;
+  className?: string;
+  children?: React.ReactNode;
 }) => {
   const { boxes } = useLanguageContext();
   const dic = boxes;
@@ -312,9 +318,16 @@ export const VisualEffectBoxComponent = ({
   };
 
   return (
-    <div
-      className="absolute rounded-[0.3em] shadow-xl/50 inset-shadow-sm inset-shadow-white backdrop-brightness-120"
-      style={box}></div>
+    <div className="absolute" style={box}>
+      <div
+        onClick={onClick}
+        className={cn(
+          "h-full w-full rounded-[0.3em] shadow-xl/50 inset-shadow-sm inset-shadow-white backdrop-brightness-120",
+          className,
+        )}
+      />
+      {children}
+    </div>
   );
 };
 

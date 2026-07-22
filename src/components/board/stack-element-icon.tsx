@@ -101,7 +101,13 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
       ]);
       return (
         <div className="flex flex-col items-center gap-3">
-          {element.card && <Card card={element.card} size={22} />}
+          {element.card && (
+            <Card
+              card={element.card}
+              visualEffectBox={element.visualEffectBox}
+              size={22}
+            />
+          )}
           <div className="flex max-w-64 flex-wrap place-content-center gap-1 px-2 text-center leading-tight text-taupe-400">
             <span>{msg}</span>
           </div>
@@ -135,8 +141,8 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
         <>
           <Card
             card={element.card}
-            size={22}
             visualEffectBox={element.visualEffectBox}
+            size={22}
           />
           <div className="mt-3 flex max-w-64 flex-col gap-2 text-center leading-tight text-taupe-400">
             {msg}
@@ -147,13 +153,12 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
     }
 
     case "effect": {
-      console.log(element);
       return (
         <>
           <Card
             card={element.card}
-            size={22}
             visualEffectBox={element.visualEffectBox}
+            size={22}
           />
           <div className="mt-3 flex max-w-64 flex-col gap-2 text-center leading-tight text-taupe-400">
             <span style={{ color: element.issuer.color }} className="font-bold">
@@ -248,7 +253,13 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
       ]);
       return (
         <div className="flex flex-col items-center gap-3">
-          {"slug" in element.source && <Card card={element.source} size={22} />}
+          {"slug" in element.source && (
+            <Card
+              card={element.source}
+              // TODO: visualEffectBox={element.visualEffectBox}
+              size={22}
+            />
+          )}
           <div className="max-w-64 px-2 text-center leading-tight text-taupe-400">
             {msg}
           </div>
@@ -289,7 +300,13 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
       ]);
       return (
         <div className="flex flex-col items-center gap-3">
-          {"slug" in element.source && <Card card={element.source} size={22} />}
+          {"slug" in element.source && (
+            <Card
+              card={element.source}
+              // TODO: visualEffectBox={element.visualEffectBox}
+              size={22}
+            />
+          )}
           <div className="max-w-64 px-2 text-center leading-tight text-taupe-400">
             {msg}
           </div>

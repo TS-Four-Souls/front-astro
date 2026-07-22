@@ -4,7 +4,7 @@ import type { SelectionItem } from "@/shared/api";
 import { cn } from "@/utils/cn";
 import { HotkeyScope } from "@/utils/hotkey";
 import { useHotkeys } from "react-hotkeys-hook";
-import { Card, CardImage, CardType } from "../card";
+import { Card, CardImage, CardType, VisualEffectBoxComponent } from "../card";
 import { Person } from "@/icons/person";
 import { Sword } from "@/icons/sword";
 import { StackElement } from "../stack";
@@ -116,35 +116,51 @@ export const PromptPopup = ({
           "flex grow flex-wrap content-start gap-2 overflow-auto p-4",
           displayRow ? "flex-col" : "flex-row justify-center",
         )}>
-        {filteredOptions.map((option, index) => {
-          const selectionIndex = selectedOptions.indexOf(option);
-          const canAddMore = selectedOptions.length < maxCount;
-          const isSingularSelection = maxCount === 1;
-
-          const isSelected = selectionIndex >= 0;
-          const isIndexVisible = isSelected && maxCount > 1;
-
-          const hotkey = index < 10 ? `${(index + 1) % 10}` : undefined;
-
-          return (
-            <PromptOption
-              key={index}
-              option={option}
-              isSelected={isSelected}
-              selectionIndex={isIndexVisible ? selectionIndex + 1 : undefined}
-              hotkey={hotkey}
-              onPress={
-                isSelected
-                  ? () => removeSelection(option)
-                  : canAddMore
-                    ? () => addSelection(option)
-                    : isSingularSelection
-                      ? () => replaceSelection(option)
-                      : undefined
+        {isOnCardSelection(filteredOptions) ? (
+          <OnCardSelector
+            options={filteredOptions}
+            selectedOptions={selectedOptions}
+            onPress={(option) => {
+              const selectionIndex = selectedOptions.indexOf(option);
+              const isSelected = selectionIndex >= 0;
+              if (isSelected) {
+                removeSelection(option);
+              } else {
+                replaceSelection(option);
               }
-            />
-          );
-        })}
+            }}
+          />
+        ) : (
+          filteredOptions.map((option, index) => {
+            const selectionIndex = selectedOptions.indexOf(option);
+            const canAddMore = selectedOptions.length < maxCount;
+            const isSingularSelection = maxCount === 1;
+
+            const isSelected = selectionIndex >= 0;
+            const isIndexVisible = isSelected && maxCount > 1;
+
+            const hotkey = index < 10 ? `${(index + 1) % 10}` : undefined;
+
+            return (
+              <PromptOption
+                key={index}
+                option={option}
+                isSelected={isSelected}
+                selectionIndex={isIndexVisible ? selectionIndex + 1 : undefined}
+                hotkey={hotkey}
+                onPress={
+                  isSelected
+                    ? () => removeSelection(option)
+                    : canAddMore
+                      ? () => addSelection(option)
+                      : isSingularSelection
+                        ? () => replaceSelection(option)
+                        : undefined
+                }
+              />
+            );
+          })
+        )}
         {sortedOptions.length === 0 && (
           <div className="text-center text-lg text-taupe-400">
             {t("common.popup.emptyResults")}
@@ -191,7 +207,7 @@ export const PromptOption = ({
   return (
     <GenericOption option={option} onPress={onPress} selected={isSelected}>
       {onPress !== undefined && hotkey !== undefined && (
-        <div className="absolute top-0 left-0 flex aspect-square w-7 place-items-center overflow-hidden rounded-md bg-taupe-700 outline-3 outline-taupe-200">
+        <div className="absolute top-0 left-0 flex size-7 place-items-center overflow-hidden rounded-md bg-taupe-700 outline-3 outline-taupe-200">
           <img
             src={`/input-prompts/keyboard_${hotkey.split(",")[0]}_outline.svg`}
             className="scale-170"
@@ -697,5 +713,103 @@ export const NumberOption = ({
       </p>
       {children}
     </div>
+  );
+};
+
+/** Check that all the options are cardEffect options and they all refer to the same card */
+const isOnCardSelection = (
+  options: SelectionItem[],
+): options is Extract<SelectionItem, { type: "cardEffect" }>[] => {
+  if (options.length === 0) {
+    return false;
+  }
+  if (options.some((option) => option.type !== "cardEffect")) {
+    return false;
+  }
+  const cardEffectOptions = options as Extract<
+    SelectionItem,
+    { type: "cardEffect" }
+  >[];
+  const card = cardEffectOptions[0].payload.card;
+  if (
+    cardEffectOptions.some(
+      (option) => option.payload.card.globalId !== card.globalId,
+    )
+  ) {
+    return false;
+  }
+  return true;
+};
+
+interface OnCardSelectorProps {
+  selectedOptions: SelectionItem[];
+  onPress: (option: SelectionItem) => void;
+  options: Extract<SelectionItem, { type: "cardEffect" }>[];
+}
+
+const OnCardSelector = ({
+  options,
+  onPress,
+  selectedOptions,
+}: OnCardSelectorProps) => {
+  const card = options[0].payload.card;
+  return (
+    <div className="relative">
+      <Card card={card} className="shadow-lg/30" size={42} />
+      {options.map((option, index) => (
+        <OnCardSelectorOption
+          key={option.payload.index}
+          isSelected={selectedOptions.indexOf(option) >= 0}
+          option={option}
+          onPress={() => onPress(option)}
+          hotkey={index < 10 ? `${(index + 1) % 10}` : undefined}
+        />
+      ))}
+    </div>
+  );
+};
+
+interface OnCardSelectorOptionProps {
+  isSelected: boolean;
+  onPress: () => void;
+  option: Extract<SelectionItem, { type: "cardEffect" }>;
+  hotkey?: string | undefined;
+}
+
+const OnCardSelectorOption = ({
+  isSelected,
+  onPress,
+  option,
+  hotkey,
+}: OnCardSelectorOptionProps) => {
+  useHotkeys(hotkey ?? "", () => onPress?.(), {
+    scopes: [HotkeyScope.Popup],
+    enabled: onPress !== undefined && hotkey !== undefined,
+  });
+
+  return (
+    <VisualEffectBoxComponent
+      onClick={onPress}
+      key={option.payload.index}
+      card={option.payload.card}
+      visualEffectBox={option.payload.visualEffectBox}
+      className={cn(
+        "cursor-pointer transition-opacity duration-100",
+        isSelected
+          ? "outline-6 outline-blue-400"
+          : "shadow-none inset-shadow-none backdrop-brightness-100 hover:backdrop-brightness-120",
+      )}>
+      {onPress !== undefined && hotkey !== undefined && (
+        <div className="absolute top-0 bottom-0 -left-9 flex h-full place-items-center">
+          <div className="flex size-6 place-items-center overflow-hidden rounded-md bg-taupe-700 outline-3 outline-taupe-200">
+            <img
+              src={`/input-prompts/keyboard_${hotkey.split(",")[0]}_outline.svg`}
+              className="scale-170"
+              draggable={false}
+            />
+          </div>
+        </div>
+      )}
+    </VisualEffectBoxComponent>
   );
 };
