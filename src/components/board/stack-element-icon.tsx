@@ -1,4 +1,9 @@
-import type { SelectionItem, SerializedTranslation, StackElement } from "@/shared/api";
+import type {
+  SelectionItem,
+  SerializedTranslation,
+  StackElement,
+  DeckName,
+} from "@/shared/api";
 import { cn } from "@/utils/cn";
 import { Dice } from "@/icons/dice";
 import { Card, CardImage, CardType } from "./card";
@@ -35,7 +40,7 @@ interface PopoverContentProps {
 }
 
 const PopoverContent = ({ element }: PopoverContentProps) => {
-  const { ts, t, } = useLanguageContext();
+  const { ts, t } = useLanguageContext();
   switch (element.type) {
     case "diceRoll": {
       const result = `${element.diceRoll} ${element.modifier !== 0 ? `(+${element.modifier})` : ""}`;
@@ -56,7 +61,13 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
       ]);
       return (
         <div className="flex flex-col items-center gap-3">
-          {element.card && <Card card={element.card} visualEffectBox={element.visualEffectBox} size={22} />}
+          {element.card && (
+            <Card
+              card={element.card}
+              visualEffectBox={element.visualEffectBox}
+              size={22}
+            />
+          )}
           <div className="flex max-w-64 flex-wrap place-content-center gap-1 px-2 text-center leading-tight text-taupe-400">
             {msg}
           </div>
@@ -66,10 +77,12 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
 
     case "diceWillRoll": {
       const serialized: SerializedTranslation = {
-      key: element.attackRoll ? "gameStep.stack.stackElement.diceWillRollForAttack" : "gameStep.stack.stackElement.diceWillRollForCard",
+        key: element.attackRoll
+          ? "gameStep.stack.stackElement.diceWillRollForAttack"
+          : "gameStep.stack.stackElement.diceWillRollForCard",
         interpolates: {
           player: `{{1}}`,
-          card: `{{2}}`
+          card: `{{2}}`,
         },
       };
       const msg = replaceTokens(ts(serialized), [
@@ -90,9 +103,7 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
         <div className="flex flex-col items-center gap-3">
           {element.card && <Card card={element.card} size={22} />}
           <div className="flex max-w-64 flex-wrap place-content-center gap-1 px-2 text-center leading-tight text-taupe-400">
-            <span>
-              {msg}
-            </span>
+            <span>{msg}</span>
           </div>
         </div>
       );
@@ -124,7 +135,7 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
         <>
           <Card card={element.card} size={22} />
           <div className="mt-3 flex max-w-64 flex-col gap-2 text-center leading-tight text-taupe-400">
-              {msg}
+            {msg}
             <SelectionsList selections={element.targets} />
           </div>
         </>
@@ -140,11 +151,9 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
             visualEffectBox={element.visualEffectBox}
           />
           <div className="mt-3 flex max-w-64 flex-col gap-2 text-center leading-tight text-taupe-400">
-              <span
-                style={{ color: element.issuer.color }}
-                className="font-bold">
-                {ts(element.issuer.nameKey)}
-              </span>
+            <span style={{ color: element.issuer.color }} className="font-bold">
+              {ts(element.issuer.nameKey)}
+            </span>
             <SelectionsList selections={element.targets} />
           </div>
         </>
@@ -162,7 +171,7 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
       const msg = replaceTokens(ts(serialized), [
         [
           `{{1}}`,
-          <span className="font-bold" style={{ color: element.player.color } }>
+          <span className="font-bold" style={{ color: element.player.color }}>
             {ts(element.player.nameKey)}
           </span>,
         ],
@@ -170,7 +179,7 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
       return (
         <div className="flex flex-col items-center gap-3">
           <div className="max-w-64 px-2 text-center leading-tight text-taupe-400">
-              {msg}
+            {msg}
           </div>
         </div>
       );
@@ -186,7 +195,7 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
       const msg = replaceTokens(ts(serialized), [
         [
           `{{1}}`,
-          <span className="font-bold" style={{ color: element.player.color } }>
+          <span className="font-bold" style={{ color: element.player.color }}>
             {ts(element.player.nameKey)}
           </span>,
         ],
@@ -213,22 +222,22 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
       const msg = replaceTokens(ts(serialized), [
         [
           `{{1}}`,
-          <span className="font-bold" style={{ color: element.from.color } }>
+          <span className="font-bold" style={{ color: element.from.color }}>
             {ts(element.from.nameKey)}
           </span>,
         ],
         [
           `{{2}}`,
-          <span className="font-bold" style={{ color: element.receiver.color } }>
+          <span className="font-bold" style={{ color: element.receiver.color }}>
             {ts(element.receiver.nameKey)}
           </span>,
         ],
         [
           `{{3}}`,
-          <span style={{ color: "white" } }>
+          <span style={{ color: "white" }}>
             {"slug" in element.source
-                ? ts(element.source.nameKey)
-                : t("gameStep.stack.stackElement.anAttackRoll")}
+              ? ts(element.source.nameKey)
+              : t("gameStep.stack.stackElement.anAttackRoll")}
           </span>,
         ],
       ]);
@@ -254,22 +263,22 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
       const msg = replaceTokens(ts(serialized), [
         [
           `{{1}}`,
-          <span className="font-bold" style={{ color: element.from.color } }>
+          <span className="font-bold" style={{ color: element.from.color }}>
             {ts(element.from.nameKey)}
           </span>,
         ],
         [
           `{{2}}`,
-          <span className="font-bold" style={{ color: element.receiver.color } }>
+          <span className="font-bold" style={{ color: element.receiver.color }}>
             {ts(element.receiver.nameKey)}
           </span>,
         ],
         [
           `{{3}}`,
-          <span style={{ color: "white" } }>
+          <span style={{ color: "white" }}>
             {"slug" in element.source
-                ? ts(element.source.nameKey)
-                : t("gameStep.stack.stackElement.anAttackRoll")}
+              ? ts(element.source.nameKey)
+              : t("gameStep.stack.stackElement.anAttackRoll")}
           </span>,
         ],
       ]);
@@ -409,10 +418,11 @@ export const SelectionsList = ({
 }: {
   selections: SelectionItem[];
 }): React.ReactNode => {
+  const { t } = useLanguageContext();
   return (
     selections.length > 0 && (
       <>
-        <span>and choose</span>
+        <span>{t("gameStep.stack.stackElement.chose")}</span>
         {selections.length === 1 ? (
           <span className="font-bold text-taupe-300">
             <SelectionContent selection={selections[0]} />
@@ -443,24 +453,41 @@ export const SelectionContent = ({
     case "stackElement":
       switch (selection.payload.type) {
         case "death":
-          return t("gameStep.stack.stackElement.aKilledB", {entity1: selection.payload.from.nameKey, entity2: selection.payload.receiver.nameKey});
+          return t("gameStep.stack.stackElement.aKilledB", {
+            entity1: selection.payload.from.nameKey,
+            entity2: selection.payload.receiver.nameKey,
+          });
         case "diceRoll":
           return `${selection.payload.card ? ts(selection.payload.card.nameKey) : "an attack roll"} - ${ts(selection.payload.issuer.nameKey)} rolled a ${selection.payload.diceRoll}`;
         case "damage":
-          return t("gameStep.stack.stackElement.damage", {entity1: selection.payload.from.nameKey, value: selection.payload.damage, entity2: selection.payload.receiver.nameKey});
+          return t("gameStep.stack.stackElement.damage", {
+            entity1: selection.payload.from.nameKey,
+            value: selection.payload.damage,
+            entity2: selection.payload.receiver.nameKey,
+          });
         case "effect":
           return `${ts(selection.payload.issuer.nameKey)} - ${ts(selection.payload.card.nameKey)}`;
         case "LootCardEffect":
-          return t("gameStep.stack.stackElement.lootCardEffect", {player: selection.payload.issuer.nameKey, card: selection.payload.card.nameKey});
+          return t("gameStep.stack.stackElement.lootCardEffect", {
+            player: selection.payload.issuer.nameKey,
+            card: selection.payload.card.nameKey,
+          });
         case "lootStep":
-          return t("gameStep.stack.stackElement.lootStep", {player: selection.payload.player.nameKey, value: selection.payload.nbLoots});
+          return t("gameStep.stack.stackElement.lootStep", {
+            player: selection.payload.player.nameKey,
+            value: selection.payload.nbLoots,
+          });
         case "endOfTurn":
-          return t("gameStep.stack.stackElement.endOfTurn", {player: selection.payload.player.nameKey});
+          return t("gameStep.stack.stackElement.endOfTurn", {
+            player: selection.payload.player.nameKey,
+          });
         case "diceWillRoll":
-          return t("gameStep.stack.stackElement.endOfTurn", {player: selection.payload.issuer.nameKey});
+          return t("gameStep.stack.stackElement.endOfTurn", {
+            player: selection.payload.issuer.nameKey,
+          });
       }
     case "deck":
-      return selection.payload;
+      return t(`startStep.gameParams.decks.${selection.payload as DeckName}s`);
     case "player":
       return (
         <span style={{ color: selection.payload.color }}>
@@ -480,7 +507,9 @@ export const SelectionContent = ({
     case "boolean":
       return selection.payload;
     case "couplePlayerHand":
-      return `${ts(selection.payload.player.nameKey)} hand`;
+      return t("gameStep.stack.stackElement.hand", {
+        player: selection.payload.player.nameKey,
+      });
     case "object":
     case "character":
     case "array":
