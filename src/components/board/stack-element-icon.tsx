@@ -39,7 +39,7 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
     case "diceRoll": {
       return (
         <div className="flex flex-col items-center gap-3">
-          {element.card && <Card card={element.card} size={22} />}
+          {element.card && <Card card={element.card} visualEffectBox={element.visualEffectBox} size={22} />}
           <div className="flex max-w-64 flex-wrap place-content-center gap-1 px-2 text-center leading-tight text-taupe-400">
             <span>
               <span

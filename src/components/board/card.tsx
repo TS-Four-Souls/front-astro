@@ -77,6 +77,7 @@ export const Card = ({
   hotkey,
   selectionIndex,
   onPileDetailsClick,
+  visualEffectBox,
   disabled,
   stats,
   size = 160,
@@ -148,6 +149,13 @@ export const Card = ({
               className="scale-150"
             />
           </div>
+        )}
+
+        {typeof card === "object" && visualEffectBox && (
+          <VisualEffectBoxComponent
+            card={card}
+            visualEffectBox={visualEffectBox}
+          />
         )}
 
         {selectionIndex && (
