@@ -272,6 +272,15 @@ export const GenericOption = ({
           children={children}
         />
       );
+    case "chooseOne":
+      return (
+        <ChooseOneOption
+          option={option}
+          onPress={onPress}
+          selected={selected}
+          children={children}
+        />
+      );
     case "deck":
       return (
         <DeckOption
@@ -357,6 +366,30 @@ export const CardEffectOption = ({
   children,
   selected,
 }: TemplateOptionProps<"cardEffect">) => {
+  return (
+    <div
+      className={cn(
+        "relative flex flex-col items-center gap-2 p-2",
+        onPress && "cursor-pointer",
+      )}
+      onClick={onPress}>
+      <Card
+        card={option.payload.card}
+        className={cn("shadow-lg/30", selected && "outline-6 outline-blue-400")}
+        size={22}
+        visualEffectBox={option.payload.visualEffectBox}
+      />
+      <div className="absolute inset-4">{children}</div>
+    </div>
+  );
+};
+
+export const ChooseOneOption = ({
+  option,
+  onPress,
+  children,
+  selected,
+}: TemplateOptionProps<"chooseOne">) => {
   return (
     <div
       className={cn(

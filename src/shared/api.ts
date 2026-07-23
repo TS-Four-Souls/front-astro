@@ -106,6 +106,12 @@ export interface SetCardCountRequest {
   slug: string;
   count: number;
 }
+const serializedChooseOneSchema = z.object({
+  description: z.string(),
+  card: cardSchema,
+  visualEffectBox: VisualEffectBoxSchema,
+})
+export type SerializedChooseOne = z.infer<typeof serializedChooseOneSchema>;
 
 // Forward declare types for circular references
 export type SelectionItem =
@@ -123,6 +129,7 @@ export type SelectionItem =
       type: "couplePlayerHand";
       payload: { player: IdentifierType; hand: Card[] };
     }
+  | {type: "chooseOne", payload: SerializedChooseOne}
   | { type: "character"; payload: RoomCharacter }
   | { type: "array"; payload: SelectionItem[] }
   | { type: "serializedTranslation"; payload: SerializedTranslation }
@@ -151,10 +158,8 @@ const selectionItemSchema: z.ZodType<SelectionItem> = z.lazy(() =>
     z.object({ type: z.literal("number"), payload: z.number() }),
     z.object({ type: z.literal("boolean"), payload: z.boolean() }),
     z.object({ type: z.literal("string"), payload: z.string() }),
-    z.object({
-      type: z.literal("serializedTranslation"),
-      payload: serializedTranslationSchema,
-    }),
+    z.object({ type: z.literal("serializedTranslation"), payload: serializedTranslationSchema }),
+    z.object({ type: z.literal("chooseOne"), payload: serializedChooseOneSchema }),
     z.object({
       type: z.literal("couplePlayerHand"),
       payload: z.object({
@@ -650,23 +655,13 @@ const attackRequirementSchema = z.object({
 
 export type AttackRequirement = z.infer<typeof attackRequirementSchema>;
 const cardActivationSchema = z.object({
-  type: z.union([
-    z.literal("hand"),
-    z.literal("inPlay"),
-    z.literal("character"),
-    z.literal("room"),
-  ]),
+  type: z.union([z.literal("hand"), z.literal("inPlay"), z.literal("character"), z.literal("room")]),
   index: z.number(),
   effectIndex: z.union([z.number(), z.literal("tap")]),
   targetChoices: z.array(selectionItemSchema).optional(),
 });
 const cardActivationWithIdSchema = z.object({
-  type: z.union([
-    z.literal("hand"),
-    z.literal("inPlay"),
-    z.literal("character"),
-    z.literal("room"),
-  ]),
+  type: z.union([z.literal("hand"), z.literal("inPlay"), z.literal("character"), z.literal("room")]),
   index: z.number(),
   effectIndex: z.number(),
   targetChoices: z.array(selectionItemSchema).optional(),
