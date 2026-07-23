@@ -256,7 +256,7 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
           {"slug" in element.source && (
             <Card
               card={element.source}
-              // TODO: visualEffectBox={element.visualEffectBox}
+              visualEffectBox={element.visualEffectBox}
               size={22}
             />
           )}
@@ -303,7 +303,7 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
           {"slug" in element.source && (
             <Card
               card={element.source}
-              // TODO: visualEffectBox={element.visualEffectBox}
+              visualEffectBox={element.visualEffectBox}
               size={22}
             />
           )}
