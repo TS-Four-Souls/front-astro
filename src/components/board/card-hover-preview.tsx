@@ -1,3 +1,4 @@
+import { useLanguageContext } from "../contexts/language-context";
 import { Card, CardType } from "./card";
 import {
   normalizeTooltips,
@@ -29,6 +30,7 @@ export const CardHoverPreview = ({
   isEternal,
   orientation = "portrait",
 }: CardHoverPreviewProps) => {
+  const { t } = useLanguageContext();
   const tooltips = normalizeTooltips(tooltip);
   const hasTooltips =
     tooltips.length > 0 &&
@@ -38,7 +40,7 @@ export const CardHoverPreview = ({
     <div className="flex w-min flex-col items-stretch gap-2.5">
       {isEternal && (
         <div className="rounded-md bg-taupe-200 p-2 text-center font-main text-sm text-black uppercase">
-          -Eternal-
+          -{t("common.eternal")}-
         </div>
       )}
       <div>
