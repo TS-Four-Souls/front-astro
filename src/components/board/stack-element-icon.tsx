@@ -480,7 +480,10 @@ export const SelectionContent = ({
             entity2: selection.payload.receiver.nameKey,
           });
         case "diceRoll":
-          return `${selection.payload.card ? ts(selection.payload.card.nameKey) : "an attack roll"} - ${ts(selection.payload.issuer.nameKey)} rolled a ${selection.payload.diceRoll}`;
+          return selection.payload.card
+            ? ts(selection.payload.card.nameKey)
+            : t("gameStep.stack.stackElement.anAttackRoll")
+            + " - " + t("gameStep.stack.stackElement.cardRoll", {player: selection.payload.issuer.nameKey, result: selection.payload.diceRoll})
         case "damage":
           return t("gameStep.stack.stackElement.damage", {
             entity1: selection.payload.from.nameKey,
