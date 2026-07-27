@@ -399,7 +399,7 @@ export const StartStep = ({ room }: StartStepProps) => {
                   player && (isHost || (player.isMe && !player.isCopy))
                     ? {
                         label: player.isCopy
-                          ? "Remove"
+                          ? t("startStep.playerList.removeButton.label")
                           : player.isMe
                             ? t("common.leaveButton")
                             : t("startStep.playerList.kickButton.label"),
@@ -432,7 +432,7 @@ export const StartStep = ({ room }: StartStepProps) => {
             onClick={requestStart}
             hotkey="enter"
             label={t("startStep.startButton.label")}
-            className="p-4 px-8 font-alt-stats text-lg"
+            className="p-4 px-8 text-lg"
             disabled={!isHost}
             theme="onSpace"
             tooltip={{

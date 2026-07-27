@@ -54,10 +54,10 @@ export const OnboardingLayout = ({
             </div>
             <a
               href="/privacy"
-              className="mb-2 text-center font-alt-stats text-blue-200/60 hover:underline">
+              className="mb-2 text-center font-main text-blue-200/60 hover:underline">
               {t("introStep.footer.privacyPolicyLink")}
             </a>
-            <p className="mb-4 text-center font-alt-stats whitespace-pre-line text-blue-200/60 max-sm:mx-0">
+            <p className="mb-4 text-center font-main whitespace-pre-line text-blue-200/60 max-sm:mx-0">
               {t("introStep.footer.disclaimer")}
             </p>
           </>

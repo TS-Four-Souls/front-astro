@@ -59,7 +59,7 @@ export const ContactPopup = () => {
   return (
     <Popup onPressBackdrop={closeContactPopup} className="overflow-auto">
       <div className="flex flex-row justify-between gap-8 max-xs:flex-col">
-        <h1 className="font-alt-stats text-2xl leading-tight font-bold uppercase">
+        <h1 className="font-main text-2xl leading-tight font-bold uppercase">
           {t("contactButton.popup.title")}
         </h1>
         <Button

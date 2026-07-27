@@ -82,7 +82,7 @@ export const DeckConfigPopup = ({
       onPressBackdrop={onClose}
       className={cn(canUseLookup && "h-full w-full")}>
       <div className="flex flex-row justify-between gap-8">
-        <h1 className="font-alt-stats text-2xl leading-tight font-bold uppercase">
+        <h1 className="font-main text-2xl leading-tight font-bold uppercase">
           {deckTypeLabels[type]}
         </h1>
 
