@@ -4,7 +4,8 @@
     "titleScreen": {
       "createRoomButton": "Create Room",
       "joinRoomButton": "Join Room",
-      "aboutButton": "About"
+      "aboutButton": "About",
+      "betaIndicator": "Living on the edge!"
     },
     "createRoomForm": {
       "title": "Welcome!",
@@ -104,6 +105,9 @@
         "errorToast": {
           "title": "Failed to kick player"
         }
+      },
+      "removeButton": {
+        "label": "Remove"
       }
     },
     "startButton": {
@@ -236,6 +240,7 @@
     "monsterBeingAttacked": "Choose a monster being attacked.",
     "monsterNotBeingAttacked": "Choose a monster not being attacked.",
     "monster": "Choose a monster.",
+    "monsterNotBeingAttackedOrShopItem": "Choose a monster not being attacked or a shop item.",
     "triggeredAbility": "Choose a triggered ability of a monster or non-eternal item.",
     "cardInPlayOrLoot": "Choose an item in play or a loot being played.",
     "diceWillRoll": "Choose a dice that is about to roll.",
@@ -244,6 +249,7 @@
     "cardGranted": "Choose a card granted by this effect.",
     "topAnyDiscard": "Choose the top card of any discard pile.",
     "rechargeableItem": "Choose a rechargeable item.",
+    "rechargeableItems": "Choose rechargeable items.",
     "curse": "Choose a curse.",
     "tapItem": "Choose a tap item.",
     "characterCard": "Choose a character card from outside the game.",
@@ -996,6 +1002,14 @@
         "message": "You cannot select this card"
       }
     },
+    "roundCounter": {
+      "tooltip": {
+        "title": "Round {{count}}"
+      },
+      "countdownTooltip": {
+        "title": "{{count}} round(s) remaining"
+      }
+    },
     "cheats": {
       "getLootTopDeck": {
         "label": "[CHEAT] Loot a card",
@@ -1148,23 +1162,24 @@
       },
       "stackElement": {
         "aKilledB": "{{entity1}} killed {{entity2}}",
+        "aKilledBusing": "{{entity1}} killed {{entity2}} using {{cardOrAttackRoll}}",
         "cardRoll": "{{player}} rolled a {{result}}",
         "diceWillRoll": "{{player}} is about to roll a dice",
+        "diceWillRollForCard": "{{player}} is about to roll a dice for {{card}}",
+        "diceWillRollForAttack": "{{player}} is about to roll an attack roll against {{card}}",
         "endOfTurn": "{{player}}'s turn is about to end",
         "lootStep": "{{player}} is about to loot {{value}} card(s)",
+        "loots": "{{player}} loots {{value}}",
+        "turnEnded": "End of {{player}}'s turn.",
         "lootCardEffect": "{{player}} used {{card}}",
+        "chose": "chose",
+        "hand": "{{player}} hand",
         "effect": "{{player}} - {{card}}",
         "damage": "{{entity1}} dealt {{value}} damage to {{entity2}}",
+        "damageUsing": "{{entity1}} dealt {{value}} damage to {{entity2}} using {{cardOrAttackRoll}}",
         "attackRoll": "Attack Roll",
-        "nothingOnStack": "NOTHING ON THE STACK..."
-      }
-    },
-    "roundCounter": {
-      "tooltip": {
-        "title": "Round {{count}}"
-      },
-      "countdownTooltip": {
-        "title": "{{count}} round remaining"
+        "anAttackRoll": "an attack roll",
+        "nothingOnStack": "NOTHING ON\nTHE STACK..."
       }
     },
     "rollback": {
@@ -1317,8 +1332,10 @@
       "search": {
         "placeholder": "Search..."
       },
-      "emptyResults": "No options available"
+      "emptyResults": "No options available",
+      "viewBoardButton": "View Board"
     },
+    "eternal": "Eternal",
     "currentTeam": "Team {{team}}",
     "empty": "",
     "content": "{{content}}",
@@ -1351,6 +1368,7 @@
     "cardToDestroy": "Choose a card to destroy.",
     "soulToSteal": "Choose a soul to steal.",
     "cardToPutInSlot": "Choose a card to put in a slot.",
+    "cardsToPutInSlot": "Choose cards to put in slots.",
     "slotToPlaceCardIn": "Choose a slot to place the card in.",
     "cardToGet": "Choose a card to obtain.",
     "cardToPutInHand": "Choose a card to put in your hand.",
@@ -1398,6 +1416,7 @@
     "monsterToPutOnTopOfMonsterDeck": "Choose a discarded monster to put on top of the monster deck.",
     "anotherPlayerToDealDamageTo": "Choose another player to deal damage to.",
     "canRechargeChara": "You may recharge your character.",
+    "upToXCharacters": "Choose up to {{value}} characters.",
     "howManyCountersToRemove": "Choose how many counters to remove (at least {{value}}).",
     "monsterToDealDamageTo": "Choose a monster to deal damage to.",
     "lootToGive": "Choose a loot card to give to {{player}}.",
@@ -1662,6 +1681,12 @@
     "noEffectsUsable": "This card has no effects that are usable now",
     "noRemainingPurchase": "You have no remaining purchases this turn",
     "paidAttack": "You must pay {{value}}¢ to attack, but you only have {{coins}}¢"
+  },
+  "languageSelectionButton": {
+    "tooltip": {
+      "title": "Language",
+      "message": "Change the display language"
+    }
   },
   "contactButton": {
     "tooltip": {

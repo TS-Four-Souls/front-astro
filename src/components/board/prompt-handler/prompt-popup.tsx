@@ -24,7 +24,7 @@ interface PromptPopupProps {
   removeSelection: (option: SelectionItem) => void;
   replaceSelection: (option: SelectionItem) => void;
   onSubmit: (selections: SelectionItem[]) => void;
-  toggleMode?: () => void | undefined;
+  toggleMode?: {onClick: () => void, label: string} | undefined;
 }
 
 export const PromptPopup = ({
@@ -89,10 +89,10 @@ export const PromptPopup = ({
           )}
           {toggleMode && (
             <Button
-              onClick={toggleMode}
+              onClick={toggleMode.onClick}
               hotkey="tab"
               hotkeyScope={[HotkeyScope.Popup]}
-              label={t("common.popup.useBoardSelectionButton")}
+              label={toggleMode.label}
             />
           )}
           {onCancel && (
