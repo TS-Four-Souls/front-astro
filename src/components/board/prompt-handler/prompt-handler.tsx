@@ -3,7 +3,7 @@ import { useState, type SetStateAction, type Dispatch } from "react";
 import { PromptPopup } from "./prompt-popup";
 import { PromptBoardSelection } from "../prompt-board-selection";
 import type { Prompt } from "../contexts/prompt-context";
-import { t } from "@/utils/translate";
+import { useLanguageContext } from "@/components/contexts/language-context";
 
 interface PromptHandlerProps<T extends SelectionItem = SelectionItem> {
   areOptionsOnBoard: boolean;
@@ -19,6 +19,7 @@ export const PromptHandler = (props: PromptHandlerProps) => {
     selectedOptions,
   } = props;
   const { prompt, options, minCount, maxCount, onSubmit } = promptProps;
+  const { t } = useLanguageContext();
   const addSelection = (option: SelectionItem) => {
     setSelectedOptions((current) => [...current, option]);
   };
