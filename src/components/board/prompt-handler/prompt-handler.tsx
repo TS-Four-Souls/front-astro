@@ -3,6 +3,7 @@ import { useState, type SetStateAction, type Dispatch } from "react";
 import { PromptPopup } from "./prompt-popup";
 import { PromptBoardSelection } from "../prompt-board-selection";
 import type { Prompt } from "../contexts/prompt-context";
+import { t } from "@/utils/translate";
 
 interface PromptHandlerProps<T extends SelectionItem = SelectionItem> {
   areOptionsOnBoard: boolean;
@@ -18,7 +19,6 @@ export const PromptHandler = (props: PromptHandlerProps) => {
     selectedOptions,
   } = props;
   const { prompt, options, minCount, maxCount, onSubmit } = promptProps;
-
   const addSelection = (option: SelectionItem) => {
     setSelectedOptions((current) => [...current, option]);
   };
@@ -50,7 +50,7 @@ export const PromptHandler = (props: PromptHandlerProps) => {
 
   return (
     <>
-      {(!areOptionsOnBoard || mode === "popup") && (
+      {(mode === "popup") && (
         <PromptPopup
           onCancel={onCancel}
           prompt={prompt}
@@ -64,7 +64,7 @@ export const PromptHandler = (props: PromptHandlerProps) => {
           removeSelection={removeSelection}
           replaceSelection={replaceSelection}
           onSubmit={onSubmit}
-          toggleMode={areOptionsOnBoard ? toggleMode : undefined}
+          toggleMode={{onClick: toggleMode, label: areOptionsOnBoard ? t("common.popup.useBoardSelectionButton") : t("common.popup.viewBoardButton")}}
         />
       )}
       {mode === "board" && (
