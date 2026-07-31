@@ -79,15 +79,17 @@ export const ReportBugButton = () => {
   const { openContactPopup } = useContactContext();
   const { closeMenu: closeMainMenu } = useMainMenuContext();
   return (
-    <img
-      src="/contact.png"
-      className="pixelated absolute right-10 bottom-26 w-16 cursor-pointer rounded-full bg-space-500 p-2 shadow-xl/50 inset-shadow-xs inset-shadow-taupe-100/10 transition-[filter] hover:brightness-120 active:brightness-150"
-      onMouseEnter={tooltip.setTooltip}
-      onMouseLeave={tooltip.closeTooltip}
-      onClick={() => {
-        openContactPopup();
-        closeMainMenu();
-      }}
-    />
+    <div className="absolute right-10 bottom-26 cursor-pointer rounded-full bg-space-500 p-3 shadow-xl/50 inset-shadow-xs inset-shadow-taupe-100/10 transition-[filter] hover:brightness-120 active:brightness-150">
+      <img
+        src="/contact.png"
+        className="w-12"
+        onMouseEnter={tooltip.setTooltip}
+        onMouseLeave={tooltip.closeTooltip}
+        onClick={() => {
+          openContactPopup();
+          closeMainMenu();
+        }}
+      />
+    </div>
   );
 };
