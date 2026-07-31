@@ -20,6 +20,7 @@ export const PromptHandler = (props: PromptHandlerProps) => {
   } = props;
   const { prompt, options, minCount, maxCount, onSubmit } = promptProps;
   const { t } = useLanguageContext();
+
   const addSelection = (option: SelectionItem) => {
     setSelectedOptions((current) => [...current, option]);
   };
@@ -51,7 +52,7 @@ export const PromptHandler = (props: PromptHandlerProps) => {
 
   return (
     <>
-      {(mode === "popup") && (
+      {mode === "popup" && (
         <PromptPopup
           onCancel={onCancel}
           prompt={prompt}
@@ -65,7 +66,12 @@ export const PromptHandler = (props: PromptHandlerProps) => {
           removeSelection={removeSelection}
           replaceSelection={replaceSelection}
           onSubmit={onSubmit}
-          toggleMode={{onClick: toggleMode, label: areOptionsOnBoard ? t("common.popup.useBoardSelectionButton") : t("common.popup.viewBoardButton")}}
+          toggleMode={{
+            onClick: toggleMode,
+            label: areOptionsOnBoard
+              ? t("common.popup.useBoardSelectionButton")
+              : t("common.popup.viewBoardButton"),
+          }}
         />
       )}
       {mode === "board" && (

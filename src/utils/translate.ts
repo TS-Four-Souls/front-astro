@@ -33,7 +33,11 @@ export const boxes_dics: Record<
   LANGUAGE_CODE,
   Record<string, { top: number; right: number; left: number; bottom: number }[]>
 > = { en: boxes_en, fr: boxes_fr, es: boxes_es };
-export const cards_dics: Record<LANGUAGE_CODE, string> = { en: "en", fr: "fr", es: "es" };
+export const cards_dics: Record<LANGUAGE_CODE, string> = {
+  en: "en",
+  fr: "fr",
+  es: "es",
+};
 
 export const DEFAULT_LANGUAGE: LANGUAGE_CODE = LANGUAGE_CODE.EN;
 

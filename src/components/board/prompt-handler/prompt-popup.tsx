@@ -24,7 +24,7 @@ interface PromptPopupProps {
   removeSelection: (option: SelectionItem) => void;
   replaceSelection: (option: SelectionItem) => void;
   onSubmit: (selections: SelectionItem[]) => void;
-  toggleMode?: {onClick: () => void, label: string} | undefined;
+  toggleMode?: { onClick: () => void; label: string } | undefined;
 }
 
 export const PromptPopup = ({
