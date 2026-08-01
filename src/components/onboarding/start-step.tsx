@@ -688,6 +688,47 @@ export const StartStep = ({ room }: StartStepProps) => {
                 />
               </>
             )}
+            {gameParameters.decksConfig.useG2Cards && (
+              <>
+                <div className="flex items-center gap-2">
+                  <p>
+                    {ts(gameParameters.decksConfig.useG2Cards.translationKey)}
+                  </p>
+                  <Button
+                    label={t("startStep.gameParams.helpButton.label")}
+                    tooltip={{
+                      title: ts(
+                        gameParameters.decksConfig.useG2Cards.translationKey,
+                      ),
+                      content: t(
+                        "startStep.gameParams.helpButton.useG2Cards",
+                      ),
+                      enabled: true,
+                    }}
+                    className="size-8 cursor-help rounded-full text-sm shadow-sm"
+                    theme="onSpace"
+                  />
+                </div>
+                <BooleanInput
+                  value={gameParameters.decksConfig.useG2Cards.value}
+                  onChange={(value) =>
+                    onChangeGameParameter({
+                      parameter: "decksConfig",
+                      value: {
+                        useG2Cards: {
+                          text: gameParameters.decksConfig.useG2Cards!.text,
+                          translationKey:
+                            gameParameters.decksConfig.useG2Cards!
+                              .translationKey,
+                          value,
+                        },
+                      },
+                    })
+                  }
+                  disabled={!isHost}
+                />
+              </>
+            )}
           </div>
           <div className="flex flex-wrap justify-center gap-x-24 gap-y-16 max-xl:gap-x-16">
             <DeckPile
