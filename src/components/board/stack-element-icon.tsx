@@ -27,7 +27,7 @@ export const StackElementIcon = ({ element }: StackElementIconProps) => {
 
   return (
     <div
-      className="flex shrink-0 cursor-pointer items-center justify-center transition-transform hover:scale-110"
+      className="flex shrink-0 items-center justify-center transition-transform hover:scale-110"
       onMouseEnter={onHover}
       onMouseLeave={closePopover}>
       <Icon element={element} />
@@ -328,7 +328,7 @@ const Icon = ({ element }: IconProps) => {
       return (
         <Dice
           value={element.diceRoll}
-          className="size-10 rounded-lg border-[0.15em] bg-taupe-800/50 p-0.5 text-red-500"
+          className="size-10 rounded-lg border-[0.15em] bg-taupe-700 p-0.5 text-red-500"
           style={{ borderColor }}
         />
       );
@@ -336,7 +336,7 @@ const Icon = ({ element }: IconProps) => {
       return (
         <Dice
           value={undefined}
-          className="size-10 rounded-lg border-[0.15em] bg-taupe-800/50 p-0.5 text-red-500"
+          className="size-10 rounded-lg border-[0.15em] bg-taupe-700 p-0.5 text-red-500"
           style={{ borderColor }}
         />
       );
@@ -346,7 +346,7 @@ const Icon = ({ element }: IconProps) => {
       return (
         <div
           className={cn(
-            "aspect-square overflow-hidden rounded-lg border-[0.15em] bg-taupe-800/50",
+            "aspect-square overflow-hidden rounded-lg border-[0.15em] bg-taupe-700",
           )}
           style={{ borderColor }}>
           <CardImage
@@ -362,7 +362,7 @@ const Icon = ({ element }: IconProps) => {
       return (
         <div
           className={cn(
-            "aspect-square overflow-hidden rounded-lg border-[0.15em] bg-taupe-800/50",
+            "aspect-square overflow-hidden rounded-lg border-[0.15em] bg-taupe-700",
           )}
           style={{ borderColor }}>
           <CardImage
@@ -378,7 +378,7 @@ const Icon = ({ element }: IconProps) => {
       return (
         <div
           className={cn(
-            "aspect-square overflow-hidden rounded-lg border-[0.15em] bg-taupe-800/50",
+            "aspect-square overflow-hidden rounded-lg border-[0.15em] bg-taupe-700",
           )}
           style={{ borderColor }}>
           <CardImage
@@ -391,12 +391,24 @@ const Icon = ({ element }: IconProps) => {
     }
 
     case "damage":
+      const getDamageIcon = (damage: number) => {
+        switch (damage) {
+          case 1:
+            return "/damage-1.png";
+          case 2:
+            return "/damage-2.png";
+          case 3:
+            return "/damage-3.png";
+          default:
+            return "/damage-4.png";
+        }
+      };
       return (
         <img
-          src="/heart.png"
+          src={getDamageIcon(element.damage)}
           alt="damage"
           className={cn(
-            "size-10 shrink-0 rounded-lg border-[0.15em] bg-taupe-800/50 p-0.5",
+            "size-10 shrink-0 rounded-lg border-[0.15em] bg-taupe-700 p-0.5",
           )}
           style={{ borderColor }}
           draggable={false}
@@ -406,12 +418,12 @@ const Icon = ({ element }: IconProps) => {
     case "death":
       return (
         <img
-          src="/skull.webp"
+          src="/death.png"
           alt="death"
           className={cn(
-            "size-10 shrink-0 rounded-lg border-[0.15em] bg-taupe-800/50 p-0.5",
+            "bg-taupe-70 size-10 shrink-0 rounded-lg border-[0.15em] p-0.5",
           )}
-          style={{ imageRendering: "pixelated", borderColor }}
+          style={{ borderColor }}
           draggable={false}
         />
       );
@@ -482,8 +494,12 @@ export const SelectionContent = ({
         case "diceRoll":
           return selection.payload.card
             ? ts(selection.payload.card.nameKey)
-            : t("gameStep.stack.stackElement.anAttackRoll")
-            + " - " + t("gameStep.stack.stackElement.cardRoll", {player: selection.payload.issuer.nameKey, result: selection.payload.diceRoll})
+            : t("gameStep.stack.stackElement.anAttackRoll") +
+                " - " +
+                t("gameStep.stack.stackElement.cardRoll", {
+                  player: selection.payload.issuer.nameKey,
+                  result: selection.payload.diceRoll,
+                });
         case "damage":
           return t("gameStep.stack.stackElement.damage", {
             entity1: selection.payload.from.nameKey,
