@@ -34,6 +34,11 @@ export const Me = () => {
     clearPrompts();
   }, [state.me.name]);
 
+  // Clear the prompts on component cleanup
+  useEffect(() => {
+    return () => clearPrompts();
+  }, []);
+
   useEffect(() => {
     console.log("state", state);
     console.log("pendingSelections", pendingSelectionsToastIds.current);

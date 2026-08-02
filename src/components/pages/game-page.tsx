@@ -16,11 +16,13 @@ import { RoomJoinForm } from "../onboarding/room-join-form";
 import { RoomOptions } from "../onboarding/room-options";
 import { StartStep } from "../onboarding/start-step";
 import { useLanguageContext } from "../contexts/language-context";
+import { usePromptContext } from "../board/contexts/prompt-context";
 
 export const GamePage = () => {
-  const { ts, translateError } = useLanguageContext();
+  const { t, ts, translateError } = useLanguageContext();
   const [room, setRoom] = useState<Room | null>(null);
-  const { toast } = useToastContext();
+  const { toast, dismissAll } = useToastContext();
+  const { clearPrompts } = usePromptContext();
   const [tryingToRejoin, setTryingToRejoin] = useState<boolean>(true);
 
   useEffect(() => {
@@ -64,6 +66,18 @@ export const GamePage = () => {
       }
     }
 
+    function onGameQuit(userId: string) {
+      clearPrompts();
+      dismissAll();
+      toast(
+        "info",
+        t("toast.exit.title", {
+          player: userId,
+        }),
+        t("toast.exit.message"),
+      );
+    }
+
     function onAnyOutgoing(event: string, ...args: any[]) {
       console.log("[🔌 Socket] Outgoing event", event, args);
     }
@@ -91,6 +105,7 @@ export const GamePage = () => {
     socket.on("disconnect", onDisconnect);
     socket.on("on:room:changed", onRoomChanged);
     socket.on("on:user:assigned", onUserAssigned);
+    socket.on("on:game:quit", onGameQuit);
     socket.on("on:room:broadcast", onRoomBroadcast);
     socket.onAnyOutgoing(onAnyOutgoing);
     socket.onAny(onAnyIncoming);
@@ -102,6 +117,7 @@ export const GamePage = () => {
       socket.off("on:room:changed", onRoomChanged);
       socket.off("on:user:assigned", onUserAssigned);
       socket.off("on:room:broadcast", onRoomBroadcast);
+      socket.off("on:game:quit", onGameQuit);
       socket.offAnyOutgoing(onAnyOutgoing);
       socket.offAny(onAnyIncoming);
     };

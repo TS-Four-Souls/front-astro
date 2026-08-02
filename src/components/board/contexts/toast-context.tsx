@@ -86,6 +86,7 @@ interface ToastContextProps {
     options?: ToastOptions,
   ) => string;
   dismiss: (toastId: string) => void;
+  dismissAll: () => void;
   /**
    * Block the action if the message is not true.
    * @param title - The title of the toast.
@@ -102,6 +103,7 @@ interface ToastContextProps {
 const ToastContext = createContext<ToastContextProps>({
   toast: () => "",
   dismiss: () => {},
+  dismissAll: () => {},
   block: () => {},
 });
 
@@ -146,6 +148,10 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
     toastLib.dismiss(toastId);
   };
 
+  const dismissAll = () => {
+    toastLib.dismissAll();
+  };
+
   const block = (
     title: string,
     capable: SerializedTranslation | string | true,
@@ -161,7 +167,8 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <ToastContext.Provider value={{ toast: addToast, dismiss, block }}>
+    <ToastContext.Provider
+      value={{ toast: addToast, dismiss, block, dismissAll }}>
       {children}
       <Toaster position="top-right" />
     </ToastContext.Provider>

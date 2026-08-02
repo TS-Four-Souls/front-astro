@@ -1,4 +1,4 @@
-import type { SelectionItem } from "@/shared/api";
+import type { DetailedState, SelectionItem } from "@/shared/api";
 import { useGameContext } from "./game-context";
 import { usePromptContext } from "./prompt-context";
 import {
@@ -48,7 +48,8 @@ export const BoardSelectionProvider = ({
   children: React.ReactNode;
 }) => {
   const { t } = useLanguageContext();
-  const { state } = useGameContext();
+  const gameContext = useGameContext();
+  const state = gameContext.state as DetailedState | undefined;
   const { prompt } = usePromptContext();
 
   const convertDeckToGlobalId = (deck: string): GlobalId => {
@@ -74,6 +75,7 @@ export const BoardSelectionProvider = ({
 
   const isGlobalIdOnBoard = useCallback(
     (id: GlobalId) => {
+      if (!state) return false;
       return (
         [state.me, ...state.players].some(
           (p) =>

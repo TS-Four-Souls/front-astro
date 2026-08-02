@@ -1219,6 +1219,7 @@ export interface ServerToClientEvents {
   "on:room:changed": (room: Room | null) => void;
   "on:user:assigned": (userId: string | null) => void;
   "on:room:broadcast": (broadcast: RoomBroadcast) => void;
+  "on:game:quit": (userId: string) => void;
   "on:admin:changed": (admin: AdminResponse) => void;
 }
 
