@@ -138,23 +138,10 @@ export const About = ({ onClose }: AboutProps) => {
             to access it.
           </li>
         </ul>
-        <h2 className="mt-8 mb-4 text-center font-main text-3xl font-bold">
+        <h2 className="mt-8 text-center font-main text-3xl font-bold">
           Credits
         </h2>
-        <ul className="flex flex-wrap justify-center gap-16 text-center font-main text-lg">
-          <CreditsItem
-            name="Sylvain Lichau"
-            role="Development"
-            image="/sylvain.jpg"
-          />
-          <CreditsItem
-            name="Dr_Mint"
-            role="Development"
-            image="/drmint.jpg"
-            link="https://github.com/drmint"
-          />
-        </ul>
-        <p className="mt-4 text-center">
+        <p className="text-center max-w-124 self-center">
           The original board game,{" "}
           <a
             href="https://foursouls.com/"
@@ -165,6 +152,69 @@ export const About = ({ onClose }: AboutProps) => {
           </a>{" "}
           was created by Edmund McMillen and Maestro Media.
         </p>
+        <h3 className="mt-4 mb-2 text-center font-main text-2xl font-bold">
+          Development
+        </h3>
+        <ul className="flex flex-wrap justify-center gap-16 text-center font-main text-lg">
+          <CreditsItem
+            name="Sylvain Lichau"
+            image="/sylvain.jpg"
+          />
+          <CreditsItem
+            name="Dr_Mint"
+            image="/drmint.jpg"
+            link="https://github.com/drmint"
+          />
+        </ul>
+        <h3 className="mt-8 text-center font-main text-2xl font-bold">
+          Spanish translation
+        </h3>
+        <div className="grid max-w-96 gap-8 self-center text-center">
+          <div>
+            <p className="mb-2 font-bold">Card translations</p>
+            <p>
+              Team TBOI Four Souls Latinoamérica (Sirczen, Arzu, Demian, Dontor,
+              Flare, Jomant, JRaider, Malataka, Mello Wagon, Misaraya, mrwetcoat
+              and Yibril)
+            </p>
+          </div>
+          <div>
+            <p className="mb-2 font-bold">UI translations</p>
+            <p>SircZen, Mello and Jomant</p>
+          </div>
+        </div>
+        <h3 className="mt-8 text-center font-main text-2xl font-bold">
+          French translation
+        </h3>
+        <div className="grid max-w-96 gap-8 self-center text-center">
+          <div>
+            <p className="mb-2 font-bold">Card translations</p>
+            <p>Localization by Funforge.<br/>Digitize and proofread by Fabby29</p>
+          </div>
+          <div>
+            <p className="mb-2 font-bold">UI translations</p>
+            <p>Sylvain Lichau</p>
+          </div>
+        </div>
+        <h3 className="mt-8 text-center font-main text-2xl font-bold">
+          Special thanks
+        </h3>
+        <p className="max-w-96 self-center text-center">
+          We would we like to thank <strong>Yuggy</strong> for taking the time
+          to answer our many questions.
+        </p>
+        <p className="max-w-96 self-center text-center">
+          Thank you to the <strong>Dev Team</strong> of{" "}
+          <a
+            href="https://foursouls.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-space-100 underline">
+            foursouls.com
+          </a>{" "}
+          for keeping a digital record of all the cards and their
+          characteristic.
+        </p>
       </div>
     </>
   );
@@ -172,12 +222,11 @@ export const About = ({ onClose }: AboutProps) => {
 
 interface CreditsItemProps {
   name: string;
-  role: string;
   image: string;
   link?: string;
 }
 
-const CreditsItem = ({ name, role, image, link }: CreditsItemProps) => {
+const CreditsItem = ({ name, image, link }: CreditsItemProps) => {
   return (
     <li className="flex flex-col items-center">
       {link ? (
@@ -198,7 +247,6 @@ const CreditsItem = ({ name, role, image, link }: CreditsItemProps) => {
         />
       )}
       <p className="mt-4 mb-2 uppercase">{name}</p>
-      <p className="text-sm">{role}</p>
     </li>
   );
 };
