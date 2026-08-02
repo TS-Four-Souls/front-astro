@@ -111,6 +111,8 @@ export const Me = () => {
           );
         },
       });
+    } else if (pendingSelectionsPrompts.current) {
+      removePrompt(pendingSelectionsPrompts.current);
     }
   }, [state.me.pendingSelection, addPrompt, removePrompt, toast]);
 

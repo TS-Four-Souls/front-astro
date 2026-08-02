@@ -700,9 +700,7 @@ export const StartStep = ({ room }: StartStepProps) => {
                       title: ts(
                         gameParameters.decksConfig.useG2Cards.translationKey,
                       ),
-                      content: t(
-                        "startStep.gameParams.helpButton.useG2Cards",
-                      ),
+                      content: t("startStep.gameParams.helpButton.useG2Cards"),
                       enabled: true,
                     }}
                     className="size-8 cursor-help rounded-full text-sm shadow-sm"
