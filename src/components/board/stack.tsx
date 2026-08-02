@@ -29,7 +29,7 @@ import { useLanguageContext } from "../contexts/language-context";
 
 export const Stack = () => {
   const { ts, t, translateError } = useLanguageContext();
-  const { state } = useGameContext();
+  const { state, parameters } = useGameContext();
   const { toast, block } = useToastContext();
   const { setStackEl } = useGameAnimation();
 
@@ -120,6 +120,26 @@ export const Stack = () => {
 
   const { boardSelectionState, isBoardSelectionActive, toggleSelection } =
     useBoardSelectionContext();
+
+  const [resolveCooldownAnim, setResolveCooldownAnim] = useState<{
+    durationMs: number;
+    delayMs: number;
+    key: number;
+  } | null>(null);
+
+  useEffect(() => {
+    const cooldownMs = parameters.resolveCooldown.value * 1000;
+    const elapsedMs = Date.now() - state.lastStackElementTimeStamp;
+    if (elapsedMs < cooldownMs) {
+      setResolveCooldownAnim({
+        durationMs: cooldownMs,
+        delayMs: -elapsedMs,
+        key: state.lastStackElementTimeStamp,
+      });
+    } else {
+      setResolveCooldownAnim(null);
+    }
+  }, [state.lastStackElementTimeStamp, parameters.resolveCooldown.value]);
 
   return (
     <div
@@ -232,7 +252,21 @@ export const Stack = () => {
           title: t("gameStep.stack.resolveButton.blockedTooltip.title"),
           capable: state.me.capabilities.resolve,
         }}
-        label={t("gameStep.stack.resolveButton.label")}
+        label={
+          <>
+            {t("gameStep.stack.resolveButton.label")}
+            {resolveCooldownAnim && (
+              <div
+                key={resolveCooldownAnim.key}
+                className="pointer-events-none absolute inset-y-0 left-0 animate-grow-right bg-amber-50"
+                style={{
+                  animationDuration: `${resolveCooldownAnim.durationMs}ms`,
+                  animationDelay: `${resolveCooldownAnim.delayMs}ms`,
+                }}
+              />
+            )}
+          </>
+        }
         theme="onDark"
       />
     </div>

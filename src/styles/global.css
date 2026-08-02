@@ -247,6 +247,29 @@
   --animate-in-right: animate-in-right 0.3s ease-in-out forwards;
   --animate-out-right: animate-out-right 0.3s ease-in-out forwards;
   --animate-iso-spin: animate-iso-spin 10s linear infinite;
+  --animate-grow-right: animate-grow-right 5s linear forwards;
+
+  @keyframes animate-grow-right {
+    0% {
+      width: 0;
+      opacity: 0.5;
+    }
+
+    90% {
+      width: 100%;
+      opacity: 0.1;
+    }
+
+    95% {
+      width: 100%;
+      opacity: 0.3;
+    }
+
+    100% {
+      width: 100%;
+      opacity: 0;
+    }
+  }
 
   @keyframes animate-in-right {
     from {

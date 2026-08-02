@@ -421,7 +421,7 @@ const Icon = ({ element }: IconProps) => {
           src="/death.png"
           alt="death"
           className={cn(
-            "bg-taupe-70 size-10 shrink-0 rounded-lg border-[0.15em] p-0.5",
+            "bg-taupe-700 size-10 shrink-0 rounded-lg border-[0.15em] p-0.5",
           )}
           style={{ borderColor }}
           draggable={false}

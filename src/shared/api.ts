@@ -494,7 +494,7 @@ export type DeckConfigPatch = z.infer<typeof decksConfigPatchSchema>;
 const gameParametersSchema = z.object({
   miniDraft: booleanGameParameterSchema,
   nbSoulsToWin: numberGameParameterSchema,
-  timeBetweenActions: numberGameParameterSchema,
+  resolveCooldown: numberGameParameterSchema,
   timer: numberGameParameterSchema,
   nbItemsInShop: numberGameParameterSchema,
   nbEncounters: numberGameParameterSchema,
@@ -905,6 +905,7 @@ const detailedStateSchema = z.object({
   stack: z.array(z.lazy(() => stackElementSchema)),
   history: z.array(stackElementSchema),
   animations: z.array(animationSchema),
+  lastStackElementTimeStamp: z.number(),
 });
 export type DetailedState = z.infer<typeof detailedStateSchema>;
 
