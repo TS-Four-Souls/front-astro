@@ -660,7 +660,8 @@ export const StartStep = ({ room }: StartStepProps) => {
                         gameParameters.decksConfig.useFSP2Cards.translationKey,
                       ),
                       content: t(
-                        "startStep.gameParams.helpButton.useFSP2Cards",
+                        "startStep.gameParams.helpButton.useExpansionCards",
+                        { expansionName: "Four Souls+" }
                       ),
                       enabled: true,
                     }}
@@ -700,7 +701,10 @@ export const StartStep = ({ room }: StartStepProps) => {
                       title: ts(
                         gameParameters.decksConfig.useG2Cards.translationKey,
                       ),
-                      content: t("startStep.gameParams.helpButton.useG2Cards"),
+                      content: t(
+                        "startStep.gameParams.helpButton.useExpansionCards",
+                        {expansionName: "Gold Box V2"},
+                      ),
                       enabled: true,
                     }}
                     className="size-8 cursor-help rounded-full text-sm shadow-sm"
@@ -717,6 +721,48 @@ export const StartStep = ({ room }: StartStepProps) => {
                           text: gameParameters.decksConfig.useG2Cards!.text,
                           translationKey:
                             gameParameters.decksConfig.useG2Cards!
+                              .translationKey,
+                          value,
+                        },
+                      },
+                    })
+                  }
+                  disabled={!isHost}
+                />
+              </>
+            )}
+            {gameParameters.decksConfig.useRCards && (
+              <>
+                <div className="flex items-center gap-2">
+                  <p>
+                    {ts(gameParameters.decksConfig.useRCards.translationKey)}
+                  </p>
+                  <Button
+                    label={t("startStep.gameParams.helpButton.label")}
+                    tooltip={{
+                      title: ts(
+                        gameParameters.decksConfig.useRCards.translationKey,
+                      ),
+                      content: t(
+                          "startStep.gameParams.helpButton.useExpansionCards",
+                          {expansionName: "Requiem"},
+                      ),
+                      enabled: true,
+                    }}
+                    className="size-8 cursor-help rounded-full text-sm shadow-sm"
+                    theme="onSpace"
+                  />
+                </div>
+                <BooleanInput
+                  value={gameParameters.decksConfig.useRCards.value}
+                  onChange={(value) =>
+                    onChangeGameParameter({
+                      parameter: "decksConfig",
+                      value: {
+                      useRCards: {
+                          text: gameParameters.decksConfig.useRCards!.text,
+                          translationKey:
+                            gameParameters.decksConfig.useRCards!
                               .translationKey,
                           value,
                         },
