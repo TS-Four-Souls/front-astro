@@ -213,7 +213,7 @@ export const About = ({ onClose }: AboutProps) => {
             foursouls.com
           </a>{" "}
           for keeping a digital record of all the cards and their
-          characteristic.
+          characteristics.
         </p>
       </div>
     </>
