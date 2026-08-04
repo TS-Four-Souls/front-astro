@@ -173,14 +173,19 @@ export const About = ({ onClose }: AboutProps) => {
           <div>
             <p className="mb-2 font-bold">Card translations</p>
             <p>
-              Team TBOI Four Souls Latinoamérica (Sirczen, Arzu, Demian, Dontor,
-              Flare, Jomant, JRaider, Malataka, Mello Wagon, Misaraya, mrwetcoat
-              and Yibril)
+              <CreditsItem
+            name="Team TBOI Four Souls Latinoamérica"
+            image="/public/TBOIFSLATAM.png"
+            link="https://discord.gg/DrKKMuEWdQ"
+          />
+              Sirczen, Arzu, Demian, Dontor,
+              Flare, Jörmant, JRaider, Malataka, Mello Wagon, Misaraya, mrwetcoat
+              and Yibril
             </p>
           </div>
           <div>
             <p className="mb-2 font-bold">UI translations</p>
-            <p>SircZen, Mello and Jomant</p>
+            <p>SircZen, Mello Wagon and Jörmant</p>
           </div>
         </div>
         <h3 className="mt-8 text-center font-main text-2xl font-bold">
