@@ -1,5 +1,5 @@
 import type { TemporaryEffect } from "@/shared/api";
-import { CardImage } from "./card";
+import { Card, CardImage } from "./card";
 import { cn } from "@/utils/cn";
 import { usePopoverContext } from "./contexts/popover-context";
 import { useLanguageContext } from "../contexts/language-context";
@@ -26,7 +26,11 @@ export const TemporaryEffectCard = ({
       anchor: element.getBoundingClientRect(),
       content: (
         <div className="flex flex-col place-items-center gap-2">
-          <CardImage card={effect.card} sizes="16em" className="w-64" />
+          <Card
+            card={effect.card}
+            visualEffectBox={effect.visualEffectBox}
+            size={22}
+          />
           <div className="flex w-64 flex-col gap-4 text-center text-taupe-300">
             <p className="text-lg font-bold">{ts(effect.card.nameKey)}</p>
             <p className="leading-tight text-taupe-400">{effect.description}</p>

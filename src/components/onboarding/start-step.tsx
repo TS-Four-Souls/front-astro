@@ -661,7 +661,7 @@ export const StartStep = ({ room }: StartStepProps) => {
                       ),
                       content: t(
                         "startStep.gameParams.helpButton.useExpansionCards",
-                        { expansionName: "Four Souls+" }
+                        { expansionName: "Four Souls+" },
                       ),
                       enabled: true,
                     }}
@@ -703,7 +703,7 @@ export const StartStep = ({ room }: StartStepProps) => {
                       ),
                       content: t(
                         "startStep.gameParams.helpButton.useExpansionCards",
-                        {expansionName: "Gold Box V2"},
+                        { expansionName: "Gold Box V2" },
                       ),
                       enabled: true,
                     }}
@@ -744,8 +744,8 @@ export const StartStep = ({ room }: StartStepProps) => {
                         gameParameters.decksConfig.useRCards.translationKey,
                       ),
                       content: t(
-                          "startStep.gameParams.helpButton.useExpansionCards",
-                          {expansionName: "Requiem"},
+                        "startStep.gameParams.helpButton.useExpansionCards",
+                        { expansionName: "Requiem" },
                       ),
                       enabled: true,
                     }}
@@ -759,7 +759,7 @@ export const StartStep = ({ room }: StartStepProps) => {
                     onChangeGameParameter({
                       parameter: "decksConfig",
                       value: {
-                      useRCards: {
+                        useRCards: {
                           text: gameParameters.decksConfig.useRCards!.text,
                           translationKey:
                             gameParameters.decksConfig.useRCards!

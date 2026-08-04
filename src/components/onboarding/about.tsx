@@ -141,7 +141,7 @@ export const About = ({ onClose }: AboutProps) => {
         <h2 className="mt-8 text-center font-main text-3xl font-bold">
           Credits
         </h2>
-        <p className="text-center max-w-124 self-center">
+        <p className="max-w-124 self-center text-center">
           The original board game,{" "}
           <a
             href="https://foursouls.com/"
@@ -156,10 +156,7 @@ export const About = ({ onClose }: AboutProps) => {
           Development
         </h3>
         <ul className="flex flex-wrap justify-center gap-16 text-center font-main text-lg">
-          <CreditsItem
-            name="Sylvain Lichau"
-            image="/sylvain.jpg"
-          />
+          <CreditsItem name="Sylvain Lichau" image="/sylvain.jpg" />
           <CreditsItem
             name="Dr_Mint"
             image="/drmint.jpg"
@@ -174,13 +171,12 @@ export const About = ({ onClose }: AboutProps) => {
             <p className="mb-2 font-bold">Card translations</p>
             <p>
               <CreditsItem
-            name="Team TBOI Four Souls Latinoamérica"
-            image="/public/TBOIFSLATAM.png"
-            link="https://discord.gg/DrKKMuEWdQ"
-          />
-              Sirczen, Arzu, Demian, Dontor,
-              Flare, Jörmant, JRaider, Malataka, Mello Wagon, Misaraya, mrwetcoat
-              and Yibril
+                name="Team TBOI Four Souls Latinoamérica"
+                image="/public/TBOIFSLATAM.png"
+                link="https://discord.gg/DrKKMuEWdQ"
+              />
+              Sirczen, Arzu, Demian, Dontor, Flare, Jörmant, JRaider, Malataka,
+              Mello Wagon, Misaraya, mrwetcoat and Yibril
             </p>
           </div>
           <div>
@@ -194,7 +190,11 @@ export const About = ({ onClose }: AboutProps) => {
         <div className="grid max-w-96 gap-8 self-center text-center">
           <div>
             <p className="mb-2 font-bold">Card translations</p>
-            <p>Localization by Funforge.<br/>Digitize and proofread by Fabby29</p>
+            <p>
+              Localization by Funforge.
+              <br />
+              Digitize and proofread by Fabby29
+            </p>
           </div>
           <div>
             <p className="mb-2 font-bold">UI translations</p>
