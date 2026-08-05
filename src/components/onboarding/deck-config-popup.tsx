@@ -33,12 +33,12 @@ export const DeckConfigPopup = ({
   const { ts, t, translateError } = useLanguageContext();
 
   const deckTypeLabels: Record<DeckTypes, string> = {
-    monster: t("startStep.gameParams.decks.monsters"),
-    treasure: t("startStep.gameParams.decks.treasures"),
-    character: t("startStep.gameParams.decks.characters"),
-    loot: t("startStep.gameParams.decks.loots"),
-    bsoul: t("startStep.gameParams.decks.bonusSouls"),
-    room: t("startStep.gameParams.decks.rooms"),
+    monster: t("startStep.gameParams.decks.monster"),
+    treasure: t("startStep.gameParams.decks.treasure"),
+    character: t("startStep.gameParams.decks.character"),
+    loot: t("startStep.gameParams.decks.loot"),
+    bsoul: t("startStep.gameParams.decks.bsoul"),
+    room: t("startStep.gameParams.decks.room"),
   };
   const { toast } = useToastContext();
 

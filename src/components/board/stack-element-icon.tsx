@@ -528,7 +528,7 @@ export const SelectionContent = ({
           });
       }
     case "deck":
-      return t(`startStep.gameParams.decks.${selection.payload as DeckName}s`);
+      return t(`startStep.gameParams.decks.${selection.payload as DeckName}`);
     case "player":
       return (
         <span style={{ color: selection.payload.color }}>

@@ -777,32 +777,32 @@ export const StartStep = ({ room }: StartStepProps) => {
           <div className="flex flex-wrap justify-center gap-x-24 gap-y-16 max-xl:gap-x-16">
             <DeckPile
               type={CardType.CharacterCard}
-              label={t("startStep.gameParams.decks.characters")}
+              label={t("startStep.gameParams.decks.character")}
               count={gameParameters.decksConfig.character.total}
               onClick={() => setDeckPilePopup(CardType.CharacterCard)}
             />
             <DeckPile
               type={CardType.TreasureCard}
-              label={t("startStep.gameParams.decks.treasures")}
+              label={t("startStep.gameParams.decks.treasure")}
               count={gameParameters.decksConfig.treasure.total}
               onClick={() => setDeckPilePopup(CardType.TreasureCard)}
             />
             <DeckPile
               type={CardType.LootCard}
-              label={t("startStep.gameParams.decks.loots")}
+              label={t("startStep.gameParams.decks.loot")}
               count={gameParameters.decksConfig.loot.total}
               onClick={() => setDeckPilePopup(CardType.LootCard)}
             />
             <DeckPile
               type={CardType.MonsterCard}
-              label={t("startStep.gameParams.decks.monsters")}
+              label={t("startStep.gameParams.decks.monster")}
               count={gameParameters.decksConfig.monster.total}
               onClick={() => setDeckPilePopup(CardType.MonsterCard)}
             />
             {gameParameters.decksConfig.bsoul && (
               <DeckPile
                 type={CardType.BonusSoul}
-                label={t("startStep.gameParams.decks.bonusSouls")}
+                label={t("startStep.gameParams.decks.bsoul")}
                 count={gameParameters.decksConfig.bsoul.total}
                 onClick={() => setDeckPilePopup(CardType.BonusSoul)}
               />
@@ -810,7 +810,7 @@ export const StartStep = ({ room }: StartStepProps) => {
             {gameParameters.decksConfig.room && (
               <DeckPile
                 type={CardType.RoomCard}
-                label={t("startStep.gameParams.decks.rooms")}
+                label={t("startStep.gameParams.decks.room")}
                 count={gameParameters.decksConfig.room.total}
                 onClick={() => setDeckPilePopup(CardType.RoomCard)}
               />
