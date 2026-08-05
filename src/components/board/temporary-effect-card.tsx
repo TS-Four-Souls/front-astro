@@ -16,7 +16,7 @@ export const TemporaryEffectCard = ({
   className,
 }: TemporaryEffectCardProps) => {
   const { setPopover, closePopover } = usePopoverContext();
-  const { ts } = useLanguageContext();
+  const { ts, t } = useLanguageContext();
 
   const cardSize = size / 16;
 
@@ -33,7 +33,7 @@ export const TemporaryEffectCard = ({
           />
           <div className="flex w-64 flex-col gap-4 text-center text-taupe-300">
             <p className="text-lg font-bold">{ts(effect.card.nameKey)}</p>
-            <p className="leading-tight text-taupe-400">{effect.description}</p>
+            <p className="leading-tight text-taupe-400">{t("common.temporaryEffect")}</p>
           </div>
         </div>
       ),
