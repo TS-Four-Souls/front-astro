@@ -172,7 +172,7 @@ export const About = ({ onClose }: AboutProps) => {
             <p>
               <CreditsItem
                 name="Team TBOI Four Souls Latinoamérica"
-                image="/public/TBOIFSLATAM.png"
+                image="/TBOIFSLATAM.png"
                 link="https://discord.gg/DrKKMuEWdQ"
               />
               Sirczen, Arzu, Demian, Dontor, Flare, Jörmant, JRaider, Malataka,
