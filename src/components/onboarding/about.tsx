@@ -163,10 +163,8 @@ export const About = ({ onClose }: AboutProps) => {
             link="https://github.com/drmint"
           />
         </ul>
-        <h3 className="mt-8 text-center font-main text-2xl font-bold">
-          Icons
-        </h3>
-         <p className="mb-2 text-center">Meigasuu</p>
+        <h3 className="mt-8 text-center font-main text-2xl font-bold">Icons</h3>
+        <p className="mb-2 text-center">Meigasuu</p>
         <h3 className="mt-8 text-center font-main text-2xl font-bold">
           Spanish translation
         </h3>

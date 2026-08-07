@@ -33,7 +33,9 @@ export const TemporaryEffectCard = ({
           />
           <div className="flex w-64 flex-col gap-4 text-center text-taupe-300">
             <p className="text-lg font-bold">{ts(effect.card.nameKey)}</p>
-            <p className="leading-tight text-taupe-400">{t("common.temporaryEffect")}</p>
+            <p className="leading-tight text-taupe-400">
+              {t("common.temporaryEffect")}
+            </p>
           </div>
         </div>
       ),

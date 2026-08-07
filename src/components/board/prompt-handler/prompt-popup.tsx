@@ -752,16 +752,23 @@ export const NumberOption = ({
 /** Check that all the options are cardEffect options and they all refer to the same card */
 const isOnCardSelection = (
   options: SelectionItem[],
-): options is Extract<SelectionItem, { type: "cardEffect" }>[] => {
+): options is Extract<
+  SelectionItem,
+  { type: "cardEffect" | "chooseOne" }
+>[] => {
   if (options.length === 0) {
     return false;
   }
-  if (options.some((option) => option.type !== "cardEffect")) {
+  if (
+    options.some(
+      (option) => option.type !== "cardEffect" && option.type !== "chooseOne",
+    )
+  ) {
     return false;
   }
   const cardEffectOptions = options as Extract<
     SelectionItem,
-    { type: "cardEffect" }
+    { type: "cardEffect" | "chooseOne" }
   >[];
   const card = cardEffectOptions[0].payload.card;
   if (
@@ -777,7 +784,7 @@ const isOnCardSelection = (
 interface OnCardSelectorProps {
   selectedOptions: SelectionItem[];
   onPress: (option: SelectionItem) => void;
-  options: Extract<SelectionItem, { type: "cardEffect" }>[];
+  options: Extract<SelectionItem, { type: "cardEffect" | "chooseOne" }>[];
 }
 
 const OnCardSelector = ({
@@ -791,7 +798,7 @@ const OnCardSelector = ({
       <Card card={card} className="shadow-lg/30" size={42} />
       {options.map((option, index) => (
         <OnCardSelectorOption
-          key={option.payload.index}
+          key={index}
           isSelected={selectedOptions.indexOf(option) >= 0}
           option={option}
           onPress={() => onPress(option)}
@@ -805,7 +812,7 @@ const OnCardSelector = ({
 interface OnCardSelectorOptionProps {
   isSelected: boolean;
   onPress: () => void;
-  option: Extract<SelectionItem, { type: "cardEffect" }>;
+  option: Extract<SelectionItem, { type: "cardEffect" | "chooseOne" }>;
   hotkey?: string | undefined;
 }
 
@@ -823,7 +830,6 @@ const OnCardSelectorOption = ({
   return (
     <VisualEffectBoxComponent
       onClick={onPress}
-      key={option.payload.index}
       card={option.payload.card}
       visualEffectBox={option.payload.visualEffectBox}
       className={cn(
