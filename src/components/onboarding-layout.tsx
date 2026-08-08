@@ -46,6 +46,7 @@ export const OnboardingLayout = ({
         ref={planetariumRef}
         className="planetarium flex flex-2 flex-col overflow-auto">
         <ReportBugButton />
+        <DiscordButton />
         <LanguageSelection />
         {withHeader ? (
           <>
@@ -88,6 +89,29 @@ export const ReportBugButton = () => {
         onClick={() => {
           openContactPopup();
           closeMainMenu();
+        }}
+      />
+    </div>
+  );
+};
+export const DiscordButton = () => {
+  const tooltip = useTooltip({
+    enabled: true,
+    title: "Discord",
+    content: "",
+  });
+  return (
+    <div className="absolute right-10 bottom-48 cursor-pointer rounded-full bg-space-500 p-0 shadow-xl/50 inset-shadow-xs inset-shadow-taupe-100/10 transition-[filter] hover:brightness-120 active:brightness-150">
+      <img
+        src="/discord.png"
+        className=""
+        // cause w-18 is not natively supported in tailwind
+        width={72}
+        height={72}
+        onMouseEnter={tooltip.setTooltip}
+        onMouseLeave={tooltip.closeTooltip}
+        onClick={() => {
+          window.open("https://discord.gg/MapGcWNJcp", '_blank')!.focus();
         }}
       />
     </div>

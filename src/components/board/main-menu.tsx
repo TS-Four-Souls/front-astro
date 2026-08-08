@@ -1,7 +1,7 @@
 import { HotkeyScope } from "@/utils/hotkey";
 import { socket } from "@/utils/socket";
 import { Button } from "../button";
-import { ReportBugButton } from "../onboarding-layout";
+import { DiscordButton, ReportBugButton } from "../onboarding-layout";
 import { useGameContext } from "./contexts/game-context";
 import { useMainMenuContext } from "./contexts/main-menu-context";
 import { usePromptContext } from "./contexts/prompt-context";
@@ -464,6 +464,7 @@ export const MainMenu = () => {
         label={t("gameStep.mainMenu.quitButton.label")}
       />
       <LanguageSelection />
+      <DiscordButton />
       <ReportBugButton />
     </div>
   );
