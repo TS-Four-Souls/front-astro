@@ -336,8 +336,8 @@ export const AdminHourlyStatistics = ({ data }: { data: AdminResponse }) => {
               className="group flex min-w-0 flex-1 flex-col items-center gap-1"
               title={`${label}: ${stat.gameCount} game${stat.gameCount === 1 ? "" : "s"}`}>
               <div className="flex h-48 w-full flex-col justify-end border-b border-space-400">
-                <span className="mb-1 text-center text-xs text-space-100 opacity-0 transition-opacity group-hover:opacity-100">
-                  {stat.gameCount}
+                <span className="mb-1 text-center text-xs text-space-100">
+                  {stat.gameCount > 0 ? stat.gameCount : ""}
                 </span>
                 <div
                   className="w-full rounded-t bg-space-200 transition-colors group-hover:bg-space-100"
