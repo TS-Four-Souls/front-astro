@@ -76,7 +76,7 @@ export const LanguageProvider = ({
         txt = txt.replaceAll(`{{${key}}}`, ts(value));
       else if (Array.isArray(value))
         txt = txt.replaceAll(`{{${key}}}`, value.map((v) => ts(v)).join(", "));
-      else txt = txt.replaceAll(`{{${key}}}`, value);
+      else txt = txt.replaceAll(`{{${key}}}`, value.toString());
     }
     return txt;
   }
