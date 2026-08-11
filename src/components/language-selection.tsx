@@ -5,6 +5,7 @@ import { useLanguageContext } from "./contexts/language-context";
 const languageLabelMap: Record<LANGUAGE_CODE, string> = {
   en: "English",
   fr: "Français",
+  pt: "Português",
   es: "Español",
 };
 
