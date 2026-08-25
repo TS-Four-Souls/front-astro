@@ -566,6 +566,7 @@ export const BooleanOption = ({
   children,
   selected,
 }: TemplateOptionProps<"boolean">) => {
+  const { t } = useLanguageContext();
   return (
     <div
       className={cn(
@@ -577,7 +578,7 @@ export const BooleanOption = ({
       )}
       onClick={onPress}>
       <p className={cn("px-6 py-4 text-center text-lg font-bold")}>
-        {option.payload ? "Yes" : "No"}
+        {option.payload ? t("common.yes") : t("common.no")}
       </p>
       {children}
     </div>

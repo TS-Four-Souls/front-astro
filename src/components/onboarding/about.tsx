@@ -165,6 +165,13 @@ export const About = ({ onClose }: AboutProps) => {
         </ul>
         <h3 className="mt-8 text-center font-main text-2xl font-bold">Icons</h3>
         <CreditsItem name="Meigasuu" image="/mei.png" />
+        <h3 className="mt-4 mb-2 text-center font-main text-2xl font-bold">
+          Brazilian Portuguese translation
+        </h3>
+        <ul className="flex flex-wrap justify-center gap-16 text-center font-main text-lg">
+          <CreditsItem name="chocolover80" image="/avatar_chocolover80.jpeg" />
+          <CreditsItem name="BlackStripes" image="/avatar_blackStripes.png" />
+        </ul>
         <h3 className="mt-8 text-center font-main text-2xl font-bold">
           Spanish translation
         </h3>
