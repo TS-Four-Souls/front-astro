@@ -7,19 +7,20 @@ export type BasicSerializedTranslation = z.infer<
   typeof basicSerializedTranslationSchema
 >;
 
-export const serializedTranslationSchema = basicSerializedTranslationSchema.extend({
-  interpolates: z
-    .record(
-      z.string(),
-      z.union([
+export const serializedTranslationSchema =
+  basicSerializedTranslationSchema.extend({
+    interpolates: z
+      .record(
         z.string(),
-        z.number(),
-        basicSerializedTranslationSchema,
-        z.array(basicSerializedTranslationSchema),
-      ]),
-    )
-    .optional(),
-});
+        z.union([
+          z.string(),
+          z.number(),
+          basicSerializedTranslationSchema,
+          z.array(basicSerializedTranslationSchema),
+        ]),
+      )
+      .optional(),
+  });
 export type SerializedTranslation = z.infer<typeof serializedTranslationSchema>;
 
 export const identifierTypeSchema = z.object({
