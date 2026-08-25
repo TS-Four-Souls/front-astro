@@ -169,8 +169,8 @@ export const About = ({ onClose }: AboutProps) => {
           Brazilian Portuguese translation
         </h3>
         <ul className="flex flex-wrap justify-center gap-16 text-center font-main text-lg">
-          <CreditsItem name="chocolover80" image="/avatar_chocolover80.jpeg" />
-          <CreditsItem name="BlackStripes" image="/avatar_blackStripes.png" />
+          <CreditsItem name="chocolover80" image="/avatar_chocolover80.webp" />
+          <CreditsItem name="BlackStripes" image="/avatar_blackStripes.webp" />
         </ul>
         <h3 className="mt-8 text-center font-main text-2xl font-bold">
           Spanish translation

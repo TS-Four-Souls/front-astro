@@ -111,7 +111,7 @@ export const DiscordButton = () => {
         onMouseEnter={tooltip.setTooltip}
         onMouseLeave={tooltip.closeTooltip}
         onClick={() => {
-          window.open("https://discord.gg/MapGcWNJcp", '_blank')!.focus();
+          window.open("https://discord.gg/MapGcWNJcp", "_blank")!.focus();
         }}
       />
     </div>
