@@ -404,8 +404,8 @@ export const Center = ({ state }: CenterProps) => {
                 : undefined
             }
             onClickTopCardHotkey={
-              targetableMonsters.includes("topDeck")
-                ? `${targetableMonsters.indexOf("topDeck") + 1}`
+              targetableMonsters.includes("top")
+                ? `${targetableMonsters.indexOf("top") + 1}`
                 : undefined
             }
             onClickTopCard={() =>
