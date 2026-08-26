@@ -8,6 +8,7 @@ import { usePromptContext } from "./contexts/prompt-context";
 import { useToastContext } from "./contexts/toast-context";
 import { useLanguageContext } from "../contexts/language-context";
 import { LanguageSelection } from "../language-selection";
+import type { SelectionItem, StackElement, StackElementJson } from "@/shared/api";
 
 export const MainMenu = () => {
   const { addPrompt, removePrompt } = usePromptContext();
@@ -310,7 +311,7 @@ export const MainMenu = () => {
       },
     });
   };
-
+  
   const debugPutMonsterCardInSlot = () => {
     socket.emit("debugListMonsterDeck", (response) => {
       switch (response.status) {
@@ -388,6 +389,94 @@ export const MainMenu = () => {
     });
   };
 
+  const selectDiceValue = (selections: SelectionItem[]) => {
+    if(selections[0].type !== "stackElement" || selections[0].payload.type !== "diceRoll")
+      return
+    const dice = selections[0].payload;
+
+    const promptId2 = `debug-dice-value-${Date.now()}`;
+    addPrompt({
+      promptId: promptId2,
+      isUnique: false,
+      prompt: t("pending.changeDiceRoll"),
+      options: 
+      [1,2,3,4,5,6].map(value => {return { type: "number" as const, payload: value }}),
+      minCount: 1,
+      maxCount: 1,
+      onSubmit: (selections2) => {
+        const value = selections2[0].payload;
+        socket.emit(
+          "debugChangeDiceResult",
+          {
+            dice,
+            value
+          },
+          (response) => {
+            if (response.status === 200) {
+              removePrompt(promptId2);
+            } else {
+              toast(
+                "error",
+                t(
+                  "gameStep.cheats.changeDice.errorToast.title",
+                ),
+                translateError(response.error),
+              );
+            }
+          },
+        );
+      },
+      onCancel: () => {
+        removePrompt(promptId2);
+      },
+    });
+  }
+  const debugChangeDiceResult = () => {
+    socket.emit("debugListAvailableDices", (response) => {
+      switch (response.status) {
+        case 200:
+          if(response.dices.length === 0)
+            return;
+          if(response.dices.length === 1)
+          {
+            selectDiceValue(response.dices.map((dice) => ({
+              type: "stackElement",
+              payload: dice,
+            })));
+          }
+          else{
+            const promptId = `debug-list-dices-${Date.now()}`;
+            addPrompt({
+              promptId,
+              isUnique: false,
+              prompt: t("selector.diceRoll"),
+              options: response.dices.map((dice) => ({
+                type: "stackElement",
+                payload: dice,
+              })),
+              minCount: 1,
+              maxCount: 1,
+              onSubmit: (selections:SelectionItem[]) => {
+                removePrompt(promptId);
+                selectDiceValue(selections);
+              },
+              onCancel: () => {
+                removePrompt(promptId);
+              },
+            });
+          }
+          break;
+        case 400:
+          toast(
+            "error",
+            t("gameStep.cheats.changeDice.listDicesErrorToast.title"),
+            translateError(response.error),
+          );
+          break;
+      }
+    });
+  };
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
@@ -435,6 +524,13 @@ export const MainMenu = () => {
               debugPutMonsterCardInSlot();
             }}
             label={t("gameStep.cheats.putMonsterCardInSlot.label")}
+          />
+          <Button
+            onClick={() => {
+              closeMainMenu();
+              debugChangeDiceResult();
+            }}
+            label={t("gameStep.cheats.changeDice.label")}
           />
           <Button
             onClick={() => {
