@@ -335,14 +335,17 @@ export const MainMenu = () => {
                 promptId: promptId2,
                 isUnique: false,
                 prompt: t("gameStep.attack.popup.title"),
-                options: response.coverable.map((card) => ({
-                  type: "card",
-                  payload: card,
-                })),
+                options: 
+                [ { type: "deck" as const, payload: "monster" as const }, 
+                  ...response.coverable.map((card) => ({
+                    type: "card" as const,
+                    payload: card,
+                  }))
+                ],
                 minCount: 1,
                 maxCount: 1,
                 onSubmit: (selections2) => {
-                  const toCover = selections2[0].payload;
+                  const toCover = selections2[0].type === "deck" ? "top" : selections2[0].payload;
                   socket.emit(
                     "debugPutMonsterCardInSlot",
                     {
