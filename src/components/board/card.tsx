@@ -1,4 +1,6 @@
+import { useEffect, useState } from "react";
 import { cn } from "../../utils/cn";
+import { DEFAULT_LANGUAGE } from "../../utils/translate"
 import type { TemporaryEffect, VisualEffectBox } from "@/shared/api";
 import { TemporaryEffectCard } from "./temporary-effect-card";
 import { SELF_BASE_URL } from "astro:env/client";
@@ -353,10 +355,21 @@ export const CardImage = ({
 }) => {
   const { aspectRatio, borderRadius } = getOrientationParameters(orientation);
   const { language } = useLanguageContext();
+  const [useEnglishFallback, setUseEnglishFallback] = useState(false);
+
+  const cardKey = typeof card === "string" ? card : card.slug;
+
+  useEffect(() => {
+    setUseEnglishFallback(false);
+  }, [cardKey, language]);
+
+  const imageLanguage =
+    useEnglishFallback ? DEFAULT_LANGUAGE : language;
+
   const src =
     typeof card === "string"
-      ? `${SELF_BASE_URL}/images/back/${card}_256.webp`
-      : `${SELF_BASE_URL}/images/front/${card.slug}_256_${language}.webp`;
+      ? `${SELF_BASE_URL}/images/back/${card}_256_${imageLanguage}.webp`
+      : `${SELF_BASE_URL}/images/front/${card.slug}_256_${imageLanguage}.webp`;
 
   const alt = typeof card === "string" ? card : card.slug;
 
@@ -364,14 +377,14 @@ export const CardImage = ({
     orientation === "portrait" ? PORTRAIT_WIDTHS : LANDSCAPE_WIDTHS;
 
   const srcSet =
-    "\n" +
+   "\n" +
     widths
-      .map((size) =>
-        typeof card === "string"
-          ? `${SELF_BASE_URL}/images/back/${card}_${size}.webp ${size}w`
-          : `${SELF_BASE_URL}/images/front/${card.slug}_${size}_${language}.webp ${size}w`,
-      )
-      .join(",\n");
+    .map((size) =>
+      typeof card === "string"
+        ? `${SELF_BASE_URL}/images/back/${card}_${size}_${imageLanguage}.webp ${size}w`
+        : `${SELF_BASE_URL}/images/front/${card.slug}_${size}_${imageLanguage}.webp ${size}w`,
+    )
+    .join(",\n");
 
   return (
     <img
@@ -383,6 +396,11 @@ export const CardImage = ({
       className={className}
       draggable={false}
       onClick={onClick}
+      onError={() => {
+        if (language !== DEFAULT_LANGUAGE) {
+          setUseEnglishFallback(true);
+        }
+      }}
       style={{ borderRadius, aspectRatio, ...style }}
     />
   );
