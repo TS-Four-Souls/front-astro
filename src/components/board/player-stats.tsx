@@ -215,7 +215,10 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
         {isNextInstance && (
           <img src="/input-prompts/keyboard_s_outline.svg" className="size-6" />
         )}
-        <TeamIcon team={player.team} className="size-5 shrink-0" />
+        <TeamIcon
+          team={player.team}
+          className="size-5 shrink-0 drop-shadow-sm drop-shadow-taupe-800"
+        />
         {name}
       </p>
       <div
@@ -237,7 +240,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
         <img
           ref={(el) => registerPlayerAnchor(name, "coins", el)}
           src="/coin.png"
-          className="size-6 rounded-full shadow-lg shadow-taupe-800/30"
+          className="size-6 rounded-full drop-shadow-md drop-shadow-taupe-800/60"
           draggable={false}
         />
         <span className="text-shadow-lg text-shadow-taupe-800/70">:</span>{" "}

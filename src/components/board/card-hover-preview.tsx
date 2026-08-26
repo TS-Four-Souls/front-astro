@@ -8,7 +8,7 @@ import {
 import type { TemporaryEffect } from "@/shared/api";
 
 interface CardHoverPreviewProps {
-  card: { slug: string } | CardType;
+  card: { slug: string; globalId?: number } | CardType;
   stats?: {
     healthPoints: number;
     attackPoints: number;
@@ -46,6 +46,7 @@ export const CardHoverPreview = ({
       <div>
         {typeof card === "object" && "slug" in card && (
           <Card
+            globalId={card.globalId}
             card={{ slug: card.slug }}
             stats={stats}
             effects={effects}

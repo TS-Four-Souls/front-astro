@@ -6,7 +6,7 @@ import type {
 } from "@/shared/api";
 import { cn } from "@/utils/cn";
 import { Dice } from "@/icons/dice";
-import { Card, CardImage, CardType } from "./card";
+import { Card, CardImage } from "./card";
 import { usePopoverContext } from "./contexts/popover-context";
 import { useLanguageContext } from "../contexts/language-context";
 import { replaceTokens } from "@/utils/replaceToken";
@@ -362,13 +362,12 @@ const Icon = ({ element }: IconProps) => {
       return (
         <div
           className={cn(
-            "aspect-square overflow-hidden rounded-lg border-[0.15em] bg-taupe-700",
+            "relative aspect-square size-10 overflow-hidden rounded-lg border-[0.15em] bg-taupe-700",
           )}
           style={{ borderColor }}>
-          <CardImage
-            sizes="2.5em"
-            card={CardType.LootCard}
-            className="translate-y-[-17%] scale-155"
+          <img
+            src="/lootcard.png"
+            className="absolute origin-bottom scale-155"
           />
         </div>
       );
@@ -378,14 +377,10 @@ const Icon = ({ element }: IconProps) => {
       return (
         <div
           className={cn(
-            "aspect-square overflow-hidden rounded-lg border-[0.15em] bg-taupe-700",
+            "aspect-square size-10 overflow-hidden rounded-lg border-[0.15em] bg-taupe-700",
           )}
           style={{ borderColor }}>
-          <CardImage
-            sizes="2.5em"
-            card={CardType.CharacterCard}
-            className="translate-y-[-17%] scale-155"
-          />
+          <img src="/eot.png" />
         </div>
       );
     }

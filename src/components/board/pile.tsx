@@ -260,6 +260,7 @@ export const Pile = ({
                     ? entityBoardSelectionState?.selectionIndex
                     : undefined
                 }
+                globalId={index === array.length - 1 ? globalId : undefined}
                 orientation={orientation}
               />
               {index === array.length - 1 && (

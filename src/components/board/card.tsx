@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { cn } from "../../utils/cn";
-import { DEFAULT_LANGUAGE } from "../../utils/translate"
+import { DEFAULT_LANGUAGE } from "../../utils/translate";
 import type { TemporaryEffect, VisualEffectBox } from "@/shared/api";
 import { TemporaryEffectCard } from "./temporary-effect-card";
 import { SELF_BASE_URL } from "astro:env/client";
@@ -28,6 +28,7 @@ interface CardProps {
   className?: string;
   brightness?: number;
   hotkey?: string;
+  globalId?: number;
   selectionIndex?: number;
   effects?: TemporaryEffect[];
   visualEffectBox?: {
@@ -86,6 +87,7 @@ export const Card = ({
   orientation = "portrait",
   effects,
   counter,
+  globalId = 0,
   onMouseEnter,
   onMouseLeave,
 }: CardProps) => {
@@ -188,15 +190,23 @@ export const Card = ({
           </div>
         )}
 
-        {counter !== undefined && (
-          <div
-            className="pointer-events-none absolute bottom-[3%] left-[50%] flex items-center justify-center rounded-full font-statblock text-black"
-            style={{
-              fontSize: size * 0.09 + "em",
-              width: "0%",
-              height: size * 0.005 + "em",
-            }}>
-            {counter > 0 ? counter.toString().replaceAll("0", "O") : counter}
+        {counter !== undefined && counter > 0 && (
+          <div className="absolute top-[38%] bottom-[45%] left-[6%] size-[25%]">
+            <img
+              src="/counter.png"
+              alt="Logo"
+              className="size-full object-contain"
+              style={{
+                filter: `brightness(150%) hue-rotate(${globalId ** 3 + globalId * 17}deg)`,
+              }}
+            />
+            <span
+              className="absolute inset-0 flex items-center justify-center font-alt-stats font-bold text-black text-shadow-[0_0_0.2em] text-shadow-white"
+              style={{
+                fontSize: size * 0.09 * (counter > 9 ? 0.8 : 1) + "em",
+              }}>
+              {counter}
+            </span>
           </div>
         )}
 
@@ -363,8 +373,7 @@ export const CardImage = ({
     setUseEnglishFallback(false);
   }, [cardKey, language]);
 
-  const imageLanguage =
-    useEnglishFallback ? DEFAULT_LANGUAGE : language;
+  const imageLanguage = useEnglishFallback ? DEFAULT_LANGUAGE : language;
 
   const src =
     typeof card === "string"
@@ -377,14 +386,14 @@ export const CardImage = ({
     orientation === "portrait" ? PORTRAIT_WIDTHS : LANDSCAPE_WIDTHS;
 
   const srcSet =
-   "\n" +
+    "\n" +
     widths
-    .map((size) =>
-      typeof card === "string"
-        ? `${SELF_BASE_URL}/images/back/${card}_${size}_${imageLanguage}.webp ${size}w`
-        : `${SELF_BASE_URL}/images/front/${card.slug}_${size}_${imageLanguage}.webp ${size}w`,
-    )
-    .join(",\n");
+      .map((size) =>
+        typeof card === "string"
+          ? `${SELF_BASE_URL}/images/back/${card}_${size}_${imageLanguage}.webp ${size}w`
+          : `${SELF_BASE_URL}/images/front/${card.slug}_${size}_${imageLanguage}.webp ${size}w`,
+      )
+      .join(",\n");
 
   return (
     <img

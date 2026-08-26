@@ -1,3 +1,5 @@
+import { cn } from "@/utils/cn";
+
 interface RoundCounterProps {
   className?: string;
   style?: React.CSSProperties;
@@ -10,28 +12,17 @@ export const RoundCounter = ({
   value,
 }: RoundCounterProps) => {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={48}
-      height={48}
-      viewBox="0 0 512 512"
-      className={className}
-      style={style}>
-      <path
-        fill="#111"
-        d="M 243.92252,57.941432 86.38754,329.22986 A 9.7347073,9.7347073 60.071693 0 0 94.805837,343.853 H 414.82972 a 11.095878,11.095878 119.92831 0 0 9.5954,-16.66785 L 268.07748,57.941432 a 13.966096,13.966096 0 0 0 -24.15496,0 z M 188.00259,80.291497 110.9759,136.02936 A 94.197738,94.197738 117.05492 0 0 72,212.34294 v 72.26715 a 10.107312,10.107312 15.071759 0 0 18.847815,5.07557 L 204.0264,94.78368 A 11.043261,11.043261 42.12668 0 0 188.00259,80.291497 Z M 308.41157,95.540926 423.5282,293.77859 A 8.83316,8.83316 164.92813 0 0 440,289.34283 V 215.5418 A 100.46172,100.46172 62.944787 0 0 398.43145,134.15291 L 324.70523,80.804475 A 11.229318,11.229318 137.87292 0 0 308.41157,95.540926 Z M 104.08536,370.985 224.86309,458.38101 a 53.113865,53.113865 0 0 0 62.27382,0 L 406.52795,371.98843 A 6.7046708,6.7046708 72.055057 0 0 402.59748,359.852 H 107.69087 a 6.1503372,6.1503372 107.94494 0 0 -3.60551,11.133 z"
+    <div className="relative">
+      <img
+        src="d8.png"
+        width={48}
+        height={48}
+        className={className}
+        style={style}
       />
-      <text
-        x="256"
-        y="256"
-        text-anchor="middle"
-        dominant-baseline="middle"
-        fill="#ff3322"
-        font-size="144"
-        font-weight="700"
-        font-family="sans-serif">
-        {value}
-      </text>
-    </svg>
+      <div className="absolute top-[14px] left-[12px] grid size-5 -rotate-7 place-content-center place-items-center font-alt-stats text-black">
+        <span className={cn(value > 9 && "text-2xs")}>{value}</span>
+      </div>
+    </div>
   );
 };
