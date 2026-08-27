@@ -97,8 +97,13 @@ const characterDeckSchema = z.object({
   cards: z.array(characterCardSchema),
 });
 
-const cardEffectSchema = z.object({
+const serializedCardAndBoxSchema = z.object({
   card: cardSchema,
+  visualEffectBox: VisualEffectBoxSchema.optional(),
+});
+export type SerializedCardAndBox = z.infer<typeof serializedCardAndBoxSchema>;
+
+const cardEffectSchema = serializedCardAndBoxSchema.extend({
   visualEffectBox: VisualEffectBoxSchema,
   index: z.union([z.literal("tap"), z.number()]),
 });
@@ -108,10 +113,9 @@ export interface SetCardCountRequest {
   slug: string;
   count: number;
 }
-const serializedChooseOneSchema = z.object({
+const serializedChooseOneSchema = serializedCardAndBoxSchema.extend({
   description: z.string(),
-  card: cardSchema,
-  visualEffectBox: VisualEffectBoxSchema,
+  visualEffectBox: VisualEffectBoxSchema
 });
 export type SerializedChooseOne = z.infer<typeof serializedChooseOneSchema>;
 
@@ -188,10 +192,14 @@ const selectionItemSchema: z.ZodType<SelectionItem> = z.lazy(() =>
   ]),
 );
 
+const pendingSelectionReasonSchema = z.union([serializedCardAndBoxSchema, z.literal("death"), z.literal("maxHandSize"), z.literal("coinGift"), z.literal("miniDraft"), z.literal("activation")]);
+export type PendingSelectionReason = z.infer<typeof pendingSelectionReasonSchema>;
+
 const pendingSelectionSchema = z.object({
   requestId: z.number(),
   description: serializedTranslationSchema,
   options: z.array(selectionItemSchema),
+  reason: pendingSelectionReasonSchema,
   min: z.number(),
   max: z.number(),
   canUseOnBoardSelection: z.boolean(),
@@ -761,7 +769,7 @@ const playerSchema = z.object({
     canSwitchTo: capabilitySchema,
     canDonateCoinsTo: capabilitySchema,
   }),
-  pendingSelection: z.boolean(),
+  pendingSelection: pendingSelectionReasonSchema.optional(),
 });
 export type Player = z.infer<typeof playerSchema>;
 
