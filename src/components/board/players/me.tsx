@@ -17,12 +17,11 @@ import { useLanguageContext } from "@/components/contexts/language-context";
 export const Me = () => {
   const { ts, t, translateError } = useLanguageContext();
   const { state, isHandUp } = useGameContext();
-  const { toast, dismiss, block } = useToastContext();
+  const { toast, block } = useToastContext();
   const { addPrompt, removePrompt, clearPrompts } = usePromptContext();
   const { registerInPlayCardEl } = useGameAnimation();
   const { openMenu } = useMainMenuContext();
 
-  const pendingSelectionsToastIds = useRef<Map<string, string>>(new Map());
   const pendingSelectionsPrompts = useRef<string | undefined>(undefined);
 
   useHotkeys("escape", openMenu, {
@@ -38,41 +37,6 @@ export const Me = () => {
   useEffect(() => {
     return () => clearPrompts();
   }, []);
-
-  useEffect(() => {
-    console.log("state", state);
-    console.log("pendingSelections", pendingSelectionsToastIds.current);
-
-    for (const [playerName, promptId] of pendingSelectionsToastIds.current) {
-      if (!state.players.some((player) => player.name === playerName)) {
-        dismiss(promptId);
-        pendingSelectionsToastIds.current.delete(playerName);
-      }
-    }
-
-    for (const player of state.players) {
-      if (player.pendingSelection) {
-        if (pendingSelectionsToastIds.current.has(player.name)) {
-          continue;
-        }
-        const toastId = toast(
-          "info",
-          t("gameStep.pendingSelection.waitingForOtherPlayerToast.title", {
-            player: player.name,
-          }),
-          t("gameStep.pendingSelection.waitingForOtherPlayerToast.message"),
-          { duration: Infinity },
-        );
-        pendingSelectionsToastIds.current.set(player.name, toastId);
-      } else {
-        const toastId = pendingSelectionsToastIds.current.get(player.name);
-        if (toastId) {
-          dismiss(toastId);
-          pendingSelectionsToastIds.current.delete(player.name);
-        }
-      }
-    }
-  }, [state.players, toast, dismiss]);
 
   useEffect(() => {
     const pendingSelection = state.me.pendingSelection;

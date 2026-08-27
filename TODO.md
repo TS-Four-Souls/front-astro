@@ -13,3 +13,5 @@
 - Being able to continue playing with one less player if they leave
 - I like the UI, it works well for 4 players, containing all necessary information, but for 2 players it should be bigger
 - If new board state, refresh prompt options
+
+- Four players, side players cards are not aligned center when inplay is just one column
