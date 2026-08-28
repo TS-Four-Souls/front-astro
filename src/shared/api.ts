@@ -198,7 +198,6 @@ const pendingSelectionReasonSchema = z.union([
   z.literal("maxHandSize"),
   z.literal("coinGift"),
   z.literal("miniDraft"),
-  z.literal("activation"),
 ]);
 export type PendingSelectionReason = z.infer<
   typeof pendingSelectionReasonSchema
