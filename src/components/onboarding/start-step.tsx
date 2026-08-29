@@ -453,14 +453,14 @@ export const StartStep = ({ room }: StartStepProps) => {
               <input
                 ref={loadGameInputRef}
                 type="file"
-                accept=".log,text/plain"
+                accept=".json"
                 className="hidden"
                 onChange={onLoadGameFileSelected}
               />
               <input
                 ref={loadParametersInputRef}
                 type="file"
-                accept=".txt,text/plain"
+                accept=".json"
                 className="hidden"
                 onChange={onLoadParametersFileSelected}
               />
