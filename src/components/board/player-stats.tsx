@@ -24,7 +24,7 @@ interface PlayerStatsProps {
 
 export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
   const { translateError, t } = useLanguageContext();
-  const { state } = useGameContext();
+  const { state, parameters, isCheatViewOpen } = useGameContext();
   const { toast, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
   const { setPopover, closePopover } = usePopoverContext();
@@ -151,6 +151,42 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
     });
   };
 
+  const gainCoinsCheat = () => {
+    const promptId = `debug-gain-coins-${Date.now()}`;
+    addPrompt({
+      promptId,
+      isUnique: false,
+      prompt: t("gameStep.cheats.gainGoin.popup.title"),
+      options: Array.from({ length: 10 }, (_, i) => ({
+        type: "number",
+        payload: i + 1,
+      })),
+      minCount: 1,
+      maxCount: 1,
+      onSubmit: (selections) => {
+        const coins = selections[0].payload as number;
+        socket.emit(
+          "debugGainCoins",
+          { coins },
+          (response) => {
+            if (response.status === 200) {
+              removePrompt(promptId);
+            } else {
+              toast(
+                "error",
+                t("gameStep.cheats.gainGoin.popup.errorToast.title"),
+                translateError(response.error),
+              );
+            }
+          },
+        );
+      },
+      onCancel: () => {
+        removePrompt(promptId);
+      },
+    });
+  };
+
   const { setTooltip: setCoinTooltip, closeTooltip: closeCoinTooltip } =
     useTooltip(
       player.capabilities.canDonateCoinsTo === true && !isMe
@@ -225,7 +261,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
         onMouseEnter={setCoinTooltip}
         onMouseLeave={closeCoinTooltip}
         className={cn(
-          "flex items-center gap-1",
+          "relative flex items-center gap-1",
           player.capabilities.canDonateCoinsTo === true
             ? "cursor-pointer"
             : "cursor-not-allowed",
@@ -237,6 +273,18 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
             onCoinPress,
           )
         }>
+        {isMe && parameters.allowCheatOptions.value && isCheatViewOpen && (
+          <button
+            type="button"
+            onClick={(event) => {
+              event.stopPropagation();
+              gainCoinsCheat();
+            }}
+            className="cheat-button absolute -left-2 -top-2 z-10 flex h-5 w-5 items-center justify-center rounded-full text-[12px] font-bold leading-none text-white shadow-md shadow-taupe-950/50 hover:brightness-110"
+            aria-label="Add coins cheat">
+            +
+          </button>
+        )}
         <img
           ref={(el) => registerPlayerAnchor(name, "coins", el)}
           src="/coin.png"

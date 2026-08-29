@@ -10,7 +10,7 @@ import { Pile } from "./pile";
 import { useLanguageContext } from "../contexts/language-context";
 
 export const Hand = () => {
-  const { state, isHandUp, setIsHandUp } = useGameContext();
+  const { state, isHandUp, setIsHandUp, isCheatViewOpen } = useGameContext();
   const { toast, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
   const { registerMeHandCardEl } = useGameAnimation();
@@ -79,6 +79,7 @@ export const Hand = () => {
             key={card.slug}
             ref={(el) => registerMeHandCardEl(card.globalId, el)}>
             <Pile
+              isCheatViewOpen = {isCheatViewOpen ? ["discard"] : []}
               globalId={card.globalId}
               cards={[{ slug: card.slug }]}
               className={cn(

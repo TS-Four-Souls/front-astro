@@ -24,6 +24,7 @@ import { Button } from "../button";
 import { DeckConfigPopup, type DeckTypes } from "./deck-config-popup";
 import { useLanguageContext } from "../contexts/language-context";
 import { Lock } from "@/icons/lock";
+import { useGameContext } from "../board/contexts/game-context";
 
 interface StartStepProps {
   room: Room;
@@ -875,9 +876,15 @@ const DeckPile = ({
   count: number;
   onClick: () => void;
 }) => {
+  const { isCheatViewOpen } = useGameContext();
+  const cheats:("discard" | "drawLoot" | "selectLoot" | "drawTreasure" | "selectTreasure" | "putInSlot")[] = type === CardType.LootCard ? ["drawLoot", "selectLoot"] :
+                          CardType.TreasureCard ? ["drawTreasure", "selectTreasure"] :
+                          CardType.MonsterCard ? ["putInSlot"] :
+                          [];
   return (
     <div className="flex flex-col items-center gap-4">
       <Pile
+        isCheatViewOpen = {isCheatViewOpen ? cheats : []}
         topCardClassName={cn(
           count === 0 &&
             "bg-space-500/30 inset-shadow-sm inset-shadow-black shadow-none",

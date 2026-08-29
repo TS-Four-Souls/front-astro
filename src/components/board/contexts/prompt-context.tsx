@@ -24,6 +24,10 @@ export interface Prompt<T extends SelectionItem = SelectionItem> {
    */
   maxCount: number;
   /**
+   * Initial selected options to pre-populate in the prompt.
+   */
+  initialSelectedOptions?: T[];
+  /**
    * Whether board selection is allowed for this prompt
    * @default true
    */

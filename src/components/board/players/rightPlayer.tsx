@@ -44,6 +44,7 @@ export const RightPlayer = ({ player }: RightPlayerProps) => {
                 key={card.globalId}
                 ref={(el) => registerInPlayCardEl(card.globalId, el)}>
                 <Pile
+                  isCheatViewOpen = {[]}
                   globalId={card.globalId}
                   cards={[
                     {

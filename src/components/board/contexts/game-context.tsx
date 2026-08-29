@@ -8,6 +8,8 @@ interface GameContextProps {
   parameters: GameParametersJson;
   isHandUp: boolean;
   setIsHandUp: (isHandUp: boolean) => void;
+  isCheatViewOpen: boolean;
+  setIsCheatViewOpen: (isCheatViewOpen: boolean) => void;
 }
 
 const GameContext = createContext<GameContextProps>({
@@ -15,6 +17,8 @@ const GameContext = createContext<GameContextProps>({
   parameters: undefined as unknown as GameParametersJson,
   isHandUp: false,
   setIsHandUp: () => {},
+  isCheatViewOpen: false,
+  setIsCheatViewOpen: () => {},
 });
 
 interface GameProviderProps {
@@ -29,6 +33,7 @@ export const GameProvider = ({
   parameters,
 }: GameProviderProps) => {
   const [isHandUp, setIsHandUp] = useState(false);
+  const [isCheatViewOpen, setIsCheatViewOpen] = useState(false);
   useHotkeys("shift", (e) => setIsHandUp(e.type === "keydown"), {
     scopes: [HotkeyScope.Main],
     keydown: true,
@@ -36,7 +41,15 @@ export const GameProvider = ({
   });
 
   return (
-    <GameContext.Provider value={{ state, parameters, isHandUp, setIsHandUp }}>
+    <GameContext.Provider
+      value={{
+        state,
+        parameters,
+        isHandUp,
+        setIsHandUp,
+        isCheatViewOpen,
+        setIsCheatViewOpen,
+      }}>
       {children}
     </GameContext.Provider>
   );

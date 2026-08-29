@@ -16,7 +16,7 @@ import { useLanguageContext } from "@/components/contexts/language-context";
 
 export const Me = () => {
   const { ts, t, translateError } = useLanguageContext();
-  const { state, isHandUp } = useGameContext();
+  const { state, isHandUp, isCheatViewOpen } = useGameContext();
   const { toast, block } = useToastContext();
   const { addPrompt, removePrompt, clearPrompts } = usePromptContext();
   const { registerInPlayCardEl } = useGameAnimation();
@@ -206,6 +206,7 @@ export const Me = () => {
               key={card.globalId}
               ref={(el) => registerInPlayCardEl(card.globalId, el)}>
               <Pile
+                isCheatViewOpen = {isCheatViewOpen ? ["discard"] : []}
                 globalId={card.globalId}
                 onClickTopCardHotkey={
                   targetableCards.includes(card.slug)

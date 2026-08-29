@@ -7,6 +7,7 @@ import type {
   EndOfTurnJson,
   LootCardOnStackJson,
   LootStepJson,
+  SelectionItem,
   SerializedTranslation,
   StackElement as StackElementType,
 } from "@/shared/api";
@@ -22,6 +23,7 @@ import {
 } from "./contexts/board-selection-context";
 import { useGameAnimation } from "./contexts/game-animation";
 import { useGameContext } from "./contexts/game-context";
+import { usePromptContext } from "./contexts/prompt-context";
 import { useToastContext } from "./contexts/toast-context";
 import { StackElementIcon } from "./stack-element-icon";
 import { replaceTokens } from "@/utils/replaceToken";
@@ -30,8 +32,9 @@ import { PendingSelectionIcon } from "./pending-selection-icon";
 
 export const Stack = () => {
   const { ts, t, translateError } = useLanguageContext();
-  const { state, parameters } = useGameContext();
+  const { state, parameters, isCheatViewOpen } = useGameContext();
   const { toast, block } = useToastContext();
+  const { addPrompt, removePrompt, prompt } = usePromptContext();
   const { setStackEl } = useGameAnimation();
 
   const stackContainerRef = useRef<HTMLDivElement>(null);
@@ -151,6 +154,46 @@ export const Stack = () => {
     });
   }, [state]);
 
+  const changeDiceValue = (dice: DiceRollJson) => {
+    const promptId = `debug-dice-value-${Date.now()}`;
+    addPrompt({
+      promptId,
+      isUnique: false,
+      prompt: t("pending.changeDiceRoll"),
+      options: [1, 2, 3, 4, 5, 6].map((value) => ({
+        type: "number" as const,
+        payload: value,
+      })),
+      minCount: 1,
+      maxCount: 1,
+      onSubmit: (selections: SelectionItem[]) => {
+        const value = selections[0].payload;
+        if (typeof value !== "number") return;
+        socket.emit(
+          "debugChangeDiceResult",
+          {
+            dice,
+            value,
+          },
+          (response) => {
+            if (response.status === 200) {
+              removePrompt(promptId);
+            } else {
+              toast(
+                "error",
+                t("gameStep.cheats.changeDice.errorToast.title"),
+                translateError(response.error),
+              );
+            }
+          },
+        );
+      },
+      onCancel: () => {
+        removePrompt(promptId);
+      },
+    });
+  };
+
   return (
     <div
       ref={stackContainerRef}
@@ -259,6 +302,14 @@ export const Stack = () => {
                     ? `${entityBoardSelectionState.optionIndex + 1}`
                     : undefined
                 }
+                onDiceCheat={
+                  parameters.allowCheatOptions.value &&
+                  isCheatViewOpen &&
+                  element.type === "diceRoll" &&
+                  !prompt
+                    ? () => changeDiceValue(element)
+                    : undefined
+                }
               />
               {selectedStackElementId !== null &&
                 isElementInSameGroup &&
@@ -321,12 +372,14 @@ export const StackElement = ({
   isSelected = false,
   className,
   hotkey,
+  onDiceCheat,
 }: {
   element: StackElementType;
   onClick?: () => void;
   isSelected?: boolean;
   hotkey?: string;
   className?: string;
+  onDiceCheat?: () => void;
 }) => {
   useHotkeys(hotkey ?? "", () => onClick?.(), {
     enabled: hotkey !== undefined && onClick !== undefined,
@@ -352,6 +405,19 @@ export const StackElement = ({
             className="scale-150"
           />
         </div>
+      )}
+
+      {onDiceCheat && (
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onDiceCheat();
+          }}
+          className="cheat-button absolute top-1 left-1 z-10 flex h-5 w-5 items-center justify-center rounded-full text-[12px] font-bold leading-none text-white shadow-md shadow-taupe-950/50 hover:brightness-110"
+          aria-label="Change dice value">
+          +
+        </button>
       )}
     </div>
   );

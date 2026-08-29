@@ -37,6 +37,7 @@ interface CardProps {
   };
   onPileDetailsClick?: () => void;
   onClick?: () => void;
+  onRemove?: () => void;
   disabled?: boolean;
   size: number;
   orientation?: Orientation;
@@ -77,6 +78,7 @@ export const Card = ({
   className,
   brightness = 1,
   onClick,
+  onRemove,
   hotkey,
   selectionIndex,
   onPileDetailsClick,
@@ -153,6 +155,19 @@ export const Card = ({
               className="scale-150"
             />
           </div>
+        )}
+
+        {onRemove && (
+          <button
+            type="button"
+            className="cheat-button absolute top-1 right-1 z-10 flex h-5 w-5 items-center justify-center rounded-full text-sm font-bold leading-none text-white hover:brightness-110"
+            onClick={(e) => {
+              e.stopPropagation();
+              onRemove();
+            }}
+            aria-label="Remove card">
+            ×
+          </button>
         )}
 
         {typeof card === "object" && visualEffectBox && (
