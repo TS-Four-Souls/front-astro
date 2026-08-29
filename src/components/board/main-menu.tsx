@@ -494,7 +494,7 @@ export const MainMenu = () => {
           label={t("common.closeButton")}
         />
       </div>
-      <div className="flex flex-col gap-4 overflow-auto p-4 pb-8">
+      <div className="flex flex-col gap-4 overflow-auto p-4">
         {parameters.allowCheatOptions.value && (
           <>
             <Button

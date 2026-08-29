@@ -18,8 +18,8 @@ export const Board = () => {
 
   return (
     <HistoryProvider>
-      <div className="board-light relative h-screen w-screen overflow-hidden">
-        <div className="board-texture relative flex h-screen items-center justify-center overflow-hidden">
+      <div className="board-light relative h-full w-full overflow-hidden">
+        <div className="board-texture relative flex h-full w-full items-center justify-center overflow-hidden">
           <div
             ref={boardRef}
             className={cn(
@@ -49,7 +49,7 @@ export const Board = () => {
               return null;
             })}
             <div className="col-start-2 row-start-2">
-              <Center state={state} />
+              <Center />
             </div>
           </div>
         </div>

@@ -11,11 +11,10 @@ import { Pile } from "./pile";
 import { Stack } from "./stack";
 import { usePileDetails } from "./use-pile-details";
 import { useLanguageContext } from "../contexts/language-context";
-interface CenterProps {
-  state: DetailedState;
-}
+import { useGameContext } from "./contexts/game-context";
 
-export const Center = ({ state }: CenterProps) => {
+export const Center = () => {
+  const { state } = useGameContext();
   const { toast, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
   const { displayPileDetails } = usePileDetails();

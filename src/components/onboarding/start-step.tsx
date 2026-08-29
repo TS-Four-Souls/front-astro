@@ -31,7 +31,7 @@ interface StartStepProps {
 
 export const StartStep = ({ room }: StartStepProps) => {
   const { ts, t, translateError } = useLanguageContext();
-  const { gameParameters } = room;
+  const { gameParameters, isSpectator } = room;
   const { toast } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
   const loadGameInputRef = useRef<HTMLInputElement>(null);
@@ -358,7 +358,13 @@ export const StartStep = ({ room }: StartStepProps) => {
   );
 
   return (
-    <div className="grid h-full grid-rows-[300px_calc(100vh-300px-3em)] gap-4 p-4 max-[85rem]:grid-rows-none">
+    <div
+      className={cn(
+        "grid h-full gap-4 p-4 max-[85rem]:grid-rows-none",
+        isSpectator
+          ? "grid-rows-[300px_calc(100vh-300px-3em-92px)]"
+          : "grid-rows-[300px_calc(100vh-300px-3em)]",
+      )}>
       <div className="flex place-items-center justify-between gap-18 rounded-lg border-2 border-space-400 bg-space p-6 max-[85rem]:flex-col max-[85rem]:py-16">
         <div className="flex flex-col gap-2">
           <p className="font-main text-lg">{t("startStep.roomInfo.title")}</p>
@@ -384,6 +390,7 @@ export const StartStep = ({ room }: StartStepProps) => {
             <Button
               label={<Lock isLocked={!room.isJoinAllowed} />}
               theme="onSpace"
+              disabled={!isHost || isSpectator}
               className="size-10 p-2"
               tooltip={{
                 title: room.isJoinAllowed ? "Room unlocked" : "Room locked",
@@ -420,7 +427,7 @@ export const StartStep = ({ room }: StartStepProps) => {
                 key={index}
                 player={player}
                 actions={
-                  player?.isMe
+                  player?.isMe && !isSpectator
                     ? {
                         onTeamSelectionPress: (team: Team) =>
                           onTeamSelectionPress(player, team),
@@ -430,7 +437,9 @@ export const StartStep = ({ room }: StartStepProps) => {
                     : undefined
                 }
                 bottomButton={
-                  player && (isHost || (player.isMe && !player.isCopy))
+                  player &&
+                  !isSpectator &&
+                  (isHost || (player.isMe && !player.isCopy))
                     ? {
                         label: player.isCopy
                           ? t("startStep.playerList.removeButton.label")
@@ -451,7 +460,7 @@ export const StartStep = ({ room }: StartStepProps) => {
               />
             ))}
           </div>
-          {isHost && (
+          {isHost && !isSpectator && (
             <Button
               hotkey="a"
               label={t("startStep.playerList.addCopyButton.label")}
@@ -467,15 +476,15 @@ export const StartStep = ({ room }: StartStepProps) => {
             hotkey="enter"
             label={t("startStep.startButton.label")}
             className="p-4 px-8 text-lg"
-            disabled={!isHost}
+            disabled={!isHost || isSpectator}
             theme="onSpace"
             tooltip={{
               title: t("startStep.startButton.nonHostTooltip.title"),
               content: t("startStep.startButton.nonHostTooltip.message"),
-              enabled: !isHost,
+              enabled: !isHost || isSpectator,
             }}
           />
-          {isHost && (
+          {isHost && !isSpectator && (
             <>
               <Button
                 onClick={onLoadGamePress}
@@ -519,7 +528,7 @@ export const StartStep = ({ room }: StartStepProps) => {
               label={t("startStep.gameParams.resetButton.label")}
               className="flex-1"
               theme="onSpace"
-              disabled={!isHost}
+              disabled={!isHost || isSpectator}
               tooltip={{
                 title: t(
                   "startStep.gameParams.resetButton.nonHostTooltip.title",
@@ -527,7 +536,7 @@ export const StartStep = ({ room }: StartStepProps) => {
                 content: t(
                   "startStep.gameParams.resetButton.nonHostTooltip.message",
                 ),
-                enabled: !isHost,
+                enabled: !isHost || isSpectator,
               }}
             />
             <Button
@@ -535,7 +544,7 @@ export const StartStep = ({ room }: StartStepProps) => {
               label={t("startStep.gameParams.loadButton.label")}
               className="flex-1"
               theme="onSpace"
-              disabled={!isHost}
+              disabled={!isHost || isSpectator}
               tooltip={{
                 title: t(
                   "startStep.gameParams.loadButton.nonHostTooltip.title",
@@ -543,7 +552,7 @@ export const StartStep = ({ room }: StartStepProps) => {
                 content: t(
                   "startStep.gameParams.loadButton.nonHostTooltip.message",
                 ),
-                enabled: !isHost,
+                enabled: !isHost || isSpectator,
               }}
             />
           </div>
@@ -563,7 +572,7 @@ export const StartStep = ({ room }: StartStepProps) => {
                             value,
                           });
                         }}
-                        disabled={!isHost}
+                        disabled={!isHost || isSpectator}
                       />
                     </>
                   ) : (
@@ -581,7 +590,7 @@ export const StartStep = ({ room }: StartStepProps) => {
                               value,
                             });
                           }}
-                          disabled={!isHost}
+                          disabled={!isHost || isSpectator}
                         />
                       </>
                     )
@@ -609,7 +618,7 @@ export const StartStep = ({ room }: StartStepProps) => {
                   },
                 })
               }
-              disabled={!isHost}
+              disabled={!isHost || isSpectator}
             />
             {gameParameters.decksConfig.useRooms && (
               <>
@@ -629,7 +638,7 @@ export const StartStep = ({ room }: StartStepProps) => {
                       },
                     })
                   }
-                  disabled={!isHost}
+                  disabled={!isHost || isSpectator}
                 />
               </>
             )}
@@ -677,7 +686,7 @@ export const StartStep = ({ room }: StartStepProps) => {
                       },
                     })
                   }
-                  disabled={!isHost}
+                  disabled={!isHost || isSpectator}
                 />
               </>
             )}
@@ -719,7 +728,7 @@ export const StartStep = ({ room }: StartStepProps) => {
                       },
                     })
                   }
-                  disabled={!isHost}
+                  disabled={!isHost || isSpectator}
                 />
               </>
             )}
@@ -761,7 +770,7 @@ export const StartStep = ({ room }: StartStepProps) => {
                       },
                     })
                   }
-                  disabled={!isHost}
+                  disabled={!isHost || isSpectator}
                 />
               </>
             )}
@@ -803,7 +812,7 @@ export const StartStep = ({ room }: StartStepProps) => {
                       },
                     })
                   }
-                  disabled={!isHost}
+                  disabled={!isHost || isSpectator}
                 />
               </>
             )}
@@ -857,7 +866,7 @@ export const StartStep = ({ room }: StartStepProps) => {
           type={deckPilePopup}
           cards={gameParameters.decksConfig[deckPilePopup].cards}
           onClose={() => setDeckPilePopup(null)}
-          editable={isHost}
+          editable={isHost && !isSpectator}
         />
       )}
     </div>

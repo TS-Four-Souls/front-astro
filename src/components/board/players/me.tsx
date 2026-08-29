@@ -13,10 +13,12 @@ import { Hand } from "../hand";
 import { Pile } from "../pile";
 import { PlayerStats } from "../player-stats";
 import { useLanguageContext } from "@/components/contexts/language-context";
+import { HandPile } from "../hand-pile";
+import { cn } from "@/utils/cn";
 
 export const Me = () => {
   const { ts, t, translateError } = useLanguageContext();
-  const { state, isHandUp } = useGameContext();
+  const { state, isHandUp, isSpectator } = useGameContext();
   const { toast, block } = useToastContext();
   const { addPrompt, removePrompt, clearPrompts } = usePromptContext();
   const { registerInPlayCardEl } = useGameAnimation();
@@ -26,7 +28,7 @@ export const Me = () => {
 
   useHotkeys("escape", openMenu, {
     scopes: [HotkeyScope.Main],
-    enabled: true,
+    enabled: !isSpectator,
   });
 
   useEffect(() => {
@@ -195,75 +197,87 @@ export const Me = () => {
     <div className="col-start-2 row-start-3 flex flex-col place-content-center place-items-center gap-6">
       <PlayerStats player={state.me} />
       <div
-        className="grid gap-2"
-        style={{
-          gridTemplateColumns: `repeat(${Math.min(state.me.inPlay.length + 1, 8)}, 1fr)`,
-        }}>
-        {[state.me.character, ...state.me.inPlay].map((card, index) => {
-          const isCharacter = state.me.character === card;
-          return (
-            <div
-              key={card.globalId}
-              ref={(el) => registerInPlayCardEl(card.globalId, el)}>
-              <Pile
-                globalId={card.globalId}
-                onClickTopCardHotkey={
-                  targetableCards.includes(card.slug)
-                    ? `${targetableCards.indexOf(card.slug) + 1}`
-                    : undefined
-                }
-                cards={[
-                  {
-                    slug: card.slug,
-                    charged: card.charged,
-                    eternal: card.eternal,
-                    engagedInCombat: isCharacter && state.me.isEngagedInCombat,
-                    engagedInPurchase:
-                      isCharacter && state.me.isEngagedInPurchase,
-                    effects: isCharacter ? state.me.temporaryEffect : undefined,
-                    counter: card.counter,
-                    stats: isCharacter
-                      ? {
-                          healthPoints: state.me.currentHealthPoints,
-                          attackPoints: state.me.currentAttackPoints,
-                        }
-                      : undefined,
-                  },
-                ]}
-                disabled={card.capabilities.activate !== true}
-                onHoverPopover={() => (
-                  <CardHoverPreview
-                    card={card}
-                    stats={
-                      isCharacter
+        className={cn(
+          "flex place-content-center place-items-center gap-8",
+          !isSpectator && "flex-col gap-6",
+        )}>
+        {isSpectator && state.me.handSize > 0 && <HandPile player={state.me} />}
+        <div
+          className="grid gap-2"
+          style={{
+            gridTemplateColumns: `repeat(${Math.min(state.me.inPlay.length + 1, 8)}, 1fr)`,
+          }}>
+          {[state.me.character, ...state.me.inPlay].map((card, index) => {
+            const isCharacter = state.me.character === card;
+            return (
+              <div
+                key={card.globalId}
+                ref={(el) => registerInPlayCardEl(card.globalId, el)}>
+                <Pile
+                  globalId={card.globalId}
+                  onClickTopCardHotkey={
+                    targetableCards.includes(card.slug)
+                      ? `${targetableCards.indexOf(card.slug) + 1}`
+                      : undefined
+                  }
+                  cards={[
+                    {
+                      slug: card.slug,
+                      charged: card.charged,
+                      eternal: card.eternal,
+                      engagedInCombat:
+                        isCharacter && state.me.isEngagedInCombat,
+                      engagedInPurchase:
+                        isCharacter && state.me.isEngagedInPurchase,
+                      effects: isCharacter
+                        ? state.me.temporaryEffect
+                        : undefined,
+                      counter: card.counter,
+                      stats: isCharacter
                         ? {
                             healthPoints: state.me.currentHealthPoints,
                             attackPoints: state.me.currentAttackPoints,
                           }
-                        : undefined
-                    }
-                    effects={isCharacter ? state.me.temporaryEffect : undefined}
-                    counter={card.counter}
-                    isEternal={card.eternal}
-                    tooltip={{
-                      title: t("gameStep.activate.blockedTooltip.title"),
-                      capable: card.capabilities.activate,
-                    }}
-                  />
-                )}
-                onClickTopCard={() =>
-                  block(
-                    t("capability.cannotActivate"),
-                    card.capabilities.activate,
-                    () => onInPlayCardClick(card, index),
-                  )
-                }
-              />
-            </div>
-          );
-        })}
+                        : undefined,
+                    },
+                  ]}
+                  disabled={card.capabilities.activate !== true}
+                  onHoverPopover={() => (
+                    <CardHoverPreview
+                      card={card}
+                      stats={
+                        isCharacter
+                          ? {
+                              healthPoints: state.me.currentHealthPoints,
+                              attackPoints: state.me.currentAttackPoints,
+                            }
+                          : undefined
+                      }
+                      effects={
+                        isCharacter ? state.me.temporaryEffect : undefined
+                      }
+                      counter={card.counter}
+                      isEternal={card.eternal}
+                      tooltip={{
+                        title: t("gameStep.activate.blockedTooltip.title"),
+                        capable: card.capabilities.activate,
+                      }}
+                    />
+                  )}
+                  onClickTopCard={() =>
+                    block(
+                      t("capability.cannotActivate"),
+                      card.capabilities.activate,
+                      () => onInPlayCardClick(card, index),
+                    )
+                  }
+                />
+              </div>
+            );
+          })}
+        </div>
+        <Hand />
       </div>
-      <Hand />
     </div>
   );
 };

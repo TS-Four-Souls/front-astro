@@ -5,6 +5,7 @@ import { CardType } from "./card";
 import { cn } from "@/utils/cn";
 import { useGameAnimation } from "./contexts/game-animation";
 import { useLanguageContext } from "../contexts/language-context";
+import { useGameContext } from "./contexts/game-context";
 
 interface HandPileProps {
   player: Player;
@@ -14,11 +15,12 @@ export const HandPile = ({ player }: HandPileProps) => {
   const { displayPileDetails } = usePileDetails();
   const { t } = useLanguageContext();
   const { registerOpponentHandPile } = useGameAnimation();
+  const isSpectator = useGameContext();
   return (
     <div ref={(el) => registerOpponentHandPile(player.name, el)}>
       <Pile
         cards={
-          player.hand !== undefined
+          player.hand !== undefined && !isSpectator
             ? player.hand.map((c) => ({
                 slug: c.slug,
                 globalId: c.globalId,
@@ -35,12 +37,12 @@ export const HandPile = ({ player }: HandPileProps) => {
           }),
         }}
         onClickTopCard={
-          player.hand !== undefined
+          player.hand !== undefined && !isSpectator
             ? () => displayPileDetails(player.hand)
             : undefined
         }
         onPileDetailsClick={
-          player.hand !== undefined
+          player.hand !== undefined && !isSpectator
             ? () => displayPileDetails(player.hand)
             : undefined
         }

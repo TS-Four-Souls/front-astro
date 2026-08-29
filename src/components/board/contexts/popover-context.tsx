@@ -40,10 +40,7 @@ export const PopoverProvider = ({
     setPopover(null);
   }, []);
 
-  const value = useMemo(
-    () => ({ setPopover, closePopover }),
-    [closePopover],
-  );
+  const value = useMemo(() => ({ setPopover, closePopover }), [closePopover]);
 
   return (
     <PopoverContext.Provider value={value}>

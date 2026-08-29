@@ -24,7 +24,7 @@ interface PlayerStatsProps {
 
 export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
   const { translateError, t } = useLanguageContext();
-  const { state } = useGameContext();
+  const { state, isSpectator } = useGameContext();
   const { toast, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
   const { setPopover, closePopover } = usePopoverContext();
@@ -420,10 +420,12 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
               }
             />
           )}
-          <Gear
-            className="size-5 cursor-pointer drop-shadow-lg drop-shadow-taupe-800"
-            onClick={() => openMenu()}
-          />
+          {!isSpectator && (
+            <Gear
+              className="size-5 cursor-pointer drop-shadow-lg drop-shadow-taupe-800"
+              onClick={() => openMenu()}
+            />
+          )}
         </div>
       )}
     </div>

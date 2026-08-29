@@ -4,21 +4,23 @@ import { useGameContext } from "./contexts/game-context";
 export const useAutofit = (
   boardRef: React.RefObject<HTMLDivElement | null>,
 ) => {
-  const { state } = useGameContext();
+  const { state, isSpectator } = useGameContext();
 
   const autofit = () => {
     const board = boardRef.current;
     if (!board) return;
 
-    const body = {
-      width: document.body.clientWidth,
-      height: document.body.clientHeight,
+    // Use the parent viewport so spectator chrome insets are respected.
+    const container = board.parentElement;
+    const available = {
+      width: container?.clientWidth ?? document.body.clientWidth,
+      height: container?.clientHeight ?? document.body.clientHeight,
     };
     const boardSize = { width: board.clientWidth, height: board.clientHeight };
 
     const scale = Math.min(
-      body.width / boardSize.width,
-      body.height / boardSize.height,
+      available.width / boardSize.width,
+      available.height / boardSize.height,
     );
 
     board.style.transform = `scale(${scale})`;
@@ -33,5 +35,5 @@ export const useAutofit = (
 
   useEffect(() => {
     autofit();
-  }, [state, boardRef.current]);
+  }, [state, isSpectator, boardRef.current]);
 };

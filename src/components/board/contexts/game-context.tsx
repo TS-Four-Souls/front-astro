@@ -6,6 +6,7 @@ import { useHotkeys } from "react-hotkeys-hook";
 interface GameContextProps {
   state: DetailedState;
   parameters: GameParametersJson;
+  isSpectator: boolean;
   isHandUp: boolean;
   setIsHandUp: (isHandUp: boolean) => void;
 }
@@ -13,6 +14,7 @@ interface GameContextProps {
 const GameContext = createContext<GameContextProps>({
   state: undefined as unknown as DetailedState,
   parameters: undefined as unknown as GameParametersJson,
+  isSpectator: false,
   isHandUp: false,
   setIsHandUp: () => {},
 });
@@ -21,12 +23,14 @@ interface GameProviderProps {
   children: React.ReactNode;
   state: DetailedState;
   parameters: GameParametersJson;
+  isSpectator?: boolean;
 }
 
 export const GameProvider = ({
   children,
   state,
   parameters,
+  isSpectator = false,
 }: GameProviderProps) => {
   const [isHandUp, setIsHandUp] = useState(false);
   useHotkeys("shift", (e) => setIsHandUp(e.type === "keydown"), {
@@ -36,7 +40,8 @@ export const GameProvider = ({
   });
 
   return (
-    <GameContext.Provider value={{ state, parameters, isHandUp, setIsHandUp }}>
+    <GameContext.Provider
+      value={{ state, parameters, isSpectator, isHandUp, setIsHandUp }}>
       {children}
     </GameContext.Provider>
   );

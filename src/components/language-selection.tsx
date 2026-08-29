@@ -2,7 +2,7 @@ import { LANGUAGE_CODE } from "../utils/translate";
 import { useTooltip } from "./board/use-tooltip";
 import { useLanguageContext } from "./contexts/language-context";
 
-const languageLabelMap: Record<LANGUAGE_CODE, string> = {
+export const languageLabelMap: Record<LANGUAGE_CODE, string> = {
   en: "English",
   fr: "Français",
   pt: "Português",

@@ -142,15 +142,6 @@ export const Stack = () => {
     }
   }, [state.lastStackElementTimeStamp, parameters.resolveCooldown.value]);
 
-  const pendingSelections = useMemo(() => {
-    const players = [state.me, ...state.players];
-    return players.flatMap(({ name, color, pendingSelection }) => {
-      if (pendingSelection)
-        return { player: { name, color }, pendingSelection };
-      return [];
-    });
-  }, [state]);
-
   return (
     <div
       ref={stackContainerRef}
@@ -163,7 +154,7 @@ export const Stack = () => {
             ? "grid grid-cols-1"
             : "flex place-items-center",
         )}>
-        {pendingSelections.length > 0 && (
+        {state.pendingSelections.length > 0 && (
           <div className="h-full w-full">
             <p className="mb-4 text-center text-xs font-bold text-taupe-500 uppercase">
               {t("gameStep.stack.pendingSelections")}
@@ -171,19 +162,21 @@ export const Stack = () => {
             <div
               className={cn(
                 "grid grid-flow-col gap-2",
-                pendingSelections.length > 3 && "grid-rows-2",
+                state.pendingSelections.length > 3 && "grid-rows-2",
               )}>
-              {pendingSelections.map(({ player, pendingSelection }) => (
+              {state.pendingSelections.map((pendingSelection) => (
                 <div
                   key={pendingSelection.requestId}
                   className="relative flex flex-row place-content-center items-center gap-4 p-2">
                   <div
                     className="absolute inset-0 rounded-md opacity-15"
-                    style={{ backgroundColor: player.color }}></div>
+                    style={{
+                      backgroundColor: pendingSelection.player.color,
+                    }}></div>
                   <div className="z-1">
                     <PendingSelectionIcon
                       pendingSelection={pendingSelection}
-                      player={player}
+                      player={pendingSelection.player}
                     />
                   </div>
                 </div>
@@ -274,7 +267,7 @@ export const Stack = () => {
             </div>
           );
         })}
-        {state.stack.length === 0 && pendingSelections.length === 0 && (
+        {state.stack.length === 0 && state.pendingSelections.length === 0 && (
           <p className="text-center font-time-fcuk text-sm leading-normal whitespace-pre-line text-taupe-600">
             {ts({ key: "gameStep.stack.stackElement.nothingOnStack" })}
           </p>
