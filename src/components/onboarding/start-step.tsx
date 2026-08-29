@@ -363,15 +363,21 @@ export const StartStep = ({ room }: StartStepProps) => {
         <div className="flex flex-col gap-2">
           <p className="font-main text-lg">{t("startStep.roomInfo.title")}</p>
           <p
-            className={cn("mb-2 text-3xl font-bold", room.isJoinAllowed && "cursor-pointer")}
-            onClick={ room.isJoinAllowed ? () => {
-              navigator.clipboard.writeText(room.id);
-              toast(
-                "success",
-                t("startStep.roomInfo.copyCodeButton.successToast.title"),
-                t("startStep.roomInfo.copyCodeButton.successToast.message"),
-              );
-            } : undefined}>
+            className="mb-2 cursor-pointer text-3xl font-bold"
+            onClick={
+              room.isJoinAllowed
+                ? () => {
+                    navigator.clipboard.writeText(room.id);
+                    toast(
+                      "success",
+                      t("startStep.roomInfo.copyCodeButton.successToast.title"),
+                      t(
+                        "startStep.roomInfo.copyCodeButton.successToast.message",
+                      ),
+                    );
+                  }
+                : undefined
+            }>
             {t("startStep.roomInfo.copyCodeButton.label", { code: room.id })}
           </p>
           <div className="flex gap-2">
@@ -390,7 +396,6 @@ export const StartStep = ({ room }: StartStepProps) => {
               onClick={() => onSetJoinPermission(!room.isJoinAllowed)}
             />
             <Button
-              disabled={!room.isJoinAllowed}
               label={t("startStep.roomInfo.copyLinkButton.label")}
               hotkey="c"
               onClick={() => {
