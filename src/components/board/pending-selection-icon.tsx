@@ -38,8 +38,6 @@ export const PendingSelectionIcon = (props: Props) => {
   const { reason } = pendingSelection;
 
   switch (reason) {
-    case "activation":
-      return reason;
     case "miniDraft":
       return (
         <div
@@ -117,8 +115,6 @@ export const PendingSelectionIcon = (props: Props) => {
 
 const PopoverContent = ({ pendingSelection }: Props) => {
   switch (pendingSelection.reason) {
-    case "activation":
-      return pendingSelection.reason;
     case "miniDraft":
       return (
         <div className={cn("size-22 overflow-hidden rounded-lg")}>

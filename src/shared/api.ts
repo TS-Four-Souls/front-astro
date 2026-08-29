@@ -973,6 +973,7 @@ const roomSchema = z.object({
   characters: z.array(roomCharacterSchema),
   gameParameters: gameParametersSchema,
   game: detailedStateSchema.optional(),
+  isJoinAllowed: z.boolean(),
 });
 export type Room = z.infer<typeof roomSchema>;
 
@@ -1007,6 +1008,8 @@ const enterRoomRequestSchema = z.discriminatedUnion("type", [
     name: z.string(),
   }),
 ]);
+
+const setJoinPermissionSchema = z.boolean();
 
 const loadGameRequestSchema = z.string();
 
@@ -1154,6 +1157,7 @@ export const schemas = {
   purchaseRequest: purchaseSchema,
   giveCoinsRequest: giveCoinsSchema,
   enterRoomRequest: enterRoomRequestSchema,
+  setJoinPermission: setJoinPermissionSchema,
   loadGameRequest: loadGameRequestSchema,
   setGameParameterRequest: setGameParameterRequestSchema,
   loadGameParametersRequest: loadGameParametersRequestSchema,
@@ -1196,6 +1200,7 @@ export namespace Requests {
   >;
   export type Contact = z.infer<typeof contactRequestSchema>;
   export type EnterRoom = z.infer<typeof enterRoomRequestSchema>;
+  export type SetJoinPermission = z.infer<typeof setJoinPermissionSchema>;
   export type LoadGame = z.infer<typeof loadGameRequestSchema>;
   export type LoadGameParameters = z.infer<
     typeof loadGameParametersRequestSchema
@@ -1247,6 +1252,7 @@ export namespace Responses {
   export type GiveCoins = BasicResponse;
   export type CreateRoom = BasicResponse;
   export type EnterRoom = BasicResponse;
+  export type SetJoinPermission = BasicResponse;
   export type LeaveRoom = BasicResponse;
   export type QuitGame = BasicResponse;
   export type KickFromRoom = BasicResponse;
@@ -1283,6 +1289,11 @@ export interface ClientToServerEvents {
   ) => void;
 
   leaveRoom: (callback: (response: Responses.LeaveRoom) => void) => void;
+
+  setJoinPermission: (
+    request: Requests.SetJoinPermission,
+    callback: (response: Responses.SetJoinPermission) => void,
+  ) => void;
 
   kickFromRoom: (
     request: Requests.KickFromRoom,

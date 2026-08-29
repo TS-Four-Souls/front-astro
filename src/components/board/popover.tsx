@@ -64,7 +64,12 @@ export const Popover = ({
       ),
     );
 
-    setPosition({ top: clampedTop, left: clampedLeft });
+    setPosition((prev) => {
+      if (prev?.top === clampedTop && prev?.left === clampedLeft) {
+        return prev;
+      }
+      return { top: clampedTop, left: clampedLeft };
+    });
   }, [anchor, children]);
 
   return (
