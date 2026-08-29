@@ -482,7 +482,7 @@ export const MainMenu = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <>
       <div className="flex items-center justify-between">
         <h1 className="font-main text-3xl font-bold">
           {t("gameStep.mainMenu.title")}
@@ -494,81 +494,83 @@ export const MainMenu = () => {
           label={t("common.closeButton")}
         />
       </div>
-      {parameters.allowCheatOptions.value && (
-        <>
-          <Button
-            onClick={() => {
-              debugGainLootTop();
-            }}
-            label={t("gameStep.cheats.getLootTopDeck.label")}
-          />
-          <Button
-            onClick={() => {
-              closeMainMenu();
-              debugGainLoot();
-            }}
-            label={t("gameStep.cheats.selectCardToLoot.label")}
-          />
-          <Button
-            onClick={() => {
-              debugGainTreasureTop();
-            }}
-            label={t("gameStep.cheats.getTreasureTopDeck.label")}
-          />
-          <Button
-            onClick={() => {
-              closeMainMenu();
-              debugGainTreasure();
-            }}
-            label={t("gameStep.cheats.selectTreasureToLoot.label")}
-          />
-          <Button
-            onClick={() => {
-              closeMainMenu();
-              debugPutMonsterCardInSlot();
-            }}
-            label={t("gameStep.cheats.putMonsterCardInSlot.label")}
-          />
-          <Button
-            onClick={() => {
-              closeMainMenu();
-              debugChangeDiceResult();
-            }}
-            label={t("gameStep.cheats.changeDice.label")}
-          />
-          <Button
-            onClick={() => {
-              closeMainMenu();
-              debugGainCoins();
-            }}
-            label={t("gameStep.cheats.gainGoin.label")}
-          />
-          <Button
-            onClick={() => {
-              closeMainMenu();
-              debugRemoveCard();
-            }}
-            label={t("gameStep.cheats.discardCard.label")}
-          />
-        </>
-      )}
-      <Button
-        onClick={() => {
-          closeMainMenu();
-          onSaveGamePress();
-        }}
-        label={t("gameStep.mainMenu.saveButtom.label")}
-      />
-      <Button
-        onClick={() => {
-          closeMainMenu();
-          onResetPress();
-        }}
-        label={t("gameStep.mainMenu.quitButton.label")}
-      />
+      <div className="flex flex-col gap-4 overflow-auto p-4 pb-8">
+        {parameters.allowCheatOptions.value && (
+          <>
+            <Button
+              onClick={() => {
+                debugGainLootTop();
+              }}
+              label={t("gameStep.cheats.getLootTopDeck.label")}
+            />
+            <Button
+              onClick={() => {
+                closeMainMenu();
+                debugGainLoot();
+              }}
+              label={t("gameStep.cheats.selectCardToLoot.label")}
+            />
+            <Button
+              onClick={() => {
+                debugGainTreasureTop();
+              }}
+              label={t("gameStep.cheats.getTreasureTopDeck.label")}
+            />
+            <Button
+              onClick={() => {
+                closeMainMenu();
+                debugGainTreasure();
+              }}
+              label={t("gameStep.cheats.selectTreasureToLoot.label")}
+            />
+            <Button
+              onClick={() => {
+                closeMainMenu();
+                debugPutMonsterCardInSlot();
+              }}
+              label={t("gameStep.cheats.putMonsterCardInSlot.label")}
+            />
+            <Button
+              onClick={() => {
+                closeMainMenu();
+                debugChangeDiceResult();
+              }}
+              label={t("gameStep.cheats.changeDice.label")}
+            />
+            <Button
+              onClick={() => {
+                closeMainMenu();
+                debugGainCoins();
+              }}
+              label={t("gameStep.cheats.gainGoin.label")}
+            />
+            <Button
+              onClick={() => {
+                closeMainMenu();
+                debugRemoveCard();
+              }}
+              label={t("gameStep.cheats.discardCard.label")}
+            />
+          </>
+        )}
+        <Button
+          onClick={() => {
+            closeMainMenu();
+            onSaveGamePress();
+          }}
+          label={t("gameStep.mainMenu.saveButtom.label")}
+        />
+        <Button
+          onClick={() => {
+            closeMainMenu();
+            onResetPress();
+          }}
+          label={t("gameStep.mainMenu.quitButton.label")}
+        />
+      </div>
       <LanguageSelection />
       <DiscordButton />
       <ReportBugButton />
-    </div>
+    </>
   );
 };
