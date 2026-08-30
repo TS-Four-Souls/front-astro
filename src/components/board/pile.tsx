@@ -327,7 +327,6 @@ export const Pile = ({
                 key={index}
                 className={cn(
                   "relative col-start-1 row-start-1",
-                  isTopCard && "z-10",
                 )}
                 style={transformStyle}>
                 <Card
@@ -358,7 +357,7 @@ export const Pile = ({
                     entityBoardSelectionState &&
                       entityBoardSelectionState.isSelected &&
                       isTopCard &&
-                      "outline-[0.3em] outline-blue-400 shadow-2xl/50 glow-selection z-50",
+                      "outline-[0.3em] outline-blue-400 shadow-2xl/50 glow-selection",
                   )}
                   className={cn(
                     !charged && "brightness-50 contrast-90",
