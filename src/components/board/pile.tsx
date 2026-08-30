@@ -159,7 +159,10 @@ export const Pile = ({
   });
 
   useEffect(() => {
-    if (state !== undefined && !parameters.allowCheatOptions.value || isCheatViewOpen.length === 0) {
+    if(isCheatViewOpen.length === 0)
+      return;
+
+    if (state !== undefined && !parameters.allowCheatOptions.value) {
       setRemovableCardSlugs(new Set());
       return;
     }
@@ -173,7 +176,7 @@ export const Pile = ({
         setRemovableCardSlugs(new Set());
       }
     });
-  }, [state !== undefined && parameters.allowCheatOptions.value, isCheatViewOpen, cards]);
+  }, [(state !== undefined && parameters.allowCheatOptions.value) || isCheatViewOpen.length === 0, isCheatViewOpen, cards]);
 
   const discardCardCheat = (card: { slug: string }) => {
     socket.emit("debugListCardsICanRemove", (response) => {
