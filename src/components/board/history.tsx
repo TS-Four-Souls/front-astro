@@ -1,5 +1,5 @@
 import { socket } from "@/utils/socket";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "../button";
 import { useGameContext } from "./contexts/game-context";
 import { useHistoryContext } from "./contexts/history-context";
@@ -15,12 +15,15 @@ export const History = () => {
   const { isOpen } = useHistoryContext();
   const scrollViewRef = useRef<HTMLDivElement>(null);
   const { toast } = useToastContext();
+  const [rollbackCooldownAnim, setRollbackCooldownAnim] = useState<{
+    durationMs: number;
+    delayMs: number;
+    key: number;
+  } | null>(null);
 
   // Show history in reverse order (newest first)
   const reversedHistory = state.history.toReversed();
   const displayedHistory = reversedHistory.slice(0, 30);
-
-  if (!isOpen) return null;
 
   useEffect(() => {
     const scrollView = scrollViewRef.current;
@@ -34,6 +37,20 @@ export const History = () => {
       scrollView.classList.remove("scroll-priority");
     }
   }, [state.stack.length]);
+
+  useEffect(() => {
+    const cooldownMs = parameters.resolveCooldown.value * 1000;
+    const elapsedMs = Date.now() - state.lastRollbackTimeStamp;
+    if (elapsedMs < cooldownMs) {
+      setRollbackCooldownAnim({
+        durationMs: cooldownMs,
+        delayMs: -elapsedMs,
+        key: state.lastRollbackTimeStamp,
+      });
+    } else {
+      setRollbackCooldownAnim(null);
+    }
+  }, [state.lastRollbackTimeStamp, parameters.resolveCooldown.value]);
 
   const rollback = () => {
     socket.emit("rollback", (response) => {
@@ -55,6 +72,8 @@ export const History = () => {
           })
         : t("gameStep.roundCounter.tooltip.title", { count: state.round }),
   });
+
+  if (!isOpen) return null;
 
   return (
     <div className="flex h-86 flex-col items-center gap-2">
@@ -81,6 +100,18 @@ export const History = () => {
           }}
           theme="onDark"
           className="m-2 h-10 shrink-0 p-0"
+          label={
+            rollbackCooldownAnim && (
+              <div
+                key={rollbackCooldownAnim.key}
+                className="pointer-events-none absolute inset-y-0 left-0 animate-grow-right bg-amber-50"
+                style={{
+                  animationDuration: `${rollbackCooldownAnim.durationMs}ms`,
+                  animationDelay: `${rollbackCooldownAnim.delayMs}ms`,
+                }}
+              />
+            )
+          }
         />
       </div>
     </div>

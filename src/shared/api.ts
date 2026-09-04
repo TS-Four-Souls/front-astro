@@ -990,6 +990,7 @@ export const detailedStateSchema = z.object({
   history: z.array(stackElementSchema),
   animations: z.array(animationSchema),
   lastStackElementTimeStamp: z.number(),
+  lastRollbackTimeStamp: z.number().default(0),
 });
 export type DetailedState = z.infer<typeof detailedStateSchema>;
 
