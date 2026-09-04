@@ -146,148 +146,138 @@ export const Pile = ({
 
   return (
     <div
-      className={cn("relative", className)}
+      className={cn("grid shrink-0", className)}
       style={{ height: pileHeight + "em", ...style }}>
-      <div
-        className={cn("grid shrink-0", className)}
-        style={{ height: pileHeight + "em" }}>
-        {cards
-          .filter((_, index) => index >= cards.length - maxCards)
-          .map((card, index, array) => {
-            const distanceFromTop = array.length - index - 1;
-            const brightness = clamp(
-              1 - ((1 - BRIGHTNESS_MIN) / array.length) * distanceFromTop,
-              BRIGHTNESS_MIN,
-              1,
-            );
+      {cards
+        .filter((_, index) => index >= cards.length - maxCards)
+        .map((card, index, array) => {
+          const distanceFromTop = array.length - index - 1;
+          const brightness = clamp(
+            1 - ((1 - BRIGHTNESS_MIN) / array.length) * distanceFromTop,
+            BRIGHTNESS_MIN,
+            1,
+          );
 
-            const charged =
-              typeof card === "string" ? true : (card.charged ?? true);
+          const charged =
+            typeof card === "string" ? true : (card.charged ?? true);
 
-            const engagedInCombat =
-              typeof card === "string"
-                ? false
-                : (card.engagedInCombat ?? false);
+          const engagedInCombat =
+            typeof card === "string" ? false : (card.engagedInCombat ?? false);
 
-            const engagedInPurchase =
-              typeof card === "string"
-                ? false
-                : (card.engagedInPurchase ?? false);
+          const engagedInPurchase =
+            typeof card === "string"
+              ? false
+              : (card.engagedInPurchase ?? false);
 
-            const eternal =
-              typeof card === "string" ? false : (card.eternal ?? false);
+          const eternal =
+            typeof card === "string" ? false : (card.eternal ?? false);
 
-            const counter = typeof card === "string" ? undefined : card.counter;
+          const counter = typeof card === "string" ? undefined : card.counter;
 
-            const isRequiredAttack =
-              typeof card === "object" ? card.isRequiredAttack : false;
+          const isRequiredAttack =
+            typeof card === "object" ? card.isRequiredAttack : false;
 
-            const cardsIndex = (index / array.length) * cards.length;
+          const cardsIndex = (index / array.length) * cards.length;
 
-            const transformStyle = {
-              transform: `
+          const transformStyle = {
+            transform: `
                 ${enableRandomRotation ? `rotate(${(rng() - 0.5) * 5}deg)` : ""}
                 translateY(-${cardsIndex * 0.02}em)
                 scale(${1 + cardsIndex * 0.0002})
               `,
-            };
+          };
 
-            const isTopCard = index === array.length - 1;
+          const isTopCard = index === array.length - 1;
 
-            return (
-              <div
-                key={index}
-                className={cn("relative col-start-1 row-start-1")}
-                style={transformStyle}>
-                <Card
-                  onClick={isTopCard ? onClickTopCard : undefined}
-                  card={
-                    typeof card === "object" && "type" in card
-                      ? card.type
-                      : card
-                  }
-                  containerClassName={cn(
-                    "col-start-1 row-start-1",
+          return (
+            <div
+              key={index}
+              className={cn("relative col-start-1 row-start-1")}
+              style={transformStyle}>
+              <Card
+                onClick={isTopCard ? onClickTopCard : undefined}
+                card={
+                  typeof card === "object" && "type" in card ? card.type : card
+                }
+                containerClassName={cn(
+                  "col-start-1 row-start-1",
 
-                    engagedInCombat &&
-                      "outline-[0.3em] outline-red-500/60 glow-combat",
+                  engagedInCombat &&
+                    "outline-[0.3em] outline-red-500/60 glow-combat",
 
-                    engagedInPurchase &&
-                      "outline-[0.3em] outline-yellow-400/60 glow-purchase",
+                  engagedInPurchase &&
+                    "outline-[0.3em] outline-yellow-400/60 glow-purchase",
 
-                    isRequiredAttack &&
-                      "outline-[0.3em] outline-red-500/60 outline-dashed glow-combat",
+                  isRequiredAttack &&
+                    "outline-[0.3em] outline-red-500/60 outline-dashed glow-combat",
 
-                    entityBoardSelectionState &&
-                      entityBoardSelectionState.isSelected &&
-                      isTopCard &&
-                      "outline-[0.3em] outline-blue-400 shadow-2xl/50 glow-selection",
-                  )}
-                  className={cn(
-                    !charged && "brightness-50 contrast-90",
-                    eternal && "glow-eternal glow-6",
-                    cards.length > 0 && index === 0 && "pile-md-shadow",
-                    cards.length > 5 && index === 0 && "pile-lg-shadow",
-                    cards.length > 10 && index === 0 && "pile-xl-shadow",
-                    cards.length > 40 && index === 0 && "pile-2xl-shadow",
-                    cards.length > 80 && index === 0 && "pile-3xl-shadow",
-                    isTopCard && topCardClassName,
-                  )}
-                  disabled={
-                    isBoardSelectionActive
-                      ? entityBoardSelectionState === undefined ||
-                        entityBoardSelectionState.isSelectable === false
-                      : disabled
-                  }
-                  size={size}
-                  brightness={brightness}
-                  stats={typeof card === "string" ? undefined : card.stats}
-                  effects={typeof card === "string" ? undefined : card.effects}
-                  counter={counter}
-                  onMouseEnter={
-                    isTopCard
-                      ? onHoverPopover
-                        ? onMouseEnter
-                        : setTooltip
-                      : undefined
-                  }
-                  onMouseLeave={
-                    isTopCard
-                      ? onHoverPopover
-                        ? closePopover
-                        : closeTooltip
-                      : undefined
-                  }
-                  onPileDetailsClick={
-                    isTopCard ? onPileDetailsClick : undefined
-                  }
-                  hotkey={isTopCard ? onClickTopCardHotkey : undefined}
-                  selectionIndex={
-                    isTopCard
-                      ? entityBoardSelectionState?.selectionIndex
-                      : undefined
-                  }
-                  globalId={isTopCard ? globalId : undefined}
-                  orientation={orientation}
-                />
-                {isTopCard && <div>{children}</div>}
-                {isTopCard && cheats && <CheatButtons {...cheats} />}
-              </div>
-            );
-          })}
-        {cards.length === 0 && (
-          <div className="relative col-start-1 row-start-1">
-            <Card
-              size={size}
-              onClick={onClickTopCard}
-              disabled={disabled}
-              orientation={orientation}
-              className={topCardClassName}
-            />
-            {cheats && <CheatButtons {...cheats} />}
-          </div>
-        )}
-      </div>
+                  entityBoardSelectionState &&
+                    entityBoardSelectionState.isSelected &&
+                    isTopCard &&
+                    "outline-[0.3em] outline-blue-400 shadow-2xl/50 glow-selection",
+                )}
+                className={cn(
+                  !charged && "brightness-50 contrast-90",
+                  eternal && "glow-eternal glow-6",
+                  cards.length > 0 && index === 0 && "pile-md-shadow",
+                  cards.length > 5 && index === 0 && "pile-lg-shadow",
+                  cards.length > 10 && index === 0 && "pile-xl-shadow",
+                  cards.length > 40 && index === 0 && "pile-2xl-shadow",
+                  cards.length > 80 && index === 0 && "pile-3xl-shadow",
+                  isTopCard && topCardClassName,
+                )}
+                disabled={
+                  isBoardSelectionActive
+                    ? entityBoardSelectionState === undefined ||
+                      entityBoardSelectionState.isSelectable === false
+                    : disabled
+                }
+                size={size}
+                brightness={brightness}
+                stats={typeof card === "string" ? undefined : card.stats}
+                effects={typeof card === "string" ? undefined : card.effects}
+                counter={counter}
+                onMouseEnter={
+                  isTopCard
+                    ? onHoverPopover
+                      ? onMouseEnter
+                      : setTooltip
+                    : undefined
+                }
+                onMouseLeave={
+                  isTopCard
+                    ? onHoverPopover
+                      ? closePopover
+                      : closeTooltip
+                    : undefined
+                }
+                onPileDetailsClick={isTopCard ? onPileDetailsClick : undefined}
+                hotkey={isTopCard ? onClickTopCardHotkey : undefined}
+                selectionIndex={
+                  isTopCard
+                    ? entityBoardSelectionState?.selectionIndex
+                    : undefined
+                }
+                globalId={isTopCard ? globalId : undefined}
+                orientation={orientation}
+              />
+              {isTopCard && <div>{children}</div>}
+              {isTopCard && cheats && <CheatButtons {...cheats} />}
+            </div>
+          );
+        })}
+      {cards.length === 0 && (
+        <div className="relative col-start-1 row-start-1">
+          <Card
+            size={size}
+            onClick={onClickTopCard}
+            disabled={disabled}
+            orientation={orientation}
+            className={topCardClassName}
+          />
+          {cheats && <CheatButtons {...cheats} />}
+        </div>
+      )}
     </div>
   );
 };
