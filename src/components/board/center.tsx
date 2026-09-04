@@ -1,9 +1,15 @@
-import type { Card, DetailedState } from "@/shared/api";
+import type {
+  Card,
+  DetailedState,
+  InPlayMeCard,
+  SelectionItem,
+} from "@/shared/api";
 import { socket } from "@/utils/socket";
 import { CardType } from "./card";
 import { CardHoverPreview } from "./card-hover-preview";
 import { SpecialGlobalIds } from "./contexts/board-selection-context";
 import { useGameAnimation } from "./contexts/game-animation";
+import { useGameContext } from "./contexts/game-context";
 import { usePromptContext } from "./contexts/prompt-context";
 import { useToastContext } from "./contexts/toast-context";
 import { History } from "./history";
@@ -11,6 +17,15 @@ import { Pile } from "./pile";
 import { Stack } from "./stack";
 import { usePileDetails } from "./use-pile-details";
 import { useLanguageContext } from "../contexts/language-context";
+import {
+  cheatDrawLoot,
+  cheatDrawTreasure,
+  discardCardCheat,
+  putMonsterInSlot,
+  putRoomInSlot,
+  selectCardToLoot,
+  selectCardToTreasure,
+} from "./cheats";
 interface CenterProps {
   state: DetailedState;
 }
@@ -19,7 +34,9 @@ export const Center = ({ state }: CenterProps) => {
   const { toast, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
   const { displayPileDetails } = usePileDetails();
-  const { translateError, t } = useLanguageContext();
+  const { translateError, t, ts } = useLanguageContext();
+  const { isCheatViewOpen, cheatRemovableCards } = useGameContext();
+  const cheatServices = { addPrompt, removePrompt, toast, t, translateError };
   const {
     registerLootDeckEl,
     registerTreasureDeckEl,
@@ -27,7 +44,101 @@ export const Center = ({ state }: CenterProps) => {
     registerMonsterSlotEl,
     registerBonusSoulPileEl,
   } = useGameAnimation();
+  const onRoomCardClick = (card: InPlayMeCard, index: number) => {
+    const activateCard = (
+      effectIndex: number,
+      selections: SelectionItem[] = [],
+    ) => {
+      socket.emit(
+        "activateWithID",
+        {
+          index: index,
+          effectIndex,
+          targetChoices: selections,
+          type: "room",
+        },
+        (response) => {
+          switch (response.status) {
+            case 200:
+              if (response.response.complete) {
+              } else if (response.response.options.length === 0) {
+                toast(
+                  "error",
+                  t("gameStep.activate.errorToast.title"),
+                  t("gameStep.noOptionsAvailable"),
+                );
+              } else {
+                const promptId = `card-activation-${card.slug}-${index}-${effectIndex}-${selections.length}-${Date.now()}`;
+                addPrompt({
+                  promptId,
+                  isUnique: false,
+                  prompt: ts(response.response.description),
+                  options: response.response.options,
+                  minCount: response.response.min,
+                  maxCount: response.response.max,
+                  onSubmit: (additionalSelections) => {
+                    activateCard(effectIndex, [
+                      ...selections,
+                      ...additionalSelections,
+                    ]);
+                    removePrompt(promptId);
+                  },
+                  onCancel: () => {
+                    removePrompt(promptId);
+                  },
+                });
+              }
+              break;
+            case 400:
+            default:
+              toast(
+                "error",
+                t("gameStep.activate.errorToast.title"),
+                translateError(response.error),
+              );
+              break;
+          }
+        },
+      );
+    };
 
+    // First, check if the card has multiple effects
+    // If it does, we need to first prompt the user to select an effect
+    if (card.effects && card.effects.length > 1) {
+      type CardEffectSelectionItem = Extract<
+        SelectionItem,
+        { type: "cardEffect" }
+      >;
+      const effects: CardEffectSelectionItem[] = card.effects.map((effect) => ({
+        type: "cardEffect",
+        payload: {
+          card: card,
+          visualEffectBox: effect.visualEffectBox,
+          index: effect.index,
+          description: effect.description,
+        },
+      }));
+
+      const promptId = `select-card-effect-${card.slug}-${index}-${Date.now()}`;
+      addPrompt<CardEffectSelectionItem>({
+        promptId,
+        isUnique: false,
+        prompt: t("gameStep.activate.popup.title"),
+        options: effects,
+        minCount: 1,
+        maxCount: 1,
+        onSubmit: (selectedEffect) => {
+          activateCard(selectedEffect[0].payload.visualEffectBox.startIndex);
+          removePrompt(promptId);
+        },
+        onCancel: () => {
+          removePrompt(promptId);
+        },
+      });
+    } else if (card.effects && card.effects.length === 1) {
+      activateCard(card.effects[0].visualEffectBox.startIndex);
+    }
+  };
   const purchaseTreasure = (index: number | "top") => {
     socket.emit("purchase", { index }, (response) => {
       if (response.status === 400)
@@ -39,19 +150,16 @@ export const Center = ({ state }: CenterProps) => {
     });
   };
 
-  const selectMonsterToAttack = (
-    index: number | "top",
-    replaceIndex?: number,
-  ) => {
-    if (index === "top") {
-      if (replaceIndex === undefined) {
+  const selectMonsterToAttack = (card: Card | "top", toCoverIndex?: number) => {
+    if (card === "top") {
+      if (toCoverIndex === undefined) {
         type ReplaceIndexOption = {
           type: "card";
           payload: Card;
           index: number;
         };
 
-        const promptId = `select-replace-monster-${index}`;
+        const promptId = `select-replace-monster-${Date.now()}`;
         addPrompt<ReplaceIndexOption>({
           promptId,
           isUnique: false,
@@ -76,7 +184,7 @@ export const Center = ({ state }: CenterProps) => {
 
       socket.emit(
         "attackMonster",
-        { index: "top", replaceIndex },
+        { card: "top", toCoverIndex: toCoverIndex },
         (response) => {
           if (response.status === 400)
             toast(
@@ -90,7 +198,7 @@ export const Center = ({ state }: CenterProps) => {
       return;
     }
 
-    socket.emit("attackMonster", { index }, (response) => {
+    socket.emit("attackMonster", { card }, (response) => {
       if (response.status === 400)
         toast(
           "error",
@@ -120,7 +228,8 @@ export const Center = ({ state }: CenterProps) => {
   const currentPlayer = [state.me, ...state.players].find(
     (player) => player.name === state.turn,
   );
-
+  const activeRoom = state.room?.inPlay[0];
+  const firstDiscardRoom = state.room?.discard[state.room?.discard.length - 1];
   return (
     <div
       className="flex place-items-center gap-7 rounded-3xl border-[0.3em] border-taupe-900/40 bg-board/90 p-8"
@@ -140,9 +249,11 @@ export const Center = ({ state }: CenterProps) => {
               <Pile
                 cards={soul.granted ? [] : [soul]}
                 size={105}
+                globalId={soul.globalId}
                 onHoverPopover={() => (
                   <CardHoverPreview
                     card={soul}
+                    counter={soul.counter}
                     tooltip={{
                       enabled: true,
                       title: t("gameStep.bonusSouls.tooltip.title"),
@@ -179,8 +290,16 @@ export const Center = ({ state }: CenterProps) => {
               : undefined
           }
         />
-        <div ref={registerLootDeckEl}>
+        <div ref={registerLootDeckEl} className="relative">
           <Pile
+            cheats={
+              isCheatViewOpen
+                ? {
+                    drawLoot: () => cheatDrawLoot(cheatServices),
+                    selectLoot: () => selectCardToLoot(cheatServices),
+                  }
+                : undefined
+            }
             globalId={SpecialGlobalIds.Loot}
             cards={Array.from({ length: state.loot.deckSize }).map(
               () => CardType.LootCard,
@@ -188,17 +307,118 @@ export const Center = ({ state }: CenterProps) => {
           />
         </div>
       </div>
-      {state.room && (
-        <div className="flex flex-col gap-2">
-          <Pile cards={state.room.discard} orientation="landscape" size={110} />
+      {state.room && activeRoom && (
+        <div className="flex flex-col gap-3">
           <Pile
+            cards={state.room.discard}
+            onPileDetailsClick={
+              state.room.discard.length > 1
+                ? () => displayPileDetails(state.room!.discard.toReversed())
+                : undefined
+            }
+            onHoverPopover={
+              firstDiscardRoom === undefined
+                ? undefined
+                : () => (
+                    <CardHoverPreview
+                      card={firstDiscardRoom}
+                      orientation={firstDiscardRoom.orientation}
+                    />
+                  )
+            }
+            orientation="landscape"
+          />
+          <Pile
+            globalId={SpecialGlobalIds.Room}
+            cheats={
+              isCheatViewOpen
+                ? {
+                    putRoom: () => putRoomInSlot(state.room, cheatServices),
+                  }
+                : undefined
+            }
             cards={Array.from({ length: state.room.deckSize }).map(
               () => CardType.RoomCard,
             )}
             orientation="landscape"
-            size={110}
           />
-          <Pile cards={state.room.inPlay} orientation="landscape" size={110} />
+          <Pile
+            cards={state.room.inPlay.map((card) => ({
+              slug: card.slug,
+              globalId: card.globalId,
+              charged: card.charged,
+              eternal: card.eternal,
+              engagedInCombat: card.stats && card.stats.isEngagedInCombat,
+              engagedInPurchase: false,
+              effects: card.stats ? card.stats.temporaryEffect : undefined,
+              counter: card.counter,
+              stats: card.stats,
+            }))}
+            cheats={
+              isCheatViewOpen
+                ? {
+                    discard: cheatRemovableCards.has(activeRoom.globalId)
+                      ? () => discardCardCheat(activeRoom)
+                      : undefined,
+                  }
+                : undefined
+            }
+            globalId={state.room.inPlay[0]?.globalId}
+            onClickTopCard={() =>
+              state.room!.inPlay[0]!.stats
+                ? block(
+                    t("gameStep.attack.blockedTooltip.title"),
+                    state.room!.inPlay[0]!.stats.capabilities.targetable,
+                    () => {
+                      console.log(
+                        "Attacking monster with card:",
+                        state.room!.inPlay[0]!,
+                      );
+                      socket.emit(
+                        "attackMonster",
+                        { card: state.room!.inPlay[0]! },
+                        (response) => {
+                          if (response.status === 400)
+                            toast(
+                              "error",
+                              t("gameStep.attack.errorToast.title"),
+                              translateError(response.error),
+                            );
+                        },
+                      );
+                    },
+                  )
+                : block(
+                    t("capability.cannotActivate"),
+                    activeRoom.capabilities.activate,
+                    () => onRoomCardClick(activeRoom, 0),
+                  )
+            }
+            disabled={
+              activeRoom.stats
+                ? activeRoom.stats.capabilities.targetable !== true
+                : activeRoom.capabilities.activate !== true
+            }
+            onHoverPopover={() => (
+              <CardHoverPreview
+                card={activeRoom}
+                orientation={activeRoom.orientation}
+                stats={activeRoom.stats}
+                effects={
+                  activeRoom.stats
+                    ? activeRoom.stats.temporaryEffect
+                    : undefined
+                }
+                counter={activeRoom.counter}
+                isEternal={activeRoom.eternal}
+                tooltip={{
+                  title: t("gameStep.activate.blockedTooltip.title"),
+                  capable: activeRoom.capabilities.activate,
+                }}
+              />
+            )}
+            orientation="landscape"
+          />
         </div>
       )}
       <div className="flex flex-col gap-6">
@@ -230,8 +450,16 @@ export const Center = ({ state }: CenterProps) => {
                 : undefined
             }
           />
-          <div ref={registerTreasureDeckEl}>
+          <div ref={registerTreasureDeckEl} className="relative">
             <Pile
+              cheats={
+                isCheatViewOpen
+                  ? {
+                      drawTreasure: () => cheatDrawTreasure(cheatServices),
+                      selectTreasure: () => selectCardToTreasure(cheatServices),
+                    }
+                  : undefined
+              }
               globalId={SpecialGlobalIds.Treasure}
               cards={Array.from({ length: state.treasure.deckSize }).map(
                 (_, index) =>
@@ -297,6 +525,15 @@ export const Center = ({ state }: CenterProps) => {
               key={card.slug}
               ref={(el) => registerTreasureShopPileEl(card.globalId, el)}>
               <Pile
+                cheats={
+                  isCheatViewOpen
+                    ? {
+                        discard: cheatRemovableCards.has(card.globalId)
+                          ? () => discardCardCheat(card)
+                          : undefined,
+                      }
+                    : undefined
+                }
                 globalId={card.globalId}
                 cards={[card]}
                 disabled={state.me.capabilities.buyTreasure !== true}
@@ -338,6 +575,7 @@ export const Center = ({ state }: CenterProps) => {
           <Pile
             cards={state.monsters.discard.map((card) => ({
               slug: card.slug,
+              globalId: card.globalId,
               face: "front",
             }))}
             onPileDetailsClick={
@@ -365,64 +603,74 @@ export const Center = ({ state }: CenterProps) => {
                 : undefined
             }
           />
-          <Pile
-            globalId={SpecialGlobalIds.Monster}
-            cards={Array.from({ length: state.monsters.deckSize }).map(
-              (_, index) => ({
-                type: CardType.MonsterCard,
-                isRequiredAttack:
-                  index === state.monsters.deckSize - 1 &&
-                  state.me.attackRequirements.some(
-                    (requirement) => requirement.target === "topDeck",
-                  ),
-              }),
-            )}
-            disabled={state.monsters.capabilities.targetableDeck !== true}
-            onHoverPopover={
-              monsterDeckAttackRequirement
-                ? () => (
-                    <CardHoverPreview
-                      card={monsterDeckAttackRequirement.source}
-                      tooltip={[
-                        {
-                          capable: state.monsters.capabilities.targetableDeck,
-                          title: t("gameStep.attack.blockedTooltip.title"),
-                        },
-                        {
-                          enabled: true,
-                          title: t("gameStep.attack.requiredTooltip.title"),
-                          content: t(
-                            "gameStep.attack.requiredTooltip.message",
-                            {
-                              card: monsterDeckAttackRequirement.source.nameKey,
-                            },
-                          ),
-                        },
-                      ]}
-                    />
-                  )
-                : undefined
-            }
-            onClickTopCardHotkey={
-              targetableMonsters.includes("top")
-                ? `${targetableMonsters.indexOf("top") + 1}`
-                : undefined
-            }
-            onClickTopCard={() =>
-              block(
-                t("gameStep.attack.blockedTooltip.title"),
-                state.monsters.capabilities.targetableDeck,
-                () => {
-                  selectMonsterToAttack("top");
-                },
-              )
-            }
-            tooltip={{
-              capable: state.monsters.capabilities.targetableDeck,
-              title: t("gameStep.attack.blockedTooltip.title"),
-            }}
-          />
-          {state.monsters.inPlay.map((card, index) => {
+          <div className="relative">
+            <Pile
+              cheats={
+                isCheatViewOpen
+                  ? {
+                      putInSlot: () => putMonsterInSlot(cheatServices),
+                    }
+                  : undefined
+              }
+              globalId={SpecialGlobalIds.Monster}
+              cards={Array.from({ length: state.monsters.deckSize }).map(
+                (_, index) => ({
+                  type: CardType.MonsterCard,
+                  isRequiredAttack:
+                    index === state.monsters.deckSize - 1 &&
+                    state.me.attackRequirements.some(
+                      (requirement) => requirement.target === "topDeck",
+                    ),
+                }),
+              )}
+              disabled={state.monsters.capabilities.targetableDeck !== true}
+              onHoverPopover={
+                monsterDeckAttackRequirement
+                  ? () => (
+                      <CardHoverPreview
+                        card={monsterDeckAttackRequirement.source}
+                        tooltip={[
+                          {
+                            capable: state.monsters.capabilities.targetableDeck,
+                            title: t("gameStep.attack.blockedTooltip.title"),
+                          },
+                          {
+                            enabled: true,
+                            title: t("gameStep.attack.requiredTooltip.title"),
+                            content: t(
+                              "gameStep.attack.requiredTooltip.message",
+                              {
+                                card: monsterDeckAttackRequirement.source
+                                  .nameKey,
+                              },
+                            ),
+                          },
+                        ]}
+                      />
+                    )
+                  : undefined
+              }
+              onClickTopCardHotkey={
+                targetableMonsters.includes("top")
+                  ? `${targetableMonsters.indexOf("top") + 1}`
+                  : undefined
+              }
+              onClickTopCard={() =>
+                block(
+                  t("gameStep.attack.blockedTooltip.title"),
+                  state.monsters.capabilities.targetableDeck,
+                  () => {
+                    selectMonsterToAttack("top");
+                  },
+                )
+              }
+              tooltip={{
+                capable: state.monsters.capabilities.targetableDeck,
+                title: t("gameStep.attack.blockedTooltip.title"),
+              }}
+            />
+          </div>
+          {state.monsters.inPlay.map((card) => {
             const targetable =
               card.top.stats?.capabilities.targetable ??
               t("gameStep.attack.blockedTooltip.message");
@@ -436,6 +684,15 @@ export const Center = ({ state }: CenterProps) => {
                 key={card.top.globalId}
                 ref={(el) => registerMonsterSlotEl(card.top.globalId, el)}>
                 <Pile
+                  cheats={
+                    isCheatViewOpen
+                      ? {
+                          discard: cheatRemovableCards.has(card.top.globalId)
+                            ? () => discardCardCheat(card.top)
+                            : undefined,
+                        }
+                      : undefined
+                  }
                   globalId={card.top.globalId}
                   cards={[
                     ...card.covered,
@@ -459,7 +716,7 @@ export const Center = ({ state }: CenterProps) => {
                     block(
                       t("gameStep.attack.blockedTooltip.title"),
                       targetable,
-                      () => selectMonsterToAttack(index),
+                      () => selectMonsterToAttack(card.top),
                     )
                   }
                   onPileDetailsClick={
@@ -475,8 +732,8 @@ export const Center = ({ state }: CenterProps) => {
                   onHoverPopover={() => (
                     <CardHoverPreview
                       card={card.top}
+                      counter={card.top.counter}
                       stats={card.top.stats}
-                      counter= {card.top.counter}
                       effects={card.top.stats?.temporaryEffect}
                       tooltip={[
                         {

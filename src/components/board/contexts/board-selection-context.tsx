@@ -16,6 +16,7 @@ export enum SpecialGlobalIds {
   Loot = -1,
   Treasure = -2,
   Monster = -3,
+  Room = -4,
 }
 
 export const stackElementIdShift = 10_000;
@@ -60,6 +61,8 @@ export const BoardSelectionProvider = ({
         return SpecialGlobalIds.Treasure;
       case "monster":
         return SpecialGlobalIds.Monster;
+      case "room":
+        return SpecialGlobalIds.Room;
       default:
         throw new Error(t("error.invalidDeckType", { deckType: deck }));
     }

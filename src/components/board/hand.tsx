@@ -8,9 +8,11 @@ import { usePromptContext } from "./contexts/prompt-context";
 import { useToastContext } from "./contexts/toast-context";
 import { Pile } from "./pile";
 import { useLanguageContext } from "../contexts/language-context";
+import { discardCardCheat } from "./cheats";
 
 export const Hand = () => {
-  const { state, isHandUp, setIsHandUp } = useGameContext();
+  const { state, isHandUp, setIsHandUp, isCheatViewOpen, cheatRemovableCards } =
+    useGameContext();
   const { toast, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
   const { registerMeHandCardEl } = useGameAnimation();
@@ -32,7 +34,7 @@ export const Hand = () => {
                 t("gameStep.noOptionsAvailable"),
               );
             } else {
-              const promptId = `card-play-${index}-${selections.length}`;
+              const promptId = `card-play-${index}-${selections.length}-${Date.now()}`;
               addPrompt({
                 promptId,
                 isUnique: false,
@@ -79,6 +81,15 @@ export const Hand = () => {
             key={card.slug}
             ref={(el) => registerMeHandCardEl(card.globalId, el)}>
             <Pile
+              cheats={
+                isCheatViewOpen
+                  ? {
+                      discard: cheatRemovableCards.has(card.globalId)
+                        ? () => discardCardCheat(card)
+                        : undefined,
+                    }
+                  : undefined
+              }
               globalId={card.globalId}
               cards={[{ slug: card.slug }]}
               className={cn(
@@ -92,6 +103,7 @@ export const Hand = () => {
               onHoverPopover={() => (
                 <CardHoverPreview
                   card={card}
+                  orientation={card.orientation}
                   tooltip={{
                     capable: state.me.capabilities.useLoot,
                     title: t("gameStep.play.blockedTooltip.title"),

@@ -12,6 +12,7 @@ import { useToastContext } from "./contexts/toast-context";
 import type { Tooltip } from "./use-tooltip";
 import { useTooltip } from "./use-tooltip";
 import { useLanguageContext } from "../contexts/language-context";
+import { CheatButtons, type CheatActions } from "./cheats";
 
 type CardMetadata = {
   isRequiredAttack?: boolean;
@@ -24,11 +25,7 @@ type CardMetadata = {
     | {
         healthPoints: number;
         attackPoints: number;
-        evasionPoints: number;
-      }
-    | {
-        healthPoints: number;
-        attackPoints: number;
+        evasionPoints?: number | undefined;
       }
     | undefined;
   effects?: TemporaryEffect[];
@@ -62,6 +59,7 @@ interface PileProps {
   globalId?: number;
   style?: React.CSSProperties;
   children?: React.ReactNode;
+  cheats?: CheatActions;
 }
 
 const BRIGHTNESS_MIN = 0.4;
@@ -82,10 +80,13 @@ export const Pile = ({
   globalId,
   children,
   orientation,
+  cheats,
 }: PileProps) => {
   const { t } = useLanguageContext();
   const size = sizePx / 16;
+  const pileHeight = orientation === "landscape" ? size * (750 / 1024) : size;
   const seed = useRef(Math.random().toString());
+
   const rng = seedrandom(seed.current);
 
   const { boardSelectionState, isBoardSelectionActive, toggleSelection } =
@@ -146,7 +147,7 @@ export const Pile = ({
   return (
     <div
       className={cn("grid shrink-0", className)}
-      style={{ height: size + "em", ...style }}>
+      style={{ height: pileHeight + "em", ...style }}>
       {cards
         .filter((_, index) => index >= cards.length - maxCards)
         .map((card, index, array) => {
@@ -180,19 +181,21 @@ export const Pile = ({
 
           const transformStyle = {
             transform: `
-              ${enableRandomRotation ? `rotate(${(rng() - 0.5) * 5}deg)` : ""}
-              translateY(-${cardsIndex * 0.02}em)
-              scale(${1 + cardsIndex * 0.0002})
-            `,
+                ${enableRandomRotation ? `rotate(${(rng() - 0.5) * 5}deg)` : ""}
+                translateY(-${cardsIndex * 0.02}em)
+                scale(${1 + cardsIndex * 0.0002})
+              `,
           };
 
+          const isTopCard = index === array.length - 1;
+
           return (
-            <>
+            <div
+              key={index}
+              className={cn("relative col-start-1 row-start-1")}
+              style={transformStyle}>
               <Card
-                onClick={
-                  index === array.length - 1 ? onClickTopCard : undefined
-                }
-                key={index}
+                onClick={isTopCard ? onClickTopCard : undefined}
                 card={
                   typeof card === "object" && "type" in card ? card.type : card
                 }
@@ -210,8 +213,8 @@ export const Pile = ({
 
                   entityBoardSelectionState &&
                     entityBoardSelectionState.isSelected &&
-                    index === array.length - 1 &&
-                    "outline-[0.3em] outline-blue-400 shadow-2xl/50 glow-selection z-50",
+                    isTopCard &&
+                    "outline-[0.3em] outline-blue-400 shadow-2xl/50 glow-selection",
                 )}
                 className={cn(
                   !charged && "brightness-50 contrast-90",
@@ -221,7 +224,7 @@ export const Pile = ({
                   cards.length > 10 && index === 0 && "pile-xl-shadow",
                   cards.length > 40 && index === 0 && "pile-2xl-shadow",
                   cards.length > 80 && index === 0 && "pile-3xl-shadow",
-                  index === array.length - 1 && topCardClassName,
+                  isTopCard && topCardClassName,
                 )}
                 disabled={
                   isBoardSelectionActive
@@ -229,54 +232,51 @@ export const Pile = ({
                       entityBoardSelectionState.isSelectable === false
                     : disabled
                 }
-                containerStyle={transformStyle}
                 size={size}
                 brightness={brightness}
                 stats={typeof card === "string" ? undefined : card.stats}
                 effects={typeof card === "string" ? undefined : card.effects}
                 counter={counter}
                 onMouseEnter={
-                  index === array.length - 1
+                  isTopCard
                     ? onHoverPopover
                       ? onMouseEnter
                       : setTooltip
                     : undefined
                 }
                 onMouseLeave={
-                  index === array.length - 1
+                  isTopCard
                     ? onHoverPopover
                       ? closePopover
                       : closeTooltip
                     : undefined
                 }
-                onPileDetailsClick={
-                  index === array.length - 1 ? onPileDetailsClick : undefined
-                }
-                hotkey={
-                  index === array.length - 1 ? onClickTopCardHotkey : undefined
-                }
+                onPileDetailsClick={isTopCard ? onPileDetailsClick : undefined}
+                hotkey={isTopCard ? onClickTopCardHotkey : undefined}
                 selectionIndex={
-                  index === array.length - 1
+                  isTopCard
                     ? entityBoardSelectionState?.selectionIndex
                     : undefined
                 }
-                globalId={index === array.length - 1 ? globalId : undefined}
+                globalId={isTopCard ? globalId : undefined}
                 orientation={orientation}
               />
-              {index === array.length - 1 && (
-                <div style={transformStyle}>{children}</div>
-              )}
-            </>
+              {isTopCard && <div>{children}</div>}
+              {isTopCard && cheats && <CheatButtons {...cheats} />}
+            </div>
           );
         })}
       {cards.length === 0 && (
-        <Card
-          size={size}
-          onClick={onClickTopCard}
-          disabled={disabled}
-          orientation={orientation}
-          className={topCardClassName}
-        />
+        <div className="relative col-start-1 row-start-1">
+          <Card
+            size={size}
+            onClick={onClickTopCard}
+            disabled={disabled}
+            orientation={orientation}
+            className={topCardClassName}
+          />
+          {cheats && <CheatButtons {...cheats} />}
+        </div>
       )}
     </div>
   );

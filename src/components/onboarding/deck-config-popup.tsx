@@ -118,8 +118,13 @@ export const DeckConfigPopup = ({
               )}>
               <CardImage
                 card={{ slug: card.slug }}
-                sizes="12em"
-                className="w-48 shadow-lg/30"
+                sizes={card.orientation === "portrait" ? "12em" : "24em"}
+                className={
+                  card.orientation === "portrait"
+                    ? "w-48 shadow-lg/30"
+                    : "w-76 shadow-lg/30"
+                }
+                orientation={card.orientation}
               />
               {"eternal" in card && (
                 <>

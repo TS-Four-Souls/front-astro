@@ -40,9 +40,11 @@ interface CardProps {
   disabled?: boolean;
   size: number;
   orientation?: Orientation;
-  stats?:
-    | { healthPoints: number; attackPoints: number; evasionPoints: number }
-    | { healthPoints: number; attackPoints: number };
+  stats?: {
+    healthPoints: number;
+    attackPoints: number;
+    evasionPoints?: number | undefined;
+  };
   counter?: number;
   onMouseEnter?: (e: React.MouseEvent<HTMLDivElement>) => void;
   onMouseLeave?: (e: React.MouseEvent<HTMLDivElement>) => void;
@@ -69,6 +71,27 @@ const getOrientationParameters = (
   return { aspectRatio, borderRadius };
 };
 
+const plusLeftPosition: Record<Orientation, Record<number, number>> = {
+  portrait: {
+    0: 0,
+    1: 55.5,
+    2: 56.5,
+    3: 56.5,
+    4: 56.0,
+    5: 57.0,
+    6: 0,
+  },
+  landscape: {
+    0: 0,
+    1: 54,
+    2: 54.5,
+    3: 54.5,
+    4: 54,
+    5: 55,
+    6: 0,
+  },
+};
+
 export const Card = ({
   card,
   containerStyle,
@@ -91,6 +114,7 @@ export const Card = ({
   onMouseEnter,
   onMouseLeave,
 }: CardProps) => {
+  size = orientation === "portrait" ? size : size * (750 / 1024);
   const { aspectRatio, borderRadius } = getOrientationParameters(orientation);
 
   if (!card) {
@@ -112,8 +136,30 @@ export const Card = ({
     );
   }
 
-  const statsSize = size * 0.09;
+  const statsSize = orientation === "portrait" ? size * 0.09 : size * 0.12;
 
+  const positionStatOverlay =
+    orientation === "portrait"
+      ? "absolute top-[57.3%] right-[17.1%] left-[17.7%]"
+      : "absolute top-[54.5%] right-[26.5%] left-[26%] opacity-100";
+  const HealthOverlay =
+    orientation === "portrait"
+      ? "absolute top-[55.7%] left-[30.5%] font-statblock text-black"
+      : "absolute top-[52.1%] left-[36%] font-statblock text-black";
+  const atkOverlay =
+    orientation === "portrait"
+      ? "absolute top-[55.7%] left-[72.6%] font-statblock text-black"
+      : "absolute top-[52.1%] left-[66.6%] font-statblock text-black";
+  const evasionOverlay =
+    stats && stats.evasionPoints !== undefined
+      ? orientation === "portrait"
+        ? stats.evasionPoints === 6 || stats.evasionPoints === 0
+          ? "absolute font-statblock text-black top-[55.7%] left-[51.9%]"
+          : "absolute font-statblock text-black top-[55.7%] left-[51.2%]"
+        : stats.evasionPoints === 6 || stats.evasionPoints === 0
+          ? "absolute font-statblock text-black top-[52.1%] left-[51.4%]"
+          : "absolute font-statblock text-black top-[52.1%] left-[50.7%]"
+      : "";
   return (
     <div
       className={cn("relative", containerClassName)}
@@ -210,7 +256,7 @@ export const Card = ({
           </div>
         )}
 
-        {stats && !("evasionPoints" in stats) && (
+        {stats && stats.evasionPoints === undefined && (
           <div
             className="pointer-events-none"
             style={{ fontSize: statsSize + "em" }}>
@@ -226,44 +272,39 @@ export const Card = ({
           </div>
         )}
 
-        {stats && "evasionPoints" in stats && (
+        {stats && stats.evasionPoints !== undefined && (
           <div
             className="pointer-events-none"
             style={{ fontSize: statsSize + "em" }}>
-            <div className="absolute top-[57.3%] right-[17.1%] left-[17.7%]">
+            <div className={positionStatOverlay}>
               <img src="/monster-card-overlay.png" draggable={false} />
             </div>
 
-            <div className="absolute top-[55.7%] left-[30.5%] font-statblock text-black">
-              {stats.healthPoints}
-            </div>
-            <p className="absolute top-[55.7%] left-[72.6%] font-statblock text-black">
-              {stats.attackPoints}
-            </p>
+            <div className={HealthOverlay}>{stats.healthPoints}</div>
+            <p className={atkOverlay}>{stats.attackPoints}</p>
+            <p className={evasionOverlay}>{stats.evasionPoints}</p>
             <p
               className={cn(
-                "absolute font-statblock text-black",
-                stats.evasionPoints === 6 || stats.evasionPoints === 0
-                  ? "top-[55.7%] left-[51.9%]"
-                  : "top-[55.7%] left-[51.2%]",
-              )}>
-              {stats.evasionPoints}
-            </p>
-            <p
-              className={cn(
-                "absolute top-[58.8%] font-main text-[60%] text-black",
-                stats.evasionPoints === 0 && "hidden",
-                stats.evasionPoints === 1 && "left-[55.5%]",
-                stats.evasionPoints === 2 && "left-[56.5%]",
-                stats.evasionPoints === 3 && "left-[56.5%]",
-                stats.evasionPoints === 4 && "left-[56.0%]",
-                stats.evasionPoints === 5 && "left-[57.0%]",
-                stats.evasionPoints === 6 && "hidden",
-              )}>
+                orientation === "portrait" &&
+                  "absolute top-[58.8%] font-main text-[60%] text-black",
+                orientation === "landscape" &&
+                  "absolute top-[56.5%] font-main text-[60%] text-black",
+                stats.evasionPoints === 0 ||
+                  (stats.evasionPoints === 6 && "hidden"),
+              )}
+              style={{
+                left: plusLeftPosition[orientation][stats.evasionPoints] + "%",
+              }}>
               +
             </p>
             {stats.attackPoints === 6 && (
-              <p className="absolute top-[55.7%] left-[77%] font-statblock text-black">
+              <p
+                className={cn(
+                  "absolute font-statblock text-black",
+                  orientation === "portrait"
+                    ? "top-[55.7%] left-[77%]"
+                    : "top-[52%] left-[70%]",
+                )}>
                 !
               </p>
             )}

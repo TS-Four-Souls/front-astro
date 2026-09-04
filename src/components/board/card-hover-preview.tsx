@@ -51,7 +51,7 @@ export const CardHoverPreview = ({
             stats={stats}
             effects={effects}
             counter={counter}
-            size={orientation === "portrait" ? 22 : 16}
+            size={22}
             orientation={orientation}
           />
         )}
