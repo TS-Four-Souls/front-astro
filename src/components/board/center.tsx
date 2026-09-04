@@ -35,7 +35,7 @@ export const Center = ({ state }: CenterProps) => {
   const { addPrompt, removePrompt } = usePromptContext();
   const { displayPileDetails } = usePileDetails();
   const { translateError, t, ts } = useLanguageContext();
-  const { parameters, isCheatViewOpen, cheatRemovableCards } = useGameContext();
+  const { isCheatViewOpen, cheatRemovableCards } = useGameContext();
   const cheatServices = { addPrompt, removePrompt, toast, t, translateError };
   const {
     registerLootDeckEl,
@@ -329,6 +329,7 @@ export const Center = ({ state }: CenterProps) => {
             orientation="landscape"
           />
           <Pile
+            globalId={SpecialGlobalIds.Room}
             cheats={
               isCheatViewOpen
                 ? {

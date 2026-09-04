@@ -11,7 +11,8 @@ import { useLanguageContext } from "../contexts/language-context";
 import { discardCardCheat } from "./cheats";
 
 export const Hand = () => {
-  const { state, isHandUp, setIsHandUp, isCheatViewOpen, cheatRemovableCards } = useGameContext();
+  const { state, isHandUp, setIsHandUp, isCheatViewOpen, cheatRemovableCards } =
+    useGameContext();
   const { toast, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
   const { registerMeHandCardEl } = useGameAnimation();
