@@ -16,6 +16,7 @@ import { usePromptContext } from "./contexts/prompt-context";
 import { useToastContext } from "./contexts/toast-context";
 import { useTooltip } from "./use-tooltip";
 import { useLanguageContext } from "../contexts/language-context";
+import { gainCoinsCheat } from "./cheats";
 
 interface PlayerStatsProps {
   player: Player | PlayerMe;
@@ -24,7 +25,7 @@ interface PlayerStatsProps {
 
 export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
   const { translateError, t } = useLanguageContext();
-  const { state } = useGameContext();
+  const { state, isCheatViewOpen } = useGameContext();
   const { toast, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
   const { setPopover, closePopover } = usePopoverContext();
@@ -225,7 +226,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
         onMouseEnter={setCoinTooltip}
         onMouseLeave={closeCoinTooltip}
         className={cn(
-          "flex items-center gap-1",
+          "relative flex items-center gap-1",
           player.capabilities.canDonateCoinsTo === true
             ? "cursor-pointer"
             : "cursor-not-allowed",
@@ -237,6 +238,24 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
             onCoinPress,
           )
         }>
+        {isMe && isCheatViewOpen && (
+          <button
+            type="button"
+            onClick={(event) => {
+              event.stopPropagation();
+              gainCoinsCheat({
+                addPrompt,
+                removePrompt,
+                toast,
+                t,
+                translateError,
+              });
+            }}
+            className="cheat-button absolute -top-2 -left-2 z-10 flex h-5 w-5 cursor-pointer items-center justify-center rounded-full text-[12px] leading-none font-bold text-white shadow-md shadow-taupe-950/50 hover:brightness-110"
+            aria-label="Add coins cheat">
+            +
+          </button>
+        )}
         <img
           ref={(el) => registerPlayerAnchor(name, "coins", el)}
           src="/coin.png"
@@ -266,7 +285,12 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
               content: (
                 <div className="flex w-max flex-nowrap gap-4">
                   {soulCards.map((card, index) => (
-                    <Card card={card} key={index} size={22} />
+                    <Card
+                      card={card}
+                      key={index}
+                      size={22}
+                      orientation={card.orientation}
+                    />
                   ))}
                 </div>
               ),
@@ -382,7 +406,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
               }
             />
           )}
-          {!state.me.isEngagedInCombat && (
+          {!state.me.character.stats.isEngagedInCombat && (
             <Button
               label={t("gameStep.declareAttackButton.label")}
               className="shadow-lg shadow-taupe-800/70"
@@ -401,7 +425,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
               }}
             />
           )}
-          {state.me.isEngagedInCombat && (
+          {state.me.character.stats.isEngagedInCombat && (
             <Button
               label={t("gameStep.rollDiceButton.label")}
               className="shadow-lg shadow-taupe-800/70"
