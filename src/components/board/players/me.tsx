@@ -13,10 +13,12 @@ import { Hand } from "../hand";
 import { Pile } from "../pile";
 import { PlayerStats } from "../player-stats";
 import { useLanguageContext } from "@/components/contexts/language-context";
+import { discardCardCheat } from "../cheats";
 
 export const Me = () => {
   const { ts, t, translateError } = useLanguageContext();
-  const { state, isHandUp, isCheatViewOpen } = useGameContext();
+  const { state, isHandUp, isCheatViewOpen, cheatRemovableCards } =
+    useGameContext();
   const { toast, block } = useToastContext();
   const { addPrompt, removePrompt, clearPrompts } = usePromptContext();
   const { registerInPlayCardEl } = useGameAnimation();
@@ -217,7 +219,15 @@ export const Me = () => {
               key={card.globalId}
               ref={(el) => registerInPlayCardEl(card.globalId, el)}>
               <Pile
-                cheats={isCheatViewOpen ? {} : undefined}
+                cheats={
+                  isCheatViewOpen
+                    ? {
+                        discard: cheatRemovableCards.has(card.globalId)
+                          ? () => discardCardCheat(card)
+                          : undefined,
+                      }
+                    : undefined
+                }
                 globalId={card.globalId}
                 onClickTopCardHotkey={
                   targetableCards.includes(card.slug)

@@ -1,27 +1,17 @@
-import type {
-  Card,
-  DetailedState,
-  DiceRollJson,
-  IdentifierType,
-} from "@/shared/api";
+import type { Card, DetailedState, DiceRollJson } from "@/shared/api";
 import { socket } from "@/utils/socket";
 import { Button } from "../button";
 import { useLanguageContext } from "../contexts/language-context";
 
-export type CheatOption =
-  | "discard"
-  | "drawLoot"
-  | "selectLoot"
-  | "drawTreasure"
-  | "selectTreasure"
-  | "putInSlot"
-  | "putRoom";
-
-export type CheatActions = Partial<{
-  [option in CheatOption]: option extends "discard"
-    ? (globalId: number) => void
-    : () => void;
-}>;
+export type CheatActions = {
+  discard?: () => void;
+  drawLoot?: () => void;
+  selectLoot?: () => void;
+  drawTreasure?: () => void;
+  selectTreasure?: () => void;
+  putInSlot?: () => void;
+  putRoom?: () => void;
+};
 
 export interface CheatPromptServices {
   addPrompt: (prompt: any) => void;
@@ -63,15 +53,7 @@ export const cheatDrawTreasure = ({
   });
 };
 
-export const discardCardCheat = (
-  cheatRemovableCards: Set<IdentifierType>,
-  globalId: number,
-) => {
-  const card = cheatRemovableCards
-    .values()
-    .find((item) => item.globalId === globalId);
-  if (!card) return;
-
+export const discardCardCheat = (card: Card) => {
   socket.emit("debugRemoveCards", { cards: [card] }, (response) => {
     if (response.status !== 200)
       console.error("debugRemoveCards failed", response.error);
@@ -453,6 +435,18 @@ export const CheatButtons = (cheats: CheatActions) => {
             label={label}
           />
         ) : null,
+      )}
+      {cheats.discard && (
+        <button
+          type="button"
+          className="cheat-button absolute top-1 right-1 z-10 flex h-5 w-5 cursor-pointer items-center justify-center rounded-full text-sm leading-none font-bold text-white hover:brightness-110"
+          onClick={(e) => {
+            e.stopPropagation();
+            cheats.discard?.();
+          }}
+          aria-label="Remove card">
+          ×
+        </button>
       )}
     </>
   );

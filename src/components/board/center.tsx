@@ -20,6 +20,7 @@ import { useLanguageContext } from "../contexts/language-context";
 import {
   cheatDrawLoot,
   cheatDrawTreasure,
+  discardCardCheat,
   putMonsterInSlot,
   putRoomInSlot,
   selectCardToLoot,
@@ -34,7 +35,7 @@ export const Center = ({ state }: CenterProps) => {
   const { addPrompt, removePrompt } = usePromptContext();
   const { displayPileDetails } = usePileDetails();
   const { translateError, t, ts } = useLanguageContext();
-  const { parameters, isCheatViewOpen } = useGameContext();
+  const { parameters, isCheatViewOpen, cheatRemovableCards } = useGameContext();
   const cheatServices = { addPrompt, removePrompt, toast, t, translateError };
   const {
     registerLootDeckEl,
@@ -273,11 +274,6 @@ export const Center = ({ state }: CenterProps) => {
               ? () => displayPileDetails(state.loot.discard.toReversed())
               : undefined
           }
-          cheats={
-            parameters.allowCheatOptions.value && isCheatViewOpen
-              ? {}
-              : undefined
-          }
           disabled={state.loot.discard.length === 0}
           onClickTopCard={
             state.loot.discard.length > 1
@@ -297,7 +293,7 @@ export const Center = ({ state }: CenterProps) => {
         <div ref={registerLootDeckEl} className="relative">
           <Pile
             cheats={
-              parameters.allowCheatOptions.value && isCheatViewOpen
+              isCheatViewOpen
                 ? {
                     drawLoot: () => cheatDrawLoot(cheatServices),
                     selectLoot: () => selectCardToLoot(cheatServices),
@@ -334,7 +330,7 @@ export const Center = ({ state }: CenterProps) => {
           />
           <Pile
             cheats={
-              parameters.allowCheatOptions.value && isCheatViewOpen
+              isCheatViewOpen
                 ? {
                     putRoom: () => putRoomInSlot(state.room, cheatServices),
                   }
@@ -358,8 +354,12 @@ export const Center = ({ state }: CenterProps) => {
               stats: card.stats,
             }))}
             cheats={
-              parameters.allowCheatOptions.value && isCheatViewOpen
-                ? {}
+              isCheatViewOpen
+                ? {
+                    discard: cheatRemovableCards.has(activeRoom.globalId)
+                      ? () => discardCardCheat(activeRoom)
+                      : undefined,
+                  }
                 : undefined
             }
             globalId={state.room.inPlay[0]?.globalId}
@@ -423,11 +423,6 @@ export const Center = ({ state }: CenterProps) => {
       <div className="flex flex-col gap-6">
         <div className="flex place-items-center gap-3">
           <Pile
-            cheats={
-              parameters.allowCheatOptions.value && isCheatViewOpen
-                ? {}
-                : undefined
-            }
             cards={state.treasure.discard}
             disabled={state.treasure.discard.length === 0}
             onPileDetailsClick={
@@ -457,7 +452,7 @@ export const Center = ({ state }: CenterProps) => {
           <div ref={registerTreasureDeckEl} className="relative">
             <Pile
               cheats={
-                parameters.allowCheatOptions.value && isCheatViewOpen
+                isCheatViewOpen
                   ? {
                       drawTreasure: () => cheatDrawTreasure(cheatServices),
                       selectTreasure: () => selectCardToTreasure(cheatServices),
@@ -530,8 +525,12 @@ export const Center = ({ state }: CenterProps) => {
               ref={(el) => registerTreasureShopPileEl(card.globalId, el)}>
               <Pile
                 cheats={
-                  parameters.allowCheatOptions.value && isCheatViewOpen
-                    ? {}
+                  isCheatViewOpen
+                    ? {
+                        discard: cheatRemovableCards.has(card.globalId)
+                          ? () => discardCardCheat(card)
+                          : undefined,
+                      }
                     : undefined
                 }
                 globalId={card.globalId}
@@ -573,11 +572,6 @@ export const Center = ({ state }: CenterProps) => {
         </div>
         <div className="flex place-items-center gap-3">
           <Pile
-            cheats={
-              parameters.allowCheatOptions.value && isCheatViewOpen
-                ? {}
-                : undefined
-            }
             cards={state.monsters.discard.map((card) => ({
               slug: card.slug,
               globalId: card.globalId,
@@ -611,7 +605,7 @@ export const Center = ({ state }: CenterProps) => {
           <div className="relative">
             <Pile
               cheats={
-                parameters.allowCheatOptions.value && isCheatViewOpen
+                isCheatViewOpen
                   ? {
                       putInSlot: () => putMonsterInSlot(cheatServices),
                     }
@@ -690,8 +684,12 @@ export const Center = ({ state }: CenterProps) => {
                 ref={(el) => registerMonsterSlotEl(card.top.globalId, el)}>
                 <Pile
                   cheats={
-                    parameters.allowCheatOptions.value && isCheatViewOpen
-                      ? {}
+                    isCheatViewOpen
+                      ? {
+                          discard: cheatRemovableCards.has(card.top.globalId)
+                            ? () => discardCardCheat(card.top)
+                            : undefined,
+                        }
                       : undefined
                   }
                   globalId={card.top.globalId}

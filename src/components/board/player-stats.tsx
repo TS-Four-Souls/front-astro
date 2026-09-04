@@ -238,7 +238,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
             onCoinPress,
           )
         }>
-        {isMe && parameters.allowCheatOptions.value && isCheatViewOpen && (
+        {isMe && isCheatViewOpen && (
           <button
             type="button"
             onClick={(event) => {
@@ -251,7 +251,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
                 translateError,
               });
             }}
-            className="cheat-button absolute -top-2 -left-2 z-10 flex h-5 w-5 items-center justify-center rounded-full text-[12px] leading-none font-bold text-white shadow-md shadow-taupe-950/50 hover:brightness-110"
+            className="cheat-button absolute -top-2 -left-2 z-10 flex h-5 w-5 cursor-pointer items-center justify-center rounded-full text-[12px] leading-none font-bold text-white shadow-md shadow-taupe-950/50 hover:brightness-110"
             aria-label="Add coins cheat">
             +
           </button>

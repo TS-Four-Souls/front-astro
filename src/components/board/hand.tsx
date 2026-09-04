@@ -8,9 +8,10 @@ import { usePromptContext } from "./contexts/prompt-context";
 import { useToastContext } from "./contexts/toast-context";
 import { Pile } from "./pile";
 import { useLanguageContext } from "../contexts/language-context";
+import { discardCardCheat } from "./cheats";
 
 export const Hand = () => {
-  const { state, isHandUp, setIsHandUp, isCheatViewOpen } = useGameContext();
+  const { state, isHandUp, setIsHandUp, isCheatViewOpen, cheatRemovableCards } = useGameContext();
   const { toast, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
   const { registerMeHandCardEl } = useGameAnimation();
@@ -79,7 +80,15 @@ export const Hand = () => {
             key={card.slug}
             ref={(el) => registerMeHandCardEl(card.globalId, el)}>
             <Pile
-              cheats={isCheatViewOpen ? {} : undefined}
+              cheats={
+                isCheatViewOpen
+                  ? {
+                      discard: cheatRemovableCards.has(card.globalId)
+                        ? () => discardCardCheat(card)
+                        : undefined,
+                    }
+                  : undefined
+              }
               globalId={card.globalId}
               cards={[{ slug: card.slug }]}
               className={cn(

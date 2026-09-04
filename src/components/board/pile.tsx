@@ -12,9 +12,7 @@ import { useToastContext } from "./contexts/toast-context";
 import type { Tooltip } from "./use-tooltip";
 import { useTooltip } from "./use-tooltip";
 import { useLanguageContext } from "../contexts/language-context";
-import { usePromptContext } from "./contexts/prompt-context";
-import { useGameContext } from "./contexts/game-context";
-import { CheatButtons, discardCardCheat, type CheatActions } from "./cheats";
+import { CheatButtons, type CheatActions } from "./cheats";
 
 type CardMetadata = {
   isRequiredAttack?: boolean;
@@ -85,8 +83,6 @@ export const Pile = ({
   cheats,
 }: PileProps) => {
   const { t } = useLanguageContext();
-  const { parameters, state, cheatRemovableCards } = useGameContext();
-  const { prompt } = usePromptContext();
   const size = sizePx / 16;
   const pileHeight = orientation === "landscape" ? size * (750 / 1024) : size;
   const seed = useRef(Math.random().toString());
@@ -186,16 +182,6 @@ export const Pile = ({
             const isRequiredAttack =
               typeof card === "object" ? card.isRequiredAttack : false;
 
-            const removableCard =
-              globalId !== undefined &&
-              state !== undefined &&
-              parameters.allowCheatOptions.value &&
-              cheats !== undefined &&
-              !prompt &&
-              typeof card === "object" &&
-              "slug" in card &&
-              cheatRemovableCards.values().some((c) => c.globalId === globalId);
-
             const cardsIndex = (index / array.length) * cards.length;
 
             const transformStyle = {
@@ -215,18 +201,6 @@ export const Pile = ({
                 style={transformStyle}>
                 <Card
                   onClick={isTopCard ? onClickTopCard : undefined}
-                  onRemove={
-                    removableCard && isTopCard
-                      ? () =>
-                          typeof card === "object" && "slug" in card
-                            ? (
-                                cheats.discard ??
-                                ((id) =>
-                                  discardCardCheat(cheatRemovableCards, id))
-                              )(globalId)
-                            : undefined
-                      : undefined
-                  }
                   card={
                     typeof card === "object" && "type" in card
                       ? card.type
