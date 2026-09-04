@@ -443,6 +443,7 @@ export const Center = ({ state }: CenterProps) => {
                       slug: card.top.slug,
                       stats: card.top.stats,
                       effects: card.top.stats?.temporaryEffect,
+                      counter: card.top.counter,
                       engagedInCombat:
                         card.top.stats?.isEngagedInCombat ?? false,
                       isRequiredAttack: attackRequirement !== undefined,
@@ -475,6 +476,7 @@ export const Center = ({ state }: CenterProps) => {
                     <CardHoverPreview
                       card={card.top}
                       stats={card.top.stats}
+                      counter= {card.top.counter}
                       effects={card.top.stats?.temporaryEffect}
                       tooltip={[
                         {

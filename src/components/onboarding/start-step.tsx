@@ -23,6 +23,7 @@ import { useTooltip } from "../board/use-tooltip";
 import { Button } from "../button";
 import { DeckConfigPopup, type DeckTypes } from "./deck-config-popup";
 import { useLanguageContext } from "../contexts/language-context";
+import { Lock } from "@/icons/lock";
 
 interface StartStepProps {
   room: Room;
@@ -341,6 +342,17 @@ export const StartStep = ({ room }: StartStepProps) => {
     });
   };
 
+  const onSetJoinPermission = (value: boolean) => {
+    socket.emit("setJoinPermission", value, (response) => {
+      if (response.status === 400)
+        toast(
+          "error",
+          t("startStep.playerList.selectCharacterButton.errorToast.title"),
+          translateError(response.error),
+        );
+    });
+  };
+
   const playerSlots = Array.from({ length: 4 }).map<RoomPlayer | undefined>(
     (_, index) => room.players[index] ?? undefined,
   );
@@ -352,31 +364,53 @@ export const StartStep = ({ room }: StartStepProps) => {
           <p className="font-main text-lg">{t("startStep.roomInfo.title")}</p>
           <p
             className="mb-2 cursor-pointer text-3xl font-bold"
-            onClick={() => {
-              navigator.clipboard.writeText(room.id);
-              toast(
-                "success",
-                t("startStep.roomInfo.copyCodeButton.successToast.title"),
-                t("startStep.roomInfo.copyCodeButton.successToast.message"),
-              );
-            }}>
+            onClick={
+              room.isJoinAllowed
+                ? () => {
+                    navigator.clipboard.writeText(room.id);
+                    toast(
+                      "success",
+                      t("startStep.roomInfo.copyCodeButton.successToast.title"),
+                      t(
+                        "startStep.roomInfo.copyCodeButton.successToast.message",
+                      ),
+                    );
+                  }
+                : undefined
+            }>
             {t("startStep.roomInfo.copyCodeButton.label", { code: room.id })}
           </p>
-          <Button
-            label={t("startStep.roomInfo.copyLinkButton.label")}
-            hotkey="c"
-            onClick={() => {
-              const currentUrl = new URL(window.location.href);
-              const link = new URL(`/?code=${room.id}`, currentUrl.origin);
-              navigator.clipboard.writeText(link.toString());
-              toast(
-                "success",
-                t("startStep.roomInfo.copyLinkButton.successToast.title"),
-                t("startStep.roomInfo.copyLinkButton.successToast.message"),
-              );
-            }}
-            theme="onSpace"
-          />
+          <div className="flex gap-2">
+            <Button
+              label={<Lock isLocked={!room.isJoinAllowed} />}
+              theme="onSpace"
+              className="size-10 p-2"
+              tooltip={{
+                title: room.isJoinAllowed ? "Room unlocked" : "Room locked",
+                content: room.isJoinAllowed
+                  ? "New players can join"
+                  : "No new players can join",
+                enabled: true,
+              }}
+              active={!room.isJoinAllowed}
+              onClick={() => onSetJoinPermission(!room.isJoinAllowed)}
+            />
+            <Button
+              label={t("startStep.roomInfo.copyLinkButton.label")}
+              hotkey="c"
+              onClick={() => {
+                const currentUrl = new URL(window.location.href);
+                const link = new URL(`/?code=${room.id}`, currentUrl.origin);
+                navigator.clipboard.writeText(link.toString());
+                toast(
+                  "success",
+                  t("startStep.roomInfo.copyLinkButton.successToast.title"),
+                  t("startStep.roomInfo.copyLinkButton.successToast.message"),
+                );
+              }}
+              theme="onSpace"
+            />
+          </div>
         </div>
 
         <div className="flex place-items-center gap-8 max-[60rem]:flex-col">
@@ -453,14 +487,14 @@ export const StartStep = ({ room }: StartStepProps) => {
               <input
                 ref={loadGameInputRef}
                 type="file"
-                accept=".log,text/plain"
+                accept=".json"
                 className="hidden"
                 onChange={onLoadGameFileSelected}
               />
               <input
                 ref={loadParametersInputRef}
                 type="file"
-                accept=".txt,text/plain"
+                accept=".json"
                 className="hidden"
                 onChange={onLoadParametersFileSelected}
               />

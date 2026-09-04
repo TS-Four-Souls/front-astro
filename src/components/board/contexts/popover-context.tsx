@@ -1,4 +1,11 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { Popover } from "../popover";
 
 interface Popover {
@@ -29,12 +36,17 @@ export const PopoverProvider = ({
 }) => {
   const [popover, setPopover] = useState<Popover | null>(null);
 
-  const closePopover = () => {
+  const closePopover = useCallback(() => {
     setPopover(null);
-  };
+  }, []);
+
+  const value = useMemo(
+    () => ({ setPopover, closePopover }),
+    [closePopover],
+  );
 
   return (
-    <PopoverContext.Provider value={{ setPopover, closePopover }}>
+    <PopoverContext.Provider value={value}>
       {children}
       {popover && (
         <Popover
@@ -53,7 +65,7 @@ export const usePopoverContext = () => {
 
   useEffect(() => {
     return closePopover;
-  }, []);
+  }, [closePopover]);
 
   return { setPopover, closePopover };
 };

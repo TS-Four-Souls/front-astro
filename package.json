@@ -9,7 +9,7 @@
     "start": "node dist/server/entry.mjs",
     "astro": "astro",
     "check": "astro check",
-    "format": "prettier --write .",
+    "format": "prettier --write --list-different .",
     "upgrade": "bunx @astrojs/upgrade && ncu",
     "precommit": "bun run format && bun run check"
   },

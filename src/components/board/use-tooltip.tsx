@@ -2,6 +2,7 @@ import { cn } from "@/utils/cn";
 import { usePopoverContext } from "./contexts/popover-context";
 import type { SerializedTranslation } from "@/shared/api";
 import { useLanguageContext } from "../contexts/language-context";
+import { useEffect, useState } from "react";
 
 type TooltipType = "denied" | "warning" | "gold";
 
@@ -28,16 +29,29 @@ export const normalizeTooltips = (
 export const useTooltip = (tooltip: Tooltip | Tooltip[] | undefined) => {
   const { setPopover, closePopover } = usePopoverContext();
   const tooltips = normalizeTooltips(tooltip);
+  const tooltipKey = JSON.stringify(tooltip);
 
-  const hasTooltips =
-    tooltips.length > 0 &&
-    tooltips.some((t) => ("enabled" in t ? t.enabled : t.capable !== true));
+  const [anchor, setAnchor] = useState<{
+    left: number;
+    top: number;
+    width: number;
+    height: number;
+  }>();
 
-  const setTooltip = (e: React.MouseEvent) => {
-    if (!hasTooltips) return;
+  useEffect(() => {
+    if (anchor === undefined) return;
+
+    const hasTooltips =
+      tooltips.length > 0 &&
+      tooltips.some((t) => ("enabled" in t ? t.enabled : t.capable !== true));
+
+    if (!hasTooltips) {
+      closePopover();
+      return;
+    }
 
     setPopover({
-      anchor: e.currentTarget.getBoundingClientRect(),
+      anchor,
       withWrapper: false,
       content: (
         <div className="flex flex-col gap-1">
@@ -47,9 +61,18 @@ export const useTooltip = (tooltip: Tooltip | Tooltip[] | undefined) => {
         </div>
       ),
     });
+  }, [tooltipKey, anchor]);
+
+  const setTooltip = (e: React.MouseEvent) => {
+    setAnchor(e.currentTarget.getBoundingClientRect());
   };
 
-  return { setTooltip, closeTooltip: closePopover };
+  const closeTooltip = () => {
+    setAnchor(undefined);
+    closePopover();
+  };
+
+  return { setTooltip, closeTooltip };
 };
 
 export const TooltipComponent = ({ tooltip }: { tooltip: Tooltip }) => {
