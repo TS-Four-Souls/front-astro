@@ -7,6 +7,7 @@ import { SELF_BASE_URL } from "astro:env/client";
 import { PileIndicator } from "@/icons/pile-indicator";
 import { SelectionIndexIndicator } from "./selection-index-indicator";
 import { useLanguageContext } from "../contexts/language-context";
+import type { LANGUAGE_CODE } from "@/utils/translate";
 
 export enum CardType {
   BonusSoul = "bsoul",
@@ -40,6 +41,7 @@ interface CardProps {
   disabled?: boolean;
   size: number;
   orientation?: Orientation;
+  imageLanguage?: LANGUAGE_CODE;
   stats?:
     | { healthPoints: number; attackPoints: number; evasionPoints: number }
     | { healthPoints: number; attackPoints: number };
@@ -85,6 +87,7 @@ export const Card = ({
   stats,
   size = 160,
   orientation = "portrait",
+  imageLanguage,
   effects,
   counter,
   globalId = 0,
@@ -144,6 +147,7 @@ export const Card = ({
             borderRadius,
           }}
           orientation={orientation}
+          language={imageLanguage}
         />
 
         {hotkey && (
@@ -274,6 +278,37 @@ export const Card = ({
   );
 };
 
+interface NormalizedBounds {
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
+}
+
+const CARD_TEXT_MARKER_PADDING_PERCENT = 0.5;
+
+export const CARD_TEXT_MARKER_CLASS_NAME =
+  "h-full w-full rounded-[0.3em] shadow-xl/50 inset-shadow-sm inset-shadow-white backdrop-brightness-120";
+
+export const CardTextMarker = ({
+  bounds,
+  children,
+}: {
+  bounds: NormalizedBounds;
+  children: React.ReactNode;
+}) => (
+  <div
+    className="absolute"
+    style={{
+      top: `${bounds.top * 100 - CARD_TEXT_MARKER_PADDING_PERCENT}%`,
+      right: `${bounds.right * 100 - CARD_TEXT_MARKER_PADDING_PERCENT}%`,
+      bottom: `${bounds.bottom * 100 - CARD_TEXT_MARKER_PADDING_PERCENT}%`,
+      left: `${bounds.left * 100 - CARD_TEXT_MARKER_PADDING_PERCENT}%`,
+    }}>
+    {children}
+  </div>
+);
+
 export const VisualEffectBoxComponent = ({
   card,
   visualEffectBox,
@@ -322,24 +357,20 @@ export const VisualEffectBoxComponent = ({
       .map(({ right }) => right),
   );
 
-  const box = {
-    top: minTop * 100 - 0.5 + "%",
-    bottom: minBottom * 100 - 0.5 + "%",
-    left: minLeft * 100 - 0.5 + "%",
-    right: minRight * 100 - 0.5 + "%",
-  };
-
   return (
-    <div className="absolute" style={box}>
+    <CardTextMarker
+      bounds={{
+        top: minTop,
+        right: minRight,
+        bottom: minBottom,
+        left: minLeft,
+      }}>
       <div
         onClick={onClick}
-        className={cn(
-          "h-full w-full rounded-[0.3em] shadow-xl/50 inset-shadow-sm inset-shadow-white backdrop-brightness-120",
-          className,
-        )}
+        className={cn(CARD_TEXT_MARKER_CLASS_NAME, className)}
       />
       {children}
-    </div>
+    </CardTextMarker>
   );
 };
 
@@ -354,6 +385,7 @@ export const CardImage = ({
   style,
   tooltip,
   orientation = "portrait",
+  language: requestedLanguage,
 }: {
   card: { slug: string } | CardType;
   sizes: string;
@@ -362,19 +394,22 @@ export const CardImage = ({
   style?: React.CSSProperties;
   tooltip?: string;
   orientation?: "portrait" | "landscape";
+  language?: LANGUAGE_CODE;
 }) => {
   const { aspectRatio, borderRadius } = getOrientationParameters(orientation);
-  const { language } = useLanguageContext();
+  const { language: selectedLanguage } = useLanguageContext();
+  const preferredLanguage = requestedLanguage ?? selectedLanguage;
   const [useEnglishFallback, setUseEnglishFallback] = useState(false);
 
   const cardKey = typeof card === "string" ? card : card.slug;
 
   useEffect(() => {
     setUseEnglishFallback(false);
-  }, [cardKey, language]);
+  }, [cardKey, preferredLanguage]);
 
-  const imageLanguage = useEnglishFallback ? DEFAULT_LANGUAGE : language;
-
+  const imageLanguage = useEnglishFallback
+    ? DEFAULT_LANGUAGE
+    : preferredLanguage;
   const src =
     typeof card === "string"
       ? `${SELF_BASE_URL}/images/back/${card}_256_${imageLanguage}.webp`
@@ -406,7 +441,7 @@ export const CardImage = ({
       draggable={false}
       onClick={onClick}
       onError={() => {
-        if (language !== DEFAULT_LANGUAGE) {
+        if (imageLanguage !== DEFAULT_LANGUAGE) {
           setUseEnglishFallback(true);
         }
       }}
