@@ -1,5 +1,5 @@
 import type { SelectionItem } from "@/shared/api";
-import { useEffect, useState, type SetStateAction, type Dispatch } from "react";
+import { useState, type SetStateAction, type Dispatch } from "react";
 import { PromptPopup } from "./prompt-popup";
 import { PromptBoardSelection } from "../prompt-board-selection";
 import type { Prompt } from "../contexts/prompt-context";
@@ -18,14 +18,7 @@ export const PromptHandler = (props: PromptHandlerProps) => {
     setSelectedOptions,
     selectedOptions,
   } = props;
-  const {
-    prompt,
-    options,
-    minCount,
-    maxCount,
-    onSubmit,
-    initialSelectedOptions,
-  } = promptProps;
+  const { prompt, options, minCount, maxCount, onSubmit } = promptProps;
   const { t } = useLanguageContext();
 
   const addSelection = (option: SelectionItem) => {
@@ -52,10 +45,6 @@ export const PromptHandler = (props: PromptHandlerProps) => {
   const [mode, setMode] = useState<"popup" | "board">(
     areOptionsOnBoard ? "board" : "popup",
   );
-
-  useEffect(() => {
-    setSelectedOptions(initialSelectedOptions ?? []);
-  }, [prompt, initialSelectedOptions, setSelectedOptions]);
 
   const toggleMode = () => {
     setMode((current) => (current === "popup" ? "board" : "popup"));
