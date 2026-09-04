@@ -675,7 +675,7 @@ export const Center = ({ state }: CenterProps) => {
               }}
             />
           </div>
-          {state.monsters.inPlay.map((card, index) => {
+          {state.monsters.inPlay.map((card) => {
             const targetable =
               card.top.stats?.capabilities.targetable ??
               t("gameStep.attack.blockedTooltip.message");
@@ -735,7 +735,6 @@ export const Center = ({ state }: CenterProps) => {
                       card={card.top}
                       counter={card.top.counter}
                       stats={card.top.stats}
-                      counter= {card.top.counter}
                       effects={card.top.stats?.temporaryEffect}
                       tooltip={[
                         {

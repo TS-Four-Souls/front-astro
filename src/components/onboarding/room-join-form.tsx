@@ -192,13 +192,6 @@ export const RoomJoinForm = ({
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
             <p className="font-main text-2xl font-bold">{subscribedRoomId}</p>
-            {roomStatus && (
-              <p className="mb-4">
-                {t("introStep.joinRoomForm.status.playerCount", {
-                  count: roomStatus.playerCount,
-                })}
-              </p>
-            )}
           </div>
           {roomStatus &&
             (roomStatus.canJoin === true ? (
