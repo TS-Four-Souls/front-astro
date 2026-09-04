@@ -381,7 +381,7 @@ export const StackElement = ({
             e.stopPropagation();
             onDiceCheat();
           }}
-          className="cheat-button absolute top-1 left-1 z-10 flex h-5 w-5 items-center justify-center rounded-full text-[12px] leading-none font-bold text-white shadow-md shadow-taupe-950/50 hover:brightness-110"
+          className="cheat-button absolute top-4 left-1 z-10 flex h-5 w-5 items-center justify-center rounded-full text-[12px] leading-none font-bold text-white shadow-md shadow-taupe-950/50 hover:brightness-110"
           aria-label="Change dice value">
           +
         </button>
