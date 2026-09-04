@@ -80,6 +80,18 @@ export const Me = () => {
     }
   }, [state.me.pendingSelection, addPrompt, removePrompt, toast]);
 
+  const onTargetableCardClick = (card: InPlayMeCard) => {
+    console.log("Attacking monster with card:", card);
+    socket.emit("attackMonster", { card }, (response) => {
+      if (response.status === 400)
+        toast(
+          "error",
+          t("gameStep.attack.errorToast.title"),
+          translateError(response.error),
+        );
+    });
+  };
+
   const onInPlayCardClick = (card: InPlayMeCard, index: number) => {
     const activateCard = (
       effectIndex: number,
@@ -227,9 +239,9 @@ export const Me = () => {
                   },
                 ]}
                 disabled={
-                  card.stats && card.stats.capabilities.targetable === true
-                    ? card.stats.capabilities.targetable !== true
-                    : card.capabilities.activate !== true
+                  !card.stats || (card.effects && card.effects.length > 0)
+                    ? card.capabilities.activate !== true
+                    : card.stats.capabilities.targetable !== true
                 }
                 onHoverPopover={() => (
                   <CardHoverPreview
@@ -239,41 +251,29 @@ export const Me = () => {
                     counter={card.counter}
                     isEternal={card.eternal}
                     tooltip={
-                      card.stats && card.stats.capabilities.targetable === true
-                        ? [
-                            {
-                              capable: card.stats.capabilities.targetable,
-                              title: t("gameStep.attack.blockedTooltip.title"),
-                            },
-                          ]
-                        : {
+                      !card.stats || (card.effects && card.effects.length > 0)
+                        ? {
                             title: t("gameStep.activate.blockedTooltip.title"),
                             capable: card.capabilities.activate,
+                          }
+                        : {
+                            title: t("gameStep.attack.blockedTooltip.title"),
+                            capable: card.stats.capabilities.targetable,
                           }
                     }
                   />
                 )}
                 onClickTopCard={() =>
-                  card.stats && card.stats.capabilities.targetable === true
+                  !card.stats || (card.effects && card.effects.length > 0)
                     ? block(
-                        t("gameStep.attack.blockedTooltip.title"),
-                        card.stats.capabilities.targetable,
-                        () => {
-                          console.log("Attacking monster with card:", card);
-                          socket.emit("attackMonster", { card }, (response) => {
-                            if (response.status === 400)
-                              toast(
-                                "error",
-                                t("gameStep.attack.errorToast.title"),
-                                translateError(response.error),
-                              );
-                          });
-                        },
-                      )
-                    : block(
                         t("capability.cannotActivate"),
                         card.capabilities.activate,
                         () => onInPlayCardClick(card, index),
+                      )
+                    : block(
+                        t("gameStep.attack.blockedTooltip.title"),
+                        card.stats.capabilities.targetable,
+                        () => onTargetableCardClick(card),
                       )
                 }
               />
