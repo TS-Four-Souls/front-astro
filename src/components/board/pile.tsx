@@ -1,11 +1,10 @@
-import type { SelectionItem, TemporaryEffect } from "@/shared/api";
+import type { TemporaryEffect } from "@/shared/api";
 import { HotkeyScope, shouldUseKey } from "@/utils/hotkey";
 import { clamp } from "@/utils/numbers";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import seedrandom from "seedrandom";
 import { cn } from "../../utils/cn";
-import { Button } from "../button";
 import { Card, CardType } from "./card";
 import { useBoardSelectionContext } from "./contexts/board-selection-context";
 import { usePopoverContext } from "./contexts/popover-context";
@@ -15,7 +14,7 @@ import { useTooltip } from "./use-tooltip";
 import { useLanguageContext } from "../contexts/language-context";
 import { usePromptContext } from "./contexts/prompt-context";
 import { useGameContext } from "./contexts/game-context";
-import { socket } from "@/utils/socket";
+import { CheatButtons, discardCardCheat, type CheatActions } from "./cheats";
 
 type CardMetadata = {
   isRequiredAttack?: boolean;
@@ -38,14 +37,6 @@ type CardMetadata = {
   effects?: TemporaryEffect[];
 };
 
-type CheatOption =
-  | "discard"
-  | "drawLoot"
-  | "selectLoot"
-  | "drawTreasure"
-  | "selectTreasure"
-  | "putInSlot";
-
 interface PileProps {
   cards: (
     | CardType
@@ -64,7 +55,6 @@ interface PileProps {
   orientation?: "portrait" | "landscape";
   disabled?: boolean;
   className?: string;
-  isCheatViewOpen?: CheatOption[];
   topCardClassName?: string;
   onClickTopCard?: () => void;
   onClickTopCardHotkey?: string;
@@ -75,11 +65,7 @@ interface PileProps {
   globalId?: number;
   style?: React.CSSProperties;
   children?: React.ReactNode;
-  onCheatDrawLoot?: () => void;
-  onCheatSelectLoot?: () => void;
-  onCheatDrawTreasure?: () => void;
-  onCheatSelectTreasure?: () => void;
-  onCheatPutMonsterInSlot?: () => void;
+  cheats?: CheatActions;
 }
 
 const BRIGHTNESS_MIN = 0.4;
@@ -100,21 +86,15 @@ export const Pile = ({
   globalId,
   children,
   orientation,
-  isCheatViewOpen = [],
-  onCheatDrawLoot,
-  onCheatSelectLoot,
-  onCheatDrawTreasure,
-  onCheatSelectTreasure,
-  onCheatPutMonsterInSlot,
+  cheats,
 }: PileProps) => {
-  const { t, translateError } = useLanguageContext();
-  const { addPrompt, removePrompt, prompt } = usePromptContext();
-  const { parameters, state } = useGameContext();
+  const { t } = useLanguageContext();
+  const { parameters, state, cheatRemovableCards } = useGameContext();
+  const { prompt } = usePromptContext();
   const size = sizePx / 16;
+  const pileHeight = orientation === "landscape" ? size * (750 / 1024) : size;
   const seed = useRef(Math.random().toString());
-  const [removableCardSlugs, setRemovableCardSlugs] = useState<Set<string>>(
-    new Set(),
-  );
+
   const rng = seedrandom(seed.current);
 
   const { boardSelectionState, isBoardSelectionActive, toggleSelection } =
@@ -158,54 +138,6 @@ export const Pile = ({
     useKey: shouldUseKey(onClickTopCardHotkey ?? ""),
   });
 
-  useEffect(() => {
-    if(isCheatViewOpen.length === 0)
-      return;
-
-    if (state !== undefined && !parameters.allowCheatOptions.value) {
-      setRemovableCardSlugs(new Set());
-      return;
-    }
-
-    socket.emit("debugListCardsICanRemove", (response) => {
-      if (response.status === 200) {
-        setRemovableCardSlugs(
-          new Set(response.cards.map((card) => card.slug)),
-        );
-      } else {
-        setRemovableCardSlugs(new Set());
-      }
-    });
-  }, [(state !== undefined && parameters.allowCheatOptions.value) || isCheatViewOpen.length === 0, isCheatViewOpen, cards]);
-
-  const discardCardCheat = (card: { slug: string }) => {
-    socket.emit("debugListCardsICanRemove", (response) => {
-      if (response.status !== 200) {
-        return;
-      }
-
-      const cardToRemove = response.cards.find(
-        (c) => c.slug === card.slug,
-      );
-
-      if (!cardToRemove) {
-        return;
-      }
-
-      socket.emit(
-        "debugRemoveCards",
-        {
-          cards: [cardToRemove],
-        },
-        (response) => {
-          if (response.status !== 200) {
-            console.error("debugRemoveCards failed", response.error);
-          }
-        },
-      );
-    });
-  };
-
   const { setPopover, closePopover } = usePopoverContext();
   const { setTooltip, closeTooltip } = useTooltip(tooltip);
 
@@ -220,60 +152,13 @@ export const Pile = ({
 
   const maxCards = 16;
 
-  const renderCheatButtons = () => {
-    if (state !== undefined && !parameters.allowCheatOptions.value || isCheatViewOpen.length === 0)
-      return null;
-
-    return (
-      <>
-        {isCheatViewOpen.includes("drawLoot") && onCheatDrawLoot && (
-          <Button
-            onClick={onCheatDrawLoot}
-            className="cheat-button absolute top-12 left-1/2 -translate-x-1/2 whitespace-nowrap px-2 py-1 text-[10px]"
-            label="Draw"
-          />
-        )}
-
-        {isCheatViewOpen.includes("selectLoot") && onCheatSelectLoot && (
-          <Button
-            onClick={onCheatSelectLoot}
-            className="cheat-button absolute bottom-12 left-1/2 -translate-x-1/2 whitespace-nowrap px-2 py-1 text-[10px]"
-            label="Select"
-          />
-        )}
-
-        {isCheatViewOpen.includes("drawTreasure") && onCheatDrawTreasure && (
-          <Button
-            onClick={onCheatDrawTreasure}
-            className="cheat-button absolute top-12 left-1/2 -translate-x-1/2 whitespace-nowrap px-2 py-1 text-[10px]"
-            label="Draw"
-          />
-        )}
-
-        {isCheatViewOpen.includes("selectTreasure") && onCheatSelectTreasure && (
-          <Button
-            onClick={onCheatSelectTreasure}
-            className="cheat-button absolute bottom-12 left-1/2 -translate-x-1/2 whitespace-nowrap px-2 py-1 text-[10px]"
-            label="Select"
-          />
-        )}
-
-        {isCheatViewOpen.includes("putInSlot") && onCheatPutMonsterInSlot && (
-          <Button
-            onClick={onCheatPutMonsterInSlot}
-            className="cheat-button absolute top-12 left-1/2 -translate-x-1/2 whitespace-nowrap px-2 py-1 text-[10px]"
-            label="Put in slot"
-          />
-        )}
-      </>
-    );
-  };
-
   return (
     <div
       className={cn("relative", className)}
-      style={{ height: size + "em", ...style }}>
-      <div className={cn("grid shrink-0", className)} style={{ height: size + "em" }}>
+      style={{ height: pileHeight + "em", ...style }}>
+      <div
+        className={cn("grid shrink-0", className)}
+        style={{ height: pileHeight + "em" }}>
         {cards
           .filter((_, index) => index >= cards.length - maxCards)
           .map((card, index, array) => {
@@ -288,7 +173,9 @@ export const Pile = ({
               typeof card === "string" ? true : (card.charged ?? true);
 
             const engagedInCombat =
-              typeof card === "string" ? false : (card.engagedInCombat ?? false);
+              typeof card === "string"
+                ? false
+                : (card.engagedInCombat ?? false);
 
             const engagedInPurchase =
               typeof card === "string"
@@ -305,13 +192,13 @@ export const Pile = ({
 
             const removableCard =
               globalId !== undefined &&
-              state !== undefined && 
+              state !== undefined &&
               parameters.allowCheatOptions.value &&
-              isCheatViewOpen.length > 0 &&
+              cheats !== undefined &&
               !prompt &&
               typeof card === "object" &&
               "slug" in card &&
-              removableCardSlugs.has(card.slug);
+              cheatRemovableCards.values().some((c) => c.globalId === globalId);
 
             const cardsIndex = (index / array.length) * cards.length;
 
@@ -328,9 +215,7 @@ export const Pile = ({
             return (
               <div
                 key={index}
-                className={cn(
-                  "relative col-start-1 row-start-1",
-                )}
+                className={cn("relative col-start-1 row-start-1")}
                 style={transformStyle}>
                 <Card
                   onClick={isTopCard ? onClickTopCard : undefined}
@@ -338,12 +223,18 @@ export const Pile = ({
                     removableCard && isTopCard
                       ? () =>
                           typeof card === "object" && "slug" in card
-                            ? discardCardCheat(card)
+                            ? (
+                                cheats.discard ??
+                                ((id) =>
+                                  discardCardCheat(cheatRemovableCards, id))
+                              )(globalId)
                             : undefined
                       : undefined
                   }
                   card={
-                    typeof card === "object" && "type" in card ? card.type : card
+                    typeof card === "object" && "type" in card
+                      ? card.type
+                      : card
                   }
                   containerClassName={cn(
                     "col-start-1 row-start-1",
@@ -397,16 +288,20 @@ export const Pile = ({
                         : closeTooltip
                       : undefined
                   }
-                  onPileDetailsClick={isTopCard ? onPileDetailsClick : undefined}
+                  onPileDetailsClick={
+                    isTopCard ? onPileDetailsClick : undefined
+                  }
                   hotkey={isTopCard ? onClickTopCardHotkey : undefined}
                   selectionIndex={
-                    isTopCard ? entityBoardSelectionState?.selectionIndex : undefined
+                    isTopCard
+                      ? entityBoardSelectionState?.selectionIndex
+                      : undefined
                   }
                   globalId={isTopCard ? globalId : undefined}
                   orientation={orientation}
                 />
                 {isTopCard && <div>{children}</div>}
-                {isTopCard && renderCheatButtons()}
+                {isTopCard && cheats && <CheatButtons {...cheats} />}
               </div>
             );
           })}
@@ -419,7 +314,7 @@ export const Pile = ({
               orientation={orientation}
               className={topCardClassName}
             />
-            {renderCheatButtons()}
+            {cheats && <CheatButtons {...cheats} />}
           </div>
         )}
       </div>

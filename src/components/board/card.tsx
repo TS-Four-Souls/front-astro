@@ -93,6 +93,7 @@ export const Card = ({
   onMouseEnter,
   onMouseLeave,
 }: CardProps) => {
+  size = orientation === "portrait" ? size : size * (750 / 1024);
   const { aspectRatio, borderRadius } = getOrientationParameters(orientation);
 
   if (!card) {
@@ -114,8 +115,30 @@ export const Card = ({
     );
   }
 
-  const statsSize = size * 0.09;
+  const statsSize = orientation === "portrait" ? size * 0.09 : size * 0.12;
 
+  const positionStatOverlay =
+    orientation === "portrait"
+      ? "absolute top-[57.3%] right-[17.1%] left-[17.7%]"
+      : "absolute top-[54.5%] right-[26.5%] left-[26%] opacity-100";
+  const HealthOverlay =
+    orientation === "portrait"
+      ? "absolute top-[55.7%] left-[30.5%] font-statblock text-black"
+      : "absolute top-[52.1%] left-[36%] font-statblock text-black";
+  const atkOverlay =
+    orientation === "portrait"
+      ? "absolute top-[55.7%] left-[72.6%] font-statblock text-black"
+      : "absolute top-[52.1%] left-[66.6%] font-statblock text-black";
+  const evasionOverlay =
+    stats && "evasionPoints" in stats
+      ? orientation === "portrait"
+        ? stats.evasionPoints === 6 || stats.evasionPoints === 0
+          ? "absolute font-statblock text-black top-[55.7%] left-[51.9%]"
+          : "absolute font-statblock text-black top-[55.7%] left-[51.2%]"
+        : stats.evasionPoints === 6 || stats.evasionPoints === 0
+          ? "absolute font-statblock text-black top-[52.1%] left-[51.4%]"
+          : "absolute font-statblock text-black top-[52.1%] left-[50.7%]"
+      : "";
   return (
     <div
       className={cn("relative", containerClassName)}
@@ -160,7 +183,7 @@ export const Card = ({
         {onRemove && (
           <button
             type="button"
-            className="cheat-button absolute top-1 right-1 z-10 flex h-5 w-5 items-center justify-center rounded-full text-sm font-bold leading-none text-white hover:brightness-110"
+            className="cheat-button absolute top-1 right-1 z-10 flex h-5 w-5 items-center justify-center rounded-full text-sm leading-none font-bold text-white hover:brightness-110"
             onClick={(e) => {
               e.stopPropagation();
               onRemove();
@@ -245,35 +268,51 @@ export const Card = ({
           <div
             className="pointer-events-none"
             style={{ fontSize: statsSize + "em" }}>
-            <div className="absolute top-[57.3%] right-[17.1%] left-[17.7%]">
+            <div className={positionStatOverlay}>
               <img src="/monster-card-overlay.png" draggable={false} />
             </div>
 
-            <div className="absolute top-[55.7%] left-[30.5%] font-statblock text-black">
-              {stats.healthPoints}
-            </div>
-            <p className="absolute top-[55.7%] left-[72.6%] font-statblock text-black">
-              {stats.attackPoints}
-            </p>
+            <div className={HealthOverlay}>{stats.healthPoints}</div>
+            <p className={atkOverlay}>{stats.attackPoints}</p>
+            <p className={evasionOverlay}>{stats.evasionPoints}</p>
             <p
               className={cn(
-                "absolute font-statblock text-black",
-                stats.evasionPoints === 6 || stats.evasionPoints === 0
-                  ? "top-[55.7%] left-[51.9%]"
-                  : "top-[55.7%] left-[51.2%]",
-              )}>
-              {stats.evasionPoints}
-            </p>
-            <p
-              className={cn(
-                "absolute top-[58.8%] font-main text-[60%] text-black",
+                orientation === "portrait" &&
+                  "absolute top-[58.8%] font-main text-[60%] text-black",
+                orientation === "landscape" &&
+                  "absolute top-[56.5%] font-main text-[60%] text-black",
                 stats.evasionPoints === 0 && "hidden",
-                stats.evasionPoints === 1 && "left-[55.5%]",
-                stats.evasionPoints === 2 && "left-[56.5%]",
-                stats.evasionPoints === 3 && "left-[56.5%]",
-                stats.evasionPoints === 4 && "left-[56.0%]",
-                stats.evasionPoints === 5 && "left-[57.0%]",
+                orientation === "portrait" &&
+                  stats.evasionPoints === 1 &&
+                  "left-[55.5%]",
+                orientation === "portrait" &&
+                  stats.evasionPoints === 2 &&
+                  "left-[56.5%]",
+                orientation === "portrait" &&
+                  stats.evasionPoints === 3 &&
+                  "left-[56.5%]",
+                orientation === "portrait" &&
+                  stats.evasionPoints === 4 &&
+                  "left-[56.0%]",
+                orientation === "portrait" &&
+                  stats.evasionPoints === 5 &&
+                  "left-[57.0%]",
                 stats.evasionPoints === 6 && "hidden",
+                orientation === "landscape" &&
+                  stats.evasionPoints === 1 &&
+                  "left-[54%]",
+                orientation === "landscape" &&
+                  stats.evasionPoints === 2 &&
+                  "left-[54.5%]",
+                orientation === "landscape" &&
+                  stats.evasionPoints === 3 &&
+                  "left-[54.5%]",
+                orientation === "landscape" &&
+                  stats.evasionPoints === 4 &&
+                  "left-[54%]",
+                orientation === "landscape" &&
+                  stats.evasionPoints === 5 &&
+                  "left-[55%]",
               )}>
               +
             </p>

@@ -64,6 +64,7 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
           {element.card && (
             <Card
               card={element.card}
+              orientation={element.card.orientation}
               visualEffectBox={element.visualEffectBox}
               size={22}
             />
@@ -104,6 +105,7 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
           {element.card && (
             <Card
               card={element.card}
+              orientation={element.card.orientation}
               visualEffectBox={element.visualEffectBox}
               size={22}
             />
@@ -141,6 +143,7 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
         <>
           <Card
             card={element.card}
+            orientation={element.card.orientation}
             visualEffectBox={element.visualEffectBox}
             size={22}
           />
@@ -157,6 +160,7 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
         <>
           <Card
             card={element.card}
+            orientation={element.card.orientation}
             visualEffectBox={element.visualEffectBox}
             size={22}
           />
@@ -256,6 +260,7 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
           {"slug" in element.source && (
             <Card
               card={element.source}
+              orientation={element.source.orientation}
               visualEffectBox={element.visualEffectBox}
               size={22}
             />
@@ -303,6 +308,7 @@ const PopoverContent = ({ element }: PopoverContentProps) => {
           {"slug" in element.source && (
             <Card
               card={element.source}
+              orientation={element.source.orientation}
               visualEffectBox={element.visualEffectBox}
               size={22}
             />
@@ -352,7 +358,12 @@ const Icon = ({ element }: IconProps) => {
           <CardImage
             sizes="2.5em"
             card={element.card}
-            className="translate-y-[5%] scale-155"
+            orientation={element.card.orientation}
+            className={
+              element.card.orientation === "portrait"
+                ? "translate-y-[5%] scale-155"
+                : "translate-y-[43%] scale-300"
+            }
           />
         </div>
       );

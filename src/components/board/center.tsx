@@ -1,4 +1,9 @@
-import type { Card, DetailedState } from "@/shared/api";
+import type {
+  Card,
+  DetailedState,
+  InPlayMeCard,
+  SelectionItem,
+} from "@/shared/api";
 import { socket } from "@/utils/socket";
 import { CardType } from "./card";
 import { CardHoverPreview } from "./card-hover-preview";
@@ -12,6 +17,14 @@ import { Pile } from "./pile";
 import { Stack } from "./stack";
 import { usePileDetails } from "./use-pile-details";
 import { useLanguageContext } from "../contexts/language-context";
+import {
+  cheatDrawLoot,
+  cheatDrawTreasure,
+  putMonsterInSlot,
+  putRoomInSlot,
+  selectCardToLoot,
+  selectCardToTreasure,
+} from "./cheats";
 interface CenterProps {
   state: DetailedState;
 }
@@ -20,8 +33,9 @@ export const Center = ({ state }: CenterProps) => {
   const { toast, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
   const { displayPileDetails } = usePileDetails();
-  const { translateError, t } = useLanguageContext();
+  const { translateError, t, ts } = useLanguageContext();
   const { parameters, isCheatViewOpen } = useGameContext();
+  const cheatServices = { addPrompt, removePrompt, toast, t, translateError };
   const {
     registerLootDeckEl,
     registerTreasureDeckEl,
@@ -29,214 +43,101 @@ export const Center = ({ state }: CenterProps) => {
     registerMonsterSlotEl,
     registerBonusSoulPileEl,
   } = useGameAnimation();
-
-  const cheatDrawLoot = () => {
-    socket.emit("debugLootTop", (response) => {
-      if (response.status === 400) {
-        toast(
-          "error",
-          t("gameStep.cheats.getLootTopDeck.errorToast.title"),
-          translateError(response.error),
-        );
-      }
-    });
-  };
-
-  const selectCardToLoot = () => {
-    socket.emit("debugListLoot", (response) => {
-      switch (response.status) {
-        case 200: {
-          const promptId = `debug-list-loot-${Date.now()}`;
-          addPrompt({
-            promptId,
-            isUnique: false,
-            prompt: t("gameStep.cheats.selectCardToLoot.popup.title"),
-            options: response.cards.map((card) => ({
-              type: "card",
-              payload: card,
-            })),
-            minCount: 1,
-            maxCount: 50,
-            onSubmit: (selections) => {
-              socket.emit(
-                "debugLoot",
-                {
-                  cards: selections.map((selection) => selection.payload),
-                },
-                (response) => {
-                  if (response.status === 200) {
+  const onRoomCardClick = (card: InPlayMeCard, index: number) => {
+    const activateCard = (
+      effectIndex: number,
+      selections: SelectionItem[] = [],
+    ) => {
+      socket.emit(
+        "activateWithID",
+        {
+          index: index,
+          effectIndex,
+          targetChoices: selections,
+          type: "room",
+        },
+        (response) => {
+          switch (response.status) {
+            case 200:
+              if (response.response.complete) {
+              } else if (response.response.options.length === 0) {
+                toast(
+                  "error",
+                  t("gameStep.activate.errorToast.title"),
+                  t("gameStep.noOptionsAvailable"),
+                );
+              } else {
+                const promptId = `card-activation-${card.slug}-${index}-${effectIndex}-${selections.length}-${Date.now()}`;
+                addPrompt({
+                  promptId,
+                  isUnique: false,
+                  prompt: ts(response.response.description),
+                  options: response.response.options,
+                  minCount: response.response.min,
+                  maxCount: response.response.max,
+                  onSubmit: (additionalSelections) => {
+                    activateCard(effectIndex, [
+                      ...selections,
+                      ...additionalSelections,
+                    ]);
                     removePrompt(promptId);
-                  } else {
-                    toast(
-                      "error",
-                      t("gameStep.cheats.selectCardToLoot.popup.errorToast.title"),
-                      translateError(response.error),
-                    );
-                  }
-                },
-              );
-            },
-            onCancel: () => {
-              removePrompt(promptId);
-            },
-          });
-          break;
-        }
-        case 400:
-          toast(
-            "error",
-            t("gameStep.cheats.selectCardToLoot.errorToast.title"),
-            translateError(response.error),
-          );
-          break;
-      }
-    });
-  };
-
-  const cheatDrawTreasure = () => {
-    socket.emit("debugGainTreasureTop", (response) => {
-      if (response.status === 400) {
-        toast(
-          "error",
-          t("gameStep.cheats.getTreasureTopDeck.errorToast.title"),
-          translateError(response.error),
-        );
-      }
-    });
-  };
-
-  const selectCardToTreasure = () => {
-    socket.emit("debugListTreasure", (response) => {
-      switch (response.status) {
-        case 200: {
-          const promptId = `debug-list-treasure-${Date.now()}`;
-          addPrompt({
-            promptId,
-            isUnique: false,
-            prompt: t("gameStep.cheats.selectTreasureToLoot.popup.title"),
-            options: response.cards.map((card) => ({
-              type: "card",
-              payload: card,
-            })),
-            minCount: 1,
-            maxCount: 50,
-            onSubmit: (selections) => {
-              socket.emit(
-                "debugGainTreasure",
-                {
-                  cards: selections.map((selection) => selection.payload),
-                },
-                (response) => {
-                  if (response.status === 200) {
+                  },
+                  onCancel: () => {
                     removePrompt(promptId);
-                  } else {
-                    toast(
-                      "error",
-                      t("gameStep.cheats.selectTreasureToLoot.popup.errorToast.title"),
-                      translateError(response.error),
-                    );
-                  }
-                },
+                  },
+                });
+              }
+              break;
+            case 400:
+            default:
+              toast(
+                "error",
+                t("gameStep.activate.errorToast.title"),
+                translateError(response.error),
               );
-            },
-            onCancel: () => {
-              removePrompt(promptId);
-            },
-          });
-          break;
-        }
-        case 400:
-          toast(
-            "error",
-            t("gameStep.cheats.selectTreasureToLoot.errorToast.title"),
-            translateError(response.error),
-          );
-          break;
-      }
-    });
+              break;
+          }
+        },
+      );
+    };
+
+    // First, check if the card has multiple effects
+    // If it does, we need to first prompt the user to select an effect
+    if (card.effects && card.effects.length > 1) {
+      type CardEffectSelectionItem = Extract<
+        SelectionItem,
+        { type: "cardEffect" }
+      >;
+      const effects: CardEffectSelectionItem[] = card.effects.map((effect) => ({
+        type: "cardEffect",
+        payload: {
+          card: card,
+          visualEffectBox: effect.visualEffectBox,
+          index: effect.index,
+          description: effect.description,
+        },
+      }));
+
+      const promptId = `select-card-effect-${card.slug}-${index}-${Date.now()}`;
+      addPrompt<CardEffectSelectionItem>({
+        promptId,
+        isUnique: false,
+        prompt: t("gameStep.activate.popup.title"),
+        options: effects,
+        minCount: 1,
+        maxCount: 1,
+        onSubmit: (selectedEffect) => {
+          activateCard(selectedEffect[0].payload.visualEffectBox.startIndex);
+          removePrompt(promptId);
+        },
+        onCancel: () => {
+          removePrompt(promptId);
+        },
+      });
+    } else if (card.effects && card.effects.length === 1) {
+      activateCard(card.effects[0].visualEffectBox.startIndex);
+    }
   };
-
-  const putMonsterInSlot = () => {
-    socket.emit("debugListMonsterDeck", (response) => {
-      switch (response.status) {
-        case 200: {
-          const promptId = `debug-list-monster-deck-${Date.now()}`;
-          addPrompt({
-            promptId,
-            isUnique: false,
-            prompt: t("gameStep.cheats.putMonsterCardInSlot.popup.title"),
-            options: response.cards.map((card) => ({
-              type: "card",
-              payload: card,
-            })),
-            minCount: 1,
-            maxCount: 1,
-            onSubmit: (selections) => {
-              const card = selections[0].payload;
-              removePrompt(promptId);
-
-              const promptId2 = `debug-list-monster-cover-${Date.now()}`;
-              addPrompt({
-                promptId: promptId2,
-                isUnique: false,
-                prompt: t("gameStep.attack.popup.title"),
-                options: [
-                  { type: "deck" as const, payload: "monster" as const },
-                  ...response.coverable.map((card) => ({
-                    type: "card" as const,
-                    payload: card,
-                  })),
-                ],
-                minCount: 1,
-                maxCount: 1,
-                onSubmit: (selections2) => {
-                  const toCover =
-                    selections2[0].type === "deck"
-                      ? "top"
-                      : selections2[0].payload;
-                  socket.emit(
-                    "debugPutMonsterCardInSlot",
-                    {
-                      card,
-                      toCover,
-                    },
-                    (response) => {
-                      if (response.status === 200) {
-                        removePrompt(promptId2);
-                      } else {
-                        toast(
-                          "error",
-                          t(
-                            "gameStep.cheats.putMonsterCardInSlot.popup.errorToast.title",
-                          ),
-                          translateError(response.error),
-                        );
-                      }
-                    },
-                  );
-                },
-                onCancel: () => {
-                  removePrompt(promptId2);
-                },
-              });
-            },
-            onCancel: () => {
-              removePrompt(promptId);
-            },
-          });
-          break;
-        }
-        case 400:
-          toast(
-            "error",
-            t("gameStep.cheats.putMonsterCardInSlot.errorToast.title"),
-            translateError(response.error),
-          );
-          break;
-      }
-    });
-  };
-
   const purchaseTreasure = (index: number | "top") => {
     socket.emit("purchase", { index }, (response) => {
       if (response.status === 400)
@@ -248,19 +149,16 @@ export const Center = ({ state }: CenterProps) => {
     });
   };
 
-  const selectMonsterToAttack = (
-    index: number | "top",
-    replaceIndex?: number,
-  ) => {
-    if (index === "top") {
-      if (replaceIndex === undefined) {
+  const selectMonsterToAttack = (card: Card | "top", toCoverIndex?: number) => {
+    if (card === "top") {
+      if (toCoverIndex === undefined) {
         type ReplaceIndexOption = {
           type: "card";
           payload: Card;
           index: number;
         };
 
-        const promptId = `select-replace-monster-${index}`;
+        const promptId = `select-replace-monster-${Date.now()}`;
         addPrompt<ReplaceIndexOption>({
           promptId,
           isUnique: false,
@@ -285,7 +183,7 @@ export const Center = ({ state }: CenterProps) => {
 
       socket.emit(
         "attackMonster",
-        { index: "top", replaceIndex },
+        { card: "top", toCoverIndex: toCoverIndex },
         (response) => {
           if (response.status === 400)
             toast(
@@ -299,7 +197,7 @@ export const Center = ({ state }: CenterProps) => {
       return;
     }
 
-    socket.emit("attackMonster", { index }, (response) => {
+    socket.emit("attackMonster", { card }, (response) => {
       if (response.status === 400)
         toast(
           "error",
@@ -329,7 +227,8 @@ export const Center = ({ state }: CenterProps) => {
   const currentPlayer = [state.me, ...state.players].find(
     (player) => player.name === state.turn,
   );
-
+  const activeRoom = state.room?.inPlay[0];
+  const firstDiscardRoom = state.room?.discard[state.room?.discard.length - 1];
   return (
     <div
       className="flex place-items-center gap-7 rounded-3xl border-[0.3em] border-taupe-900/40 bg-board/90 p-8"
@@ -349,9 +248,11 @@ export const Center = ({ state }: CenterProps) => {
               <Pile
                 cards={soul.granted ? [] : [soul]}
                 size={105}
+                globalId={soul.globalId}
                 onHoverPopover={() => (
                   <CardHoverPreview
                     card={soul}
+                    counter={soul.counter}
                     tooltip={{
                       enabled: true,
                       title: t("gameStep.bonusSouls.tooltip.title"),
@@ -372,10 +273,10 @@ export const Center = ({ state }: CenterProps) => {
               ? () => displayPileDetails(state.loot.discard.toReversed())
               : undefined
           }
-          isCheatViewOpen={
+          cheats={
             parameters.allowCheatOptions.value && isCheatViewOpen
-              ? ["discard"]
-              : []
+              ? {}
+              : undefined
           }
           disabled={state.loot.discard.length === 0}
           onClickTopCard={
@@ -395,13 +296,14 @@ export const Center = ({ state }: CenterProps) => {
         />
         <div ref={registerLootDeckEl} className="relative">
           <Pile
-            isCheatViewOpen={
+            cheats={
               parameters.allowCheatOptions.value && isCheatViewOpen
-                ? ["drawLoot", "selectLoot"]
-                : []
+                ? {
+                    drawLoot: () => cheatDrawLoot(cheatServices),
+                    selectLoot: () => selectCardToLoot(cheatServices),
+                  }
+                : undefined
             }
-            onCheatDrawLoot={cheatDrawLoot}
-            onCheatSelectLoot={selectCardToLoot}
             globalId={SpecialGlobalIds.Loot}
             cards={Array.from({ length: state.loot.deckSize }).map(
               () => CardType.LootCard,
@@ -409,35 +311,122 @@ export const Center = ({ state }: CenterProps) => {
           />
         </div>
       </div>
-      {state.room && (
-        <div className="flex flex-col gap-2">
+      {state.room && activeRoom && (
+        <div className="flex flex-col gap-3">
           <Pile
-            isCheatViewOpen={
-              parameters.allowCheatOptions.value && isCheatViewOpen
-                ? ["discard"]
-                : []
-            }
             cards={state.room.discard}
+            onPileDetailsClick={
+              state.room.discard.length > 1
+                ? () => displayPileDetails(state.room!.discard.toReversed())
+                : undefined
+            }
+            onHoverPopover={
+              firstDiscardRoom === undefined
+                ? undefined
+                : () => (
+                    <CardHoverPreview
+                      card={firstDiscardRoom}
+                      orientation={firstDiscardRoom.orientation}
+                    />
+                  )
+            }
             orientation="landscape"
-            size={110}
           />
           <Pile
+            cheats={
+              parameters.allowCheatOptions.value && isCheatViewOpen
+                ? {
+                    putRoom: () => putRoomInSlot(state.room, cheatServices),
+                  }
+                : undefined
+            }
             cards={Array.from({ length: state.room.deckSize }).map(
               () => CardType.RoomCard,
             )}
             orientation="landscape"
-            size={110}
           />
-          <Pile cards={state.room.inPlay} orientation="landscape" size={110} />
+          <Pile
+            cards={state.room.inPlay.map((card) => ({
+              slug: card.slug,
+              globalId: card.globalId,
+              charged: card.charged,
+              eternal: card.eternal,
+              engagedInCombat: card.stats && card.stats.isEngagedInCombat,
+              engagedInPurchase: false,
+              effects: card.stats ? card.stats.temporaryEffect : undefined,
+              counter: card.counter,
+              stats: card.stats,
+            }))}
+            cheats={
+              parameters.allowCheatOptions.value && isCheatViewOpen
+                ? {}
+                : undefined
+            }
+            globalId={state.room.inPlay[0]?.globalId}
+            onClickTopCard={() =>
+              state.room!.inPlay[0]!.stats
+                ? block(
+                    t("gameStep.attack.blockedTooltip.title"),
+                    state.room!.inPlay[0]!.stats.capabilities.targetable,
+                    () => {
+                      console.log(
+                        "Attacking monster with card:",
+                        state.room!.inPlay[0]!,
+                      );
+                      socket.emit(
+                        "attackMonster",
+                        { card: state.room!.inPlay[0]! },
+                        (response) => {
+                          if (response.status === 400)
+                            toast(
+                              "error",
+                              t("gameStep.attack.errorToast.title"),
+                              translateError(response.error),
+                            );
+                        },
+                      );
+                    },
+                  )
+                : block(
+                    t("capability.cannotActivate"),
+                    activeRoom.capabilities.activate,
+                    () => onRoomCardClick(activeRoom, 0),
+                  )
+            }
+            disabled={
+              activeRoom.stats
+                ? activeRoom.stats.capabilities.targetable !== true
+                : activeRoom.capabilities.activate !== true
+            }
+            onHoverPopover={() => (
+              <CardHoverPreview
+                card={activeRoom}
+                orientation={activeRoom.orientation}
+                stats={activeRoom.stats}
+                effects={
+                  activeRoom.stats
+                    ? activeRoom.stats.temporaryEffect
+                    : undefined
+                }
+                counter={activeRoom.counter}
+                isEternal={activeRoom.eternal}
+                tooltip={{
+                  title: t("gameStep.activate.blockedTooltip.title"),
+                  capable: activeRoom.capabilities.activate,
+                }}
+              />
+            )}
+            orientation="landscape"
+          />
         </div>
       )}
       <div className="flex flex-col gap-6">
         <div className="flex place-items-center gap-3">
           <Pile
-            isCheatViewOpen={
+            cheats={
               parameters.allowCheatOptions.value && isCheatViewOpen
-                ? ["discard"]
-                : []
+                ? {}
+                : undefined
             }
             cards={state.treasure.discard}
             disabled={state.treasure.discard.length === 0}
@@ -467,13 +456,14 @@ export const Center = ({ state }: CenterProps) => {
           />
           <div ref={registerTreasureDeckEl} className="relative">
             <Pile
-              isCheatViewOpen={
+              cheats={
                 parameters.allowCheatOptions.value && isCheatViewOpen
-                  ? ["drawTreasure", "selectTreasure"]
-                  : []
+                  ? {
+                      drawTreasure: () => cheatDrawTreasure(cheatServices),
+                      selectTreasure: () => selectCardToTreasure(cheatServices),
+                    }
+                  : undefined
               }
-              onCheatDrawTreasure={cheatDrawTreasure}
-              onCheatSelectTreasure={selectCardToTreasure}
               globalId={SpecialGlobalIds.Treasure}
               cards={Array.from({ length: state.treasure.deckSize }).map(
                 (_, index) =>
@@ -539,10 +529,10 @@ export const Center = ({ state }: CenterProps) => {
               key={card.slug}
               ref={(el) => registerTreasureShopPileEl(card.globalId, el)}>
               <Pile
-                isCheatViewOpen={
+                cheats={
                   parameters.allowCheatOptions.value && isCheatViewOpen
-                    ? ["discard"]
-                    : []
+                    ? {}
+                    : undefined
                 }
                 globalId={card.globalId}
                 cards={[card]}
@@ -583,13 +573,14 @@ export const Center = ({ state }: CenterProps) => {
         </div>
         <div className="flex place-items-center gap-3">
           <Pile
-            isCheatViewOpen={
+            cheats={
               parameters.allowCheatOptions.value && isCheatViewOpen
-                ? ["discard"]
-                : []
+                ? {}
+                : undefined
             }
             cards={state.monsters.discard.map((card) => ({
               slug: card.slug,
+              globalId: card.globalId,
               face: "front",
             }))}
             onPileDetailsClick={
@@ -619,12 +610,13 @@ export const Center = ({ state }: CenterProps) => {
           />
           <div className="relative">
             <Pile
-              isCheatViewOpen={
+              cheats={
                 parameters.allowCheatOptions.value && isCheatViewOpen
-                  ? ["putInSlot"]
-                  : []
+                  ? {
+                      putInSlot: () => putMonsterInSlot(cheatServices),
+                    }
+                  : undefined
               }
-              onCheatPutMonsterInSlot={putMonsterInSlot}
               globalId={SpecialGlobalIds.Monster}
               cards={Array.from({ length: state.monsters.deckSize }).map(
                 (_, index) => ({
@@ -653,7 +645,8 @@ export const Center = ({ state }: CenterProps) => {
                             content: t(
                               "gameStep.attack.requiredTooltip.message",
                               {
-                                card: monsterDeckAttackRequirement.source.nameKey,
+                                card: monsterDeckAttackRequirement.source
+                                  .nameKey,
                               },
                             ),
                           },
@@ -696,10 +689,10 @@ export const Center = ({ state }: CenterProps) => {
                 key={card.top.globalId}
                 ref={(el) => registerMonsterSlotEl(card.top.globalId, el)}>
                 <Pile
-                  isCheatViewOpen={
+                  cheats={
                     parameters.allowCheatOptions.value && isCheatViewOpen
-                      ? ["discard"]
-                      : []
+                      ? {}
+                      : undefined
                   }
                   globalId={card.top.globalId}
                   cards={[
@@ -723,7 +716,7 @@ export const Center = ({ state }: CenterProps) => {
                     block(
                       t("gameStep.attack.blockedTooltip.title"),
                       targetable,
-                      () => selectMonsterToAttack(index),
+                      () => selectMonsterToAttack(card.top),
                     )
                   }
                   onPileDetailsClick={
@@ -739,6 +732,7 @@ export const Center = ({ state }: CenterProps) => {
                   onHoverPopover={() => (
                     <CardHoverPreview
                       card={card.top}
+                      counter={card.top.counter}
                       stats={card.top.stats}
                       effects={card.top.stats?.temporaryEffect}
                       tooltip={[

@@ -5,6 +5,9 @@ import { cn } from "@/utils/cn";
 import { HandPile } from "../hand-pile";
 import { CardHoverPreview } from "../card-hover-preview";
 import { useGameAnimation } from "../contexts/game-animation";
+import { useLanguageContext } from "@/components/contexts/language-context";
+import { useToastContext } from "../contexts/toast-context";
+import { socket } from "@/utils/socket";
 
 interface TopPlayerProps {
   player: Player;
@@ -14,6 +17,9 @@ const MAX_COLUMNS = 8;
 
 export const TopPlayer = ({ player }: TopPlayerProps) => {
   const { registerInPlayCardEl } = useGameAnimation();
+  const { t, translateError } = useLanguageContext();
+  const { toast, block } = useToastContext();
+
   // Create an array of arrays of 8 elements each, fill with undefined if needed
   const grid: InPlayCard[][] = Array.from(
     { length: Math.ceil((player.inPlay.length + 1) / MAX_COLUMNS) },
@@ -48,48 +54,88 @@ export const TopPlayer = ({ player }: TopPlayerProps) => {
             if (card === undefined) {
               return <div key={`empty-${index}`} className="h-full w-full" />;
             }
-            const isCharacter = card === player.character;
             return (
               <div
                 key={card.globalId}
                 ref={(el) => registerInPlayCardEl(card.globalId, el)}>
                 <Pile
-                  isCheatViewOpen = { [] }
                   globalId={card.globalId}
                   cards={[
                     {
                       slug: card.slug,
                       charged: card.charged,
                       eternal: card.eternal,
-                      engagedInCombat: isCharacter && player.isEngagedInCombat,
+                      engagedInCombat: card.stats?.isEngagedInCombat === true,
                       engagedInPurchase:
-                        isCharacter && player.isEngagedInPurchase,
-                      effects: isCharacter ? player.temporaryEffect : undefined,
+                        card === player.character && player.isEngagedInPurchase,
+                      effects: card.stats?.temporaryEffect,
                       counter: card.counter,
-                      stats: isCharacter
+                      stats: card.stats
                         ? {
-                            healthPoints: player.currentHealthPoints,
-                            attackPoints: player.currentAttackPoints,
+                            healthPoints: card.stats.healthPoints,
+                            attackPoints: card.stats.attackPoints,
+                            ...(card.stats.evasionPoints === undefined
+                              ? {}
+                              : { evasionPoints: card.stats.evasionPoints }),
                           }
                         : undefined,
                     },
                   ]}
+                  disabled={
+                    !card.stats || card.stats.capabilities.targetable !== true
+                  }
                   onHoverPopover={() => (
                     <CardHoverPreview
                       card={card}
                       stats={
-                        isCharacter
+                        card.stats
                           ? {
-                              healthPoints: player.currentHealthPoints,
-                              attackPoints: player.currentAttackPoints,
+                              healthPoints: card.stats.healthPoints,
+                              attackPoints: card.stats.attackPoints,
+                              ...(card.stats.evasionPoints === undefined
+                                ? {}
+                                : { evasionPoints: card.stats.evasionPoints }),
                             }
                           : undefined
                       }
-                      effects={isCharacter ? player.temporaryEffect : undefined}
+                      effects={card.stats?.temporaryEffect}
                       counter={card.counter}
                       isEternal={card.eternal}
                     />
                   )}
+                  tooltip={
+                    card.stats
+                      ? [
+                          {
+                            capable: card.stats.capabilities.targetable,
+                            title: t("gameStep.attack.blockedTooltip.title"),
+                          },
+                        ]
+                      : undefined
+                  }
+                  onClickTopCard={() =>
+                    card.stats
+                      ? block(
+                          t("gameStep.attack.blockedTooltip.title"),
+                          card.stats.capabilities.targetable,
+                          () => {
+                            console.log("Attacking monster with card:", card);
+                            socket.emit(
+                              "attackMonster",
+                              { card },
+                              (response) => {
+                                if (response.status === 400)
+                                  toast(
+                                    "error",
+                                    t("gameStep.attack.errorToast.title"),
+                                    translateError(response.error),
+                                  );
+                              },
+                            );
+                          },
+                        )
+                      : undefined
+                  }
                 />
               </div>
             );

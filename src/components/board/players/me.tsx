@@ -104,7 +104,7 @@ export const Me = () => {
                   t("gameStep.noOptionsAvailable"),
                 );
               } else {
-                const promptId = `card-activation-${card.slug}-${index}-${effectIndex}-${selections.length}`;
+                const promptId = `card-activation-${card.slug}-${index}-${effectIndex}-${selections.length}-${Date.now()}`;
                 addPrompt({
                   promptId,
                   isUnique: false,
@@ -155,7 +155,7 @@ export const Me = () => {
         },
       }));
 
-      const promptId = `select-card-effect-${card.slug}-${index}`;
+      const promptId = `select-card-effect-${card.slug}-${index}-${Date.now()}`;
       addPrompt<CardEffectSelectionItem>({
         promptId,
         isUnique: false,
@@ -200,13 +200,12 @@ export const Me = () => {
           gridTemplateColumns: `repeat(${Math.min(state.me.inPlay.length + 1, 8)}, 1fr)`,
         }}>
         {[state.me.character, ...state.me.inPlay].map((card, index) => {
-          const isCharacter = state.me.character === card;
           return (
             <div
               key={card.globalId}
               ref={(el) => registerInPlayCardEl(card.globalId, el)}>
               <Pile
-                isCheatViewOpen = {isCheatViewOpen ? ["discard"] : []}
+                cheats={isCheatViewOpen ? {} : undefined}
                 globalId={card.globalId}
                 onClickTopCardHotkey={
                   targetableCards.includes(card.slug)
@@ -218,46 +217,82 @@ export const Me = () => {
                     slug: card.slug,
                     charged: card.charged,
                     eternal: card.eternal,
-                    engagedInCombat: isCharacter && state.me.isEngagedInCombat,
+                    engagedInCombat: card.stats?.isEngagedInCombat === true,
                     engagedInPurchase:
-                      isCharacter && state.me.isEngagedInPurchase,
-                    effects: isCharacter ? state.me.temporaryEffect : undefined,
+                      state.me.character === card &&
+                      state.me.isEngagedInPurchase,
+                    effects: card.stats?.temporaryEffect,
                     counter: card.counter,
-                    stats: isCharacter
+                    stats: card.stats
                       ? {
-                          healthPoints: state.me.currentHealthPoints,
-                          attackPoints: state.me.currentAttackPoints,
+                          healthPoints: card.stats.healthPoints,
+                          attackPoints: card.stats.attackPoints,
+                          ...(card.stats.evasionPoints === undefined
+                            ? {}
+                            : { evasionPoints: card.stats.evasionPoints }),
                         }
                       : undefined,
                   },
                 ]}
-                disabled={card.capabilities.activate !== true}
+                disabled={
+                  card.stats && card.stats.capabilities.targetable === true
+                    ? card.stats.capabilities.targetable !== true
+                    : card.capabilities.activate !== true
+                }
                 onHoverPopover={() => (
                   <CardHoverPreview
                     card={card}
                     stats={
-                      isCharacter
+                      card.stats
                         ? {
-                            healthPoints: state.me.currentHealthPoints,
-                            attackPoints: state.me.currentAttackPoints,
+                            healthPoints: card.stats.healthPoints,
+                            attackPoints: card.stats.attackPoints,
+                            ...(card.stats.evasionPoints === undefined
+                              ? {}
+                              : { evasionPoints: card.stats.evasionPoints }),
                           }
                         : undefined
                     }
-                    effects={isCharacter ? state.me.temporaryEffect : undefined}
+                    effects={card.stats?.temporaryEffect}
                     counter={card.counter}
                     isEternal={card.eternal}
-                    tooltip={{
-                      title: t("gameStep.activate.blockedTooltip.title"),
-                      capable: card.capabilities.activate,
-                    }}
+                    tooltip={
+                      card.stats && card.stats.capabilities.targetable === true
+                        ? [
+                            {
+                              capable: card.stats.capabilities.targetable,
+                              title: t("gameStep.attack.blockedTooltip.title"),
+                            },
+                          ]
+                        : {
+                            title: t("gameStep.activate.blockedTooltip.title"),
+                            capable: card.capabilities.activate,
+                          }
+                    }
                   />
                 )}
                 onClickTopCard={() =>
-                  block(
-                    t("capability.cannotActivate"),
-                    card.capabilities.activate,
-                    () => onInPlayCardClick(card, index),
-                  )
+                  card.stats && card.stats.capabilities.targetable === true
+                    ? block(
+                        t("gameStep.attack.blockedTooltip.title"),
+                        card.stats.capabilities.targetable,
+                        () => {
+                          console.log("Attacking monster with card:", card);
+                          socket.emit("attackMonster", { card }, (response) => {
+                            if (response.status === 400)
+                              toast(
+                                "error",
+                                t("gameStep.attack.errorToast.title"),
+                                translateError(response.error),
+                              );
+                          });
+                        },
+                      )
+                    : block(
+                        t("capability.cannotActivate"),
+                        card.capabilities.activate,
+                        () => onInPlayCardClick(card, index),
+                      )
                 }
               />
             </div>

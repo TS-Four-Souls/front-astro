@@ -7,7 +7,6 @@ import type {
   EndOfTurnJson,
   LootCardOnStackJson,
   LootStepJson,
-  SelectionItem,
   SerializedTranslation,
   StackElement as StackElementType,
 } from "@/shared/api";
@@ -29,6 +28,7 @@ import { StackElementIcon } from "./stack-element-icon";
 import { replaceTokens } from "@/utils/replaceToken";
 import { useLanguageContext } from "../contexts/language-context";
 import { PendingSelectionIcon } from "./pending-selection-icon";
+import { changeDiceValue } from "./cheats";
 
 export const Stack = () => {
   const { ts, t, translateError } = useLanguageContext();
@@ -154,46 +154,6 @@ export const Stack = () => {
     });
   }, [state]);
 
-  const changeDiceValue = (dice: DiceRollJson) => {
-    const promptId = `debug-dice-value-${Date.now()}`;
-    addPrompt({
-      promptId,
-      isUnique: false,
-      prompt: t("pending.changeDiceRoll"),
-      options: [1, 2, 3, 4, 5, 6].map((value) => ({
-        type: "number" as const,
-        payload: value,
-      })),
-      minCount: 1,
-      maxCount: 1,
-      onSubmit: (selections: SelectionItem[]) => {
-        const value = selections[0].payload;
-        if (typeof value !== "number") return;
-        socket.emit(
-          "debugChangeDiceResult",
-          {
-            dice,
-            value,
-          },
-          (response) => {
-            if (response.status === 200) {
-              removePrompt(promptId);
-            } else {
-              toast(
-                "error",
-                t("gameStep.cheats.changeDice.errorToast.title"),
-                translateError(response.error),
-              );
-            }
-          },
-        );
-      },
-      onCancel: () => {
-        removePrompt(promptId);
-      },
-    });
-  };
-
   return (
     <div
       ref={stackContainerRef}
@@ -307,7 +267,14 @@ export const Stack = () => {
                   isCheatViewOpen &&
                   element.type === "diceRoll" &&
                   !prompt
-                    ? () => changeDiceValue(element)
+                    ? () =>
+                        changeDiceValue(element, {
+                          addPrompt,
+                          removePrompt,
+                          toast,
+                          t,
+                          translateError,
+                        })
                     : undefined
                 }
               />
@@ -414,7 +381,7 @@ export const StackElement = ({
             e.stopPropagation();
             onDiceCheat();
           }}
-          className="cheat-button absolute top-1 left-1 z-10 flex h-5 w-5 items-center justify-center rounded-full text-[12px] font-bold leading-none text-white shadow-md shadow-taupe-950/50 hover:brightness-110"
+          className="cheat-button absolute top-1 left-1 z-10 flex h-5 w-5 items-center justify-center rounded-full text-[12px] leading-none font-bold text-white shadow-md shadow-taupe-950/50 hover:brightness-110"
           aria-label="Change dice value">
           +
         </button>

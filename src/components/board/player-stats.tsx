@@ -16,6 +16,7 @@ import { usePromptContext } from "./contexts/prompt-context";
 import { useToastContext } from "./contexts/toast-context";
 import { useTooltip } from "./use-tooltip";
 import { useLanguageContext } from "../contexts/language-context";
+import { gainCoinsCheat } from "./cheats";
 
 interface PlayerStatsProps {
   player: Player | PlayerMe;
@@ -151,42 +152,6 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
     });
   };
 
-  const gainCoinsCheat = () => {
-    const promptId = `debug-gain-coins-${Date.now()}`;
-    addPrompt({
-      promptId,
-      isUnique: false,
-      prompt: t("gameStep.cheats.gainGoin.popup.title"),
-      options: Array.from({ length: 10 }, (_, i) => ({
-        type: "number",
-        payload: i + 1,
-      })),
-      minCount: 1,
-      maxCount: 1,
-      onSubmit: (selections) => {
-        const coins = selections[0].payload as number;
-        socket.emit(
-          "debugGainCoins",
-          { coins },
-          (response) => {
-            if (response.status === 200) {
-              removePrompt(promptId);
-            } else {
-              toast(
-                "error",
-                t("gameStep.cheats.gainGoin.popup.errorToast.title"),
-                translateError(response.error),
-              );
-            }
-          },
-        );
-      },
-      onCancel: () => {
-        removePrompt(promptId);
-      },
-    });
-  };
-
   const { setTooltip: setCoinTooltip, closeTooltip: closeCoinTooltip } =
     useTooltip(
       player.capabilities.canDonateCoinsTo === true && !isMe
@@ -278,9 +243,15 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
             type="button"
             onClick={(event) => {
               event.stopPropagation();
-              gainCoinsCheat();
+              gainCoinsCheat({
+                addPrompt,
+                removePrompt,
+                toast,
+                t,
+                translateError,
+              });
             }}
-            className="cheat-button absolute -left-2 -top-2 z-10 flex h-5 w-5 items-center justify-center rounded-full text-[12px] font-bold leading-none text-white shadow-md shadow-taupe-950/50 hover:brightness-110"
+            className="cheat-button absolute -top-2 -left-2 z-10 flex h-5 w-5 items-center justify-center rounded-full text-[12px] leading-none font-bold text-white shadow-md shadow-taupe-950/50 hover:brightness-110"
             aria-label="Add coins cheat">
             +
           </button>
@@ -314,7 +285,12 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
               content: (
                 <div className="flex w-max flex-nowrap gap-4">
                   {soulCards.map((card, index) => (
-                    <Card card={card} key={index} size={22} />
+                    <Card
+                      card={card}
+                      key={index}
+                      size={22}
+                      orientation={card.orientation}
+                    />
                   ))}
                 </div>
               ),
@@ -430,7 +406,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
               }
             />
           )}
-          {!state.me.isEngagedInCombat && (
+          {!state.me.character.stats.isEngagedInCombat && (
             <Button
               label={t("gameStep.declareAttackButton.label")}
               className="shadow-lg shadow-taupe-800/70"
@@ -449,7 +425,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
               }}
             />
           )}
-          {state.me.isEngagedInCombat && (
+          {state.me.character.stats.isEngagedInCombat && (
             <Button
               label={t("gameStep.rollDiceButton.label")}
               className="shadow-lg shadow-taupe-800/70"

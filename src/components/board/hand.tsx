@@ -32,7 +32,7 @@ export const Hand = () => {
                 t("gameStep.noOptionsAvailable"),
               );
             } else {
-              const promptId = `card-play-${index}-${selections.length}`;
+              const promptId = `card-play-${index}-${selections.length}-${Date.now()}`;
               addPrompt({
                 promptId,
                 isUnique: false,
@@ -79,7 +79,7 @@ export const Hand = () => {
             key={card.slug}
             ref={(el) => registerMeHandCardEl(card.globalId, el)}>
             <Pile
-              isCheatViewOpen = {isCheatViewOpen ? ["discard"] : []}
+              cheats={isCheatViewOpen ? {} : undefined}
               globalId={card.globalId}
               cards={[{ slug: card.slug }]}
               className={cn(
@@ -93,6 +93,7 @@ export const Hand = () => {
               onHoverPopover={() => (
                 <CardHoverPreview
                   card={card}
+                  orientation={card.orientation}
                   tooltip={{
                     capable: state.me.capabilities.useLoot,
                     title: t("gameStep.play.blockedTooltip.title"),

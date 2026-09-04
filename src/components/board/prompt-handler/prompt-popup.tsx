@@ -375,6 +375,7 @@ export const CardEffectOption = ({
       onClick={onPress}>
       <Card
         card={option.payload.card}
+        orientation={option.payload.card.orientation}
         className={cn("shadow-lg/30", selected && "outline-6 outline-blue-400")}
         size={22}
         visualEffectBox={option.payload.visualEffectBox}
@@ -399,6 +400,7 @@ export const ChooseOneOption = ({
       onClick={onPress}>
       <Card
         card={option.payload.card}
+        orientation={option.payload.card.orientation}
         className={cn("shadow-lg/30", selected && "outline-6 outline-blue-400")}
         size={22}
         visualEffectBox={option.payload.visualEffectBox}
@@ -431,6 +433,7 @@ export const PlayerOption = ({
       <div className="relative">
         <CardImage
           card={option.payload}
+          orientation={option.payload.orientation}
           sizes="16em"
           className={cn(
             "m-2 w-64 shadow-lg/30",
@@ -467,6 +470,7 @@ export const MonsterOption = ({
       <div className="relative">
         <CardImage
           card={option.payload}
+          orientation={option.payload.orientation}
           sizes="16em"
           className={cn(
             "m-2 w-64 shadow-lg/30",
@@ -620,6 +624,7 @@ export const CardOption = ({
       onClick={onPress}>
       <CardImage
         card={option.payload}
+        orientation={option.payload.orientation}
         sizes="16em"
         className={cn(
           "m-2 w-64 shadow-lg/30",
@@ -716,6 +721,7 @@ export const CouplePlayerHandOption = ({
       {option.payload.hand.map((card) => (
         <CardImage
           key={card.slug}
+          orientation={card.orientation}
           card={card}
           sizes="12em"
           className="w-48 shadow-lg/30"
@@ -796,7 +802,12 @@ const OnCardSelector = ({
   const card = options[0].payload.card;
   return (
     <div className="relative">
-      <Card card={card} className="shadow-lg/30" size={42} />
+      <Card
+        card={card}
+        className="shadow-lg/30"
+        size={42}
+        orientation={card.orientation}
+      />
       {options.map((option, index) => (
         <OnCardSelectorOption
           key={index}

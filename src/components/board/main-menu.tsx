@@ -8,7 +8,6 @@ import { usePromptContext } from "./contexts/prompt-context";
 import { useToastContext } from "./contexts/toast-context";
 import { useLanguageContext } from "../contexts/language-context";
 import { LanguageSelection } from "../language-selection";
-import type { SelectionItem } from "@/shared/api";
 
 export const MainMenu = () => {
   const { addPrompt, removePrompt } = usePromptContext();
@@ -117,7 +116,7 @@ export const MainMenu = () => {
             onClick={() => {
               const nextValue = !isCheatViewOpen;
               setIsCheatViewOpen(nextValue);
-                closeMainMenu();
+              closeMainMenu();
             }}
             label={isCheatViewOpen ? "Normal view" : "Cheat view"}
           />
@@ -137,8 +136,7 @@ export const MainMenu = () => {
           onClick={() => {
             closeMainMenu();
             onResetPress();
-          }
-        }
+          }}
           label={t("gameStep.mainMenu.quitButton.label")}
         />
       </div>
