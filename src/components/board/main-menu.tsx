@@ -97,7 +97,7 @@ export const MainMenu = () => {
 
   return (
     <>
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-4 mb-4">
         <h1 className="font-main text-3xl font-bold">
           {t("gameStep.mainMenu.title")}
         </h1>
@@ -108,38 +108,36 @@ export const MainMenu = () => {
           label={t("common.closeButton")}
         />
       </div>
-      <div className="flex flex-col gap-4 overflow-auto p-4 pb-8">
-        {parameters.allowCheatOptions.value && (
-          <Button
-            hotkey="c"
-            hotkeyScope={[HotkeyScope.Popup]}
-            onClick={() => {
-              const nextValue = !isCheatViewOpen;
-              setIsCheatViewOpen(nextValue);
-              closeMainMenu();
-            }}
-            label={isCheatViewOpen ? "Normal view" : "Cheat view"}
-          />
-        )}
+      {parameters.allowCheatOptions.value && (
         <Button
-          hotkey="s"
+          hotkey="c"
           hotkeyScope={[HotkeyScope.Popup]}
           onClick={() => {
+            const nextValue = !isCheatViewOpen;
+            setIsCheatViewOpen(nextValue);
             closeMainMenu();
-            onSaveGamePress();
           }}
-          label={t("gameStep.mainMenu.saveButtom.label")}
+          label={isCheatViewOpen ? "Normal view" : "Cheat view"}
         />
-        <Button
-          hotkey="q"
-          hotkeyScope={[HotkeyScope.Popup]}
-          onClick={() => {
-            closeMainMenu();
-            onResetPress();
-          }}
-          label={t("gameStep.mainMenu.quitButton.label")}
-        />
-      </div>
+      )}
+      <Button
+        hotkey="s"
+        hotkeyScope={[HotkeyScope.Popup]}
+        onClick={() => {
+          closeMainMenu();
+          onSaveGamePress();
+        }}
+        label={t("gameStep.mainMenu.saveButtom.label")}
+      />
+      <Button
+        hotkey="q"
+        hotkeyScope={[HotkeyScope.Popup]}
+        onClick={() => {
+          closeMainMenu();
+          onResetPress();
+        }}
+        label={t("gameStep.mainMenu.quitButton.label")}
+      />
       <LanguageSelection />
       <DiscordButton />
       <ReportBugButton />
