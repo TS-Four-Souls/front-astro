@@ -70,15 +70,7 @@ export const TopPlayer = ({ player }: TopPlayerProps) => {
                         card === player.character && player.isEngagedInPurchase,
                       effects: card.stats?.temporaryEffect,
                       counter: card.counter,
-                      stats: card.stats
-                        ? {
-                            healthPoints: card.stats.healthPoints,
-                            attackPoints: card.stats.attackPoints,
-                            ...(card.stats.evasionPoints === undefined
-                              ? {}
-                              : { evasionPoints: card.stats.evasionPoints }),
-                          }
-                        : undefined,
+                      stats: card.stats,
                     },
                   ]}
                   disabled={
