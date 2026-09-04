@@ -27,11 +27,7 @@ type CardMetadata = {
     | {
         healthPoints: number;
         attackPoints: number;
-        evasionPoints: number;
-      }
-    | {
-        healthPoints: number;
-        attackPoints: number;
+        evasionPoints?: number | undefined;
       }
     | undefined;
   effects?: TemporaryEffect[];

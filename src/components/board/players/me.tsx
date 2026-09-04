@@ -242,17 +242,7 @@ export const Me = () => {
                 onHoverPopover={() => (
                   <CardHoverPreview
                     card={card}
-                    stats={
-                      card.stats
-                        ? {
-                            healthPoints: card.stats.healthPoints,
-                            attackPoints: card.stats.attackPoints,
-                            ...(card.stats.evasionPoints === undefined
-                              ? {}
-                              : { evasionPoints: card.stats.evasionPoints }),
-                          }
-                        : undefined
-                    }
+                    stats={card.stats}
                     effects={card.stats?.temporaryEffect}
                     counter={card.counter}
                     isEternal={card.eternal}

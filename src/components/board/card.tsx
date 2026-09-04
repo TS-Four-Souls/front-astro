@@ -41,9 +41,11 @@ interface CardProps {
   disabled?: boolean;
   size: number;
   orientation?: Orientation;
-  stats?:
-    | { healthPoints: number; attackPoints: number; evasionPoints: number }
-    | { healthPoints: number; attackPoints: number };
+  stats?: {
+    healthPoints: number;
+    attackPoints: number;
+    evasionPoints?: number | undefined;
+  };
   counter?: number;
   onMouseEnter?: (e: React.MouseEvent<HTMLDivElement>) => void;
   onMouseLeave?: (e: React.MouseEvent<HTMLDivElement>) => void;
@@ -68,6 +70,27 @@ const getOrientationParameters = (
   const borderRadius = `${rx} ${rx} ${rx} ${rx} / ${ry} ${ry} ${ry} ${ry}`;
 
   return { aspectRatio, borderRadius };
+};
+
+const plusLeftPosition: Record<Orientation, Record<number, number>> = {
+  portrait: {
+    0: 0,
+    1: 55.5,
+    2: 56.5,
+    3: 56.5,
+    4: 56.0,
+    5: 57.0,
+    6: 0,
+  },
+  landscape: {
+    0: 0,
+    1: 54,
+    2: 54.5,
+    3: 54.5,
+    4: 54,
+    5: 55,
+    6: 0,
+  },
 };
 
 export const Card = ({
@@ -130,7 +153,7 @@ export const Card = ({
       ? "absolute top-[55.7%] left-[72.6%] font-statblock text-black"
       : "absolute top-[52.1%] left-[66.6%] font-statblock text-black";
   const evasionOverlay =
-    stats && "evasionPoints" in stats
+    stats && stats.evasionPoints !== undefined
       ? orientation === "portrait"
         ? stats.evasionPoints === 6 || stats.evasionPoints === 0
           ? "absolute font-statblock text-black top-[55.7%] left-[51.9%]"
@@ -248,7 +271,7 @@ export const Card = ({
           </div>
         )}
 
-        {stats && !("evasionPoints" in stats) && (
+        {stats && stats.evasionPoints === undefined && (
           <div
             className="pointer-events-none"
             style={{ fontSize: statsSize + "em" }}>
@@ -264,7 +287,7 @@ export const Card = ({
           </div>
         )}
 
-        {stats && "evasionPoints" in stats && (
+        {stats && stats.evasionPoints !== undefined && (
           <div
             className="pointer-events-none"
             style={{ fontSize: statsSize + "em" }}>
@@ -281,43 +304,22 @@ export const Card = ({
                   "absolute top-[58.8%] font-main text-[60%] text-black",
                 orientation === "landscape" &&
                   "absolute top-[56.5%] font-main text-[60%] text-black",
-                stats.evasionPoints === 0 && "hidden",
-                orientation === "portrait" &&
-                  stats.evasionPoints === 1 &&
-                  "left-[55.5%]",
-                orientation === "portrait" &&
-                  stats.evasionPoints === 2 &&
-                  "left-[56.5%]",
-                orientation === "portrait" &&
-                  stats.evasionPoints === 3 &&
-                  "left-[56.5%]",
-                orientation === "portrait" &&
-                  stats.evasionPoints === 4 &&
-                  "left-[56.0%]",
-                orientation === "portrait" &&
-                  stats.evasionPoints === 5 &&
-                  "left-[57.0%]",
-                stats.evasionPoints === 6 && "hidden",
-                orientation === "landscape" &&
-                  stats.evasionPoints === 1 &&
-                  "left-[54%]",
-                orientation === "landscape" &&
-                  stats.evasionPoints === 2 &&
-                  "left-[54.5%]",
-                orientation === "landscape" &&
-                  stats.evasionPoints === 3 &&
-                  "left-[54.5%]",
-                orientation === "landscape" &&
-                  stats.evasionPoints === 4 &&
-                  "left-[54%]",
-                orientation === "landscape" &&
-                  stats.evasionPoints === 5 &&
-                  "left-[55%]",
-              )}>
+                stats.evasionPoints === 0 ||
+                  (stats.evasionPoints === 6 && "hidden"),
+              )}
+              style={{
+                left: plusLeftPosition[orientation][stats.evasionPoints] + "%",
+              }}>
               +
             </p>
             {stats.attackPoints === 6 && (
-              <p className="absolute top-[55.7%] left-[77%] font-statblock text-black">
+              <p
+                className={cn(
+                  "absolute font-statblock text-black",
+                  orientation === "portrait"
+                    ? "top-[55.7%] left-[77%]"
+                    : "top-[52%] left-[70%]",
+                )}>
                 !
               </p>
             )}
