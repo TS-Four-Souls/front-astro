@@ -5,7 +5,7 @@ import {
   TooltipComponent,
   type Tooltip,
 } from "./use-tooltip";
-import type { TemporaryEffect } from "@/shared/api";
+import type { SerializedCounter, TemporaryEffect } from "@/shared/api";
 
 interface CardHoverPreviewProps {
   card: { slug: string; globalId?: number } | CardType;
@@ -15,7 +15,7 @@ interface CardHoverPreviewProps {
     evasionPoints?: number;
   };
   effects?: TemporaryEffect[];
-  counter?: number;
+  counters?: SerializedCounter[];
   tooltip?: Tooltip | Tooltip[];
   isEternal?: boolean;
   orientation?: "portrait" | "landscape";
@@ -26,7 +26,7 @@ export const CardHoverPreview = ({
   stats,
   tooltip,
   effects,
-  counter,
+  counters,
   isEternal,
   orientation = "portrait",
 }: CardHoverPreviewProps) => {
@@ -50,7 +50,7 @@ export const CardHoverPreview = ({
             card={{ slug: card.slug }}
             stats={stats}
             effects={effects}
-            counter={counter}
+            counters={counters}
             size={22}
             orientation={orientation}
           />
