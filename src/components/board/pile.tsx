@@ -13,6 +13,7 @@ import type { Tooltip } from "./use-tooltip";
 import { useTooltip } from "./use-tooltip";
 import { useLanguageContext } from "../contexts/language-context";
 import { CheatButtons, type CheatActions } from "./cheats";
+import { type SerializedCounter } from "../../shared/api";
 
 type CardMetadata = {
   isRequiredAttack?: boolean;
@@ -20,7 +21,7 @@ type CardMetadata = {
   eternal?: boolean;
   engagedInCombat?: boolean;
   engagedInPurchase?: boolean;
-  counter?: number;
+  counters?: SerializedCounter[];
   stats?:
     | {
         healthPoints: number;
@@ -172,7 +173,7 @@ export const Pile = ({
           const eternal =
             typeof card === "string" ? false : (card.eternal ?? false);
 
-          const counter = typeof card === "string" ? undefined : card.counter;
+          const counters = typeof card === "string" ? undefined : card.counters;
 
           const isRequiredAttack =
             typeof card === "object" ? card.isRequiredAttack : false;
@@ -236,7 +237,7 @@ export const Pile = ({
                 brightness={brightness}
                 stats={typeof card === "string" ? undefined : card.stats}
                 effects={typeof card === "string" ? undefined : card.effects}
-                counter={counter}
+                counters={counters}
                 onMouseEnter={
                   isTopCard
                     ? onHoverPopover

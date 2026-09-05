@@ -97,7 +97,7 @@ export const MainMenu = () => {
 
   return (
     <>
-      <div className="flex items-center justify-between gap-4 mb-4">
+      <div className="mb-4 flex items-center justify-between gap-4">
         <h1 className="font-main text-3xl font-bold">
           {t("gameStep.mainMenu.title")}
         </h1>

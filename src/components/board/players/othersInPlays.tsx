@@ -47,7 +47,7 @@ export const OthersInPlays = ({ cards, player }: OthersInPlaysProps) => {
               engagedInPurchase:
                 card === player.character && player.isEngagedInPurchase,
               effects: card.stats?.temporaryEffect,
-              counter: card.counter,
+              counters: card.counters,
               stats: card.stats,
             },
           ]}
@@ -59,7 +59,7 @@ export const OthersInPlays = ({ cards, player }: OthersInPlaysProps) => {
               card={card}
               stats={card.stats}
               effects={card.stats?.temporaryEffect}
-              counter={card.counter}
+              counters={card.counters}
               isEternal={card.eternal}
               tooltip={
                 card.stats

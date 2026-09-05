@@ -253,7 +253,7 @@ export const Center = ({ state }: CenterProps) => {
                 onHoverPopover={() => (
                   <CardHoverPreview
                     card={soul}
-                    counter={soul.counter}
+                    counters={soul.counters}
                     tooltip={{
                       enabled: true,
                       title: t("gameStep.bonusSouls.tooltip.title"),
@@ -351,7 +351,7 @@ export const Center = ({ state }: CenterProps) => {
               engagedInCombat: card.stats && card.stats.isEngagedInCombat,
               engagedInPurchase: false,
               effects: card.stats ? card.stats.temporaryEffect : undefined,
-              counter: card.counter,
+              counter: card.counters,
               stats: card.stats,
             }))}
             cheats={
@@ -409,7 +409,7 @@ export const Center = ({ state }: CenterProps) => {
                     ? activeRoom.stats.temporaryEffect
                     : undefined
                 }
-                counter={activeRoom.counter}
+                counters={activeRoom.counters}
                 isEternal={activeRoom.eternal}
                 tooltip={{
                   title: t("gameStep.activate.blockedTooltip.title"),
@@ -700,7 +700,7 @@ export const Center = ({ state }: CenterProps) => {
                       slug: card.top.slug,
                       stats: card.top.stats,
                       effects: card.top.stats?.temporaryEffect,
-                      counter: card.top.counter,
+                      counters: card.top.counters,
                       engagedInCombat:
                         card.top.stats?.isEngagedInCombat ?? false,
                       isRequiredAttack: attackRequirement !== undefined,
@@ -732,7 +732,7 @@ export const Center = ({ state }: CenterProps) => {
                   onHoverPopover={() => (
                     <CardHoverPreview
                       card={card.top}
-                      counter={card.top.counter}
+                      counters={card.top.counters}
                       stats={card.top.stats}
                       effects={card.top.stats?.temporaryEffect}
                       tooltip={[

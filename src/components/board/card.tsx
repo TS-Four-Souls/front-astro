@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { cn } from "../../utils/cn";
 import { DEFAULT_LANGUAGE } from "../../utils/translate";
-import type { TemporaryEffect, VisualEffectBox } from "@/shared/api";
+import type {
+  SerializedCounter,
+  TemporaryEffect,
+  VisualEffectBox,
+} from "@/shared/api";
 import { TemporaryEffectCard } from "./temporary-effect-card";
 import { SELF_BASE_URL } from "astro:env/client";
 import { PileIndicator } from "@/icons/pile-indicator";
@@ -45,7 +49,7 @@ interface CardProps {
     attackPoints: number;
     evasionPoints?: number | undefined;
   };
-  counter?: number;
+  counters?: SerializedCounter[];
   onMouseEnter?: (e: React.MouseEvent<HTMLDivElement>) => void;
   onMouseLeave?: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
@@ -109,7 +113,7 @@ export const Card = ({
   size = 160,
   orientation = "portrait",
   effects,
-  counter,
+  counters,
   globalId = 0,
   onMouseEnter,
   onMouseLeave,
@@ -236,23 +240,33 @@ export const Card = ({
           </div>
         )}
 
-        {counter !== undefined && counter > 0 && (
-          <div className="absolute top-[38%] bottom-[45%] left-[6%] size-[25%]">
-            <img
-              src="/counter.png"
-              alt="Logo"
-              className="size-full object-contain"
-              style={{
-                filter: `brightness(150%) hue-rotate(${globalId ** 3 + globalId * 17}deg)`,
-              }}
-            />
-            <span
-              className="absolute inset-0 flex items-center justify-center font-alt-stats font-bold text-black text-shadow-[0_0_0.2em] text-shadow-white"
-              style={{
-                fontSize: size * 0.09 * (counter > 9 ? 0.8 : 1) + "em",
-              }}>
-              {counter}
-            </span>
+        {counters !== undefined && counters.length > 0 && (
+          <div className="absolute top-[38%] bottom-[45%] left-[6%] flex size-[25%] flex-col flex-wrap gap-1">
+            {counters.map((counter, index) => (
+              <div
+                key={`${counter.type}-${index}`}
+                className="relative size-full">
+                <img
+                  src="/counter.png"
+                  alt="Counter"
+                  className="size-full object-contain"
+                  style={{
+                    filter:
+                      counter.type === "golden"
+                        ? "brightness(150%) saturate(200%) sepia(100%)"
+                        : `brightness(150%) hue-rotate(${globalId ** 3 + globalId * 17}deg)`,
+                  }}
+                />
+                <span
+                  className="absolute inset-0 flex items-center justify-center font-alt-stats font-bold text-black text-shadow-[0_0_0.2em] text-shadow-white"
+                  style={{
+                    fontSize:
+                      size * 0.09 * (counter.value > 9 ? 0.8 : 1) + "em",
+                  }}>
+                  {counter.value}
+                </span>
+              </div>
+            ))}
           </div>
         )}
 

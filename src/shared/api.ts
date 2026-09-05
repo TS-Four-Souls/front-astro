@@ -247,15 +247,23 @@ const statsSchema = z.object({
   }),
 });
 
+const counterTypeSchema = z.union([z.literal("normal"), z.literal("golden")]);
+export type CounterType = z.infer<typeof counterTypeSchema>;
+
+const serializedCounterSchema = z.object({
+  type: counterTypeSchema,
+  value: z.number(),
+});
+export type SerializedCounter = z.infer<typeof serializedCounterSchema>;
+
 const attackableCardSchema = cardSchema.extend({
-  counter: z.number().optional(),
+  counters: z.array(serializedCounterSchema).optional(),
   stats: statsSchema.optional(),
 });
 export type MonsterCard = z.infer<typeof attackableCardSchema>;
 
 const inPlayCardSchema = attackableCardSchema.extend({
   charged: z.boolean().optional(),
-  counter: z.number().optional(),
   eternal: z.boolean().optional(),
   capabilities: z.object({
     activate: capabilitySchema,
@@ -280,7 +288,7 @@ export type InPlayWithStatsMeCard = z.infer<typeof inPlayWithStatsMeCardSchema>;
 
 const bonusSoulCardSchema = cardSchema.extend({
   granted: z.boolean(),
-  counter: z.number().optional(),
+  counters: z.array(serializedCounterSchema).optional(),
 });
 export type BonusSoulCard = z.infer<typeof bonusSoulCardSchema>;
 
@@ -815,11 +823,7 @@ const playerSchema = z.object({
   souls: z.number(),
   soulCards: z.array(cardSchema),
   coins: z.number(),
-  // currentHealthPoints: z.number(),
-  // currentAttackPoints: z.number(),
-  // temporaryEffect: z.array(temporaryEffectSchema),
   remainingLootPlay: z.number(),
-  // isEngagedInCombat: z.boolean(),
   attackRequirements: z.array(attackRequirementSchema),
   isEngagedInPurchase: z.boolean(),
   capabilities: z.object({

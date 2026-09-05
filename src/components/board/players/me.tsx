@@ -244,7 +244,7 @@ export const Me = () => {
                       state.me.character === card &&
                       state.me.isEngagedInPurchase,
                     effects: card.stats?.temporaryEffect,
-                    counter: card.counter,
+                    counters: card.counters,
                     stats: card.stats,
                   },
                 ]}
@@ -258,7 +258,7 @@ export const Me = () => {
                     card={card}
                     stats={card.stats}
                     effects={card.stats?.temporaryEffect}
-                    counter={card.counter}
+                    counters={card.counters}
                     isEternal={card.eternal}
                     tooltip={
                       !card.stats || (card.effects && card.effects.length > 0)
