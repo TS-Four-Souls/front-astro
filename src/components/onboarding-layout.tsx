@@ -45,9 +45,6 @@ export const OnboardingLayout = ({
       <div
         ref={planetariumRef}
         className="planetarium flex flex-2 flex-col overflow-auto">
-        <ReportBugButton />
-        <DiscordButton />
-        <LanguageSelection />
         {withHeader ? (
           <>
             <div className="mb-8 flex flex-1 flex-col place-content-center place-items-center gap-6 p-12 max-sm:p-6">
@@ -65,6 +62,9 @@ export const OnboardingLayout = ({
         ) : (
           children
         )}
+      <ReportBugButton />
+      <DiscordButton />
+      <LanguageSelection />
       </div>
     </div>
   );
