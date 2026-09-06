@@ -440,6 +440,7 @@ const getBorderColor = (element: StackElement) => {
   switch (element.type) {
     case "diceRoll":
     case "LootCardEffect":
+    case "diceWillRoll":
     case "effect":
       return element.issuer.color;
     case "damage":
