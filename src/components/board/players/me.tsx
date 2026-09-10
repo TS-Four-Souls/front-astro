@@ -14,10 +14,12 @@ import { Pile } from "../pile";
 import { PlayerStats } from "../player-stats";
 import { useLanguageContext } from "@/components/contexts/language-context";
 import { discardCardCheat } from "../cheats";
+import { HandPile } from "../hand-pile";
+import { cn } from "@/utils/cn";
 
 export const Me = () => {
   const { ts, t, translateError } = useLanguageContext();
-  const { state, isHandUp, isCheatViewOpen, cheatRemovableCards } =
+  const { state, isHandUp, isSpectator, isCheatViewOpen, cheatRemovableCards } =
     useGameContext();
   const { toast, block } = useToastContext();
   const { addPrompt, removePrompt, clearPrompts } = usePromptContext();
@@ -28,7 +30,7 @@ export const Me = () => {
 
   useHotkeys("escape", openMenu, {
     scopes: [HotkeyScope.Main],
-    enabled: true,
+    enabled: !isSpectator,
   });
 
   useEffect(() => {
@@ -209,89 +211,98 @@ export const Me = () => {
     <div className="col-start-2 row-start-3 flex flex-col place-content-center place-items-center gap-6">
       <PlayerStats player={state.me} />
       <div
-        className="grid gap-2"
-        style={{
-          gridTemplateColumns: `repeat(${Math.min(state.me.inPlay.length + 1, 8)}, 1fr)`,
-        }}>
-        {[state.me.character, ...state.me.inPlay].map((card, index) => {
-          return (
-            <div
-              key={card.globalId}
-              ref={(el) => registerInPlayCardEl(card.globalId, el)}>
-              <Pile
-                cheats={
-                  isCheatViewOpen
-                    ? {
-                        discard: cheatRemovableCards.has(card.globalId)
-                          ? () => discardCardCheat(card)
-                          : undefined,
+        className={cn(
+          "flex place-content-center place-items-center gap-8",
+          !isSpectator && "flex-col gap-6",
+        )}>
+        {isSpectator && state.me.handSize > 0 && <HandPile player={state.me} />}
+        <div
+          className="grid gap-2"
+          style={{
+            gridTemplateColumns: `repeat(${Math.min(state.me.inPlay.length + 1, 8)}, 1fr)`,
+          }}>
+          {[state.me.character, ...state.me.inPlay].map((card, index) => {
+            return (
+              <div
+                key={card.globalId}
+                ref={(el) => registerInPlayCardEl(card.globalId, el)}>
+                <Pile
+                  cheats={
+                    isCheatViewOpen
+                      ? {
+                          discard: cheatRemovableCards.has(card.globalId)
+                            ? () => discardCardCheat(card)
+                            : undefined,
+                        }
+                      : undefined
+                  }
+                  globalId={card.globalId}
+                  onClickTopCardHotkey={
+                    targetableCards.includes(card.slug)
+                      ? `${targetableCards.indexOf(card.slug) + 1}`
+                      : undefined
+                  }
+                  cards={[
+                    {
+                      slug: card.slug,
+                      charged: card.charged,
+                      eternal: card.eternal,
+                      engagedInCombat: card.stats?.isEngagedInCombat === true,
+                      engagedInPurchase:
+                        state.me.character === card &&
+                        state.me.isEngagedInPurchase,
+                      effects: card.stats?.temporaryEffect,
+                      counters: card.counters,
+                      stats: card.stats,
+                    },
+                  ]}
+                  disabled={
+                    !card.stats || (card.effects && card.effects.length > 0)
+                      ? card.capabilities.activate !== true
+                      : card.stats.capabilities.targetable !== true
+                  }
+                  onHoverPopover={() => (
+                    <CardHoverPreview
+                      card={card}
+                      stats={card.stats}
+                      effects={card.stats?.temporaryEffect}
+                      counters={card.counters}
+                      isEternal={card.eternal}
+                      tooltip={
+                        !card.stats || (card.effects && card.effects.length > 0)
+                          ? {
+                              title: t(
+                                "gameStep.activate.blockedTooltip.title",
+                              ),
+                              capable: card.capabilities.activate,
+                            }
+                          : {
+                              title: t("gameStep.attack.blockedTooltip.title"),
+                              capable: card.stats.capabilities.targetable,
+                            }
                       }
-                    : undefined
-                }
-                globalId={card.globalId}
-                onClickTopCardHotkey={
-                  targetableCards.includes(card.slug)
-                    ? `${targetableCards.indexOf(card.slug) + 1}`
-                    : undefined
-                }
-                cards={[
-                  {
-                    slug: card.slug,
-                    charged: card.charged,
-                    eternal: card.eternal,
-                    engagedInCombat: card.stats?.isEngagedInCombat === true,
-                    engagedInPurchase:
-                      state.me.character === card &&
-                      state.me.isEngagedInPurchase,
-                    effects: card.stats?.temporaryEffect,
-                    counters: card.counters,
-                    stats: card.stats,
-                  },
-                ]}
-                disabled={
-                  !card.stats || (card.effects && card.effects.length > 0)
-                    ? card.capabilities.activate !== true
-                    : card.stats.capabilities.targetable !== true
-                }
-                onHoverPopover={() => (
-                  <CardHoverPreview
-                    card={card}
-                    stats={card.stats}
-                    effects={card.stats?.temporaryEffect}
-                    counters={card.counters}
-                    isEternal={card.eternal}
-                    tooltip={
-                      !card.stats || (card.effects && card.effects.length > 0)
-                        ? {
-                            title: t("gameStep.activate.blockedTooltip.title"),
-                            capable: card.capabilities.activate,
-                          }
-                        : {
-                            title: t("gameStep.attack.blockedTooltip.title"),
-                            capable: card.stats.capabilities.targetable,
-                          }
-                    }
-                  />
-                )}
-                onClickTopCard={() =>
-                  !card.stats || (card.effects && card.effects.length > 0)
-                    ? block(
-                        t("capability.cannotActivate"),
-                        card.capabilities.activate,
-                        () => onInPlayCardClick(card, index),
-                      )
-                    : block(
-                        t("gameStep.attack.blockedTooltip.title"),
-                        card.stats.capabilities.targetable,
-                        () => onTargetableCardClick(card),
-                      )
-                }
-              />
-            </div>
-          );
-        })}
+                    />
+                  )}
+                  onClickTopCard={() =>
+                    !card.stats || (card.effects && card.effects.length > 0)
+                      ? block(
+                          t("capability.cannotActivate"),
+                          card.capabilities.activate,
+                          () => onInPlayCardClick(card, index),
+                        )
+                      : block(
+                          t("gameStep.attack.blockedTooltip.title"),
+                          card.stats.capabilities.targetable,
+                          () => onTargetableCardClick(card),
+                        )
+                  }
+                />
+              </div>
+            );
+          })}
+        </div>
+        <Hand />
       </div>
-      <Hand />
     </div>
   );
 };

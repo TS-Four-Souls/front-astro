@@ -1,4 +1,4 @@
-import type { DetailedState, GameParametersJson } from "@/shared/api";
+import type { DetailedState, GameParametersJson, Room } from "@/shared/api";
 import { HotkeyScope } from "@/utils/hotkey";
 import { socket } from "@/utils/socket";
 import { createContext, useContext, useEffect, useState } from "react";
@@ -7,33 +7,41 @@ import { useHotkeys } from "react-hotkeys-hook";
 interface GameContextProps {
   state: DetailedState;
   parameters: GameParametersJson;
+  isSpectator: boolean;
   isHandUp: boolean;
   setIsHandUp: (isHandUp: boolean) => void;
   isCheatViewOpen: boolean;
   setIsCheatViewOpen: (isCheatViewOpen: boolean) => void;
   cheatRemovableCards: Set<number>;
+  room: Room;
 }
 
 const GameContext = createContext<GameContextProps>({
   state: undefined as unknown as DetailedState,
   parameters: undefined as unknown as GameParametersJson,
+  isSpectator: false,
   isHandUp: false,
   setIsHandUp: () => {},
   isCheatViewOpen: false,
   setIsCheatViewOpen: () => {},
   cheatRemovableCards: new Set(),
+  room: undefined as unknown as Room,
 });
 
 interface GameProviderProps {
   children: React.ReactNode;
   state: DetailedState;
   parameters: GameParametersJson;
+  isSpectator?: boolean;
+  room: Room;
 }
 
 export const GameProvider = ({
   children,
   state,
   parameters,
+  isSpectator = false,
+  room,
 }: GameProviderProps) => {
   const [isHandUp, setIsHandUp] = useState(false);
   const [isCheatViewOpen, setIsCheatViewOpen] = useState(false);
@@ -65,11 +73,13 @@ export const GameProvider = ({
       value={{
         state,
         parameters,
+        isSpectator,
         isHandUp,
         setIsHandUp,
         isCheatViewOpen,
         setIsCheatViewOpen,
         cheatRemovableCards,
+        room,
       }}>
       {children}
     </GameContext.Provider>

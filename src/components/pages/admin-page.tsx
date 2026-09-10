@@ -14,6 +14,7 @@ import { useToastContext } from "../board/contexts/toast-context";
 import { Button } from "../button";
 import { OnboardingLayout } from "../onboarding-layout";
 import { useLanguageContext } from "../contexts/language-context";
+import { Eye } from "@/icons/eye";
 
 export const AdminPage = () => {
   const { translateError } = useLanguageContext();
@@ -218,7 +219,17 @@ export const AdminPostLoginPage = ({
 export const AdminRoomCard = ({ room }: { room: AdminRoom }) => {
   return (
     <div className="flex flex-col gap-2 rounded-md border-2 border-space-300 bg-space-500/30 p-4 select-text">
-      <h2 className="text-lg font-bold">{room.id}</h2>
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-bold">{room.id}</h2>
+        <a
+          href={`/?code=${room.id}`}
+          title="Watch the game"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="cursor-pointer transition-transform duration-200 hover:scale-110">
+          <Eye className="size-8" />
+        </a>
+      </div>
       <p className="text-sm">
         Created at: {new Date(room.createdAt).toLocaleString()}
       </p>
