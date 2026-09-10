@@ -159,6 +159,7 @@ export const GamePage = () => {
         room={room}
         onJoinAsPlayer={() => openSpectatorJoinPopup("join")}>
         <GameProvider
+          room={room}
           state={room.game}
           parameters={room.gameParameters}
           isSpectator={room.isSpectator}>
