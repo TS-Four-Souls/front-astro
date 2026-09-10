@@ -4,13 +4,12 @@ import { GamePage } from "./pages/game-page";
 import { HotkeysProvider } from "react-hotkeys-hook";
 import { HotkeyScope } from "@/utils/hotkey";
 import { PopoverProvider } from "./board/contexts/popover-context";
-import { ReplayPage } from "./pages/replay-page";
 import { ContactProvider } from "./contexts/contact-context";
 import { AdminPage } from "./pages/admin-page";
 import { LanguageProvider } from "./contexts/language-context";
 
 interface AppProps {
-  page: "game" | "replay" | "admin";
+  page: "game" | "admin";
 }
 
 export const App = ({ page }: AppProps) => {
@@ -24,8 +23,6 @@ export const App = ({ page }: AppProps) => {
                 <PromptProvider>
                   {page === "game" ? (
                     <GamePage />
-                  ) : page === "replay" ? (
-                    <ReplayPage />
                   ) : (
                     <AdminPage />
                   )}
