@@ -77,6 +77,41 @@
   }
 }
 
+@keyframes resolveButtonMetallic {
+  0%,
+  55% {
+    transform: skewX(-18deg) translateX(-140%);
+  }
+  78%,
+  100% {
+    transform: skewX(-18deg) translateX(500%);
+  }
+}
+
+.resolve-button-ready::after {
+  content: "";
+  position: absolute;
+  inset: -35% auto -35% -25%;
+  width: 35%;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(255 255 255 / 0.08) 25%,
+    rgb(255 255 255 / 0.65) 50%,
+    rgb(255 255 255 / 0.08) 75%,
+    transparent
+  );
+  filter: blur(0.04em);
+  animation: resolveButtonMetallic 6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .resolve-button-ready::after {
+    animation: none;
+  }
+}
+
 @keyframes planetariumBackground {
   from {
     background-position:
