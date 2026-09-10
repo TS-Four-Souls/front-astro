@@ -209,7 +209,6 @@ export const Me = () => {
 
   return (
     <div className="col-start-2 row-start-3 flex flex-col place-content-center place-items-center gap-6">
-      <PlayerStats player={state.me} />
       <div
         className={cn(
           "flex place-content-center place-items-center gap-8",
@@ -219,8 +218,9 @@ export const Me = () => {
         <div
           className="grid gap-2"
           style={{
-            gridTemplateColumns: `repeat(${Math.min(state.me.inPlay.length + 1, 8)}, 1fr)`,
-          }}>
+          gridTemplateColumns: `auto repeat(${Math.min(state.me.inPlay.length + 1, 8)}, minmax(0, 1fr))`,
+        }}>
+        <PlayerStats player={state.me} className="min-w-0" />
           {[state.me.character, ...state.me.inPlay].map((card, index) => {
             return (
               <div

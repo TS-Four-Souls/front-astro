@@ -6,7 +6,7 @@ import { HotkeyScope } from "@/utils/hotkey";
 import { socket } from "@/utils/socket";
 import { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { Button } from "../button";
+import { Button, ImgButton } from "../button";
 import { Card } from "./card";
 import { useGameAnimation } from "./contexts/game-animation";
 import { useGameContext } from "./contexts/game-context";
@@ -194,7 +194,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
   return (
     <div
       className={cn(
-        "flex place-items-center gap-16 rounded-xl border-[0.2em] border-taupe-900/50 bg-board/90 p-3 pr-4 pl-6 text-white outline-[0.2em] outline-transparent transition-shadow duration-500",
+        "grid-cols-4 place-items-center gap-16 rounded-xl border-[0.2em] border-taupe-900/50 bg-board/90 p-3 pr-4 pl-6 text-white outline-[0.2em] outline-transparent transition-shadow duration-500",
         className,
       )}
       style={{
@@ -320,8 +320,10 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
 
       {isMe && (
         <div className="flex items-center gap-4">
-          <Button
-            className="shadow-lg shadow-taupe-800/70"
+          <ImgButton
+            frontImage="End_turn_Icon.png"
+            backgroundImage="Button_Small.png"
+            size={64}
             disabled={state.me.capabilities.endTurn !== true}
             hotkey="e"
             onClick={() =>
@@ -333,28 +335,33 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
             }
             tooltip={
               state.me.capabilities.endTurn === true
-                ? {
-                    enabled: state.me.numberOfCardsOverMaxHandSize > 0,
-                    title: t("gameStep.endTurnButton.excessLootTooltip.title"),
-                    content: t(
-                      "gameStep.endTurnButton.excessLootTooltip.message",
-                      {
-                        value: String(state.me.numberOfCardsOverMaxHandSize),
-                      },
-                    ),
-                    type: "warning",
-                  }
+                ?  state.me.numberOfCardsOverMaxHandSize > 0 
+                  ? {
+                      enabled: true,
+                      title: t("gameStep.endTurnButton.excessLootTooltip.title"),
+                      content: t(
+                        "gameStep.endTurnButton.excessLootTooltip.message",
+                        {
+                          value: String(state.me.numberOfCardsOverMaxHandSize),
+                        },
+                      ),
+                      type: "warning",
+                    }
+                  : {
+                      enabled: true,
+                      title: t("gameStep.endTurnButton.label"),
+                    }
                 : {
                     title: t("gameStep.endTurnButton.blockedTooltip.title"),
                     capable: state.me.capabilities.endTurn,
                   }
             }
-            label={t("gameStep.endTurnButton.label")}
           />
           {!state.me.isEngagedInPurchase && (
-            <Button
-              label={t("gameStep.purchase.declarePurchaseButton.label")}
-              className="shadow-lg shadow-taupe-800/70"
+            <ImgButton
+              frontImage="Declare_Purchase_Icon.png"
+              backgroundImage="Button_Small.png"
+              size={64}
               disabled={state.me.capabilities.declarePurchase !== true}
               hotkey="p"
               onClick={() =>
@@ -366,30 +373,46 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
                   declarePurchase,
                 )
               }
-              tooltip={{
-                title: t(
-                  "gameStep.purchase.declarePurchaseButton.blockedTooltip.title",
-                ),
-                capable: state.me.capabilities.declarePurchase,
-              }}
+              tooltip={
+                state.me.capabilities.declarePurchase !== true 
+                ?
+                  {
+                    title: t(
+                      "gameStep.purchase.declarePurchaseButton.blockedTooltip.title",
+                    ),
+                    capable: state.me.capabilities.declarePurchase,
+                  }
+                : {
+                    title: t(
+                      "gameStep.purchase.declarePurchaseButton.label",
+                    ),
+                    enabled: true,
+                  }
+              }
             />
           )}
           {state.me.isEngagedInPurchase && (
-            <Button
-              label={t("gameStep.purchase.abandonPurchaseButton.label")}
-              className="shadow-lg shadow-taupe-800/70"
+            <ImgButton
+              frontImage="Cancel_Purchase_Icon.png"
+              backgroundImage="Button_Small.png"
+              size={64}
+              // label={t("gameStep.purchase.abandonPurchaseButton.label")}
               disabled={state.me.capabilities.buyTreasure === true}
-              tooltip={{
-                title: t(
-                  "gameStep.purchase.abandonPurchaseButton.blockedTooltip.title",
-                ),
-                capable:
-                  state.me.capabilities.buyTreasure === true
-                    ? t(
-                        "gameStep.purchase.abandonPurchaseButton.blockedTooltip.ableToPurchaseMessage",
-                      )
-                    : true,
-              }}
+              tooltip={
+                state.me.capabilities.buyTreasure !== true
+                ? {
+                    title: t("gameStep.purchase.abandonPurchaseButton.label"),
+                    enabled: true
+                  } 
+                : {
+                    title: t(
+                      "gameStep.purchase.abandonPurchaseButton.blockedTooltip.title",
+                    ),
+                    capable: t(
+                      "gameStep.purchase.abandonPurchaseButton.blockedTooltip.ableToPurchaseMessage",
+                    )
+                  } 
+              }
               hotkey="p"
               onClick={() =>
                 block(
@@ -407,9 +430,10 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
             />
           )}
           {!state.me.character.stats.isEngagedInCombat && (
-            <Button
-              label={t("gameStep.declareAttackButton.label")}
-              className="shadow-lg shadow-taupe-800/70"
+            <ImgButton
+              frontImage="Declare_Attack_Icon.png"
+              backgroundImage="Button_Small.png"
+              size={64}
               disabled={state.me.capabilities.declareAttack !== true}
               hotkey="a"
               onClick={() =>
@@ -419,21 +443,30 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
                   declareAttack,
                 )
               }
-              tooltip={{
-                title: t("gameStep.declareAttackButton.blockedTooltip.title"),
-                capable: state.me.capabilities.declareAttack,
-              }}
+              tooltip={state.me.capabilities.declareAttack === true ?
+                {
+                  title: t("gameStep.declareAttackButton.label"),
+                  enabled: true,
+                } : {
+                  title: t("gameStep.declareAttackButton.blockedTooltip.title"),
+                  capable: state.me.capabilities.declareAttack,
+                }}
             />
           )}
           {state.me.character.stats.isEngagedInCombat && (
-            <Button
-              label={t("gameStep.rollDiceButton.label")}
-              className="shadow-lg shadow-taupe-800/70"
+            <ImgButton
+              frontImage="Roll_Icon.png"
+              backgroundImage="Button_Small.png"
+              size={64}
               disabled={state.me.capabilities.rollDice !== true}
-              tooltip={{
-                title: t("gameStep.rollDiceButton.blockedTooltip.title"),
-                capable: state.me.capabilities.rollDice,
-              }}
+              tooltip={state.me.capabilities.rollDice !== true ?
+                {
+                  title: t("gameStep.rollDiceButton.blockedTooltip.title"),
+                  capable: state.me.capabilities.rollDice,
+                } : {
+                  title: t("gameStep.rollDiceButton.label"),
+                  enabled: true,
+                }}
               hotkey="a"
               onClick={() =>
                 block(

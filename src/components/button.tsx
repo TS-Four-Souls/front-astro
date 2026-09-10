@@ -68,3 +68,86 @@ export const Button = ({
     </button>
   );
 };
+
+interface ImgButtonProps {
+  backgroundImage: string;
+  frontImage: string;
+  frontImageAlt?: string;
+  size?: number | string;
+  onClick?: () => void;
+  disabled?: boolean;
+  className?: string;
+  frontImageClassName?: string;
+  hotkey?: string;
+  hotkeyScope?: HotkeyScope[];
+  type?: "button" | "submit" | "reset" | undefined;
+  tooltip?: Tooltip;
+}
+
+export const ImgButton = ({
+  backgroundImage,
+  frontImage,
+  frontImageAlt = "",
+  size,
+  onClick,
+  disabled,
+  className,
+  frontImageClassName,
+  hotkey,
+  hotkeyScope = [HotkeyScope.Main],
+  type = undefined,
+  tooltip,
+}: ImgButtonProps) => {
+  useHotkeys(hotkey ?? "enter", () => onClick?.(), {
+    scopes: hotkeyScope,
+    enabled: onClick !== undefined && hotkey !== undefined,
+    useKey: shouldUseKey(hotkey ?? ""),
+  });
+
+  const { setTooltip, closeTooltip } = useTooltip(tooltip);
+
+  return (
+    <button
+      className={cn(
+        "relative block shrink-0 overflow-hidden border-0 bg-transparent p-0 transition-[filter]",
+        onClick &&
+          (disabled
+            ? "cursor-not-allowed opacity-50 contrast-50"
+            : "cursor-pointer hover:brightness-120 active:brightness-150"),
+        className,
+      )}
+      onClick={(e) => {
+        onClick?.();
+        e.currentTarget.blur();
+      }}
+      type={type}
+      style={size !== undefined ? { width: size, height: size } : undefined}
+      onMouseEnter={setTooltip}
+      onMouseLeave={closeTooltip}>
+      <img
+        src={backgroundImage}
+        alt=""
+        aria-hidden="true"
+        className={cn(
+          "block",
+          size === undefined ? "max-w-full" : "size-full object-fill",
+        )}
+      />
+      <img
+        src={frontImage}
+        alt={frontImageAlt}
+        className={cn(
+          "absolute inset-0 size-full object-contain",
+          frontImageClassName,
+        )}
+      />
+      {/* {hotkey && (
+        <img
+          src={`/input-prompts/keyboard_${hotkey.split(",")[0]}_outline.svg`}
+          className="absolute top-1 left-1 size-4 object-contain"
+          alt=""
+        />
+      )} */}
+    </button>
+  );
+};
