@@ -1,5 +1,12 @@
 import { z } from "zod";
 
+export const extensionsAvailable = {
+  "b2-": "Base Game",
+  "fsp2-": "Four Souls 2+",
+  "r-": "Requiem",
+  "g2-": "Gold Box",
+};
+
 const basicSerializedTranslationSchema = z.object({
   key: z.string(),
 });
@@ -514,6 +521,7 @@ const decksConfigSchema = z.object({
   nbPlayerCardRestriction: booleanGameParameterSchema.optional(),
   useFSP2Cards: booleanGameParameterSchema.optional(),
   useG2Cards: booleanGameParameterSchema.optional(),
+  useB2Cards: booleanGameParameterSchema.optional(),
   useRCards: booleanGameParameterSchema.optional(),
 
   character: characterDeckSchema,
@@ -532,14 +540,15 @@ const decksConfigPatchSchema = z.object({
   nbPlayerCardRestriction: booleanGameParameterSchema.optional(),
   useFSP2Cards: booleanGameParameterSchema.optional(),
   useG2Cards: booleanGameParameterSchema.optional(),
+  useB2Cards: booleanGameParameterSchema.optional(),
   useRCards: booleanGameParameterSchema.optional(),
 
-  monster: deckConfigCardSchema.optional(),
-  character: deckConfigCardSchema.optional(),
-  treasure: deckConfigCardSchema.optional(),
-  loot: deckConfigCardSchema.optional(),
-  bsoul: deckConfigCardSchema.optional(),
-  room: deckConfigCardSchema.optional(),
+  monster: z.array(deckConfigCardSchema).optional(),
+  character: z.array(deckConfigCardSchema).optional(),
+  treasure: z.array(deckConfigCardSchema).optional(),
+  loot: z.array(deckConfigCardSchema).optional(),
+  bsoul: z.array(deckConfigCardSchema).optional(),
+  room: z.array(deckConfigCardSchema).optional(),
 });
 
 export type DeckConfigPatch = z.infer<typeof decksConfigPatchSchema>;

@@ -218,9 +218,9 @@ export const Me = () => {
         <div
           className="grid gap-2"
           style={{
-          gridTemplateColumns: `auto repeat(${Math.min(state.me.inPlay.length + 1, 8)}, minmax(0, 1fr))`,
-        }}>
-        <PlayerStats player={state.me} className="min-w-0" />
+            gridTemplateColumns: `auto repeat(${Math.min(state.me.inPlay.length + 1, 8)}, minmax(0, 1fr))`,
+          }}>
+          <PlayerStats player={state.me} className="min-w-0" />
           {[state.me.character, ...state.me.inPlay].map((card, index) => {
             return (
               <div

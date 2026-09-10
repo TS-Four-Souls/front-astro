@@ -1,4 +1,4 @@
-import type { DeckConfigCard } from "@/shared/api";
+import { extensionsAvailable, type DeckConfigCard } from "@/shared/api";
 import { cn } from "@/utils/cn";
 import { HotkeyScope } from "@/utils/hotkey";
 import { socket } from "@/utils/socket";
@@ -8,6 +8,7 @@ import { useToastContext } from "../board/contexts/toast-context";
 import { Button } from "../button";
 import { Popup } from "../popup";
 import { useLanguageContext } from "../contexts/language-context";
+import { cardJsonContentForAdvancedSearch } from "@/utils/cardsJsonForSearch";
 
 export type DeckTypes =
   | "monster"
@@ -47,23 +48,160 @@ export const DeckConfigPopup = ({
   }, [cards]);
 
   const [search, setSearch] = useState<string>("");
+  const [soulFilter, setSoulFilter] = useState<number | undefined>();
+  const [tagFilter, setTagFilter] = useState<string | undefined>();
+  type ExtensionName = keyof typeof extensionsAvailable;
+  type CustomFilterName = "minimumPlayers: 3";
+  const [extensionFilters, setExtensionFilters] = useState<
+    Record<ExtensionName, boolean>
+  >(
+    () =>
+      Object.fromEntries(
+        Object.keys(extensionsAvailable).map((extension) => [extension, false]),
+      ) as Record<ExtensionName, boolean>,
+  );
+  const [customFilters, setCustomFilters] = useState<
+    Record<CustomFilterName, boolean>
+  >({ "minimumPlayers: 3": false });
+
+  const switchExtensionFilter = (extension: ExtensionName) => {
+    setExtensionFilters((currentFilters) => ({
+      ...currentFilters,
+      [extension]: !currentFilters[extension],
+    }));
+  };
+
+  const switchCustomFilter = (filter: CustomFilterName) => {
+    setCustomFilters((currentFilters) => ({
+      ...currentFilters,
+      [filter]: !currentFilters[filter],
+    }));
+  };
 
   const filteredCards = useMemo(() => {
-    return cards.filter((card) =>
-      ts(card.nameKey).toLowerCase().includes(search.toLowerCase()),
-    );
-  }, [cards, search]);
+    const searchCleaned = search.trim().toLowerCase();
 
+    const selectedExtensions = (
+      Object.keys(extensionsAvailable) as ExtensionName[]
+    ).filter((extension) => extensionFilters[extension]);
+    const selectedCustomFilters = Object.keys(customFilters).filter(
+      (filter) => customFilters[filter as CustomFilterName],
+    );
+
+    return cards.filter((option) => {
+      let payload =
+        option.slug === "random"
+          ? ""
+          : ts(option.nameKey) + cardJsonContentForAdvancedSearch[option.slug];
+      if (
+        "eternal" in option &&
+        typeof option.eternal === "string" &&
+        option.eternal !== "random"
+      ) {
+        payload +=
+          ts({ key: "cardNames." + option.eternal }) +
+          cardJsonContentForAdvancedSearch[option.eternal];
+      }
+
+      const matchesExtension =
+        selectedExtensions.length === 0 ||
+        selectedExtensions.some((extension) =>
+          option.slug.startsWith(extension),
+        );
+      const matchesCustomFilter =
+        selectedCustomFilters.length === 0 ||
+        selectedCustomFilters.every((filter) => payload.includes(filter));
+      const matchesSoulFilter =
+        soulFilter === undefined ||
+        (soulFilter === 0
+          ? !payload.includes("soul:")
+          : new RegExp(`soul: ${soulFilter}`).test(payload));
+      const matchesTagFilter =
+        tagFilter === undefined || payload.includes(`:${tagFilter}`);
+      const matchesOtherFilters =
+        matchesExtension &&
+        matchesCustomFilter &&
+        matchesSoulFilter &&
+        matchesTagFilter;
+
+      if (
+        !matchesOtherFilters ||
+        search.trim().length === 0 ||
+        !searchCleaned
+      ) {
+        return matchesOtherFilters;
+      }
+      return JSON.stringify(payload).toLowerCase().includes(searchCleaned);
+    });
+  }, [
+    cards,
+    customFilters,
+    extensionFilters,
+    search,
+    soulFilter,
+    tagFilter,
+    ts,
+  ]);
+
+  const availableTags = useMemo(() => {
+    const tags = new Set<string>();
+    for (const card of cards) {
+      let payload =
+        card.slug === "random"
+          ? ""
+          : ts(card.nameKey) + cardJsonContentForAdvancedSearch[card.slug];
+      if (
+        "eternal" in card &&
+        typeof card.eternal === "string" &&
+        card.eternal !== "random"
+      ) {
+        payload +=
+          ts({ key: "cardNames." + card.eternal }) +
+          cardJsonContentForAdvancedSearch[card.eternal];
+      }
+      for (const tag of payload.matchAll(/:[a-z][a-z]+\b/g)) {
+        if ("roll".includes(tag[0].slice(1))) continue;
+        tags.add(tag[0].slice(1));
+      }
+    }
+    if (tagFilter !== undefined) tags.add(tagFilter);
+    return [...tags];
+  }, [cards, tagFilter, ts]);
+  function onModifyAll(toAdd: number) {
+    return () => {
+      socket.emit(
+        "setGameParameter",
+        {
+          parameter: "decksConfig",
+          value: {
+            [type]: filteredCards.map((c) => {
+              return { ...c, count: c.count + toAdd };
+            }),
+          },
+        },
+        (response) => {
+          if (response.status === 400)
+            toast(
+              "error",
+              t("startStep.gameParams.inputs.cardCount.errorToast.title"),
+              translateError(response.error),
+            );
+        },
+      );
+    };
+  }
   const onCardCountChange = (card: DeckConfigCard, count: number) => {
     socket.emit(
       "setGameParameter",
       {
         parameter: "decksConfig",
         value: {
-          [type]: {
-            ...card,
-            count,
-          },
+          [type]: [
+            {
+              ...card,
+              count,
+            },
+          ],
         },
       },
       (response) => {
@@ -87,6 +225,66 @@ export const DeckConfigPopup = ({
         </h1>
 
         <div className="flex gap-2">
+          <Button
+            onClick={() => switchCustomFilter("minimumPlayers: 3")}
+            label={"3p+"}
+            active={customFilters["minimumPlayers: 3"]}
+          />
+          <Button
+            onClick={() => switchExtensionFilter("b2-")}
+            label={<img src="/b2.png" width="24"></img>}
+            active={extensionFilters["b2-"]}
+          />
+          <Button
+            onClick={() => switchExtensionFilter("fsp2-")}
+            label={<img src="/fsp2.png" width="24"></img>}
+            active={extensionFilters["fsp2-"]}
+          />
+          <Button
+            onClick={() => switchExtensionFilter("r-")}
+            type="button"
+            label={<img src="/r.png" width="24"></img>}
+            active={extensionFilters["r-"]}
+          />
+          <Button
+            onClick={() => switchExtensionFilter("g2-")}
+            label={<img src="/g2.png" width="24"></img>}
+            active={extensionFilters["g2-"]}
+          />
+          <select
+            aria-label="Soul filter"
+            className="rounded-md border-2 border-taupe-500 bg-taupe-600 px-3 py-2 font-main text-white uppercase"
+            value={soulFilter ?? ""}
+            onChange={(event) =>
+              setSoulFilter(
+                event.target.value === ""
+                  ? undefined
+                  : Number(event.target.value),
+              )
+            }>
+            <option value="" className="font-main">
+              Soul: -
+            </option>
+            <option value="0">Soul: 0</option>
+            <option value="1">Soul: 1</option>
+            <option value="2">Soul: 2</option>
+          </select>
+          <select
+            aria-label="Tag filter"
+            className="max-w-40 rounded-md border-2 border-taupe-500 bg-taupe-600 px-3 py-2 font-main text-white uppercase"
+            value={tagFilter ?? ""}
+            onChange={(event) =>
+              setTagFilter(
+                event.target.value === "" ? undefined : event.target.value,
+              )
+            }>
+            {/* <option value="">Tag: all</option> */}
+            {availableTags.map((tag) => (
+              <option value={tag} key={tag}>
+                {tag}
+              </option>
+            ))}
+          </select>
           {canUseLookup && (
             <input
               className="w-48 rounded-md border-2 border-taupe-500 px-4"
@@ -95,6 +293,19 @@ export const DeckConfigPopup = ({
               onChange={(e) => setSearch(e.target.value)}
             />
           )}
+
+          <Button
+            onClick={onModifyAll(-1)}
+            hotkey="minus"
+            hotkeyScope={[HotkeyScope.Popup]}
+            label=""
+          />
+          <Button
+            onClick={onModifyAll(1)}
+            hotkey="plus"
+            hotkeyScope={[HotkeyScope.Popup]}
+            label=""
+          />
           <Button
             onClick={onClose}
             hotkey="escape"

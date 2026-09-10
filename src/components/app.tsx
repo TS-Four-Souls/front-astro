@@ -21,11 +21,7 @@ export const App = ({ page }: AppProps) => {
             <ToastProvider>
               <ContactProvider>
                 <PromptProvider>
-                  {page === "game" ? (
-                    <GamePage />
-                  ) : (
-                    <AdminPage />
-                  )}
+                  {page === "game" ? <GamePage /> : <AdminPage />}
                 </PromptProvider>
               </ContactProvider>
             </ToastProvider>
