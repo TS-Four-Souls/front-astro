@@ -25,6 +25,7 @@ import { DeckConfigPopup, type DeckTypes } from "./deck-config-popup";
 import { useLanguageContext } from "../contexts/language-context";
 import { Lock } from "@/icons/lock";
 import React from "react";
+import { SetIcon } from "@/icons/set-icon";
 
 interface StartStepProps {
   room: Room;
@@ -607,7 +608,17 @@ export const StartStep = ({ room }: StartStepProps) => {
               <>
                 <BooleanInput
                   value={gameParameters.decksConfig.useB2Cards.value}
-                  label={<img src="/b2.png" width={25}></img>}
+                  label={
+                    <SetIcon
+                      set="b2"
+                      className={cn(
+                        "size-5",
+                        gameParameters.decksConfig.useB2Cards.value
+                          ? "text-taupe-900"
+                          : "text-space/40",
+                      )}
+                    />
+                  }
                   tooltip={{
                     title: ts(
                       gameParameters.decksConfig.useB2Cards.translationKey,
@@ -632,7 +643,7 @@ export const StartStep = ({ room }: StartStepProps) => {
                       },
                     })
                   }
-                  disabled={!isHost || !isSpectator}
+                  disabled={!isHost || isSpectator}
                 />
               </>
             )}
@@ -640,7 +651,17 @@ export const StartStep = ({ room }: StartStepProps) => {
               <>
                 <BooleanInput
                   value={gameParameters.decksConfig.useFSP2Cards.value}
-                  label={<img src="/fsp2.png" width={25}></img>}
+                  label={
+                    <SetIcon
+                      set="fsp2"
+                      className={cn(
+                        "size-5",
+                        gameParameters.decksConfig.useFSP2Cards.value
+                          ? "text-taupe-900"
+                          : "text-space/40",
+                      )}
+                    />
+                  }
                   tooltip={{
                     title: ts(
                       gameParameters.decksConfig.useFSP2Cards.translationKey,
@@ -673,7 +694,17 @@ export const StartStep = ({ room }: StartStepProps) => {
               <>
                 <BooleanInput
                   value={gameParameters.decksConfig.useG2Cards.value}
-                  label={<img src="/g2.png" width={25}></img>}
+                  label={
+                    <SetIcon
+                      set="g2"
+                      className={cn(
+                        "size-5",
+                        gameParameters.decksConfig.useG2Cards.value
+                          ? "text-taupe-900"
+                          : "text-space/40",
+                      )}
+                    />
+                  }
                   onChange={(value) =>
                     onChangeGameParameter({
                       parameter: "decksConfig",
@@ -698,14 +729,24 @@ export const StartStep = ({ room }: StartStepProps) => {
                     ),
                     enabled: true,
                   }}
-                  disabled={!isHost || !isSpectator}
+                  disabled={!isHost || isSpectator}
                 />
               </>
             )}
             {gameParameters.decksConfig.useRCards && (
               <>
                 <BooleanInput
-                  label={<img src="/r.png" width={25}></img>}
+                  label={
+                    <SetIcon
+                      set="r"
+                      className={cn(
+                        "size-5",
+                        gameParameters.decksConfig.useRCards.value
+                          ? "text-taupe-900"
+                          : "text-space/40",
+                      )}
+                    />
+                  }
                   value={gameParameters.decksConfig.useRCards.value}
                   onChange={(value) =>
                     onChangeGameParameter({
@@ -731,7 +772,7 @@ export const StartStep = ({ room }: StartStepProps) => {
                     ),
                     enabled: true,
                   }}
-                  disabled={!isHost || !isSpectator}
+                  disabled={!isHost || isSpectator}
                 />
               </>
             )}
@@ -767,7 +808,7 @@ export const StartStep = ({ room }: StartStepProps) => {
                     ),
                     enabled: true,
                   }}
-                  disabled={!isHost || !isSpectator}
+                  disabled={!isHost || isSpectator}
                 />
               </>
             )}
@@ -789,7 +830,7 @@ export const StartStep = ({ room }: StartStepProps) => {
                   },
                 })
               }
-              disabled={!isHost || !isSpectator}
+              disabled={!isHost || isSpectator}
             />
             {gameParameters.decksConfig.useRooms && (
               <>
@@ -869,6 +910,7 @@ export const StartStep = ({ room }: StartStepProps) => {
           cards={gameParameters.decksConfig[deckPilePopup].cards}
           onClose={() => setDeckPilePopup(null)}
           editable={isHost && !isSpectator}
+          gameParameters={gameParameters}
         />
       )}
     </div>

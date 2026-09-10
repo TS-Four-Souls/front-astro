@@ -9,6 +9,8 @@ import { Button } from "../button";
 import { Popup } from "../popup";
 import { useLanguageContext } from "../contexts/language-context";
 import { cardJsonContentForAdvancedSearch } from "@/utils/cardsJsonForSearch";
+import { SetIcon } from "@/icons/set-icon";
+import { type Room } from "@/shared/api";
 
 export type DeckTypes =
   | "monster"
@@ -23,6 +25,7 @@ interface DeckConfigPopupProps {
   cards: DeckConfigCard[];
   onClose: () => void;
   editable: boolean;
+  gameParameters: Room["gameParameters"];
 }
 
 export const DeckConfigPopup = ({
@@ -30,6 +33,7 @@ export const DeckConfigPopup = ({
   cards,
   onClose,
   editable,
+  gameParameters,
 }: DeckConfigPopupProps) => {
   const { ts, t, translateError } = useLanguageContext();
 
@@ -225,32 +229,41 @@ export const DeckConfigPopup = ({
         </h1>
 
         <div className="flex gap-2">
+          {gameParameters.decksConfig.useB2Cards && (
+            <Button
+              onClick={() => switchExtensionFilter("b2-")}
+              label={<SetIcon set="b2" className="size-5" />}
+              active={extensionFilters["b2-"]}
+            />
+          )}
+          {gameParameters.decksConfig.useFSP2Cards && (
+            <Button
+              onClick={() => switchExtensionFilter("fsp2-")}
+              label={<SetIcon set="fsp2" className="size-5" />}
+              active={extensionFilters["fsp2-"]}
+            />
+          )}
+          {gameParameters.decksConfig.useG2Cards && (
+            <Button
+              onClick={() => switchExtensionFilter("g2-")}
+              label={<SetIcon set="g2" className="size-5" />}
+              active={extensionFilters["g2-"]}
+            />
+          )}
+          {gameParameters.decksConfig.useRCards && (
+            <Button
+              onClick={() => switchExtensionFilter("r-")}
+              label={<SetIcon set="r" className="size-5" />}
+              active={extensionFilters["r-"]}
+            />
+          )}
+          <div className="mx-1" />
           <Button
             onClick={() => switchCustomFilter("minimumPlayers: 3")}
             label={"3p+"}
             active={customFilters["minimumPlayers: 3"]}
           />
-          <Button
-            onClick={() => switchExtensionFilter("b2-")}
-            label={<img src="/b2.png" width="24"></img>}
-            active={extensionFilters["b2-"]}
-          />
-          <Button
-            onClick={() => switchExtensionFilter("fsp2-")}
-            label={<img src="/fsp2.png" width="24"></img>}
-            active={extensionFilters["fsp2-"]}
-          />
-          <Button
-            onClick={() => switchExtensionFilter("r-")}
-            type="button"
-            label={<img src="/r.png" width="24"></img>}
-            active={extensionFilters["r-"]}
-          />
-          <Button
-            onClick={() => switchExtensionFilter("g2-")}
-            label={<img src="/g2.png" width="24"></img>}
-            active={extensionFilters["g2-"]}
-          />
+          <div className="mx-1" />
           <select
             aria-label="Soul filter"
             className="rounded-md border-2 border-taupe-500 bg-taupe-600 px-3 py-2 font-main text-white uppercase"
@@ -285,6 +298,7 @@ export const DeckConfigPopup = ({
               </option>
             ))}
           </select>
+          <div className="mx-1" />
           {canUseLookup && (
             <input
               className="w-48 rounded-md border-2 border-taupe-500 px-4"
@@ -293,19 +307,10 @@ export const DeckConfigPopup = ({
               onChange={(e) => setSearch(e.target.value)}
             />
           )}
-
-          <Button
-            onClick={onModifyAll(-1)}
-            hotkey="minus"
-            hotkeyScope={[HotkeyScope.Popup]}
-            label=""
-          />
-          <Button
-            onClick={onModifyAll(1)}
-            hotkey="plus"
-            hotkeyScope={[HotkeyScope.Popup]}
-            label=""
-          />
+          <div className="mx-1" />
+          <Button onClick={onModifyAll(-1)} label="−" className="font-sans" />
+          <Button onClick={onModifyAll(1)} label="+" className="font-sans" />
+          <div className="mx-1" />
           <Button
             onClick={onClose}
             hotkey="escape"
