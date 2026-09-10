@@ -105,7 +105,12 @@ export const PendingSelectionIcon = (props: Props) => {
           <CardImage
             sizes="2.5em"
             card={reason.card}
-            className="translate-y-[5%] scale-155"
+            orientation={reason.card.orientation}
+            className={
+              reason.card.orientation === "portrait"
+                ? "translate-y-[5%] scale-155"
+                : "translate-y-[43%] scale-300"
+            }
           />
         </div>
       );
@@ -152,7 +157,14 @@ const PopoverContent = ({ pendingSelection }: Props) => {
       );
     default: {
       const { card, visualEffectBox } = pendingSelection.reason;
-      return <Card card={card} visualEffectBox={visualEffectBox} size={22} />;
+      return (
+        <Card
+          card={card}
+          visualEffectBox={visualEffectBox}
+          orientation={card.orientation}
+          size={22}
+        />
+      );
     }
   }
 };

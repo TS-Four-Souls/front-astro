@@ -4,7 +4,7 @@ import type { SelectionItem } from "@/shared/api";
 import { cn } from "@/utils/cn";
 import { HotkeyScope } from "@/utils/hotkey";
 import { useHotkeys } from "react-hotkeys-hook";
-import { Card, CardImage, CardType, VisualEffectBoxComponent } from "../card";
+import { Card, CardType, VisualEffectBoxComponent } from "../card";
 import { Person } from "@/icons/person";
 import { Sword } from "@/icons/sword";
 import { StackElement } from "../stack";
@@ -375,6 +375,7 @@ export const CardEffectOption = ({
       onClick={onPress}>
       <Card
         card={option.payload.card}
+        orientation={option.payload.card.orientation}
         className={cn("shadow-lg/30", selected && "outline-6 outline-blue-400")}
         size={22}
         visualEffectBox={option.payload.visualEffectBox}
@@ -399,6 +400,7 @@ export const ChooseOneOption = ({
       onClick={onPress}>
       <Card
         card={option.payload.card}
+        orientation={option.payload.card.orientation}
         className={cn("shadow-lg/30", selected && "outline-6 outline-blue-400")}
         size={22}
         visualEffectBox={option.payload.visualEffectBox}
@@ -428,14 +430,15 @@ export const PlayerOption = ({
           {ts(option.payload.nameKey)}
         </p>
       </div>
-      <div className="relative">
-        <CardImage
+      <div className="relative p-2">
+        <Card
           card={option.payload}
-          sizes="16em"
+          orientation={option.payload.orientation}
           className={cn(
-            "m-2 w-64 shadow-lg/30",
+            "shadow-lg/30",
             selected && "outline-6 outline-blue-400",
           )}
+          size={22}
         />
         <div className="absolute inset-4">{children}</div>
       </div>
@@ -464,14 +467,15 @@ export const MonsterOption = ({
           {ts(option.payload.nameKey)}
         </p>
       </div>
-      <div className="relative">
-        <CardImage
+      <div className="relative p-2">
+        <Card
           card={option.payload}
-          sizes="16em"
+          orientation={option.payload.orientation}
           className={cn(
-            "m-2 w-64 shadow-lg/30",
+            "shadow-lg/30",
             selected && "outline-6 outline-blue-400",
           )}
+          size={22}
         />
         <div className="absolute inset-4">{children}</div>
       </div>
@@ -497,14 +501,15 @@ export const DeckOption = ({
           {option.payload}
         </p>
       </div>
-      <div className="relative">
-        <CardImage
+      <div className="relative p-2">
+        <Card
           card={option.payload as CardType}
-          sizes="16em"
+          orientation={option.payload === "room" ? "landscape" : "portrait"}
           className={cn(
-            "m-2 w-64 shadow-lg/30",
+            "shadow-lg/30",
             selected && "outline-6 outline-blue-400",
           )}
+          size={22}
         />
         <div className="absolute inset-4">{children}</div>
       </div>
@@ -614,17 +619,15 @@ export const CardOption = ({
   return (
     <div
       className={cn(
-        "relative flex flex-col items-center gap-2",
+        "relative flex flex-col items-center gap-2 p-2",
         onPress && "cursor-pointer",
       )}
       onClick={onPress}>
-      <CardImage
+      <Card
         card={option.payload}
-        sizes="16em"
-        className={cn(
-          "m-2 w-64 shadow-lg/30",
-          selected && "outline-6 outline-blue-400",
-        )}
+        orientation={option.payload.orientation}
+        className={cn("shadow-lg/30", selected && "outline-6 outline-blue-400")}
+        size={22}
       />
       <div className="absolute inset-4">{children}</div>
     </div>
@@ -647,38 +650,40 @@ export const CharacterOption = ({
       onClick={onPress}>
       {option.payload.character === "random" ? (
         <div className="grid items-center gap-2">
-          <CardImage
+          <Card
             card={CardType.CharacterCard}
-            sizes="12em"
-            className={cn("col-start-1 row-start-1 w-48 shadow-lg/30")}
+            size={16}
+            containerClassName="col-start-1 row-start-1"
+            className="shadow-lg/30"
           />
-          <p className="col-start-1 row-start-1 text-center font-main text-[800%] font-bold text-black uppercase text-shadow-amber-50 text-shadow-lg">
+          <p className="relative col-start-1 row-start-1 text-center font-main text-[800%] font-bold text-black uppercase text-shadow-amber-50 text-shadow-lg">
             ?
           </p>
         </div>
       ) : (
-        <CardImage
+        <Card
           card={{ slug: option.payload.character }}
-          sizes="12em"
-          className={"w-48 shadow-lg/30"}
+          size={16}
+          className={"shadow-lg/30"}
         />
       )}
       {option.payload.eternal === "random" ? (
         <div className="grid items-center gap-2">
-          <CardImage
+          <Card
             card={CardType.TreasureCard}
-            sizes="12em"
-            className={cn("col-start-1 row-start-1 w-48 shadow-lg/30")}
+            size={16}
+            containerClassName="col-start-1 row-start-1"
+            className="shadow-lg/30"
           />
-          <p className="col-start-1 row-start-1 text-center font-main text-[800%] font-bold text-black uppercase text-shadow-amber-50 text-shadow-lg">
+          <p className="relative col-start-1 row-start-1 text-center font-main text-[800%] font-bold text-black uppercase text-shadow-amber-50 text-shadow-lg">
             ?
           </p>
         </div>
       ) : (
-        <CardImage
+        <Card
           card={{ slug: option.payload.eternal }}
-          sizes="12em"
-          className={"w-48 shadow-lg/30"}
+          size={16}
+          className={"shadow-lg/30"}
         />
       )}
       <div className="absolute inset-4">{children}</div>
@@ -706,19 +711,21 @@ export const CouplePlayerHandOption = ({
             {ts(option.payload.player.nameKey)}
           </p>
         </div>
-        <CardImage
+        <Card
           card={option.payload.player}
-          sizes="12em"
-          className="w-48 shadow-lg/30"
+          orientation={option.payload.player.orientation}
+          size={16}
+          className="shadow-lg/30"
         />
       </div>
-      <div className="mx-2 w-48" />
+      <div className="w-12" />
       {option.payload.hand.map((card) => (
-        <CardImage
+        <Card
           key={card.slug}
+          orientation={card.orientation}
           card={card}
-          sizes="12em"
-          className="w-48 shadow-lg/30"
+          size={16}
+          className="shadow-lg/30"
         />
       ))}
       <div className="absolute inset-1">{children}</div>
@@ -796,7 +803,12 @@ const OnCardSelector = ({
   const card = options[0].payload.card;
   return (
     <div className="relative">
-      <Card card={card} className="shadow-lg/30" size={42} />
+      <Card
+        card={card}
+        className="shadow-lg/30"
+        size={42}
+        orientation={card.orientation}
+      />
       {options.map((option, index) => (
         <OnCardSelectorOption
           key={index}

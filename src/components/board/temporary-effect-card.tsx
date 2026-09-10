@@ -28,6 +28,7 @@ export const TemporaryEffectCard = ({
         <div className="flex flex-col place-items-center gap-2">
           <Card
             card={effect.card}
+            orientation={effect.card.orientation}
             visualEffectBox={effect.visualEffectBox}
             size={22}
           />
@@ -54,7 +55,12 @@ export const TemporaryEffectCard = ({
       <CardImage
         sizes={cardSize + "em"}
         card={effect.card}
-        className="translate-y-[5%] scale-155"
+        orientation={effect.card.orientation}
+        className={
+          effect.card.orientation === "portrait"
+            ? "translate-y-[5%] scale-155"
+            : "translate-y-[43%] scale-300"
+        }
       />
     </div>
   );

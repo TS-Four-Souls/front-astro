@@ -1,5 +1,12 @@
 import type { SelectionItem } from "@/shared/api";
-import { createContext, useContext, useRef, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 export interface Prompt<T extends SelectionItem = SelectionItem> {
   promptId: string;
@@ -59,52 +66,61 @@ export const PromptProvider = ({ children }: { children: React.ReactNode }) => {
   const [prompts, setPrompts] = useState<Map<string, Prompt<any>>>(new Map());
   const blockedPrompts = useRef<Set<string>>(new Set());
 
-  const addPrompt = <T extends SelectionItem = SelectionItem>(
-    prompt: Prompt<T>,
-  ): void => {
-    // Check if a prompt with the same ID already exists
-    if (prompts.has(prompt.promptId)) {
-      console.warn(`Prompt with ID ${prompt.promptId} already exists`);
-      return;
-    }
-    // If the prompt is unique, block future prompts with the same ID
-    if (prompt.isUnique) {
-      blockedPrompts.current.add(prompt.promptId);
-    }
-    setPrompts((current) => {
-      const newMap = new Map(current);
-      newMap.set(prompt.promptId, prompt);
-      return newMap;
-    });
-  };
+  const addPrompt = useCallback(
+    <T extends SelectionItem = SelectionItem>(prompt: Prompt<T>): void => {
+      setPrompts((current) => {
+        if (current.has(prompt.promptId)) {
+          console.warn(`Prompt with ID ${prompt.promptId} already exists`);
+          return current;
+        }
 
-  const removePrompt = (promptId: string) => {
+        if (prompt.isUnique) {
+          blockedPrompts.current.add(prompt.promptId);
+        }
+
+        const newMap = new Map(current);
+        newMap.set(prompt.promptId, prompt);
+        return newMap;
+      });
+    },
+    [],
+  );
+
+  const removePrompt = useCallback((promptId: string) => {
     setPrompts((current) => {
       const prompt = current.get(promptId);
-      if (prompt?.isUnique) {
+      if (!prompt) {
+        return current;
+      }
+
+      if (prompt.isUnique) {
         blockedPrompts.current.delete(prompt.promptId);
       }
       const newMap = new Map(current);
       newMap.delete(promptId);
       return newMap;
     });
-  };
+  }, []);
 
-  const clearPrompts = () => {
+  const clearPrompts = useCallback(() => {
     setPrompts(new Map());
-  };
+  }, []);
 
   const nextPrompt = prompts.values().next().value;
 
+  const contextValue = useMemo(
+    () => ({
+      prompt: nextPrompt,
+      prompts,
+      addPrompt,
+      removePrompt,
+      clearPrompts,
+    }),
+    [nextPrompt, prompts, addPrompt, removePrompt, clearPrompts],
+  );
+
   return (
-    <PromptContext.Provider
-      value={{
-        prompt: nextPrompt,
-        prompts,
-        addPrompt,
-        removePrompt,
-        clearPrompts,
-      }}>
+    <PromptContext.Provider value={contextValue}>
       {children}
     </PromptContext.Provider>
   );

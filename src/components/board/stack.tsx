@@ -13,7 +13,7 @@ import type {
 import { cn } from "@/utils/cn";
 import { HotkeyScope, shouldUseKey } from "@/utils/hotkey";
 import { socket } from "@/utils/socket";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { Button } from "../button";
 import {
@@ -22,16 +22,19 @@ import {
 } from "./contexts/board-selection-context";
 import { useGameAnimation } from "./contexts/game-animation";
 import { useGameContext } from "./contexts/game-context";
+import { usePromptContext } from "./contexts/prompt-context";
 import { useToastContext } from "./contexts/toast-context";
 import { StackElementIcon } from "./stack-element-icon";
 import { replaceTokens } from "@/utils/replaceToken";
 import { useLanguageContext } from "../contexts/language-context";
 import { PendingSelectionIcon } from "./pending-selection-icon";
+import { changeDiceValue } from "./cheats";
 
 export const Stack = () => {
   const { ts, t, translateError } = useLanguageContext();
-  const { state, parameters } = useGameContext();
+  const { state, parameters, isCheatViewOpen } = useGameContext();
   const { toast, block } = useToastContext();
+  const { addPrompt, removePrompt, prompt } = usePromptContext();
   const { setStackEl } = useGameAnimation();
 
   const stackContainerRef = useRef<HTMLDivElement>(null);
@@ -252,6 +255,21 @@ export const Stack = () => {
                     ? `${entityBoardSelectionState.optionIndex + 1}`
                     : undefined
                 }
+                onDiceCheat={
+                  parameters.allowCheatOptions.value &&
+                  isCheatViewOpen &&
+                  element.type === "diceRoll" &&
+                  !prompt
+                    ? () =>
+                        changeDiceValue(element, {
+                          addPrompt,
+                          removePrompt,
+                          toast,
+                          t,
+                          translateError,
+                        })
+                    : undefined
+                }
               />
               {selectedStackElementId !== null &&
                 isElementInSameGroup &&
@@ -314,12 +332,14 @@ export const StackElement = ({
   isSelected = false,
   className,
   hotkey,
+  onDiceCheat,
 }: {
   element: StackElementType;
   onClick?: () => void;
   isSelected?: boolean;
   hotkey?: string;
   className?: string;
+  onDiceCheat?: () => void;
 }) => {
   useHotkeys(hotkey ?? "", () => onClick?.(), {
     enabled: hotkey !== undefined && onClick !== undefined,
@@ -345,6 +365,19 @@ export const StackElement = ({
             className="scale-150"
           />
         </div>
+      )}
+
+      {onDiceCheat && (
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onDiceCheat();
+          }}
+          className="cheat-button absolute top-4 left-1 z-10 flex h-5 w-5 items-center justify-center rounded-full text-[12px] leading-none font-bold text-white shadow-md shadow-taupe-950/50 hover:brightness-110"
+          aria-label="Change dice value">
+          +
+        </button>
       )}
     </div>
   );

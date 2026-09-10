@@ -220,7 +220,7 @@ export const StartStep = ({ room }: StartStepProps) => {
   };
 
   const onAddCopyPress = () => {
-    const promptId = "add-copy";
+    const promptId = `add-copy-${Date.now()}`;
     const options: Extract<SelectionItem, { type: "string" }>[] =
       room.players.flatMap((player) => {
         if (player.isCopy) return [];
