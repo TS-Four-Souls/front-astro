@@ -62,9 +62,9 @@ export const OnboardingLayout = ({
         ) : (
           children
         )}
-      <ReportBugButton />
-      <DiscordButton />
-      <LanguageSelection />
+        <ReportBugButton />
+        <DiscordButton />
+        <LanguageSelection />
       </div>
     </div>
   );

@@ -331,7 +331,13 @@ export const AdminHourlyStatistics = ({ data }: { data: AdminResponse }) => {
 
   return (
     <div className="flex flex-col gap-4">
-      <h3 className="text-lg font-bold">Games during last 24 hours (total:{(data.stats.hourly.map(s => s.gameCount)).reduce((partialSum, a) => partialSum + a, 0)}) </h3>
+      <h3 className="text-lg font-bold">
+        Games during last 24 hours (total:
+        {data.stats.hourly
+          .map((s) => s.gameCount)
+          .reduce((partialSum, a) => partialSum + a, 0)}
+        ){" "}
+      </h3>
       <div className="flex gap-1">
         {data.stats.hourly.map((stat) => {
           const heightPercent = (stat.gameCount / maxGameCount) * 100;
