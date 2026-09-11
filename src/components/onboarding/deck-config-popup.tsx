@@ -11,6 +11,7 @@ import { useLanguageContext } from "../contexts/language-context";
 import { cardJsonContentForAdvancedSearch } from "@/utils/cardsJsonForSearch";
 import { SetIcon } from "@/icons/set-icon";
 import { type Room } from "@/shared/api";
+import type { TranslationKeys } from "translations";
 
 export type DeckTypes =
   | "monster"
@@ -20,6 +21,32 @@ export type DeckTypes =
   | "room"
   | "character";
 
+
+const tagDict: Record<string, TranslationKeys>= {
+  "treasure":	"startStep.gameParams.decks.treasure",
+  "ptreasure":	"tags.passive",
+  "atreasure":	"tags.active",
+  "paidtreasure":	"tags.paid",
+  "otreasure":	"tags.destroy",
+  "streasure":	"tags.soul",
+  "guppy":	"tags.guppy",
+  "eternal":	"common.eternal",
+  "trinket":	"tags.trinket",
+  "bsoul":	"startStep.gameParams.decks.bsoul",
+  "bevent":	"tags.badevent",
+  "gevent":	"tags.goodevent",
+  "boss":	"tags.boss",
+  "epic":	"tags.epicboss",
+  "curse":	"tags.curse",
+  "indomitable":	"tags.indomitable",
+  "hmonster":	"tags.goodmonster",
+  "cmonster":	"tags.cursedmonster",
+  "bmonster":	"tags.basicmonster",
+  "loot":	"startStep.gameParams.decks.loot",
+  "character":	"startStep.gameParams.decks.character",
+  "monster":	"startStep.gameParams.decks.monster",
+  "room":	"startStep.gameParams.decks.room"
+}
 interface DeckConfigPopupProps {
   type: DeckTypes;
   cards: DeckConfigCard[];
@@ -165,6 +192,7 @@ export const DeckConfigPopup = ({
       }
       for (const tag of payload.matchAll(/:[a-z][a-z]+\b/g)) {
         if ("roll".includes(tag[0].slice(1))) continue;
+        if ("all".includes(tag[0].slice(1))) continue;
         tags.add(tag[0].slice(1));
       }
     }
@@ -294,7 +322,7 @@ export const DeckConfigPopup = ({
             {/* <option value="">Tag: all</option> */}
             {availableTags.map((tag) => (
               <option value={tag} key={tag}>
-                {tag}
+                {tagDict[tag] === undefined ? tag : ts({key: tagDict[tag]})}
               </option>
             ))}
           </select>
