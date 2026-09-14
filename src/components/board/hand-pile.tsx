@@ -15,7 +15,7 @@ export const HandPile = ({ player }: HandPileProps) => {
   const { displayPileDetails } = usePileDetails();
   const { t } = useLanguageContext();
   const { registerOpponentHandPile } = useGameAnimation();
-  const isSpectator = useGameContext();
+  const { isSpectator } = useGameContext();
   return (
     <div ref={(el) => registerOpponentHandPile(player.name, el)}>
       <Pile
