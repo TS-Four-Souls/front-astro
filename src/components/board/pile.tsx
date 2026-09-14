@@ -64,6 +64,7 @@ interface PileProps {
 }
 
 const BRIGHTNESS_MIN = 0.4;
+const TRANSFORM_MAX_CARDS = 150;
 
 export const Pile = ({
   cards,
@@ -180,11 +181,21 @@ export const Pile = ({
 
           const cardsIndex = (index / array.length) * cards.length;
 
+          const translateY =
+            (TRANSFORM_MAX_CARDS /
+              Math.max(cards.length, TRANSFORM_MAX_CARDS)) *
+            0.02;
+
+          const scale =
+            (TRANSFORM_MAX_CARDS /
+              Math.max(cards.length, TRANSFORM_MAX_CARDS)) *
+            0.0003;
+
           const transformStyle = {
             transform: `
                 ${enableRandomRotation ? `rotate(${(rng() - 0.5) * 5}deg)` : ""}
-                translateY(-${cardsIndex * 0.02}em)
-                scale(${1 + cardsIndex * 0.0002})
+                translateY(-${cardsIndex * translateY}em)
+                scale(${1 + cardsIndex * scale})
               `,
           };
 
