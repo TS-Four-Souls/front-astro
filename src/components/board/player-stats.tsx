@@ -1,4 +1,3 @@
-import { Gear } from "@/icons/gear";
 import { TeamIcon } from "@/icons/team-icon";
 import type { Player, PlayerMe } from "@/shared/api";
 import { cn } from "@/utils/cn";
@@ -10,7 +9,6 @@ import { ImgButton } from "../button";
 import { Card } from "./card";
 import { useGameAnimation } from "./contexts/game-animation";
 import { useGameContext } from "./contexts/game-context";
-import { useMainMenuContext } from "./contexts/main-menu-context";
 import { usePopoverContext } from "./contexts/popover-context";
 import { usePromptContext } from "./contexts/prompt-context";
 import { useToastContext } from "./contexts/toast-context";
@@ -25,17 +23,15 @@ interface PlayerStatsProps {
 
 export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
   const { translateError, t } = useLanguageContext();
-  const { state, isSpectator, isCheatViewOpen } = useGameContext();
+  const { state, isCheatViewOpen } = useGameContext();
   const { toast, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
   const { setPopover, closePopover } = usePopoverContext();
-  const { openMenu } = useMainMenuContext();
   const { registerPlayerAnchor } = useGameAnimation();
   const soulAnchorRef = useRef<HTMLDivElement | null>(null);
 
   const { name, color, coins, souls, soulCards } = player;
 
-  const isCurrentTurn = state.turn === name;
   const isMe = state.me.name === name;
 
   const declareAttack = () => {
@@ -194,17 +190,12 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
   return (
     <div
       className={cn(
-        "grid-cols-4 place-items-center gap-16 rounded-xl border-[0.2em] border-taupe-900/50 bg-board/90 p-3 pr-4 pl-6 text-white outline-[0.2em] outline-transparent transition-shadow duration-500",
+        "flex place-items-center gap-16 rounded-xl text-white outline-[0.2em] outline-transparent duration-500",
         className,
-      )}
-      style={{
-        background: isCurrentTurn
-          ? `radial-gradient(circle at center, var(--color-board) 0%, ${color} 500%)`
-          : undefined,
-      }}>
+      )}>
       <p
         className={cn(
-          "inline-flex place-items-center gap-1 text-center font-alt-stats font-bold uppercase text-shadow-lg text-shadow-taupe-950/20",
+          "text-stroke inline-flex place-items-center gap-1 text-center font-alt-stats font-bold uppercase",
           player.capabilities.canSwitchTo === true
             ? "cursor-pointer transition-transform duration-100 hover:scale-108"
             : "cursor-not-allowed",
@@ -216,10 +207,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
         {isNextInstance && (
           <img src="/input-prompts/keyboard_s_outline.svg" className="size-6" />
         )}
-        <TeamIcon
-          team={player.team}
-          className="size-5 shrink-0 drop-shadow-sm drop-shadow-taupe-800"
-        />
+        <TeamIcon team={player.team} className="icon-shadow size-5 shrink-0" />
         {name}
       </p>
       <div
@@ -251,7 +239,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
                 translateError,
               });
             }}
-            className="cheat-button absolute -top-2 -left-2 z-10 flex h-5 w-5 cursor-pointer items-center justify-center rounded-full text-[12px] leading-none font-bold text-white shadow-md shadow-taupe-950/50 hover:brightness-110"
+            className="cheat-button absolute -top-2 -left-2 z-10 flex h-5 w-5 cursor-pointer items-center justify-center rounded-full text-[12px] leading-none font-bold text-white hover:brightness-110"
             aria-label="Add coins cheat">
             +
           </button>
@@ -259,13 +247,11 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
         <img
           ref={(el) => registerPlayerAnchor(name, "coins", el)}
           src="/coin.png"
-          className="size-6 rounded-full drop-shadow-md drop-shadow-taupe-800/60"
+          className="size-6 rounded-full"
           draggable={false}
         />
-        <span className="text-shadow-lg text-shadow-taupe-800/70">:</span>{" "}
-        <span className="font-statblock text-4xl text-shadow-lg text-shadow-taupe-800/70">
-          {coins}
-        </span>
+        <span className="text-stroke">:</span>{" "}
+        <span className="text-stroke font-statblock text-4xl">{coins}</span>
       </div>
 
       <div
@@ -274,7 +260,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
           registerPlayerAnchor(name, "souls", el);
         }}
         className={cn(
-          "flex min-h-8 min-w-6 flex-row-reverse items-center",
+          "icon-shadow flex flex-row-reverse items-center",
           souls > 0 && "cursor-pointer",
         )}
         onMouseEnter={() => {
@@ -306,11 +292,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
             return (
               <img
                 src={`/${type === 1 ? "soul-1" : "soul-2"}.png`}
-                className={cn(
-                  type === 1 ? "h-6" : "h-8",
-                  souls > 2 && "-ml-3",
-                  "drop-shadow-lg drop-shadow-taupe-800/70",
-                )}
+                className={cn(type === 1 ? "h-6" : "h-8", souls > 2 && "-ml-3")}
                 draggable={false}
                 key={index}
               />
@@ -319,7 +301,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
       </div>
 
       {isMe && (
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
           <ImgButton
             frontImage="End_turn_Icon.png"
             backgroundImage="Button_Small.png"
@@ -482,12 +464,6 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
                   rollDice,
                 )
               }
-            />
-          )}
-          {!isSpectator && (
-            <Gear
-              className="size-5 cursor-pointer drop-shadow-lg drop-shadow-taupe-800"
-              onClick={() => openMenu()}
             />
           )}
         </div>

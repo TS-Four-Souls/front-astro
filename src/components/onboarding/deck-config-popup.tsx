@@ -12,6 +12,8 @@ import { cardJsonContentForAdvancedSearch } from "@/utils/cardsJsonForSearch";
 import { SetIcon } from "@/icons/set-icon";
 import { type Room } from "@/shared/api";
 import type { TranslationKeys } from "translations";
+import { Selector } from "../selector";
+import { PlayerRestriction } from "@/icons/player-restriction";
 
 export type DeckTypes =
   | "monster"
@@ -21,32 +23,31 @@ export type DeckTypes =
   | "room"
   | "character";
 
-
-const tagDict: Record<string, TranslationKeys>= {
-  "treasure":	"startStep.gameParams.decks.treasure",
-  "ptreasure":	"tags.passive",
-  "atreasure":	"tags.active",
-  "paidtreasure":	"tags.paid",
-  "otreasure":	"tags.destroy",
-  "streasure":	"tags.soul",
-  "guppy":	"tags.guppy",
-  "eternal":	"common.eternal",
-  "trinket":	"tags.trinket",
-  "bsoul":	"startStep.gameParams.decks.bsoul",
-  "bevent":	"tags.badevent",
-  "gevent":	"tags.goodevent",
-  "boss":	"tags.boss",
-  "epic":	"tags.epicboss",
-  "curse":	"tags.curse",
-  "indomitable":	"tags.indomitable",
-  "hmonster":	"tags.goodmonster",
-  "cmonster":	"tags.cursedmonster",
-  "bmonster":	"tags.basicmonster",
-  "loot":	"startStep.gameParams.decks.loot",
-  "character":	"startStep.gameParams.decks.character",
-  "monster":	"startStep.gameParams.decks.monster",
-  "room":	"startStep.gameParams.decks.room"
-}
+const tagDict: Record<string, TranslationKeys> = {
+  treasure: "startStep.gameParams.decks.treasure",
+  ptreasure: "tags.passive",
+  atreasure: "tags.active",
+  paidtreasure: "tags.paid",
+  otreasure: "tags.destroy",
+  streasure: "tags.soul",
+  guppy: "tags.guppy",
+  eternal: "common.eternal",
+  trinket: "tags.trinket",
+  bsoul: "startStep.gameParams.decks.bsoul",
+  bevent: "tags.badevent",
+  gevent: "tags.goodevent",
+  boss: "tags.boss",
+  epic: "tags.epicboss",
+  curse: "tags.curse",
+  indomitable: "tags.indomitable",
+  hmonster: "tags.goodmonster",
+  cmonster: "tags.cursedmonster",
+  bmonster: "tags.basicmonster",
+  loot: "startStep.gameParams.decks.loot",
+  character: "startStep.gameParams.decks.character",
+  monster: "startStep.gameParams.decks.monster",
+  room: "startStep.gameParams.decks.room",
+};
 interface DeckConfigPopupProps {
   type: DeckTypes;
   cards: DeckConfigCard[];
@@ -251,94 +252,110 @@ export const DeckConfigPopup = ({
     <Popup
       onPressBackdrop={onClose}
       className={cn(canUseLookup && "h-full w-full")}>
-      <div className="flex flex-row justify-between gap-8">
-        <h1 className="font-main text-2xl leading-tight font-bold uppercase">
-          {deckTypeLabels[type]}
-        </h1>
-
-        <div className="flex gap-2">
-          {gameParameters.decksConfig.useB2Cards && (
+      <div className="flex flex-row items-start justify-between gap-8">
+        <div className="flex items-center gap-6">
+          <h1 className="font-main text-2xl leading-tight font-bold uppercase">
+            {deckTypeLabels[type]}
+          </h1>
+          <div className="flex h-full items-center">
             <Button
-              onClick={() => switchExtensionFilter("b2-")}
-              label={<SetIcon set="b2" className="size-5" />}
-              active={extensionFilters["b2-"]}
+              onClick={onModifyAll(-1)}
+              label="−"
+              className="rounded-r-none font-sans"
             />
-          )}
-          {gameParameters.decksConfig.useFSP2Cards && (
+            <div className="flex h-10 items-center border-y-2 border-taupe-600 px-4 text-center font-sans font-bold">
+              All
+            </div>
             <Button
-              onClick={() => switchExtensionFilter("fsp2-")}
-              label={<SetIcon set="fsp2" className="size-5" />}
-              active={extensionFilters["fsp2-"]}
+              onClick={onModifyAll(1)}
+              label="+"
+              className="rounded-l-none font-sans"
             />
-          )}
-          {gameParameters.decksConfig.useG2Cards && (
+          </div>
+        </div>
+        <div className="flex items-start gap-2">
+          <div className="flex flex-wrap gap-2">
+            {gameParameters.decksConfig.useB2Cards && (
+              <Button
+                onClick={() => switchExtensionFilter("b2-")}
+                label={<SetIcon set="b2" className="size-5" />}
+                active={extensionFilters["b2-"]}
+              />
+            )}
+            {gameParameters.decksConfig.useFSP2Cards && (
+              <Button
+                onClick={() => switchExtensionFilter("fsp2-")}
+                label={<SetIcon set="fsp2" className="size-5" />}
+                active={extensionFilters["fsp2-"]}
+              />
+            )}
+            {gameParameters.decksConfig.useG2Cards && (
+              <Button
+                onClick={() => switchExtensionFilter("g2-")}
+                label={<SetIcon set="g2" className="size-5" />}
+                active={extensionFilters["g2-"]}
+              />
+            )}
+            {gameParameters.decksConfig.useRCards && (
+              <Button
+                onClick={() => switchExtensionFilter("r-")}
+                label={<SetIcon set="r" className="size-5" />}
+                active={extensionFilters["r-"]}
+              />
+            )}
+            <div className="mx-1" />
             <Button
-              onClick={() => switchExtensionFilter("g2-")}
-              label={<SetIcon set="g2" className="size-5" />}
-              active={extensionFilters["g2-"]}
+              onClick={() => switchCustomFilter("minimumPlayers: 3")}
+              label={<PlayerRestriction className="size-5" />}
+              active={customFilters["minimumPlayers: 3"]}
             />
-          )}
-          {gameParameters.decksConfig.useRCards && (
-            <Button
-              onClick={() => switchExtensionFilter("r-")}
-              label={<SetIcon set="r" className="size-5" />}
-              active={extensionFilters["r-"]}
+            <div className="mx-1" />
+            <Selector
+              options={[0, 1, 2]}
+              ItemComponent={({ option, active }) =>
+                option === 0 ? (
+                  0
+                ) : (
+                  <img
+                    src={`/soul-${option}.png`}
+                    className={cn(
+                      "size-6",
+                      active && "drop-shadow-sm drop-shadow-taupe-950",
+                    )}
+                  />
+                )
+              }
+              value={soulFilter}
+              onChange={(value) => setSoulFilter(value)}
+              onRemove={() => setSoulFilter(undefined)}
             />
-          )}
-          <div className="mx-1" />
-          <Button
-            onClick={() => switchCustomFilter("minimumPlayers: 3")}
-            label={"3p+"}
-            active={customFilters["minimumPlayers: 3"]}
-          />
-          <div className="mx-1" />
-          <select
-            aria-label="Soul filter"
-            className="rounded-md border-2 border-taupe-500 bg-taupe-600 px-3 py-2 font-main text-white uppercase"
-            value={soulFilter ?? ""}
-            onChange={(event) =>
-              setSoulFilter(
-                event.target.value === ""
-                  ? undefined
-                  : Number(event.target.value),
-              )
-            }>
-            <option value="" className="font-main">
-              Soul: -
-            </option>
-            <option value="0">Soul: 0</option>
-            <option value="1">Soul: 1</option>
-            <option value="2">Soul: 2</option>
-          </select>
-          <select
-            aria-label="Tag filter"
-            className="max-w-40 rounded-md border-2 border-taupe-500 bg-taupe-600 px-3 py-2 font-main text-white uppercase"
-            value={tagFilter ?? ""}
-            onChange={(event) =>
-              setTagFilter(
-                event.target.value === "" ? undefined : event.target.value,
-              )
-            }>
-            {/* <option value="">Tag: all</option> */}
-            {availableTags.map((tag) => (
-              <option value={tag} key={tag}>
-                {tagDict[tag] === undefined ? tag : ts({key: tagDict[tag]})}
-              </option>
-            ))}
-          </select>
-          <div className="mx-1" />
-          {canUseLookup && (
-            <input
-              className="w-48 rounded-md border-2 border-taupe-500 px-4"
-              placeholder={t("common.popup.search.placeholder")}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          )}
-          <div className="mx-1" />
-          <Button onClick={onModifyAll(-1)} label="−" className="font-sans" />
-          <Button onClick={onModifyAll(1)} label="+" className="font-sans" />
-          <div className="mx-1" />
+            <div className="mx-1" />
+            <select
+              aria-label="Tag filter"
+              className="max-w-40 rounded-md border-2 border-taupe-500 bg-taupe-600 px-3 py-2 font-main text-white uppercase"
+              value={tagFilter ?? ""}
+              onChange={(event) =>
+                setTagFilter(
+                  event.target.value === "" ? undefined : event.target.value,
+                )
+              }>
+              {/* <option value="">Tag: all</option> */}
+              {availableTags.map((tag) => (
+                <option value={tag} key={tag}>
+                  {tagDict[tag] === undefined ? tag : ts({ key: tagDict[tag] })}
+                </option>
+              ))}
+            </select>
+            <div className="mx-1" />
+            {canUseLookup && (
+              <input
+                className="w-48 rounded-md border-2 border-taupe-500 px-4"
+                placeholder={t("common.popup.search.placeholder")}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            )}
+          </div>
           <Button
             onClick={onClose}
             hotkey="escape"

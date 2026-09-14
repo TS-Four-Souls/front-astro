@@ -208,19 +208,19 @@ export const Me = () => {
     .slice(0, 9);
 
   return (
-    <div className="col-start-2 row-start-3 flex flex-col place-content-center place-items-center gap-6">
+    <div className="col-start-2 row-start-3 flex flex-col place-content-center place-items-center gap-2">
+      <PlayerStats player={state.me} className="min-w-0" />
       <div
         className={cn(
           "flex place-content-center place-items-center gap-8",
-          !isSpectator && "flex-col gap-6",
+          !isSpectator && "flex-col gap-2",
         )}>
         {isSpectator && state.me.handSize > 0 && <HandPile player={state.me} />}
         <div
           className="grid gap-2"
           style={{
-            gridTemplateColumns: `auto repeat(${Math.min(state.me.inPlay.length + 1, 8)}, minmax(0, 1fr))`,
+            gridTemplateColumns: `repeat(${Math.min(state.me.inPlay.length + 1, 8)}, minmax(0, 1fr))`,
           }}>
-          <PlayerStats player={state.me} className="min-w-0" />
           {[state.me.character, ...state.me.inPlay].map((card, index) => {
             return (
               <div

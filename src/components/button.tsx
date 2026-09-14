@@ -2,6 +2,7 @@ import { cn } from "@/utils/cn";
 import { HotkeyScope, shouldUseKey } from "@/utils/hotkey";
 import { useHotkeys } from "react-hotkeys-hook";
 import { type Tooltip, useTooltip } from "./board/use-tooltip";
+import { useMemo } from "react";
 
 interface ButtonProps {
   onClick?: () => void;
@@ -96,13 +97,19 @@ export const ImgButton = ({
   hotkey,
   hotkeyScope = [HotkeyScope.Main],
   type = undefined,
-  tooltip,
+  tooltip: tooltipProps,
 }: ImgButtonProps) => {
   useHotkeys(hotkey ?? "enter", () => onClick?.(), {
     scopes: hotkeyScope,
     enabled: onClick !== undefined && hotkey !== undefined,
     useKey: shouldUseKey(hotkey ?? ""),
   });
+
+  const tooltip = useMemo<Tooltip | undefined>(() => {
+    if (!tooltipProps) return undefined;
+    if (onClick === undefined || hotkey === undefined) return tooltipProps;
+    return { ...tooltipProps, hotkey };
+  }, [tooltipProps, onClick, hotkey]);
 
   const { setTooltip, closeTooltip } = useTooltip(tooltip);
 
@@ -141,13 +148,6 @@ export const ImgButton = ({
           frontImageClassName,
         )}
       />
-      {/* {hotkey && (
-        <img
-          src={`/input-prompts/keyboard_${hotkey.split(",")[0]}_outline.svg`}
-          className="absolute top-1 left-1 size-4 object-contain"
-          alt=""
-        />
-      )} */}
     </button>
   );
 };

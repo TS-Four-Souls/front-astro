@@ -26,6 +26,7 @@ import { useLanguageContext } from "../contexts/language-context";
 import { Lock } from "@/icons/lock";
 import React from "react";
 import { SetIcon } from "@/icons/set-icon";
+import { PlayerRestriction } from "@/icons/player-restriction";
 
 interface StartStepProps {
   room: Room;
@@ -612,7 +613,7 @@ export const StartStep = ({ room }: StartStepProps) => {
                     <SetIcon
                       set="b2"
                       className={cn(
-                        "size-5",
+                        "size-7",
                         gameParameters.decksConfig.useB2Cards.value
                           ? "text-taupe-900"
                           : "text-space/40",
@@ -655,7 +656,7 @@ export const StartStep = ({ room }: StartStepProps) => {
                     <SetIcon
                       set="fsp2"
                       className={cn(
-                        "size-5",
+                        "size-7",
                         gameParameters.decksConfig.useFSP2Cards.value
                           ? "text-taupe-900"
                           : "text-space/40",
@@ -698,7 +699,7 @@ export const StartStep = ({ room }: StartStepProps) => {
                     <SetIcon
                       set="g2"
                       className={cn(
-                        "size-5",
+                        "size-7",
                         gameParameters.decksConfig.useG2Cards.value
                           ? "text-taupe-900"
                           : "text-space/40",
@@ -740,7 +741,7 @@ export const StartStep = ({ room }: StartStepProps) => {
                     <SetIcon
                       set="r"
                       className={cn(
-                        "size-5",
+                        "size-6",
                         gameParameters.decksConfig.useRCards.value
                           ? "text-taupe-900"
                           : "text-space/40",
@@ -779,7 +780,16 @@ export const StartStep = ({ room }: StartStepProps) => {
             {gameParameters.decksConfig.nbPlayerCardRestriction && (
               <>
                 <BooleanInput
-                  label="3p+"
+                  label={
+                    <PlayerRestriction
+                      className={cn(
+                        "size-7",
+                        gameParameters.decksConfig.nbPlayerCardRestriction.value
+                          ? "text-taupe-900"
+                          : "text-space/40",
+                      )}
+                    />
+                  }
                   value={
                     gameParameters.decksConfig.nbPlayerCardRestriction.value
                   }

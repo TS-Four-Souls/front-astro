@@ -68,6 +68,31 @@
     var(--pile-2xl-shadow), var(--pile-3xl-shadow);
 }
 
+.icon-shadow {
+  --width: 1px;
+  --color: rgb(0 0 0);
+  filter: drop-shadow(var(--width) 0 var(--color))
+    drop-shadow(calc(-1 * var(--width)) 0 var(--color))
+    drop-shadow(0 var(--width) var(--color))
+    drop-shadow(0 calc(-1 * var(--width)) var(--color));
+}
+
+.text-stroke {
+  --w: 2px;
+  --we: 1.414px;
+  --text-stroke-color: rgb(0 0 0 / 0.5);
+
+  text-shadow:
+    var(--w) 0 var(--text-stroke-color),
+    calc(-1 * var(--w)) 0 var(--text-stroke-color),
+    0 var(--w) var(--text-stroke-color),
+    0 calc(-1 * var(--w)) var(--text-stroke-color),
+    var(--we) var(--we) var(--text-stroke-color),
+    calc(-1 * var(--we)) var(--we) var(--text-stroke-color),
+    var(--we) calc(-1 * var(--we)) var(--text-stroke-color),
+    calc(-1 * var(--we)) calc(-1 * var(--we)) var(--text-stroke-color);
+}
+
 @keyframes craftmine {
   from {
     scale: 1;
@@ -102,7 +127,6 @@
     rgb(255 255 255 / 0.08) 75%,
     transparent
   );
-  filter: blur(0.04em);
   animation: resolveButtonMetallic 6s ease-in-out infinite;
 }
 
