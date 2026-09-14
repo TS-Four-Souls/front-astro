@@ -2,7 +2,7 @@ import { cn } from "@/utils/cn";
 import { usePopoverContext } from "./contexts/popover-context";
 import type { SerializedTranslation } from "@/shared/api";
 import { useLanguageContext } from "../contexts/language-context";
-import { useEffect, useState } from "react";
+import { useCallback, useLayoutEffect, useState } from "react";
 
 type TooltipType = "denied" | "warning" | "gold";
 
@@ -76,7 +76,7 @@ export const useTooltip = (tooltip: Tooltip | Tooltip[] | undefined) => {
     height: number;
   }>();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (anchor === undefined) return;
 
     const hasTooltips =
@@ -101,14 +101,18 @@ export const useTooltip = (tooltip: Tooltip | Tooltip[] | undefined) => {
     });
   }, [tooltipKey, anchor]);
 
-  const setTooltip = (e: React.MouseEvent) => {
-    setAnchor(e.currentTarget.getBoundingClientRect());
-  };
+  const setTooltip = useCallback((target: Element | React.MouseEvent<Element>) => {
+    const el = target instanceof Element ? target : target.currentTarget;
+    setAnchor(el.getBoundingClientRect());
+  }, []);
 
-  const closeTooltip = () => {
+  const closeTooltip = useCallback(() => {
     setAnchor(undefined);
     closePopover();
-  };
+  }, [closePopover]);
+
+  // Close on unmount (layout so a remounted sibling can reopen before paint).
+  useLayoutEffect(() => () => closePopover(), [closePopover]);
 
   return { setTooltip, closeTooltip };
 };

@@ -304,7 +304,9 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
         <div className="flex items-center gap-2">
           <ImgButton
             frontImage="End_turn_Icon.png"
+            frontHoverImage="End_turn_Icon_hover.png"
             backgroundImage="Button_Small.png"
+            className="rotate-5 hover:rotate-10"
             size={64}
             disabled={state.me.capabilities.endTurn !== true}
             hotkey="e"
@@ -341,46 +343,50 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
                   }
             }
           />
-          {!state.me.isEngagedInPurchase && (
-            <ImgButton
-              frontImage="Declare_Purchase_Icon.png"
-              backgroundImage="Button_Small.png"
-              size={64}
-              disabled={state.me.capabilities.declarePurchase !== true}
-              hotkey="p"
-              onClick={() =>
-                block(
-                  t(
-                    "gameStep.purchase.declarePurchaseButton.blockedTooltip.title",
-                  ),
-                  state.me.capabilities.declarePurchase,
-                  declarePurchase,
-                )
-              }
-              tooltip={
-                state.me.capabilities.declarePurchase !== true
-                  ? {
-                      title: t(
-                        "gameStep.purchase.declarePurchaseButton.blockedTooltip.title",
-                      ),
-                      capable: state.me.capabilities.declarePurchase,
-                    }
-                  : {
-                      title: t("gameStep.purchase.declarePurchaseButton.label"),
-                      enabled: true,
-                    }
-              }
-            />
-          )}
-          {state.me.isEngagedInPurchase && (
-            <ImgButton
-              frontImage="Cancel_Purchase_Icon.png"
-              backgroundImage="Button_Small.png"
-              size={64}
-              // label={t("gameStep.purchase.abandonPurchaseButton.label")}
-              disabled={state.me.capabilities.buyTreasure === true}
-              tooltip={
-                state.me.capabilities.buyTreasure !== true
+          <ImgButton
+            frontImage={
+              state.me.isEngagedInPurchase
+                ? "Cancel_Purchase_Icon.png"
+                : "Declare_Purchase_Icon.png"
+            }
+            frontHoverImage={
+              state.me.isEngagedInPurchase
+                ? "Cancel_Purchase_Icon_hover.png"
+                : "Declare_Purchase_Icon_hover.png"
+            }
+            className="-rotate-5 hover:rotate-0"
+            backgroundImage="Button_Small.png"
+            size={64}
+            disabled={
+              state.me.isEngagedInPurchase
+                ? state.me.capabilities.buyTreasure === true
+                : state.me.capabilities.declarePurchase !== true
+            }
+            hotkey="p"
+            onClick={() =>
+              state.me.isEngagedInPurchase
+                ? block(
+                    t(
+                      "gameStep.purchase.abandonPurchaseButton.blockedTooltip.title",
+                    ),
+                    state.me.capabilities.buyTreasure === true
+                      ? t(
+                          "gameStep.purchase.abandonPurchaseButton.blockedTooltip.ableToPurchaseMessage",
+                        )
+                      : true,
+                    cancelPurchase,
+                  )
+                : block(
+                    t(
+                      "gameStep.purchase.declarePurchaseButton.blockedTooltip.title",
+                    ),
+                    state.me.capabilities.declarePurchase,
+                    declarePurchase,
+                  )
+            }
+            tooltip={
+              state.me.isEngagedInPurchase
+                ? state.me.capabilities.buyTreasure !== true
                   ? {
                       title: t("gameStep.purchase.abandonPurchaseButton.label"),
                       enabled: true,
@@ -393,39 +399,63 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
                         "gameStep.purchase.abandonPurchaseButton.blockedTooltip.ableToPurchaseMessage",
                       ),
                     }
-              }
-              hotkey="p"
-              onClick={() =>
-                block(
-                  t(
-                    "gameStep.purchase.abandonPurchaseButton.blockedTooltip.title",
-                  ),
-                  state.me.capabilities.buyTreasure === true
-                    ? t(
-                        "gameStep.purchase.abandonPurchaseButton.blockedTooltip.ableToPurchaseMessage",
-                      )
-                    : true,
-                  cancelPurchase,
-                )
-              }
-            />
-          )}
-          {!state.me.character.stats.isEngagedInCombat && (
-            <ImgButton
-              frontImage="Declare_Attack_Icon.png"
-              backgroundImage="Button_Small.png"
-              size={64}
-              disabled={state.me.capabilities.declareAttack !== true}
-              hotkey="a"
-              onClick={() =>
-                block(
-                  t("gameStep.declareAttackButton.blockedTooltip.title"),
-                  state.me.capabilities.declareAttack,
-                  declareAttack,
-                )
-              }
-              tooltip={
-                state.me.capabilities.declareAttack === true
+                : state.me.capabilities.declarePurchase !== true
+                  ? {
+                      title: t(
+                        "gameStep.purchase.declarePurchaseButton.blockedTooltip.title",
+                      ),
+                      capable: state.me.capabilities.declarePurchase,
+                    }
+                  : {
+                      title: t("gameStep.purchase.declarePurchaseButton.label"),
+                      enabled: true,
+                    }
+            }
+          />
+          <ImgButton
+            frontImage={
+              state.me.character.stats.isEngagedInCombat
+                ? "Roll_Icon.png"
+                : "Declare_Attack_Icon.png"
+            }
+            frontHoverImage={
+              state.me.character.stats.isEngagedInCombat
+                ? "Roll_Icon_hover.png"
+                : "Declare_Attack_Icon_hover.png"
+            }
+            backgroundImage="Button_Small.png"
+            size={64}
+            disabled={
+              state.me.character.stats.isEngagedInCombat
+                ? state.me.capabilities.rollDice !== true
+                : state.me.capabilities.declareAttack !== true
+            }
+            hotkey="a"
+            onClick={() =>
+              state.me.character.stats.isEngagedInCombat
+                ? block(
+                    t("gameStep.rollDiceButton.blockedTooltip.title"),
+                    state.me.capabilities.rollDice,
+                    rollDice,
+                  )
+                : block(
+                    t("gameStep.declareAttackButton.blockedTooltip.title"),
+                    state.me.capabilities.declareAttack,
+                    declareAttack,
+                  )
+            }
+            tooltip={
+              state.me.character.stats.isEngagedInCombat
+                ? state.me.capabilities.rollDice !== true
+                  ? {
+                      title: t("gameStep.rollDiceButton.blockedTooltip.title"),
+                      capable: state.me.capabilities.rollDice,
+                    }
+                  : {
+                      title: t("gameStep.rollDiceButton.label"),
+                      enabled: true,
+                    }
+                : state.me.capabilities.declareAttack === true
                   ? {
                       title: t("gameStep.declareAttackButton.label"),
                       enabled: true,
@@ -436,36 +466,8 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
                       ),
                       capable: state.me.capabilities.declareAttack,
                     }
-              }
-            />
-          )}
-          {state.me.character.stats.isEngagedInCombat && (
-            <ImgButton
-              frontImage="Roll_Icon.png"
-              backgroundImage="Button_Small.png"
-              size={64}
-              disabled={state.me.capabilities.rollDice !== true}
-              tooltip={
-                state.me.capabilities.rollDice !== true
-                  ? {
-                      title: t("gameStep.rollDiceButton.blockedTooltip.title"),
-                      capable: state.me.capabilities.rollDice,
-                    }
-                  : {
-                      title: t("gameStep.rollDiceButton.label"),
-                      enabled: true,
-                    }
-              }
-              hotkey="a"
-              onClick={() =>
-                block(
-                  t("gameStep.rollDiceButton.blockedTooltip.title"),
-                  state.me.capabilities.rollDice,
-                  rollDice,
-                )
-              }
-            />
-          )}
+            }
+          />
         </div>
       )}
     </div>

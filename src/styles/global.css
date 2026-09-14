@@ -353,6 +353,8 @@
 
   --breakpoint-xs: 30rem;
 
+  --ease-out-back: cubic-bezier(0.00, 1.45, 0.10, 1.49);
+
   --inset-shadow-2xs: inset 0 0.05em rgb(0 0 0 / 0.05);
   --inset-shadow-xs: inset 0 0.05em 0.05em rgb(0 0 0 / 0.05);
   --inset-shadow-sm: inset 0 0.12em 0.24em rgb(0 0 0 / 0.05);
