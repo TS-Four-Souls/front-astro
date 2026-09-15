@@ -320,6 +320,9 @@ export const Stack = () => {
             )}
           </>
         }
+        className={cn(
+          state.me.capabilities.resolve === true && "resolve-button-ready",
+        )}
         theme="onDark"
       />
     </div>

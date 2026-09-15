@@ -36,7 +36,7 @@ export const LeftPlayer = ({ player }: LeftPlayerProps) => {
           "flex flex-col place-content-center place-items-center gap-8",
           player.inPlay.length + 1 > MAX_ROWS && "flex-row-reverse",
         )}>
-        <PlayerStats player={player} className={"flex-col gap-4 px-6 py-4"} />
+        <PlayerStats player={player} className="flex-col gap-4 pr-4" />
         {player.handSize > 0 && <HandPile player={player} />}
       </div>
       <div

@@ -19,11 +19,14 @@ import { CardImage, CardType } from "../board/card";
 import { usePromptContext } from "../board/contexts/prompt-context";
 import { useToastContext } from "../board/contexts/toast-context";
 import { Pile } from "../board/pile";
-import { useTooltip } from "../board/use-tooltip";
+import { useTooltip, type Tooltip } from "../board/use-tooltip";
 import { Button } from "../button";
 import { DeckConfigPopup, type DeckTypes } from "./deck-config-popup";
 import { useLanguageContext } from "../contexts/language-context";
 import { Lock } from "@/icons/lock";
+import React from "react";
+import { SetIcon } from "@/icons/set-icon";
+import { PlayerRestriction } from "@/icons/player-restriction";
 
 interface StartStepProps {
   room: Room;
@@ -601,85 +604,40 @@ export const StartStep = ({ room }: StartStepProps) => {
         </div>
 
         <div className="flex h-full w-full flex-col place-content-center-safe place-items-center gap-24 overflow-auto max-lg:pt-4">
-          <div className="grid grid-cols-[auto_auto] items-center gap-x-12 gap-y-6">
-            <p>{ts(gameParameters.decksConfig.useBonusSouls.translationKey)}</p>
-            <BooleanInput
-              value={gameParameters.decksConfig.useBonusSouls.value}
-              onChange={(value) =>
-                onChangeGameParameter({
-                  parameter: "decksConfig",
-                  value: {
-                    useBonusSouls: {
-                      text: gameParameters.decksConfig.useBonusSouls.text,
-                      translationKey:
-                        gameParameters.decksConfig.useBonusSouls.translationKey,
-                      value,
-                    },
-                  },
-                })
-              }
-              disabled={!isHost || isSpectator}
-            />
-            {gameParameters.decksConfig.useRooms && (
+          <div className="flex grid-cols-12 flex-wrap justify-center gap-x-12 gap-y-6 max-xl:gap-x-16">
+            {gameParameters.decksConfig.useB2Cards && (
               <>
-                <p>{ts(gameParameters.decksConfig.useRooms.translationKey)}</p>
                 <BooleanInput
-                  value={gameParameters.decksConfig.useRooms.value}
+                  value={gameParameters.decksConfig.useB2Cards.value}
+                  label={
+                    <SetIcon
+                      set="b2"
+                      className={cn(
+                        "size-7",
+                        gameParameters.decksConfig.useB2Cards.value
+                          ? "text-taupe-900"
+                          : "text-space/40",
+                      )}
+                    />
+                  }
+                  tooltip={{
+                    title: ts(
+                      gameParameters.decksConfig.useB2Cards.translationKey,
+                    ),
+                    content: t(
+                      "startStep.gameParams.helpButton.useExpansionCards",
+                      { expansionName: "Four Souls+" },
+                    ),
+                    enabled: true,
+                  }}
                   onChange={(value) =>
                     onChangeGameParameter({
                       parameter: "decksConfig",
                       value: {
-                        useRooms: {
-                          text: gameParameters.decksConfig.useRooms!.text,
+                        useB2Cards: {
+                          text: gameParameters.decksConfig.useB2Cards!.text,
                           translationKey:
-                            gameParameters.decksConfig.useRooms!.translationKey,
-                          value,
-                        },
-                      },
-                    })
-                  }
-                  disabled={!isHost || isSpectator}
-                />
-              </>
-            )}
-            {gameParameters.decksConfig.nbPlayerCardRestriction && (
-              <>
-                <div className="flex items-center gap-2">
-                  <p>
-                    {ts(
-                      gameParameters.decksConfig.nbPlayerCardRestriction
-                        .translationKey,
-                    )}
-                  </p>
-                  <Button
-                    label={t("startStep.gameParams.helpButton.label")}
-                    tooltip={{
-                      title: ts(
-                        gameParameters.decksConfig.nbPlayerCardRestriction
-                          .translationKey,
-                      ),
-                      content: t(
-                        "startStep.gameParams.helpButton.nbPlayerCardRestriction",
-                      ),
-                      enabled: true,
-                    }}
-                    className="size-8 cursor-help rounded-full text-sm shadow-sm"
-                    theme="onSpace"
-                  />
-                </div>
-                <BooleanInput
-                  value={
-                    gameParameters.decksConfig.nbPlayerCardRestriction.value
-                  }
-                  onChange={(value) =>
-                    onChangeGameParameter({
-                      parameter: "decksConfig",
-                      value: {
-                        nbPlayerCardRestriction: {
-                          text: gameParameters.decksConfig
-                            .nbPlayerCardRestriction!.text,
-                          translationKey:
-                            gameParameters.decksConfig.nbPlayerCardRestriction!
+                            gameParameters.decksConfig.useB2Cards!
                               .translationKey,
                           value,
                         },
@@ -692,28 +650,29 @@ export const StartStep = ({ room }: StartStepProps) => {
             )}
             {gameParameters.decksConfig.useFSP2Cards && (
               <>
-                <div className="flex items-center gap-2">
-                  <p>
-                    {ts(gameParameters.decksConfig.useFSP2Cards.translationKey)}
-                  </p>
-                  <Button
-                    label={t("startStep.gameParams.helpButton.label")}
-                    tooltip={{
-                      title: ts(
-                        gameParameters.decksConfig.useFSP2Cards.translationKey,
-                      ),
-                      content: t(
-                        "startStep.gameParams.helpButton.useExpansionCards",
-                        { expansionName: "Four Souls+" },
-                      ),
-                      enabled: true,
-                    }}
-                    className="size-8 cursor-help rounded-full text-sm shadow-sm"
-                    theme="onSpace"
-                  />
-                </div>
                 <BooleanInput
                   value={gameParameters.decksConfig.useFSP2Cards.value}
+                  label={
+                    <SetIcon
+                      set="fsp2"
+                      className={cn(
+                        "size-7",
+                        gameParameters.decksConfig.useFSP2Cards.value
+                          ? "text-taupe-900"
+                          : "text-space/40",
+                      )}
+                    />
+                  }
+                  tooltip={{
+                    title: ts(
+                      gameParameters.decksConfig.useFSP2Cards.translationKey,
+                    ),
+                    content: t(
+                      "startStep.gameParams.helpButton.useExpansionCards",
+                      { expansionName: "Four Souls+" },
+                    ),
+                    enabled: true,
+                  }}
                   onChange={(value) =>
                     onChangeGameParameter({
                       parameter: "decksConfig",
@@ -734,28 +693,19 @@ export const StartStep = ({ room }: StartStepProps) => {
             )}
             {gameParameters.decksConfig.useG2Cards && (
               <>
-                <div className="flex items-center gap-2">
-                  <p>
-                    {ts(gameParameters.decksConfig.useG2Cards.translationKey)}
-                  </p>
-                  <Button
-                    label={t("startStep.gameParams.helpButton.label")}
-                    tooltip={{
-                      title: ts(
-                        gameParameters.decksConfig.useG2Cards.translationKey,
-                      ),
-                      content: t(
-                        "startStep.gameParams.helpButton.useExpansionCards",
-                        { expansionName: "Gold Box V2" },
-                      ),
-                      enabled: true,
-                    }}
-                    className="size-8 cursor-help rounded-full text-sm shadow-sm"
-                    theme="onSpace"
-                  />
-                </div>
                 <BooleanInput
                   value={gameParameters.decksConfig.useG2Cards.value}
+                  label={
+                    <SetIcon
+                      set="g2"
+                      className={cn(
+                        "size-7",
+                        gameParameters.decksConfig.useG2Cards.value
+                          ? "text-taupe-900"
+                          : "text-space/40",
+                      )}
+                    />
+                  }
                   onChange={(value) =>
                     onChangeGameParameter({
                       parameter: "decksConfig",
@@ -770,33 +720,34 @@ export const StartStep = ({ room }: StartStepProps) => {
                       },
                     })
                   }
+                  tooltip={{
+                    title: ts(
+                      gameParameters.decksConfig.useG2Cards.translationKey,
+                    ),
+                    content: t(
+                      "startStep.gameParams.helpButton.useExpansionCards",
+                      { expansionName: "Gold Box V2" },
+                    ),
+                    enabled: true,
+                  }}
                   disabled={!isHost || isSpectator}
                 />
               </>
             )}
             {gameParameters.decksConfig.useRCards && (
               <>
-                <div className="flex items-center gap-2">
-                  <p>
-                    {ts(gameParameters.decksConfig.useRCards.translationKey)}
-                  </p>
-                  <Button
-                    label={t("startStep.gameParams.helpButton.label")}
-                    tooltip={{
-                      title: ts(
-                        gameParameters.decksConfig.useRCards.translationKey,
-                      ),
-                      content: t(
-                        "startStep.gameParams.helpButton.useExpansionCards",
-                        { expansionName: "Requiem" },
-                      ),
-                      enabled: true,
-                    }}
-                    className="size-8 cursor-help rounded-full text-sm shadow-sm"
-                    theme="onSpace"
-                  />
-                </div>
                 <BooleanInput
+                  label={
+                    <SetIcon
+                      set="r"
+                      className={cn(
+                        "size-6",
+                        gameParameters.decksConfig.useRCards.value
+                          ? "text-taupe-900"
+                          : "text-space/40",
+                      )}
+                    />
+                  }
                   value={gameParameters.decksConfig.useRCards.value}
                   onChange={(value) =>
                     onChangeGameParameter({
@@ -807,6 +758,108 @@ export const StartStep = ({ room }: StartStepProps) => {
                           translationKey:
                             gameParameters.decksConfig.useRCards!
                               .translationKey,
+                          value,
+                        },
+                      },
+                    })
+                  }
+                  tooltip={{
+                    title: ts(
+                      gameParameters.decksConfig.useRCards.translationKey,
+                    ),
+                    content: t(
+                      "startStep.gameParams.helpButton.useExpansionCards",
+                      { expansionName: "Requiem" },
+                    ),
+                    enabled: true,
+                  }}
+                  disabled={!isHost || isSpectator}
+                />
+              </>
+            )}
+            {gameParameters.decksConfig.nbPlayerCardRestriction && (
+              <>
+                <BooleanInput
+                  label={
+                    <PlayerRestriction
+                      className={cn(
+                        "size-7",
+                        gameParameters.decksConfig.nbPlayerCardRestriction.value
+                          ? "text-taupe-900"
+                          : "text-space/40",
+                      )}
+                    />
+                  }
+                  value={
+                    gameParameters.decksConfig.nbPlayerCardRestriction.value
+                  }
+                  onChange={(value) =>
+                    onChangeGameParameter({
+                      parameter: "decksConfig",
+                      value: {
+                        nbPlayerCardRestriction: {
+                          text: gameParameters.decksConfig
+                            .nbPlayerCardRestriction!.text,
+                          translationKey:
+                            gameParameters.decksConfig.nbPlayerCardRestriction!
+                              .translationKey,
+                          value,
+                        },
+                      },
+                    })
+                  }
+                  tooltip={{
+                    title: ts(
+                      gameParameters.decksConfig.nbPlayerCardRestriction
+                        .translationKey,
+                    ),
+                    content: t(
+                      "startStep.gameParams.helpButton.nbPlayerCardRestriction",
+                    ),
+                    enabled: true,
+                  }}
+                  disabled={!isHost || isSpectator}
+                />
+              </>
+            )}
+            <BooleanInput
+              label={
+                <CardImage card={CardType.BonusSoul} sizes="2em"></CardImage>
+              }
+              value={gameParameters.decksConfig.useBonusSouls.value}
+              onChange={(value) =>
+                onChangeGameParameter({
+                  parameter: "decksConfig",
+                  value: {
+                    useBonusSouls: {
+                      text: gameParameters.decksConfig.useBonusSouls.text,
+                      translationKey:
+                        gameParameters.decksConfig.useBonusSouls.translationKey,
+                      value,
+                    },
+                  },
+                })
+              }
+              disabled={!isHost || isSpectator}
+            />
+            {gameParameters.decksConfig.useRooms && (
+              <>
+                <BooleanInput
+                  label={
+                    <CardImage
+                      card={CardType.RoomCard}
+                      sizes="4em"
+                      orientation="landscape"></CardImage>
+                  }
+                  value={gameParameters.decksConfig.useRooms.value}
+                  onChange={(value) =>
+                    onChangeGameParameter({
+                      parameter: "decksConfig",
+                      value: {
+                        useRooms: {
+                          text: gameParameters.decksConfig.useRooms!.text,
+                          translationKey:
+                            gameParameters.decksConfig.useRooms!.translationKey,
                           value,
                         },
                       },
@@ -867,6 +920,7 @@ export const StartStep = ({ room }: StartStepProps) => {
           cards={gameParameters.decksConfig[deckPilePopup].cards}
           onClose={() => setDeckPilePopup(null)}
           editable={isHost && !isSpectator}
+          gameParameters={gameParameters}
         />
       )}
     </div>
@@ -1125,38 +1179,50 @@ const NumericInput = ({
   );
 };
 
-const BooleanInput = ({
+export const BooleanInput = ({
   value,
   onChange,
   disabled,
+  label,
+  tooltip,
 }: {
   value: boolean;
   onChange: (value: boolean) => void;
   disabled: boolean;
+  label?: React.ReactNode;
+  tooltip?: Tooltip;
 }) => {
   const { t } = useLanguageContext();
   return (
     <Button
       onClick={() => onChange(!value)}
       label={
-        value
-          ? t("startStep.gameParams.inputs.boolean.enableButton")
-          : t("startStep.gameParams.inputs.boolean.disableButton")
+        label === undefined
+          ? value
+            ? t("startStep.gameParams.inputs.boolean.enableButton")
+            : t("startStep.gameParams.inputs.boolean.disableButton")
+          : label
       }
       active={value}
       className={cn(
-        "font-sans font-bold",
+        "font-main font-bold",
         !value && !disabled && "text-space/40",
       )}
       theme="onSpace"
       disabled={disabled}
-      tooltip={{
-        title: t("startStep.gameParams.inputs.boolean.nonHostTooltip.title"),
-        content: t(
-          "startStep.gameParams.inputs.boolean.nonHostTooltip.message",
-        ),
-        enabled: disabled,
-      }}
+      tooltip={
+        tooltip === undefined
+          ? {
+              title: t(
+                "startStep.gameParams.inputs.boolean.nonHostTooltip.title",
+              ),
+              content: t(
+                "startStep.gameParams.inputs.boolean.nonHostTooltip.message",
+              ),
+              enabled: disabled,
+            }
+          : tooltip
+      }
     />
   );
 };

@@ -2,7 +2,7 @@ import { cn } from "@/utils/cn";
 import { usePopoverContext } from "./contexts/popover-context";
 import type { SerializedTranslation } from "@/shared/api";
 import { useLanguageContext } from "../contexts/language-context";
-import { useEffect, useState } from "react";
+import { useCallback, useLayoutEffect, useState } from "react";
 
 type TooltipType = "denied" | "warning" | "gold";
 
@@ -11,11 +11,13 @@ export type Tooltip =
       enabled: boolean;
       title?: string;
       content?: string;
+      hotkey?: string;
       type?: TooltipType;
     }
   | {
       capable: SerializedTranslation | string | true;
       title?: string;
+      hotkey?: string;
       type?: TooltipType;
     };
 
@@ -26,10 +28,46 @@ export const normalizeTooltips = (
   return Array.isArray(tooltip) ? tooltip : [tooltip];
 };
 
+const serializeCapable = (
+  capable: SerializedTranslation | string | true,
+): string => {
+  if (capable === true) return "true";
+  if (typeof capable === "string") return capable;
+  try {
+    return `${capable.key}:${JSON.stringify(capable.interpolates ?? null)}`;
+  } catch {
+    return capable.key;
+  }
+};
+
+/** Serializable identity for effect deps — never stringifies ReactNode fields. */
+const getTooltipKey = (tooltip: Tooltip | Tooltip[] | undefined): string =>
+  normalizeTooltips(tooltip)
+    .map((t) => {
+      if ("enabled" in t) {
+        return [
+          "e",
+          t.enabled,
+          t.title ?? "",
+          t.content ?? "",
+          t.type ?? "",
+          t.hotkey ?? "",
+        ].join("\0");
+      }
+      return [
+        "c",
+        serializeCapable(t.capable),
+        t.title ?? "",
+        t.type ?? "",
+        t.hotkey ?? "",
+      ].join("\0");
+    })
+    .join("\n");
+
 export const useTooltip = (tooltip: Tooltip | Tooltip[] | undefined) => {
   const { setPopover, closePopover } = usePopoverContext();
   const tooltips = normalizeTooltips(tooltip);
-  const tooltipKey = JSON.stringify(tooltip);
+  const tooltipKey = getTooltipKey(tooltip);
 
   const [anchor, setAnchor] = useState<{
     left: number;
@@ -38,7 +76,7 @@ export const useTooltip = (tooltip: Tooltip | Tooltip[] | undefined) => {
     height: number;
   }>();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (anchor === undefined) return;
 
     const hasTooltips =
@@ -63,14 +101,18 @@ export const useTooltip = (tooltip: Tooltip | Tooltip[] | undefined) => {
     });
   }, [tooltipKey, anchor]);
 
-  const setTooltip = (e: React.MouseEvent) => {
-    setAnchor(e.currentTarget.getBoundingClientRect());
-  };
+  const setTooltip = useCallback((target: Element | React.MouseEvent<Element>) => {
+    const el = target instanceof Element ? target : target.currentTarget;
+    setAnchor(el.getBoundingClientRect());
+  }, []);
 
-  const closeTooltip = () => {
+  const closeTooltip = useCallback(() => {
     setAnchor(undefined);
     closePopover();
-  };
+  }, [closePopover]);
+
+  // Close on unmount (layout so a remounted sibling can reopen before paint).
+  useLayoutEffect(() => () => closePopover(), [closePopover]);
 
   return { setTooltip, closeTooltip };
 };
@@ -100,12 +142,19 @@ export const TooltipComponent = ({ tooltip }: { tooltip: Tooltip }) => {
         type === "warning" && "border-yellow-900",
         type === "gold" && "border-yellow-600",
       )}>
-      {title && (
+      {(title || tooltip.hotkey) && (
         <div
           className={cn(
-            "text-lg font-bold",
+            "flex items-center justify-center gap-2 text-lg font-bold",
             type === "gold" && "text-yellow-500",
           )}>
+          {tooltip.hotkey && (
+            <img
+              src={`/input-prompts/keyboard_${tooltip.hotkey.split(",")[0]}_outline.svg`}
+              alt=""
+              className="-ml-1 max-h-6"
+            />
+          )}
           {title}
         </div>
       )}

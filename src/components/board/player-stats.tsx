@@ -1,4 +1,3 @@
-import { Gear } from "@/icons/gear";
 import { TeamIcon } from "@/icons/team-icon";
 import type { Player, PlayerMe } from "@/shared/api";
 import { cn } from "@/utils/cn";
@@ -6,11 +5,10 @@ import { HotkeyScope } from "@/utils/hotkey";
 import { socket } from "@/utils/socket";
 import { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { Button } from "../button";
+import { ImgButton } from "../button";
 import { Card } from "./card";
 import { useGameAnimation } from "./contexts/game-animation";
 import { useGameContext } from "./contexts/game-context";
-import { useMainMenuContext } from "./contexts/main-menu-context";
 import { usePopoverContext } from "./contexts/popover-context";
 import { usePromptContext } from "./contexts/prompt-context";
 import { useToastContext } from "./contexts/toast-context";
@@ -25,17 +23,15 @@ interface PlayerStatsProps {
 
 export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
   const { translateError, t } = useLanguageContext();
-  const { state, isSpectator, isCheatViewOpen } = useGameContext();
+  const { state, isCheatViewOpen } = useGameContext();
   const { toast, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
   const { setPopover, closePopover } = usePopoverContext();
-  const { openMenu } = useMainMenuContext();
   const { registerPlayerAnchor } = useGameAnimation();
   const soulAnchorRef = useRef<HTMLDivElement | null>(null);
 
   const { name, color, coins, souls, soulCards } = player;
 
-  const isCurrentTurn = state.turn === name;
   const isMe = state.me.name === name;
 
   const declareAttack = () => {
@@ -194,17 +190,12 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
   return (
     <div
       className={cn(
-        "flex place-items-center gap-16 rounded-xl border-[0.2em] border-taupe-900/50 bg-board/90 p-3 pr-4 pl-6 text-white outline-[0.2em] outline-transparent transition-shadow duration-500",
+        "flex place-items-center gap-16 rounded-xl text-white outline-[0.2em] outline-transparent duration-500",
         className,
-      )}
-      style={{
-        background: isCurrentTurn
-          ? `radial-gradient(circle at center, var(--color-board) 0%, ${color} 500%)`
-          : undefined,
-      }}>
+      )}>
       <p
         className={cn(
-          "inline-flex place-items-center gap-1 text-center font-alt-stats font-bold uppercase text-shadow-lg text-shadow-taupe-950/20",
+          "text-stroke inline-flex place-items-center gap-1 text-center font-alt-stats font-bold uppercase",
           player.capabilities.canSwitchTo === true
             ? "cursor-pointer transition-transform duration-100 hover:scale-108"
             : "cursor-not-allowed",
@@ -216,10 +207,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
         {isNextInstance && (
           <img src="/input-prompts/keyboard_s_outline.svg" className="size-6" />
         )}
-        <TeamIcon
-          team={player.team}
-          className="size-5 shrink-0 drop-shadow-sm drop-shadow-taupe-800"
-        />
+        <TeamIcon team={player.team} className="icon-shadow size-5 shrink-0" />
         {name}
       </p>
       <div
@@ -251,7 +239,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
                 translateError,
               });
             }}
-            className="cheat-button absolute -top-2 -left-2 z-10 flex h-5 w-5 cursor-pointer items-center justify-center rounded-full text-[12px] leading-none font-bold text-white shadow-md shadow-taupe-950/50 hover:brightness-110"
+            className="cheat-button absolute -top-2 -left-2 z-10 flex h-5 w-5 cursor-pointer items-center justify-center rounded-full text-[12px] leading-none font-bold text-white hover:brightness-110"
             aria-label="Add coins cheat">
             +
           </button>
@@ -259,13 +247,11 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
         <img
           ref={(el) => registerPlayerAnchor(name, "coins", el)}
           src="/coin.png"
-          className="size-6 rounded-full drop-shadow-md drop-shadow-taupe-800/60"
+          className="size-6 rounded-full"
           draggable={false}
         />
-        <span className="text-shadow-lg text-shadow-taupe-800/70">:</span>{" "}
-        <span className="font-statblock text-4xl text-shadow-lg text-shadow-taupe-800/70">
-          {coins}
-        </span>
+        <span className="text-stroke">:</span>{" "}
+        <span className="text-stroke font-statblock text-4xl">{coins}</span>
       </div>
 
       <div
@@ -274,7 +260,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
           registerPlayerAnchor(name, "souls", el);
         }}
         className={cn(
-          "flex min-h-8 min-w-6 flex-row-reverse items-center",
+          "icon-shadow flex flex-row-reverse items-center",
           souls > 0 && "cursor-pointer",
         )}
         onMouseEnter={() => {
@@ -306,11 +292,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
             return (
               <img
                 src={`/${type === 1 ? "soul-1" : "soul-2"}.png`}
-                className={cn(
-                  type === 1 ? "h-6" : "h-8",
-                  souls > 2 && "-ml-3",
-                  "drop-shadow-lg drop-shadow-taupe-800/70",
-                )}
+                className={cn(type === 1 ? "h-6" : "h-8", souls > 2 && "-ml-3")}
                 draggable={false}
                 key={index}
               />
@@ -319,9 +301,13 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
       </div>
 
       {isMe && (
-        <div className="flex items-center gap-4">
-          <Button
-            className="shadow-lg shadow-taupe-800/70"
+        <div className="flex items-center gap-2">
+          <ImgButton
+            frontImage="End_turn_Icon.png"
+            frontHoverImage="End_turn_Icon_hover.png"
+            backgroundImage="Button_Small.png"
+            className="rotate-5 hover:rotate-10"
+            size={64}
             disabled={state.me.capabilities.endTurn !== true}
             hotkey="e"
             onClick={() =>
@@ -333,123 +319,155 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
             }
             tooltip={
               state.me.capabilities.endTurn === true
-                ? {
-                    enabled: state.me.numberOfCardsOverMaxHandSize > 0,
-                    title: t("gameStep.endTurnButton.excessLootTooltip.title"),
-                    content: t(
-                      "gameStep.endTurnButton.excessLootTooltip.message",
-                      {
-                        value: String(state.me.numberOfCardsOverMaxHandSize),
-                      },
-                    ),
-                    type: "warning",
-                  }
+                ? state.me.numberOfCardsOverMaxHandSize > 0
+                  ? {
+                      enabled: true,
+                      title: t(
+                        "gameStep.endTurnButton.excessLootTooltip.title",
+                      ),
+                      content: t(
+                        "gameStep.endTurnButton.excessLootTooltip.message",
+                        {
+                          value: String(state.me.numberOfCardsOverMaxHandSize),
+                        },
+                      ),
+                      type: "warning",
+                    }
+                  : {
+                      enabled: true,
+                      title: t("gameStep.endTurnButton.label"),
+                    }
                 : {
                     title: t("gameStep.endTurnButton.blockedTooltip.title"),
                     capable: state.me.capabilities.endTurn,
                   }
             }
-            label={t("gameStep.endTurnButton.label")}
           />
-          {!state.me.isEngagedInPurchase && (
-            <Button
-              label={t("gameStep.purchase.declarePurchaseButton.label")}
-              className="shadow-lg shadow-taupe-800/70"
-              disabled={state.me.capabilities.declarePurchase !== true}
-              hotkey="p"
-              onClick={() =>
-                block(
-                  t(
-                    "gameStep.purchase.declarePurchaseButton.blockedTooltip.title",
-                  ),
-                  state.me.capabilities.declarePurchase,
-                  declarePurchase,
-                )
-              }
-              tooltip={{
-                title: t(
-                  "gameStep.purchase.declarePurchaseButton.blockedTooltip.title",
-                ),
-                capable: state.me.capabilities.declarePurchase,
-              }}
-            />
-          )}
-          {state.me.isEngagedInPurchase && (
-            <Button
-              label={t("gameStep.purchase.abandonPurchaseButton.label")}
-              className="shadow-lg shadow-taupe-800/70"
-              disabled={state.me.capabilities.buyTreasure === true}
-              tooltip={{
-                title: t(
-                  "gameStep.purchase.abandonPurchaseButton.blockedTooltip.title",
-                ),
-                capable:
-                  state.me.capabilities.buyTreasure === true
-                    ? t(
+          <ImgButton
+            frontImage={
+              state.me.isEngagedInPurchase
+                ? "Cancel_Purchase_Icon.png"
+                : "Declare_Purchase_Icon.png"
+            }
+            frontHoverImage={
+              state.me.isEngagedInPurchase
+                ? "Cancel_Purchase_Icon_hover.png"
+                : "Declare_Purchase_Icon_hover.png"
+            }
+            className="-rotate-5 hover:rotate-0"
+            backgroundImage="Button_Small.png"
+            size={64}
+            disabled={
+              state.me.isEngagedInPurchase
+                ? state.me.capabilities.buyTreasure === true
+                : state.me.capabilities.declarePurchase !== true
+            }
+            hotkey="p"
+            onClick={() =>
+              state.me.isEngagedInPurchase
+                ? block(
+                    t(
+                      "gameStep.purchase.abandonPurchaseButton.blockedTooltip.title",
+                    ),
+                    state.me.capabilities.buyTreasure === true
+                      ? t(
+                          "gameStep.purchase.abandonPurchaseButton.blockedTooltip.ableToPurchaseMessage",
+                        )
+                      : true,
+                    cancelPurchase,
+                  )
+                : block(
+                    t(
+                      "gameStep.purchase.declarePurchaseButton.blockedTooltip.title",
+                    ),
+                    state.me.capabilities.declarePurchase,
+                    declarePurchase,
+                  )
+            }
+            tooltip={
+              state.me.isEngagedInPurchase
+                ? state.me.capabilities.buyTreasure !== true
+                  ? {
+                      title: t("gameStep.purchase.abandonPurchaseButton.label"),
+                      enabled: true,
+                    }
+                  : {
+                      title: t(
+                        "gameStep.purchase.abandonPurchaseButton.blockedTooltip.title",
+                      ),
+                      capable: t(
                         "gameStep.purchase.abandonPurchaseButton.blockedTooltip.ableToPurchaseMessage",
-                      )
-                    : true,
-              }}
-              hotkey="p"
-              onClick={() =>
-                block(
-                  t(
-                    "gameStep.purchase.abandonPurchaseButton.blockedTooltip.title",
-                  ),
-                  state.me.capabilities.buyTreasure === true
-                    ? t(
-                        "gameStep.purchase.abandonPurchaseButton.blockedTooltip.ableToPurchaseMessage",
-                      )
-                    : true,
-                  cancelPurchase,
-                )
-              }
-            />
-          )}
-          {!state.me.character.stats.isEngagedInCombat && (
-            <Button
-              label={t("gameStep.declareAttackButton.label")}
-              className="shadow-lg shadow-taupe-800/70"
-              disabled={state.me.capabilities.declareAttack !== true}
-              hotkey="a"
-              onClick={() =>
-                block(
-                  t("gameStep.declareAttackButton.blockedTooltip.title"),
-                  state.me.capabilities.declareAttack,
-                  declareAttack,
-                )
-              }
-              tooltip={{
-                title: t("gameStep.declareAttackButton.blockedTooltip.title"),
-                capable: state.me.capabilities.declareAttack,
-              }}
-            />
-          )}
-          {state.me.character.stats.isEngagedInCombat && (
-            <Button
-              label={t("gameStep.rollDiceButton.label")}
-              className="shadow-lg shadow-taupe-800/70"
-              disabled={state.me.capabilities.rollDice !== true}
-              tooltip={{
-                title: t("gameStep.rollDiceButton.blockedTooltip.title"),
-                capable: state.me.capabilities.rollDice,
-              }}
-              hotkey="a"
-              onClick={() =>
-                block(
-                  t("gameStep.rollDiceButton.blockedTooltip.title"),
-                  state.me.capabilities.rollDice,
-                  rollDice,
-                )
-              }
-            />
-          )}
-          {!isSpectator && (
-            <Gear
-              className="size-5 cursor-pointer drop-shadow-lg drop-shadow-taupe-800"
-              onClick={() => openMenu()}
-            />
-          )}
+                      ),
+                    }
+                : state.me.capabilities.declarePurchase !== true
+                  ? {
+                      title: t(
+                        "gameStep.purchase.declarePurchaseButton.blockedTooltip.title",
+                      ),
+                      capable: state.me.capabilities.declarePurchase,
+                    }
+                  : {
+                      title: t("gameStep.purchase.declarePurchaseButton.label"),
+                      enabled: true,
+                    }
+            }
+          />
+          <ImgButton
+            frontImage={
+              state.me.character.stats.isEngagedInCombat
+                ? "Roll_Icon.png"
+                : "Declare_Attack_Icon.png"
+            }
+            frontHoverImage={
+              state.me.character.stats.isEngagedInCombat
+                ? "Roll_Icon_hover.png"
+                : "Declare_Attack_Icon_hover.png"
+            }
+            backgroundImage="Button_Small.png"
+            size={64}
+            disabled={
+              state.me.character.stats.isEngagedInCombat
+                ? state.me.capabilities.rollDice !== true
+                : state.me.capabilities.declareAttack !== true
+            }
+            hotkey="a"
+            onClick={() =>
+              state.me.character.stats.isEngagedInCombat
+                ? block(
+                    t("gameStep.rollDiceButton.blockedTooltip.title"),
+                    state.me.capabilities.rollDice,
+                    rollDice,
+                  )
+                : block(
+                    t("gameStep.declareAttackButton.blockedTooltip.title"),
+                    state.me.capabilities.declareAttack,
+                    declareAttack,
+                  )
+            }
+            tooltip={
+              state.me.character.stats.isEngagedInCombat
+                ? state.me.capabilities.rollDice !== true
+                  ? {
+                      title: t("gameStep.rollDiceButton.blockedTooltip.title"),
+                      capable: state.me.capabilities.rollDice,
+                    }
+                  : {
+                      title: t("gameStep.rollDiceButton.label"),
+                      enabled: true,
+                    }
+                : state.me.capabilities.declareAttack === true
+                  ? {
+                      title: t("gameStep.declareAttackButton.label"),
+                      enabled: true,
+                    }
+                  : {
+                      title: t(
+                        "gameStep.declareAttackButton.blockedTooltip.title",
+                      ),
+                      capable: state.me.capabilities.declareAttack,
+                    }
+            }
+          />
         </div>
       )}
     </div>
