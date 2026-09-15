@@ -11,6 +11,7 @@ import { SELF_BASE_URL } from "astro:env/client";
 import { PileIndicator } from "@/icons/pile-indicator";
 import { SelectionIndexIndicator } from "./selection-index-indicator";
 import { useLanguageContext } from "../contexts/language-context";
+import { useBoardScale } from "./contexts/board-scale-context";
 
 export enum CardType {
   BonusSoul = "bsoul",
@@ -118,6 +119,7 @@ export const Card = ({
   onMouseEnter,
   onMouseLeave,
 }: CardProps) => {
+  const boardScale = useBoardScale();
   size = orientation === "portrait" ? size : size * (750 / 1024);
   const { aspectRatio, borderRadius } = getOrientationParameters(orientation);
 
@@ -182,7 +184,7 @@ export const Card = ({
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}>
         <CardImage
-          sizes={`${size * aspectRatio}em`}
+          sizes={`${size * aspectRatio * boardScale}em`}
           card={card}
           onClick={onClick}
           className={cn(

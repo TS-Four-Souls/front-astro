@@ -1,10 +1,23 @@
-import { useEffect } from "react";
-import { useGameContext } from "./contexts/game-context";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from "react";
+import { useGameContext } from "./game-context";
 
-export const useAutofit = (
-  boardRef: React.RefObject<HTMLDivElement | null>,
-) => {
+const BoardScaleContext = createContext(1);
+
+export const BoardScaleProvider = ({
+  boardRef,
+  children,
+}: {
+  boardRef: React.RefObject<HTMLDivElement | null>;
+  children: React.ReactNode;
+}) => {
   const { state, isSpectator } = useGameContext();
+  const [scale, setScale] = useState(1);
 
   const autofit = () => {
     const board = boardRef.current;
@@ -18,12 +31,13 @@ export const useAutofit = (
     };
     const boardSize = { width: board.clientWidth, height: board.clientHeight };
 
-    const scale = Math.min(
+    const nextScale = Math.min(
       available.width / boardSize.width,
       available.height / boardSize.height,
     );
 
-    board.style.transform = `scale(${scale})`;
+    board.style.transform = `scale(${nextScale})`;
+    setScale(nextScale);
   };
 
   useEffect(() => {
@@ -33,7 +47,15 @@ export const useAutofit = (
     };
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     autofit();
   }, [state, isSpectator, boardRef.current]);
+
+  return (
+    <BoardScaleContext.Provider value={scale}>
+      {children}
+    </BoardScaleContext.Provider>
+  );
 };
+
+export const useBoardScale = () => useContext(BoardScaleContext);
