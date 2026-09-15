@@ -15,6 +15,8 @@ import { useToastContext } from "./contexts/toast-context";
 import { useTooltip } from "./use-tooltip";
 import { useLanguageContext } from "../contexts/language-context";
 import { gainCoinsCheat } from "./cheats";
+import { Gear } from "@/icons/gear";
+import { useMainMenuContext } from "./contexts/main-menu-context";
 
 interface PlayerStatsProps {
   player: Player | PlayerMe;
@@ -23,10 +25,11 @@ interface PlayerStatsProps {
 
 export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
   const { translateError, t } = useLanguageContext();
-  const { state, isCheatViewOpen } = useGameContext();
+  const { state, isCheatViewOpen, isSpectator } = useGameContext();
   const { toast, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
   const { setPopover, closePopover } = usePopoverContext();
+  const { openMenu } = useMainMenuContext();
   const { registerPlayerAnchor } = useGameAnimation();
   const soulAnchorRef = useRef<HTMLDivElement | null>(null);
 
@@ -197,7 +200,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
         className={cn(
           "text-stroke inline-flex place-items-center gap-1 text-center font-alt-stats font-bold uppercase",
           player.capabilities.canSwitchTo === true
-            ? "cursor-pointer transition-transform duration-100 hover:scale-108"
+            ? "cursor-pointer transition-transform duration-100 hover:scale-108 ease-out-back"
             : "cursor-not-allowed",
         )}
         style={{ color }}
@@ -216,7 +219,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
         className={cn(
           "relative flex items-center gap-1",
           player.capabilities.canDonateCoinsTo === true
-            ? "cursor-pointer"
+            ? "cursor-pointer transition-[scale] ease-out-back hover:scale-110"
             : "cursor-not-allowed",
         )}
         onClick={() =>
@@ -306,7 +309,8 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
             frontImage="End_turn_Icon.png"
             frontHoverImage="End_turn_Icon_hover.png"
             backgroundImage="Button_Small.png"
-            className="rotate-5 hover:rotate-10"
+            className="rotate-5"
+            enabledClassName="hover:rotate-10"
             size={64}
             disabled={state.me.capabilities.endTurn !== true}
             hotkey="e"
@@ -354,7 +358,8 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
                 ? "Cancel_Purchase_Icon_hover.png"
                 : "Declare_Purchase_Icon_hover.png"
             }
-            className="-rotate-5 hover:rotate-0"
+            className="-rotate-5"
+            enabledClassName="hover:rotate-0"
             backgroundImage="Button_Small.png"
             size={64}
             disabled={
@@ -468,6 +473,12 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
                     }
             }
           />
+          {!isSpectator && (
+            <Gear
+              className="icon-shadow ml-6 size-6 cursor-pointer transition-[scale,rotate] ease-out-back hover:scale-120 hover:rotate-10"
+              onClick={openMenu}
+            />
+          )}
         </div>
       )}
     </div>

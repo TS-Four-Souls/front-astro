@@ -27,7 +27,7 @@ export const StackElementIcon = ({ element }: StackElementIconProps) => {
 
   return (
     <div
-      className="flex shrink-0 items-center justify-center transition-transform hover:scale-110"
+      className="flex shrink-0 items-center justify-center transition-transform hover:scale-110 ease-out-back"
       onMouseEnter={onHover}
       onMouseLeave={closePopover}>
       <Icon element={element} />
