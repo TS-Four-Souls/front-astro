@@ -1,9 +1,4 @@
-import type {
-  Card,
-  DetailedState,
-  InPlayMeCard,
-  SelectionItem,
-} from "@/shared/api";
+import type { Card, InPlayMeCard, SelectionItem } from "@/shared/api";
 import { socket } from "@/utils/socket";
 import { CardType } from "./card";
 import { CardHoverPreview } from "./card-hover-preview";
@@ -26,11 +21,9 @@ import {
   selectCardToLoot,
   selectCardToTreasure,
 } from "./cheats";
-interface CenterProps {
-  state: DetailedState;
-}
 
-export const Center = ({ state }: CenterProps) => {
+export const Center = () => {
+  const { state } = useGameContext();
   const { toast, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
   const { displayPileDetails } = usePileDetails();

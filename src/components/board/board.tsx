@@ -18,12 +18,12 @@ export const Board = () => {
 
   return (
     <HistoryProvider>
-      <div className="board-light relative h-screen w-screen overflow-hidden">
-        <div className="board-texture relative flex h-screen items-center justify-center overflow-hidden">
+      <div className="board-light relative h-full w-full overflow-hidden">
+        <div className="board-texture relative flex h-full w-full items-center justify-center overflow-hidden">
           <div
             ref={boardRef}
             className={cn(
-              "grid grid-cols-[auto_1fr_auto] grid-rows-[auto_1fr_auto] place-items-center gap-4 p-6 pb-2",
+              "grid grid-cols-[auto_1fr_auto] grid-rows-[auto_1fr_auto] place-items-center gap-2 p-2",
               state.players.length === 1 && "gap-x-0",
             )}>
             <Me />
@@ -49,7 +49,7 @@ export const Board = () => {
               return null;
             })}
             <div className="col-start-2 row-start-2">
-              <Center state={state} />
+              <Center />
             </div>
           </div>
         </div>

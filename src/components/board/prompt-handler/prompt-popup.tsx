@@ -11,6 +11,8 @@ import { StackElement } from "../stack";
 import { SelectionIndexIndicator } from "../selection-index-indicator";
 import { useMemo, useState } from "react";
 import { useLanguageContext } from "@/components/contexts/language-context";
+import { cardJsonContentForAdvancedSearch } from "@/utils/cardsJsonForSearch";
+
 interface PromptPopupProps {
   onCancel?: () => void | undefined;
   prompt: string;
@@ -55,9 +57,6 @@ export const PromptPopup = ({
 
   const filteredOptions = useMemo(() => {
     const searchCleaned = search.trim().toLowerCase();
-    if (searchCleaned.length === 0) {
-      return sortedOptions;
-    }
     return sortedOptions.filter((option) => {
       let payload = JSON.stringify(option.payload);
       if (
@@ -66,7 +65,42 @@ export const PromptPopup = ({
         "nameKey" in option.payload &&
         "key" in option.payload.nameKey
       ) {
-        payload = ts(option.payload.nameKey) + payload;
+        let content = payload;
+        if (
+          typeof option.payload.slug === "string" &&
+          option.payload.slug !== "random"
+        ) {
+          content = cardJsonContentForAdvancedSearch[option.payload.slug];
+        }
+        payload = ts(option.payload.nameKey) + content;
+      }
+
+      if (
+        option.payload !== null &&
+        option.payload instanceof Object &&
+        "character" in option.payload
+      ) {
+        let content = payload;
+
+        if (
+          typeof option.payload.character === "string" &&
+          option.payload.character !== "random"
+        ) {
+          content = content
+            .concat(cardJsonContentForAdvancedSearch[option.payload.character])
+            .concat(ts({ key: "cardNames." + option.payload.character }));
+        }
+        if (
+          "eternal" in option.payload &&
+          typeof option.payload.eternal === "string" &&
+          option.payload.eternal !== "random"
+        ) {
+          content = content
+            .concat(cardJsonContentForAdvancedSearch[option.payload.eternal])
+            .concat(ts({ key: "cardNames." + option.payload.eternal }));
+        }
+
+        payload = content;
       }
       return JSON.stringify(payload).toLowerCase().includes(searchCleaned);
     });

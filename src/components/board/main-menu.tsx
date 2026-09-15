@@ -8,12 +8,16 @@ import { usePromptContext } from "./contexts/prompt-context";
 import { useToastContext } from "./contexts/toast-context";
 import { useLanguageContext } from "../contexts/language-context";
 import { LanguageSelection } from "../language-selection";
+import { ElapsedTime } from "../elapsed-time";
+import { Share } from "@/icons/share";
+import { Eye } from "@/icons/eye";
 
 export const MainMenu = () => {
   const { addPrompt, removePrompt } = usePromptContext();
   const { toast } = useToastContext();
   const { closeMenu: closeMainMenu } = useMainMenuContext();
-  const { parameters, isCheatViewOpen, setIsCheatViewOpen } = useGameContext();
+  const { parameters, isCheatViewOpen, setIsCheatViewOpen, room } =
+    useGameContext();
   const { translateError, t } = useLanguageContext();
 
   const onResetPress = () => {
@@ -95,6 +99,17 @@ export const MainMenu = () => {
     });
   };
 
+  const shareRoom = () => {
+    const currentUrl = new URL(window.location.href);
+    const link = new URL(`/?code=${room.id}`, currentUrl.origin);
+    navigator.clipboard.writeText(link.toString());
+    toast(
+      "success",
+      t("gameStep.spectatorBar.shareButton.successToast.title"),
+      t("gameStep.spectatorBar.shareButton.successToast.message"),
+    );
+  };
+
   return (
     <>
       <div className="mb-4 flex items-center justify-between gap-4">
@@ -138,6 +153,35 @@ export const MainMenu = () => {
         }}
         label={t("gameStep.mainMenu.quitButton.label")}
       />
+      <div className="mt-4 flex flex-col gap-2 rounded-md bg-taupe-800/50 p-3 shadow-sm inset-shadow-sm shadow-taupe-800 inset-shadow-taupe-800">
+        <p className="mt-1 mb-2 text-center font-main text-lg font-bold">
+          Game information
+        </p>
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 rounded-full bg-taupe-900 px-4 py-1">
+            <span
+              className="size-2 shrink-0 animate-pulse rounded-full bg-red-500"
+              aria-hidden
+            />
+            <ElapsedTime since={room.createdAt} className="text-taupe-300" />
+          </div>
+          <div className="flex items-center gap-1.5">
+            <Eye className="size-5" />
+            <span className="font-alt-stats text-xs">
+              {room.spectatorCount}
+            </span>
+          </div>
+          <Button
+            label={<Share className="size-5" />}
+            onClick={shareRoom}
+            className="size-10 p-0"
+            tooltip={{
+              title: t("gameStep.spectatorBar.shareButton.label"),
+              enabled: true,
+            }}
+          />
+        </div>
+      </div>
       <LanguageSelection />
       <DiscordButton />
       <ReportBugButton />

@@ -68,12 +68,71 @@
     var(--pile-2xl-shadow), var(--pile-3xl-shadow);
 }
 
+.icon-shadow {
+  --width: 1px;
+  --color: rgb(0 0 0);
+  filter: drop-shadow(var(--width) 0 var(--color))
+    drop-shadow(calc(-1 * var(--width)) 0 var(--color))
+    drop-shadow(0 var(--width) var(--color))
+    drop-shadow(0 calc(-1 * var(--width)) var(--color));
+}
+
+.text-stroke {
+  --w: 2px;
+  --we: 1.414px;
+  --text-stroke-color: rgb(0 0 0 / 0.5);
+
+  text-shadow:
+    var(--w) 0 var(--text-stroke-color),
+    calc(-1 * var(--w)) 0 var(--text-stroke-color),
+    0 var(--w) var(--text-stroke-color),
+    0 calc(-1 * var(--w)) var(--text-stroke-color),
+    var(--we) var(--we) var(--text-stroke-color),
+    calc(-1 * var(--we)) var(--we) var(--text-stroke-color),
+    var(--we) calc(-1 * var(--we)) var(--text-stroke-color),
+    calc(-1 * var(--we)) calc(-1 * var(--we)) var(--text-stroke-color);
+}
+
 @keyframes craftmine {
   from {
     scale: 1;
   }
   to {
     scale: 1.5;
+  }
+}
+
+@keyframes resolveButtonMetallic {
+  0%,
+  55% {
+    transform: skewX(-18deg) translateX(-140%);
+  }
+  78%,
+  100% {
+    transform: skewX(-18deg) translateX(500%);
+  }
+}
+
+.resolve-button-ready::after {
+  content: "";
+  position: absolute;
+  inset: -35% auto -35% -25%;
+  width: 35%;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(255 255 255 / 0.08) 25%,
+    rgb(255 255 255 / 0.65) 50%,
+    rgb(255 255 255 / 0.08) 75%,
+    transparent
+  );
+  animation: resolveButtonMetallic 6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .resolve-button-ready::after {
+    animation: none;
   }
 }
 
@@ -293,6 +352,8 @@
   --color-board: #6e574e;
 
   --breakpoint-xs: 30rem;
+
+  --ease-out-back: cubic-bezier(0.00, 1.45, 0.10, 1.49);
 
   --inset-shadow-2xs: inset 0 0.05em rgb(0 0 0 / 0.05);
   --inset-shadow-xs: inset 0 0.05em 0.05em rgb(0 0 0 / 0.05);

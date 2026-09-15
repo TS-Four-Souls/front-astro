@@ -2,7 +2,6 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useState,
 } from "react";
@@ -58,11 +57,5 @@ export const PopoverProvider = ({
 };
 
 export const usePopoverContext = () => {
-  const { setPopover, closePopover } = useContext(PopoverContext);
-
-  useEffect(() => {
-    return closePopover;
-  }, [closePopover]);
-
-  return { setPopover, closePopover };
+  return useContext(PopoverContext);
 };

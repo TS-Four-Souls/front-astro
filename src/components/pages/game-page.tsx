@@ -14,6 +14,8 @@ import { CreateRoomForm } from "../onboarding/create-room-form";
 import { Loading } from "../onboarding/loading";
 import { RoomJoinForm } from "../onboarding/room-join-form";
 import { RoomOptions } from "../onboarding/room-options";
+import { SpectatorJoinPopup } from "../onboarding/spectator-join-popup";
+import { SpectatorChrome } from "../spectator-chrome";
 import { StartStep } from "../onboarding/start-step";
 import { useLanguageContext } from "../contexts/language-context";
 import { usePromptContext } from "../board/contexts/prompt-context";
@@ -24,6 +26,11 @@ export const GamePage = () => {
   const { toast, dismissAll } = useToastContext();
   const { clearPrompts } = usePromptContext();
   const [tryingToRejoin, setTryingToRejoin] = useState<boolean>(true);
+  const [showSpectatorJoinPopup, setShowSpectatorJoinPopup] =
+    useState<boolean>(false);
+  const [spectatorPopupIntent, setSpectatorPopupIntent] = useState<
+    "entry" | "join"
+  >("entry");
 
   useEffect(() => {
     function onConnect() {
@@ -44,6 +51,14 @@ export const GamePage = () => {
               );
           },
         );
+      } else if (roomId) {
+        socket.emit("enterRoom", { type: "spectate", roomId }, (response) => {
+          if (response.status === 400)
+            console.log(
+              "[🔌 Socket] Failed to rejoin as spectator",
+              translateError(response.error),
+            );
+        });
       }
       setTryingToRejoin(false);
     }
@@ -63,6 +78,7 @@ export const GamePage = () => {
         storage.setItem("roomId", room.id);
       } else {
         storage.removeItem("roomId");
+        setShowSpectatorJoinPopup(false);
       }
     }
 
@@ -123,38 +139,72 @@ export const GamePage = () => {
     };
   }, []);
 
+  const openSpectatorJoinPopup = (intent: "entry" | "join") => {
+    setSpectatorPopupIntent(intent);
+    setShowSpectatorJoinPopup(true);
+  };
+
+  const spectatorPopup =
+    showSpectatorJoinPopup && room ? (
+      <SpectatorJoinPopup
+        room={room}
+        intent={spectatorPopupIntent}
+        onDismiss={() => setShowSpectatorJoinPopup(false)}
+      />
+    ) : null;
+
   if (room?.game) {
     return (
-      <GameProvider state={room.game} parameters={room.gameParameters}>
-        <BoardSelectionProvider>
-          <MainMenuProvider>
-            <GameAnimationProvider>
-              <Board />
-            </GameAnimationProvider>
-          </MainMenuProvider>
-        </BoardSelectionProvider>
-      </GameProvider>
+      <SpectatorChrome
+        room={room}
+        onJoinAsPlayer={() => openSpectatorJoinPopup("join")}>
+        <GameProvider
+          room={room}
+          state={room.game}
+          parameters={room.gameParameters}
+          isSpectator={room.isSpectator}>
+          <BoardSelectionProvider>
+            <MainMenuProvider>
+              <GameAnimationProvider>
+                <Board />
+              </GameAnimationProvider>
+            </MainMenuProvider>
+          </BoardSelectionProvider>
+        </GameProvider>
+        {spectatorPopup}
+      </SpectatorChrome>
     );
   }
 
   return (
-    <OnboardingLayout
-      withHeader={room?.players.find((player) => player.isMe) === undefined}>
-      <BoardSelectionProvider>
-        <OnboardingPages room={room} tryingToRejoin={tryingToRejoin} />
-      </BoardSelectionProvider>
-    </OnboardingLayout>
+    <SpectatorChrome
+      room={room}
+      onJoinAsPlayer={() => openSpectatorJoinPopup("join")}>
+      <OnboardingLayout
+        withHeader={room?.players.find((player) => player.isMe) === undefined}>
+        <BoardSelectionProvider>
+          <OnboardingPages
+            room={room}
+            tryingToRejoin={tryingToRejoin}
+            onSpectateSuccess={() => openSpectatorJoinPopup("entry")}
+          />
+        </BoardSelectionProvider>
+      </OnboardingLayout>
+      {spectatorPopup}
+    </SpectatorChrome>
   );
 };
 
 interface OnboardingPagesProps {
   room: Room | null;
   tryingToRejoin: boolean;
+  onSpectateSuccess: () => void;
 }
 
 export const OnboardingPages = ({
   room,
   tryingToRejoin,
+  onSpectateSuccess,
 }: OnboardingPagesProps) => {
   const [subPage, setSubPage] = useState<
     | { type: "join"; code: string }
@@ -189,7 +239,10 @@ export const OnboardingPages = ({
     return (
       <RoomJoinForm
         code={subPage.code}
-        onSuccess={() => setSubPage(undefined)}
+        onSuccess={() => {
+          setSubPage(undefined);
+          onSpectateSuccess();
+        }}
         onCancel={() => setSubPage(undefined)}
       />
     );
