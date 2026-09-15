@@ -17,6 +17,8 @@ import { useToastContext } from "./contexts/toast-context";
 import { useTooltip } from "./use-tooltip";
 import { useLanguageContext } from "../contexts/language-context";
 import { gainCoinsCheat } from "./cheats";
+import { Gear } from "@/icons/gear";
+import { useMainMenuContext } from "./contexts/main-menu-context";
 
 interface PlayerStatsProps {
   player: Player | PlayerMe;
@@ -29,6 +31,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
   const { toast, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
   const { setPopover, closePopover } = usePopoverContext();
+  const { openMenu } = useMainMenuContext();
   const { registerPlayerAnchor } = useGameAnimation();
   const soulAnchorRef = useRef<HTMLDivElement | null>(null);
 
@@ -263,7 +266,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
         className={cn(
           "relative flex items-center gap-1",
           player.capabilities.canDonateCoinsTo === true
-            ? "cursor-pointer"
+            ? "cursor-pointer transition-[scale] ease-out-back hover:scale-110"
             : "cursor-not-allowed",
         )}
         onClick={() =>
@@ -516,6 +519,12 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
                     }
             }
           />
+          {!isSpectator && (
+            <Gear
+              className="icon-shadow ml-6 size-6 cursor-pointer transition-[scale,rotate] ease-out-back hover:scale-120 hover:rotate-10"
+              onClick={openMenu}
+            />
+          )}
         </div>
       )}
     </div>
