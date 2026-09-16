@@ -246,6 +246,7 @@ export const Center = () => {
                 onHoverPopover={() => (
                   <CardHoverPreview
                     card={soul}
+                    orientation={soul.orientation}
                     counters={soul.counters}
                     tooltip={{
                       enabled: true,
@@ -545,6 +546,7 @@ export const Center = () => {
                 onHoverPopover={() => (
                   <CardHoverPreview
                     card={card}
+                    orientation={card.orientation}
                     tooltip={[
                       {
                         capable: state.me.capabilities.buyTreasure,
@@ -622,6 +624,7 @@ export const Center = () => {
                   ? () => (
                       <CardHoverPreview
                         card={monsterDeckAttackRequirement.source}
+                        orientation={monsterDeckAttackRequirement.source.orientation}
                         tooltip={[
                           {
                             capable: state.monsters.capabilities.targetableDeck,
@@ -728,6 +731,7 @@ export const Center = () => {
                       counters={card.top.counters}
                       stats={card.top.stats}
                       effects={card.top.stats?.temporaryEffect}
+                      orientation={card.top.orientation}
                       tooltip={[
                         {
                           capable: targetable,
