@@ -249,13 +249,13 @@ export const Card = ({
                 key={`${counter.type}-${index}`}
                 className="relative size-full">
                 <img
-                  src="/counter.png"
+                  src={counter.type === "golden" ? "/goldencounter.webp" : "/counter.png"}
                   alt="Counter"
                   className="size-full object-contain"
                   style={{
                     filter:
                       counter.type === "golden"
-                        ? "brightness(150%) saturate(200%) sepia(100%)"
+                        ? "brightness(140%) saturate(140%)"
                         : `brightness(150%) hue-rotate(${globalId ** 3 + globalId * 17}deg)`,
                   }}
                 />
