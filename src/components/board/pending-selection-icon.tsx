@@ -54,6 +54,22 @@ export const PendingSelectionIcon = (props: Props) => {
           />
         </div>
       );
+    case "mulliganCharacters":
+      return (
+        <div
+          className={cn(
+            "h-11 max-w-11 shrink-0 overflow-hidden rounded-lg border-[0.15em] bg-taupe-700",
+          )}
+          onMouseEnter={onHover}
+          onMouseLeave={closePopover}
+          style={{ borderColor: player.color }}>
+          <CardImage
+            sizes="2.5em"
+            card={CardType.CharacterCard}
+            className="-translate-y-1 scale-200"
+          />
+        </div>
+      );
     case "coinGift":
       return (
         <img
@@ -126,6 +142,16 @@ const PopoverContent = ({ pendingSelection }: Props) => {
           <CardImage
             sizes="6em"
             card={CardType.TreasureCard}
+            className="-translate-y-1 scale-200"
+          />
+        </div>
+      );
+    case "mulliganCharacters":
+      return (
+        <div className={cn("size-22 overflow-hidden rounded-lg")}>
+          <CardImage
+            sizes="6em"
+            card={CardType.CharacterCard}
             className="-translate-y-1 scale-200"
           />
         </div>
