@@ -353,7 +353,7 @@
 
   --breakpoint-xs: 30rem;
 
-  --ease-out-back: cubic-bezier(0.00, 1.45, 0.10, 1.49);
+  --ease-out-back: cubic-bezier(0, 1.45, 0.1, 1.49);
 
   --inset-shadow-2xs: inset 0 0.05em rgb(0 0 0 / 0.05);
   --inset-shadow-xs: inset 0 0.05em 0.05em rgb(0 0 0 / 0.05);
@@ -363,6 +363,7 @@
   --animate-out-right: animate-out-right 0.3s ease-in-out forwards;
   --animate-iso-spin: animate-iso-spin 10s linear infinite;
   --animate-grow-right: animate-grow-right 5s linear forwards;
+  --animate-emote-pop: emote-pop 0.35s var(--ease-out-back) both;
 
   @keyframes animate-grow-right {
     0% {
@@ -417,6 +418,18 @@
 
     to {
       transform: rotateX(55deg) rotateZ(360deg);
+    }
+  }
+
+  @keyframes emote-pop {
+    from {
+      scale: 0.4;
+      opacity: 0;
+    }
+
+    to {
+      scale: 1;
+      opacity: 1;
     }
   }
 }

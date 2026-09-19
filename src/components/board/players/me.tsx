@@ -208,7 +208,7 @@ export const Me = () => {
     .slice(0, 9);
 
   return (
-    <div className="col-start-2 row-start-3 flex flex-col place-content-center place-items-center gap-2">
+    <div className="relative z-10 col-start-2 row-start-3 flex flex-col place-content-center place-items-center gap-2">
       <PlayerStats player={state.me} className="min-w-0" />
       <div
         className={cn(

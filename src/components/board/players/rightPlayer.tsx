@@ -14,7 +14,7 @@ export const RightPlayer = ({ player }: RightPlayerProps) => (
   <div
     key={player.name}
     className={
-      "col-start-3 row-span-3 flex flex-col place-content-center place-items-start gap-8"
+      "relative z-10 col-start-3 row-span-3 flex flex-col place-content-center place-items-start gap-8"
     }>
     <div
       className={cn(

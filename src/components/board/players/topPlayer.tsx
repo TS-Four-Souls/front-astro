@@ -31,7 +31,7 @@ export const TopPlayer = ({ player }: TopPlayerProps) => {
     <div
       key={player.name}
       className={
-        "col-start-2 row-start-1 flex flex-col-reverse place-content-center place-items-center gap-6"
+        "relative z-10 col-start-2 row-start-1 flex flex-col-reverse place-content-center place-items-center gap-6"
       }>
       <PlayerStats player={player} />
       <div className={"flex place-content-center place-items-center gap-8"}>

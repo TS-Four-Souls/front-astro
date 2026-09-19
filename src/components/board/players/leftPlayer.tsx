@@ -29,7 +29,7 @@ export const LeftPlayer = ({ player }: LeftPlayerProps) => {
     <div
       key={player.name}
       className={
-        "col-start-1 row-span-3 row-start-1 flex flex-col place-content-center place-items-end gap-8"
+        "relative z-10 col-start-1 row-span-3 row-start-1 flex flex-col place-content-center place-items-end gap-8"
       }>
       <div
         className={cn(

@@ -3,10 +3,12 @@ import type { Player, PlayerMe } from "@/shared/api";
 import { cn } from "@/utils/cn";
 import { HotkeyScope } from "@/utils/hotkey";
 import { socket } from "@/utils/socket";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { ImgButton } from "../button";
 import { Card } from "./card";
+import { EmoteBubble, useDisplayedEmote } from "./emote-bubble";
+import { EmoteWheel } from "./emote-wheel";
 import { useGameAnimation } from "./contexts/game-animation";
 import { useGameContext } from "./contexts/game-context";
 import { usePopoverContext } from "./contexts/popover-context";
@@ -23,7 +25,7 @@ interface PlayerStatsProps {
 
 export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
   const { translateError, t } = useLanguageContext();
-  const { state, isCheatViewOpen } = useGameContext();
+  const { state, isCheatViewOpen, isSpectator } = useGameContext();
   const { toast, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
   const { setPopover, closePopover } = usePopoverContext();
@@ -33,6 +35,9 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
   const { name, color, coins, souls, soulCards } = player;
 
   const isMe = state.me.name === name;
+  const canUseEmotes = isMe && !isSpectator;
+  const [isEmoteWheelOpen, setIsEmoteWheelOpen] = useState(false);
+  const displayedEmote = useDisplayedEmote(name);
 
   const declareAttack = () => {
     socket.emit("declareAttack", (response) => {
@@ -164,16 +169,22 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
 
   const { setTooltip: setSwitchToTooltip, closeTooltip: closeSwitchToTooltip } =
     useTooltip(
-      player.capabilities.canSwitchTo === true && !isMe
+      canUseEmotes
         ? {
             enabled: true,
-            title: t("capability.SwitchToCopy"),
-            content: t("capability.switchOk"),
+            title: "Emotes",
+            hotkey: "r",
           }
-        : {
-            title: t("capability.cannotSwitchToCopy"),
-            capable: player.capabilities.canSwitchTo,
-          },
+        : player.capabilities.canSwitchTo === true && !isMe
+          ? {
+              enabled: true,
+              title: t("capability.SwitchToCopy"),
+              content: t("capability.switchOk"),
+            }
+          : {
+              title: t("capability.cannotSwitchToCopy"),
+              capable: player.capabilities.canSwitchTo,
+            },
     );
 
   const nextMeInstance = state.players.find(
@@ -193,23 +204,59 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
         "flex place-items-center gap-16 rounded-xl text-white outline-[0.2em] outline-transparent duration-500",
         className,
       )}>
-      <p
+      <div
         className={cn(
-          "text-stroke inline-flex place-items-center gap-1 text-center font-alt-stats font-bold uppercase",
-          player.capabilities.canSwitchTo === true
-            ? "cursor-pointer transition-transform duration-100 hover:scale-108"
-            : "cursor-not-allowed",
+          "relative",
+          (isEmoteWheelOpen || displayedEmote) && "z-50",
+        )}>
+        {displayedEmote && (
+          <EmoteBubble key={displayedEmote.key} type={displayedEmote.type} />
         )}
-        style={{ color }}
-        onMouseEnter={setSwitchToTooltip}
-        onMouseLeave={closeSwitchToTooltip}
-        onClick={onSwitchToCopyPress}>
-        {isNextInstance && (
-          <img src="/input-prompts/keyboard_s_outline.svg" className="size-6" />
+        {canUseEmotes && (
+          <EmoteWheel
+            open={isEmoteWheelOpen}
+            onOpenChange={setIsEmoteWheelOpen}
+          />
         )}
-        <TeamIcon team={player.team} className="icon-shadow size-5 shrink-0" />
-        {name}
-      </p>
+        <p
+          className={cn(
+            "text-stroke inline-flex place-items-center gap-1 text-center font-alt-stats font-bold uppercase",
+            canUseEmotes || player.capabilities.canSwitchTo === true
+              ? "cursor-pointer transition-transform duration-100 hover:scale-108"
+              : "cursor-not-allowed",
+          )}
+          style={{ color }}
+          aria-expanded={canUseEmotes ? isEmoteWheelOpen : undefined}
+          onMouseEnter={setSwitchToTooltip}
+          onMouseLeave={closeSwitchToTooltip}
+          onClick={() => {
+            if (canUseEmotes) {
+              setIsEmoteWheelOpen((open) => !open);
+              return;
+            }
+            onSwitchToCopyPress();
+          }}>
+          {canUseEmotes && (
+            <img
+              src="/input-prompts/keyboard_r_outline.svg"
+              className="size-6"
+              alt=""
+            />
+          )}
+          {isNextInstance && !canUseEmotes && (
+            <img
+              src="/input-prompts/keyboard_s_outline.svg"
+              className="size-6"
+              alt=""
+            />
+          )}
+          <TeamIcon
+            team={player.team}
+            className="icon-shadow size-5 shrink-0"
+          />
+          {name}
+        </p>
+      </div>
       <div
         onMouseEnter={setCoinTooltip}
         onMouseLeave={closeCoinTooltip}
