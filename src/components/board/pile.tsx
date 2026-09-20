@@ -30,6 +30,7 @@ type CardMetadata = {
       }
     | undefined;
   effects?: TemporaryEffect[];
+  parent?: string;
 };
 
 interface PileProps {

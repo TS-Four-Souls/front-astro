@@ -113,20 +113,16 @@ export const PendingSelectionIcon = (props: Props) => {
       return (
         <div
           className={cn(
-            "h-11 max-w-11 shrink-0 overflow-hidden rounded-lg border-[0.15em] bg-taupe-700",
+            "shrink-0 rounded-lg border-[0.15em] bg-taupe-700",
           )}
           onMouseEnter={onHover}
           onMouseLeave={closePopover}
           style={{ borderColor: player.color }}>
-          <CardImage
-            sizes="2.5em"
+          <Card
+            size={3.1}
             card={reason.card}
             orientation={reason.card.orientation}
-            className={
-              reason.card.orientation === "portrait"
-                ? "translate-y-[5%] scale-155"
-                : "translate-y-[43%] scale-300"
-            }
+            icon
           />
         </div>
       );

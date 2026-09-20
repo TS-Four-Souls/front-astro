@@ -22,11 +22,13 @@ export enum CardType {
   TreasureCard = "treasure",
   RoomCard = "room",
 }
-
+// reason.card.orientation === "portrait"
+//                 ? "translate-y-[5%] scale-155"
+//                 : "translate-y-[43%] scale-300"
 type Orientation = "portrait" | "landscape";
 
 interface CardProps {
-  card?: { slug: string } | CardType;
+  card?: { slug: string, parent?: string } | CardType;
   style?: React.CSSProperties;
   containerClassName?: string;
   containerStyle?: React.CSSProperties;
@@ -53,6 +55,7 @@ interface CardProps {
   counters?: SerializedCounter[];
   onMouseEnter?: (e: React.MouseEvent<HTMLDivElement>) => void;
   onMouseLeave?: (e: React.MouseEvent<HTMLDivElement>) => void;
+  icon?: boolean;
 }
 
 const CARD_RADIUS = 5;
@@ -118,11 +121,24 @@ export const Card = ({
   globalId = 0,
   onMouseEnter,
   onMouseLeave,
+  icon = false,
 }: CardProps) => {
   const boardScale = useBoardScale();
   size = orientation === "portrait" ? size : size * (750 / 1024);
   const { aspectRatio, borderRadius } = getOrientationParameters(orientation);
-
+// fraction of the parent card's height (from the top) that contains its artwork
+      const widths =
+        orientation === "portrait" ? PORTRAIT_WIDTHS : LANDSCAPE_WIDTHS;
+      const parentCardSlug = typeof card === "object" && "parent" in card && typeof card.parent === "string" ? card.parent : undefined;
+      const parentSrcSet = parentCardSlug
+        ? "\n" +
+          widths
+            .map(
+              (size) =>
+                `${SELF_BASE_URL}/images/front/${parentCardSlug}_${size}_en.webp ${size}w`,
+            )
+            .join(",\n")
+        : undefined;
   if (!card) {
     return (
       <div
@@ -166,9 +182,10 @@ export const Card = ({
           ? "absolute font-statblock text-black top-[52.1%] left-[51.4%]"
           : "absolute font-statblock text-black top-[52.1%] left-[50.7%]"
       : "";
+  const sizes = `${size * aspectRatio * boardScale}em`;
   return (
     <div
-      className={cn("relative", containerClassName)}
+      className={cn("relative", containerClassName, icon && "aspect-square overflow-hidden")}
       style={{
         borderRadius,
         height: size + "em",
@@ -184,7 +201,7 @@ export const Card = ({
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}>
         <CardImage
-          sizes={`${size * aspectRatio * boardScale}em`}
+          sizes={sizes}
           card={card}
           onClick={onClick}
           className={cn(
@@ -197,6 +214,24 @@ export const Card = ({
           }}
           orientation={orientation}
         />
+
+          {parentCardSlug && (
+            <div
+              className="h-full w-full pointer-events-none absolute inset-0 overflow-hidden opacity-50"
+              style={{
+                clipPath: "inset(14% 12% 38% 12% round 8px)",
+                borderRadius,
+              }}>
+              <img
+                srcSet={parentSrcSet}
+                sizes={sizes}
+                src={`${SELF_BASE_URL}/images/front/${parentCardSlug}_256_en.webp`}
+                alt={parentCardSlug}
+                draggable={false}
+                style={{ width: "100%", aspectRatio, objectFit: "cover", display: "block" }}
+              />
+            </div>
+          )}
 
         {hotkey && (
           <div className="pointer-events-none absolute top-1 left-1 flex size-4 place-items-center overflow-hidden rounded-sm bg-taupe-700 outline-[0.1em]">

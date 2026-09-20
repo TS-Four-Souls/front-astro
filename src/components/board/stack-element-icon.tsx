@@ -355,8 +355,8 @@ const Icon = ({ element }: IconProps) => {
             "aspect-square overflow-hidden rounded-lg border-[0.15em] bg-taupe-700",
           )}
           style={{ borderColor }}>
-          <CardImage
-            sizes="2.5em"
+          <Card
+            size={3.1}
             card={element.card}
             orientation={element.card.orientation}
             className={
@@ -364,6 +364,7 @@ const Icon = ({ element }: IconProps) => {
                 ? "translate-y-[5%] scale-155"
                 : "translate-y-[43%] scale-300"
             }
+            icon
           />
         </div>
       );

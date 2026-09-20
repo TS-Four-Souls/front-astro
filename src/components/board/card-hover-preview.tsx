@@ -8,7 +8,7 @@ import {
 import type { SerializedCounter, TemporaryEffect } from "@/shared/api";
 
 interface CardHoverPreviewProps {
-  card: { slug: string; globalId?: number } | CardType;
+  card: { slug: string; globalId?: number; parent?: string } | CardType;
   stats?: {
     healthPoints: number;
     attackPoints: number;
@@ -47,7 +47,7 @@ export const CardHoverPreview = ({
         {typeof card === "object" && "slug" in card && (
           <Card
             globalId={card.globalId}
-            card={{ slug: card.slug }}
+            card={{ slug: card.slug, parent: card.parent }}
             stats={stats}
             effects={effects}
             counters={counters}

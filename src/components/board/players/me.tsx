@@ -245,6 +245,7 @@ export const Me = () => {
                   cards={[
                     {
                       slug: card.slug,
+                      parent: typeof card === "object" && "parent" in card && typeof card.parent === "string" ? card.parent : undefined,
                       charged: card.charged,
                       eternal: card.eternal,
                       engagedInCombat: card.stats?.isEngagedInCombat === true,

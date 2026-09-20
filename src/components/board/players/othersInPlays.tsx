@@ -41,6 +41,7 @@ export const OthersInPlays = ({ cards, player }: OthersInPlaysProps) => {
           cards={[
             {
               slug: card.slug,
+              parent: typeof card === "object" && "parent" in card && typeof card.parent === "string" ? card.parent : undefined,
               charged: card.charged,
               eternal: card.eternal,
               engagedInCombat: card.stats?.isEngagedInCombat === true,
