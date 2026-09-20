@@ -293,7 +293,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
         )}
         <img
           ref={(el) => registerPlayerAnchor(name, "coins", el)}
-          src="/coin.png"
+          src="/ui/coin.png"
           className="size-6 rounded-full"
           draggable={false}
         />
@@ -338,7 +338,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
           .map((type, index) => {
             return (
               <img
-                src={`/${type === 1 ? "soul-1" : "soul-2"}.png`}
+                src={`/ui/${type === 1 ? "soul-1" : "soul-2"}.png`}
                 className={cn(type === 1 ? "h-6" : "h-8", souls > 2 && "-ml-3")}
                 draggable={false}
                 key={index}
@@ -350,9 +350,9 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
       {isMe && (
         <div className="flex items-center gap-2">
           <ImgButton
-            frontImage="End_turn_Icon.png"
-            frontHoverImage="End_turn_Icon_hover.png"
-            backgroundImage="Button_Small.png"
+            frontImage="ui/action-end-turn.png"
+            frontHoverImage="ui/action-end-turn-hover.png"
+            backgroundImage="ui/button-backdrop.png"
             className="rotate-5 hover:rotate-10"
             size={64}
             disabled={state.me.capabilities.endTurn !== true}
@@ -393,16 +393,16 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
           <ImgButton
             frontImage={
               state.me.isEngagedInPurchase
-                ? "Cancel_Purchase_Icon.png"
-                : "Declare_Purchase_Icon.png"
+                ? "ui/action-cancel-purchase.png"
+                : "ui/action-declare-purchase.png"
             }
             frontHoverImage={
               state.me.isEngagedInPurchase
-                ? "Cancel_Purchase_Icon_hover.png"
-                : "Declare_Purchase_Icon_hover.png"
+                ? "ui/action-cancel-purchase-hover.png"
+                : "ui/action-declare-purchase-hover.png"
             }
             className="-rotate-5 hover:rotate-0"
-            backgroundImage="Button_Small.png"
+            backgroundImage="ui/button-backdrop.png"
             size={64}
             disabled={
               state.me.isEngagedInPurchase
@@ -462,15 +462,15 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
           <ImgButton
             frontImage={
               state.me.character.stats.isEngagedInCombat
-                ? "Roll_Icon.png"
-                : "Declare_Attack_Icon.png"
+                ? "ui/action-roll-dice.png"
+                : "ui/action-declare-attack.png"
             }
             frontHoverImage={
               state.me.character.stats.isEngagedInCombat
-                ? "Roll_Icon_hover.png"
-                : "Declare_Attack_Icon_hover.png"
+                ? "ui/action-roll-dice-hover.png"
+                : "ui/action-declare-attack-hover.png"
             }
-            backgroundImage="Button_Small.png"
+            backgroundImage="ui/button-backdrop.png"
             size={64}
             disabled={
               state.me.character.stats.isEngagedInCombat

@@ -44,24 +44,14 @@ export const TemporaryEffectCard = ({
   };
 
   return (
-    <div
-      className={cn(
-        "scale-100 overflow-hidden rounded-[20%] transition-transform hover:scale-110",
-        className,
-      )}
-      style={{ width: cardSize + "em", height: cardSize + "em" }}
+    <Card
+      containerClassName={cn(className, "transition-transform hover:scale-110")}
+      containerStyle={{ width: cardSize + "em", height: cardSize + "em" }}
       onMouseEnter={onHover}
-      onMouseLeave={closePopover}>
-      <CardImage
-        sizes={cardSize + "em"}
-        card={effect.card}
-        orientation={effect.card.orientation}
-        className={
-          effect.card.orientation === "portrait"
-            ? "translate-y-[5%] scale-155"
-            : "translate-y-[43%] scale-300"
-        }
-      />
-    </div>
+      onMouseLeave={closePopover}
+      card={effect.card}
+      orientation={effect.card.orientation}
+      icon
+    />
   );
 };

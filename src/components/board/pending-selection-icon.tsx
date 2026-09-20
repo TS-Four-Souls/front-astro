@@ -1,6 +1,5 @@
 import type { pendingSelectionDetail } from "@/shared/api";
-import { Card, CardImage, CardType } from "./card";
-import { cn } from "@/utils/cn";
+import { Card } from "./card";
 import { usePopoverContext } from "./contexts/popover-context";
 import { useLanguageContext } from "../contexts/language-context";
 
@@ -18,16 +17,17 @@ export const PendingSelectionIcon = (props: Props) => {
     setPopover({
       anchor: rect,
       content: (
-        <div className="flex flex-col items-center gap-3">
-          <PopoverContent {...props} />
-          <div className="flex max-w-64 flex-col place-content-center gap-2 px-2 text-center leading-tight">
+        <div className="max-w-64 flex flex-col items-center gap-3">
+          <PopoverIcon {...props} />
+          <div className="px-2 text-center leading-tight text-taupe-400">
             <span className="font-bold" style={{ color: player.color }}>
               {player.name}
+            </span>{" "}
+            {t("gameStep.stack.stackElement.isBusyWith")}
+            <br />
+            <span className="font-bold text-white">
+              {ts(pendingSelection.description)}
             </span>
-            <span className="text-taupe-400">
-              {t("gameStep.stack.stackElement.isBusyWith")}
-            </span>
-            <span>{ts(pendingSelection.description)}</span>
           </div>
         </div>
       ),
@@ -35,145 +35,56 @@ export const PendingSelectionIcon = (props: Props) => {
   };
 
   const { pendingSelection, player } = props;
-  const { reason } = pendingSelection;
-
-  switch (reason) {
-    case "miniDraft":
-      return (
-        <div
-          className={cn(
-            "h-11 max-w-11 shrink-0 overflow-hidden rounded-lg border-[0.15em] bg-taupe-700",
-          )}
-          onMouseEnter={onHover}
-          onMouseLeave={closePopover}
-          style={{ borderColor: player.color }}>
-          <CardImage
-            sizes="2.5em"
-            card={CardType.TreasureCard}
-            className="-translate-y-1 scale-200"
-          />
-        </div>
-      );
-    case "mulliganCharacters":
-      return (
-        <div
-          className={cn(
-            "h-11 max-w-11 shrink-0 overflow-hidden rounded-lg border-[0.15em] bg-taupe-700",
-          )}
-          onMouseEnter={onHover}
-          onMouseLeave={closePopover}
-          style={{ borderColor: player.color }}>
-          <CardImage
-            sizes="2.5em"
-            card={CardType.CharacterCard}
-            className="-translate-y-1 scale-200"
-          />
-        </div>
-      );
-    case "coinGift":
-      return (
-        <img
-          src="/coin.png"
-          onMouseEnter={onHover}
-          onMouseLeave={closePopover}
-          className={cn(
-            "size-10 shrink-0 rounded-lg border-[0.15em] bg-taupe-700 p-0.5",
-          )}
-          style={{ borderColor: player.color }}
-          draggable={false}
-        />
-      );
-    case "death":
-      return (
-        <img
-          src="/death.png"
-          onMouseEnter={onHover}
-          onMouseLeave={closePopover}
-          className={cn(
-            "size-10 shrink-0 rounded-lg border-[0.15em] bg-taupe-700 p-0.5",
-          )}
-          style={{ borderColor: player.color }}
-          draggable={false}
-        />
-      );
-    case "maxHandSize":
-      return (
-        <img
-          src="/eot.png"
-          onMouseEnter={onHover}
-          onMouseLeave={closePopover}
-          className={cn(
-            "size-10 shrink-0 rounded-lg border-[0.15em] bg-taupe-700 p-0.5",
-          )}
-          style={{ borderColor: player.color }}
-          draggable={false}
-        />
-      );
-    default: {
-      return (
-        <div
-          className={cn(
-            "shrink-0 rounded-lg border-[0.15em] bg-taupe-700",
-          )}
-          onMouseEnter={onHover}
-          onMouseLeave={closePopover}
-          style={{ borderColor: player.color }}>
-          <Card
-            size={3.1}
-            card={reason.card}
-            orientation={reason.card.orientation}
-            icon
-          />
-        </div>
-      );
-    }
-  }
+  return (
+    <div
+      className="flex shrink-0 items-center justify-center transition-transform hover:scale-110"
+      onMouseEnter={onHover}
+      onMouseLeave={closePopover}>
+      <Icon pendingSelection={pendingSelection} player={player} />
+    </div>
+  );
 };
 
-const PopoverContent = ({ pendingSelection }: Props) => {
+const PopoverIcon = ({ pendingSelection }: Props) => {
   switch (pendingSelection.reason) {
     case "miniDraft":
       return (
-        <div className={cn("size-22 overflow-hidden rounded-lg")}>
-          <CardImage
-            sizes="6em"
-            card={CardType.TreasureCard}
-            className="-translate-y-1 scale-200"
-          />
-        </div>
+        <img
+          src="/pending-selections/mini-draft.png"
+          className="size-24 shrink-0 rounded-[20%] bg-taupe-700"
+          draggable={false}
+        />
       );
     case "mulliganCharacters":
       return (
-        <div className={cn("size-22 overflow-hidden rounded-lg")}>
-          <CardImage
-            sizes="6em"
-            card={CardType.CharacterCard}
-            className="-translate-y-1 scale-200"
-          />
-        </div>
+        <img
+          src="/pending-selections/mulligan-characters.png"
+          className="size-24 shrink-0 rounded-[20%] bg-taupe-700"
+          draggable={false}
+        />
       );
     case "coinGift":
       return (
         <img
-          src="/coin.png"
-          className={cn("size-22 shrink-0 rounded-lg")}
+          src="/pending-selections/coin-gift.png"
+          className="size-24 shrink-0 rounded-[20%] bg-taupe-700"
           draggable={false}
         />
       );
     case "maxHandSize":
       return (
         <img
-          src="/eot.png"
-          className={cn("size-22 shrink-0 rounded-lg")}
+          src="/pending-selections/max-hand-size.png"
+          className="size-24 shrink-0 rounded-[20%] bg-taupe-700"
           draggable={false}
         />
       );
     case "death":
       return (
         <img
-          src="/death.png"
+          src="/pending-selections/death.png"
           alt="death"
-          className={cn("size-22 shrink-0 rounded-lg bg-taupe-700 p-2")}
+          className="size-24 shrink-0 rounded-[20%] bg-taupe-700"
           draggable={false}
         />
       );
@@ -185,6 +96,75 @@ const PopoverContent = ({ pendingSelection }: Props) => {
           visualEffectBox={visualEffectBox}
           orientation={card.orientation}
           size={22}
+        />
+      );
+    }
+  }
+};
+
+const Icon = ({
+  pendingSelection,
+  player,
+}: {
+  player: { name: string; color: string };
+  pendingSelection: pendingSelectionDetail;
+}) => {
+  const { reason } = pendingSelection;
+
+  switch (reason) {
+    case "miniDraft":
+      return (
+        <img
+          src="/pending-selections/mini-draft.png"
+          className="size-10 shrink-0 rounded-[20%] border-[0.15em] bg-taupe-700"
+          style={{ borderColor: player.color }}
+          draggable={false}
+        />
+      );
+    case "mulliganCharacters":
+      return (
+        <img
+          src="/pending-selections/mulligan-characters.png"
+          className="size-10 shrink-0 rounded-[20%] border-[0.15em] bg-taupe-700"
+          style={{ borderColor: player.color }}
+          draggable={false}
+        />
+      );
+    case "coinGift":
+      return (
+        <img
+          src="/pending-selections/coin-gift.png"
+          className="size-10 shrink-0 rounded-[20%] border-[0.15em] bg-taupe-700"
+          style={{ borderColor: player.color }}
+          draggable={false}
+        />
+      );
+    case "death":
+      return (
+        <img
+          src="/pending-selections/death.png"
+          className="size-10 shrink-0 rounded-[20%] border-[0.15em] bg-taupe-700"
+          style={{ borderColor: player.color }}
+          draggable={false}
+        />
+      );
+    case "maxHandSize":
+      return (
+        <img
+          src="/pending-selections/max-hand-size.png"
+          className="size-10 shrink-0 rounded-[20%] border-[0.15em] bg-taupe-700"
+          style={{ borderColor: player.color }}
+          draggable={false}
+        />
+      );
+    default: {
+      return (
+        <Card
+          containerClassName="size-10 border-[0.15em] bg-taupe-700"
+          containerStyle={{ borderColor: player.color }}
+          card={reason.card}
+          orientation={reason.card.orientation}
+          icon
         />
       );
     }

@@ -46,7 +46,7 @@ export const EmoteBubble = ({ type }: EmoteBubbleProps) => {
       role="img"
       aria-label={type}>
       <img
-        src="/Emote_Bubble.png"
+        src="/emotes/bubble.png"
         alt=""
         draggable={false}
         className="w-full drop-shadow-md"

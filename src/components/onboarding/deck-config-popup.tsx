@@ -317,7 +317,7 @@ export const DeckConfigPopup = ({
                   0
                 ) : (
                   <img
-                    src={`/soul-${option}.png`}
+                    src={`/ui/soul-${option}.png`}
                     className={cn(
                       "size-6",
                       active && "drop-shadow-sm drop-shadow-taupe-950",

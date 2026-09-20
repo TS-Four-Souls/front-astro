@@ -165,7 +165,7 @@ export const CoinProjectile = ({
         transform: `translate3d(0, 0, 0) scale(${state.scale})`,
       }}>
       <img
-        src="/coin.png"
+        src="/ui/coin.png"
         className={cn(
           "size-6 max-h-none max-w-none select-none",
           "drop-shadow-[0_0_10px_rgba(250,204,21,0.55)]",

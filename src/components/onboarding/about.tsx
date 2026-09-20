@@ -89,7 +89,7 @@ export const About = ({ onClose }: AboutProps) => {
             </a>{" "}
             You can <strong>give ¢</strong> to other players by cliking on their{" "}
             <img
-              src="/coin.png"
+              src="/ui/coin.png"
               alt="Give coins"
               className="inline-block size-5"
             />{" "}
@@ -126,7 +126,7 @@ export const About = ({ onClose }: AboutProps) => {
           <li>
             Did you find a bug, have a question or suggestion? You can message
             us by clicking on the{" "}
-            <img src="/contact.png" className="inline-block size-8" /> icon in
+            <img src="/ui/contact.png" className="inline-block size-8" /> icon in
             the bottom-right corner. While in game, you need to open the main
             menu (by pressing{" "}
             <img
@@ -156,21 +156,21 @@ export const About = ({ onClose }: AboutProps) => {
           Development
         </h3>
         <ul className="flex flex-wrap justify-center gap-16 text-center font-main text-lg">
-          <CreditsItem name="Sylvain Lichau" image="/sylvain.jpg" />
+          <CreditsItem name="Sylvain Lichau" image="/about/sylvain.jpg" />
           <CreditsItem
             name="Dr_Mint"
-            image="/drmint.jpg"
+            image="/about/drmint.jpg"
             link="https://github.com/drmint"
           />
         </ul>
         <h3 className="mt-8 text-center font-main text-2xl font-bold">Icons</h3>
-        <CreditsItem name="Meigasuu" image="/mei.png" />
+        <CreditsItem name="Meigasuu" image="/about/mei.png" />
         <h3 className="mt-4 mb-2 text-center font-main text-2xl font-bold">
           Brazilian Portuguese translation
         </h3>
         <ul className="flex flex-wrap justify-center gap-16 text-center font-main text-lg">
-          <CreditsItem name="chocolover80" image="/avatar_chocolover80.webp" />
-          <CreditsItem name="BlackStripes" image="/avatar_blackStripes.webp" />
+          <CreditsItem name="chocolover80" image="/about/chocolover80.webp" />
+          <CreditsItem name="BlackStripes" image="/about/black-stripes.webp" />
         </ul>
         <h3 className="mt-8 text-center font-main text-2xl font-bold">
           Spanish translation
@@ -181,7 +181,7 @@ export const About = ({ onClose }: AboutProps) => {
             <p>
               <CreditsItem
                 name="Team TBOI Four Souls Latinoamérica"
-                image="/TBOIFSLATAM.png"
+                image="/about/tboifslatam.png"
                 link="https://discord.gg/DrKKMuEWdQ"
               />
               Sirczen, Arzu, Demian, Dontor, Flare, Jörmant, JRaider, Malataka,

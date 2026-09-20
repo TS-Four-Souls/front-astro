@@ -82,7 +82,7 @@ export const ReportBugButton = () => {
   return (
     <div className="absolute right-10 bottom-26 cursor-pointer rounded-full bg-space-500 p-3 shadow-xl/50 inset-shadow-xs inset-shadow-taupe-100/10 transition-[filter] hover:brightness-120 active:brightness-150">
       <img
-        src="/contact.png"
+        src="/ui/contact.png"
         className="w-12"
         onMouseEnter={tooltip.setTooltip}
         onMouseLeave={tooltip.closeTooltip}
@@ -103,7 +103,7 @@ export const DiscordButton = () => {
   return (
     <div className="absolute right-10 bottom-48 cursor-pointer rounded-full bg-space-500 p-0 shadow-xl/50 inset-shadow-xs inset-shadow-taupe-100/10 transition-[filter] hover:brightness-120 active:brightness-150">
       <img
-        src="/discord.png"
+        src="/ui/discord.png"
         className=""
         // cause w-18 is not natively supported in tailwind
         width={72}

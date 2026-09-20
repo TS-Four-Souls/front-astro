@@ -14,7 +14,7 @@ export const RoundCounter = ({
   return (
     <div className="relative">
       <img
-        src="d8.png"
+        src="/ui/d8.png"
         width={48}
         height={48}
         className={className}
