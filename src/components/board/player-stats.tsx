@@ -462,12 +462,12 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
           <ImgButton
             frontImage={
               state.me.character.stats.isEngagedInCombat
-                ? "ui/action-roll-dice.png"
+                ? "ui/action-roll.png"
                 : "ui/action-declare-attack.png"
             }
             frontHoverImage={
               state.me.character.stats.isEngagedInCombat
-                ? "ui/action-roll-dice-hover.png"
+                ? "ui/action-roll-hover.png"
                 : "ui/action-declare-attack-hover.png"
             }
             backgroundImage="ui/button-backdrop.png"
