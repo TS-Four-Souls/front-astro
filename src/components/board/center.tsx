@@ -157,7 +157,7 @@ export const Center = () => {
           promptId,
           isUnique: false,
           prompt: t("gameStep.attack.popup.title"),
-          options: state.monsters.inPlay.map((card, index) => ({
+          options: state.monsters.inPlay.filter(c => !c.top.indomitable).map((card, index) => ({
             type: "card",
             payload: card.top,
             index,

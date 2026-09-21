@@ -17,7 +17,6 @@ export const OthersInPlays = ({ cards, player }: OthersInPlaysProps) => {
   const { toast, block } = useToastContext();
 
   const onTargetableCardClick = (card: InPlayCard) => {
-    console.log("Attacking monster with card:", card);
     socket.emit("attackMonster", { card }, (response) => {
       if (response.status === 400)
         toast(

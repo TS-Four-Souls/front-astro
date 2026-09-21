@@ -85,7 +85,6 @@ export const Me = () => {
   }, [state.me.pendingSelection, addPrompt, removePrompt, toast]);
 
   const onTargetableCardClick = (card: InPlayMeCard) => {
-    console.log("Attacking monster with card:", card);
     socket.emit("attackMonster", { card }, (response) => {
       if (response.status === 400)
         toast(
