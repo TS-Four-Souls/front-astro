@@ -241,7 +241,7 @@ export const Card = ({
 
         {parentCardSlug && (
           <div
-            className="pointer-events-none absolute inset-0 h-full w-full overflow-hidden opacity-50"
+            className="pointer-events-none absolute inset-0 h-full w-full overflow-hidden opacity-50 mix-blend-hard-light"
             style={{
               clipPath: "inset(14% 12% 38% 12% round 8px)",
               borderRadius,
