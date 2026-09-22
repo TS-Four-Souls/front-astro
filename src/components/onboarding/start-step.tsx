@@ -188,7 +188,7 @@ export const StartStep = ({ room }: StartStepProps) => {
       String(now.getMinutes()).padStart(2, "0"),
       String(now.getSeconds()).padStart(2, "0"),
     ].join("-");
-    const filename = `four-souls_settings_${datePart}_${timePart}.txt`;
+    const filename = `four-souls_settings_${datePart}_${timePart}.json`;
 
     downloadTextFile(JSON.stringify(gameParameters, null, 2), filename);
     toast(
