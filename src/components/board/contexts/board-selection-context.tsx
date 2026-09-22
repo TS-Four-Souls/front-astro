@@ -83,7 +83,7 @@ export const BoardSelectionProvider = ({
         [state.me, ...state.players].some(
           (p) =>
             p.inPlay.some((i) => i.globalId === id) ||
-            p.character.globalId === id,
+            (p.character && p.character.globalId === id),
         ) ||
         state.me.hand.some((i) => i.globalId === id) ||
         state.monsters.inPlay.some((i) => i.top.globalId === id) ||

@@ -34,7 +34,7 @@ export const RightPlayer = ({ player }: RightPlayerProps) => (
           gridTemplateRows: `repeat(${Math.min(player.inPlay.length + 1, MAX_ROWS)}, 1fr)`,
         }}>
         <OthersInPlays
-          cards={[player.character, ...player.inPlay]}
+          cards={(player.character !== undefined ? [player.character, ...player.inPlay] : player.inPlay)}
           player={player}
         />
       </div>

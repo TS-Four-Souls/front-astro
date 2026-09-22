@@ -461,25 +461,25 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
           />
           <ImgButton
             frontImage={
-              state.me.character.stats.isEngagedInCombat
+              state.me.character && state.me.character.stats.isEngagedInCombat
                 ? "ui/action-roll.png"
                 : "ui/action-declare-attack.png"
             }
             frontHoverImage={
-              state.me.character.stats.isEngagedInCombat
+              state.me.character && state.me.character.stats.isEngagedInCombat
                 ? "ui/action-roll-hover.png"
                 : "ui/action-declare-attack-hover.png"
             }
             backgroundImage="ui/button-backdrop.png"
             size={64}
             disabled={
-              state.me.character.stats.isEngagedInCombat
+              state.me.character && state.me.character.stats.isEngagedInCombat
                 ? state.me.capabilities.rollDice !== true
                 : state.me.capabilities.declareAttack !== true
             }
             hotkey="a"
             onClick={() =>
-              state.me.character.stats.isEngagedInCombat
+              state.me.character && state.me.character.stats.isEngagedInCombat
                 ? block(
                     t("gameStep.rollDiceButton.blockedTooltip.title"),
                     state.me.capabilities.rollDice,
@@ -492,7 +492,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
                   )
             }
             tooltip={
-              state.me.character.stats.isEngagedInCombat
+              state.me.character && state.me.character.stats.isEngagedInCombat
                 ? state.me.capabilities.rollDice !== true
                   ? {
                       title: t("gameStep.rollDiceButton.blockedTooltip.title"),

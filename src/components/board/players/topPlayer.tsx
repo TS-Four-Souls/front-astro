@@ -18,7 +18,8 @@ export const TopPlayer = ({ player }: TopPlayerProps) => {
       Array(Math.min(player.inPlay.length + 1, MAX_COLUMNS)).fill(undefined),
   );
 
-  grid[0][0] = player.character;
+  if(player.character !== undefined) 
+    grid[0][0] = player.character;
   // Fill the grid with the cards
   for (let i = 1; i < player.inPlay.length + 1; i++) {
     grid[Math.floor(i / MAX_COLUMNS)][i % MAX_COLUMNS] = player.inPlay[i - 1];

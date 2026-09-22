@@ -178,6 +178,7 @@ export const selectionItemSchema: z.ZodType<SelectionItem> = z.lazy(() =>
     z.object({ type: z.literal("player"), payload: entityTypeSchema }),
     z.object({ type: z.literal("monster"), payload: entityTypeSchema }),
     z.object({ type: z.literal("deck"), payload: deckNameSchema }),
+    z.object({ type: z.literal("character"), payload: roomCharacterSchema }),
     z.object({ type: z.literal("number"), payload: z.number() }),
     z.object({ type: z.literal("boolean"), payload: z.boolean() }),
     z.object({ type: z.literal("string"), payload: z.string() }),
@@ -845,7 +846,7 @@ const playerSchema = z.object({
   team: z.enum(Team),
   handSize: z.number(),
   hand: z.array(cardSchema).optional(),
-  character: inPlayWithStatsCardSchema,
+  character: inPlayWithStatsCardSchema.optional(),
   inPlay: z.array(inPlayCardSchema),
   souls: z.number(),
   soulCards: z.array(cardSchema),
@@ -863,7 +864,7 @@ export type Player = z.infer<typeof playerSchema>;
 
 const playerMeSchema = playerSchema.extend({
   hand: z.array(cardSchema),
-  character: inPlayWithStatsMeCardSchema,
+  character: inPlayWithStatsMeCardSchema.optional(),
   inPlay: z.array(inPlayMeCardSchema),
   numberOfCardsOverMaxHandSize: z.number(),
   capabilities: z.object({
