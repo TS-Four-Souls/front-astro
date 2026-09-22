@@ -101,10 +101,13 @@ export const useTooltip = (tooltip: Tooltip | Tooltip[] | undefined) => {
     });
   }, [tooltipKey, anchor]);
 
-  const setTooltip = useCallback((target: Element | React.MouseEvent<Element>) => {
-    const el = target instanceof Element ? target : target.currentTarget;
-    setAnchor(el.getBoundingClientRect());
-  }, []);
+  const setTooltip = useCallback(
+    (target: Element | React.MouseEvent<Element>) => {
+      const el = target instanceof Element ? target : target.currentTarget;
+      setAnchor(el.getBoundingClientRect());
+    },
+    [],
+  );
 
   const closeTooltip = useCallback(() => {
     setAnchor(undefined);

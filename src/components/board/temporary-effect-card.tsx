@@ -1,5 +1,5 @@
 import type { TemporaryEffect } from "@/shared/api";
-import { Card, CardImage } from "./card";
+import { Card } from "./card";
 import { cn } from "@/utils/cn";
 import { usePopoverContext } from "./contexts/popover-context";
 import { useLanguageContext } from "../contexts/language-context";

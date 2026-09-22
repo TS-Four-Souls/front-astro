@@ -126,8 +126,8 @@ export const About = ({ onClose }: AboutProps) => {
           <li>
             Did you find a bug, have a question or suggestion? You can message
             us by clicking on the{" "}
-            <img src="/ui/contact.png" className="inline-block size-8" /> icon in
-            the bottom-right corner. While in game, you need to open the main
+            <img src="/ui/contact.png" className="inline-block size-8" /> icon
+            in the bottom-right corner. While in game, you need to open the main
             menu (by pressing{" "}
             <img
               src="/input-prompts/keyboard_escape_outline.svg"

@@ -17,7 +17,7 @@ export const PendingSelectionIcon = (props: Props) => {
     setPopover({
       anchor: rect,
       content: (
-        <div className="max-w-64 flex flex-col items-center gap-3">
+        <div className="flex max-w-64 flex-col items-center gap-3">
           <PopoverIcon {...props} />
           <div className="px-2 text-center leading-tight text-taupe-400">
             <span className="font-bold" style={{ color: player.color }}>

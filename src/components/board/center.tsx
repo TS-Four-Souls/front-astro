@@ -157,11 +157,13 @@ export const Center = () => {
           promptId,
           isUnique: false,
           prompt: t("gameStep.attack.popup.title"),
-          options: state.monsters.inPlay.filter(c => !c.top.indomitable).map((card, index) => ({
-            type: "card",
-            payload: card.top,
-            index,
-          })),
+          options: state.monsters.inPlay
+            .filter((c) => !c.top.indomitable)
+            .map((card, index) => ({
+              type: "card",
+              payload: card.top,
+              index,
+            })),
           minCount: 1,
           maxCount: 1,
           onSubmit: function (selections): void {
@@ -624,7 +626,9 @@ export const Center = () => {
                   ? () => (
                       <CardHoverPreview
                         card={monsterDeckAttackRequirement.source}
-                        orientation={monsterDeckAttackRequirement.source.orientation}
+                        orientation={
+                          monsterDeckAttackRequirement.source.orientation
+                        }
                         tooltip={[
                           {
                             capable: state.monsters.capabilities.targetableDeck,

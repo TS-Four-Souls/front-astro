@@ -494,7 +494,7 @@ const DiceWillRollElement = ({ element }: { element: DiceWillRollJson }) => {
             : ts({ key: "gameStep.stack.stackElement.attackRoll" })}
         </p>
 
-        <p className="text-taupe-200 leading-tight">{msg}</p>
+        <p className="leading-tight text-taupe-200">{msg}</p>
       </div>
     </div>
   );

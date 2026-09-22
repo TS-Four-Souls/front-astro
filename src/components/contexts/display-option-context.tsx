@@ -89,8 +89,7 @@ export const DisplayOptionProvider = ({
       value={{
         defaultMenu,
         setDefaultMenu,
-      }}
-    >
+      }}>
       {children}
     </DisplayOptionContext.Provider>
   );

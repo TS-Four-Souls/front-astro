@@ -1368,7 +1368,6 @@ export namespace Responses {
   export type AdminReplyToMessage = AdminReplyToMessageResponse;
 }
 
-
 export interface ServerToClientEvents {
   "on:room:changed": (room: Room | null) => void;
   "on:user:assigned": (userId: string | null) => void;

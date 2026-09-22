@@ -191,7 +191,11 @@ export const Me = () => {
     }
   };
 
-  const targetableCards = (state.me.character !== undefined ? [state.me.character, ...state.me.inPlay] : state.me.inPlay)
+  const targetableCards = (
+    state.me.character !== undefined
+      ? [state.me.character, ...state.me.inPlay]
+      : state.me.inPlay
+  )
     .filter(
       (card) =>
         !isHandUp &&
@@ -220,7 +224,10 @@ export const Me = () => {
           style={{
             gridTemplateColumns: `repeat(${Math.min(state.me.inPlay.length + 1, 8)}, minmax(0, 1fr))`,
           }}>
-          {(state.me.character !== undefined ? [state.me.character, ...state.me.inPlay] : state.me.inPlay).map((card, index) => {
+          {(state.me.character !== undefined
+            ? [state.me.character, ...state.me.inPlay]
+            : state.me.inPlay
+          ).map((card, index) => {
             return (
               <div
                 key={card.globalId}
@@ -244,7 +251,12 @@ export const Me = () => {
                   cards={[
                     {
                       slug: card.slug,
-                      parent: typeof card === "object" && "parent" in card && typeof card.parent === "string" ? card.parent : undefined,
+                      parent:
+                        typeof card === "object" &&
+                        "parent" in card &&
+                        typeof card.parent === "string"
+                          ? card.parent
+                          : undefined,
                       charged: card.charged,
                       eternal: card.eternal,
                       engagedInCombat: card.stats?.isEngagedInCombat === true,

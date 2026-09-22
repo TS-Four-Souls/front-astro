@@ -241,23 +241,18 @@ export const Card = ({
 
         {parentCardSlug && (
           <div
-            className="pointer-events-none absolute inset-0 h-full w-full overflow-hidden opacity-50 mix-blend-hard-light"
+            className="pointer-events-none absolute inset-0 h-full w-full opacity-50 mix-blend-hard-light"
             style={{
               clipPath: "inset(14% 12% 38% 12% round 8px)",
               borderRadius,
             }}>
             <img
               srcSet={parentSrcSet}
+              className="h-full w-full object-cover"
               sizes={sizes}
               src={`${SELF_BASE_URL}/images/front/${parentCardSlug}_256_en.webp`}
               alt={parentCardSlug}
               draggable={false}
-              style={{
-                width: "100%",
-                aspectRatio,
-                objectFit: "cover",
-                display: "block",
-              }}
             />
           </div>
         )}
@@ -361,7 +356,10 @@ export const Card = ({
             className="pointer-events-none"
             style={{ fontSize: statsSize + "em" }}>
             <div className={positionStatOverlay}>
-              <img src="/card-overlays/stats-with-evasion.png" draggable={false} />
+              <img
+                src="/card-overlays/stats-with-evasion.png"
+                draggable={false}
+              />
             </div>
 
             <div className={HealthOverlay}>{stats.healthPoints}</div>
