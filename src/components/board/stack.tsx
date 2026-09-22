@@ -437,7 +437,7 @@ const InsertionBar = ({
 const DiceRollElement = ({ element }: { element: DiceRollJson }) => {
   const { ts } = useLanguageContext();
 
-  const result = `${element.diceRoll} ${element.modifier !== 0 ? `(+${element.modifier})` : ""}`;
+  const result = `${element.diceRoll} ${element.modifier !== 0 ? `(${element.modifier > 0 ? "+" : ""}${element.modifier})` : ""}`;
   const serialized: SerializedTranslation = {
     key: "gameStep.stack.stackElement.cardRoll",
     interpolates: {
