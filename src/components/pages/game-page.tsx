@@ -3,6 +3,7 @@ import { socket } from "@/utils/socket";
 import { storage } from "@/utils/storage";
 import { useEffect, useState } from "react";
 import { Board } from "../board/board";
+import { BoardScaleProvider } from "../board/contexts/board-scale-context";
 import { BoardSelectionProvider } from "../board/contexts/board-selection-context";
 import { GameAnimationProvider } from "../board/contexts/game-animation";
 import { GameProvider } from "../board/contexts/game-context";
@@ -165,9 +166,11 @@ export const GamePage = () => {
           isSpectator={room.isSpectator}>
           <BoardSelectionProvider>
             <MainMenuProvider>
-              <GameAnimationProvider>
-                <Board />
-              </GameAnimationProvider>
+              <BoardScaleProvider>
+                <GameAnimationProvider>
+                  <Board />
+                </GameAnimationProvider>
+              </BoardScaleProvider>
             </MainMenuProvider>
           </BoardSelectionProvider>
         </GameProvider>

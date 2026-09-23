@@ -315,6 +315,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
             const rect = soulAnchorRef.current.getBoundingClientRect();
             setPopover({
               anchor: rect,
+              anchorElement: soulAnchorRef.current,
               content: (
                 <div className="flex w-max flex-nowrap gap-4">
                   {soulCards.map((card, index) => (

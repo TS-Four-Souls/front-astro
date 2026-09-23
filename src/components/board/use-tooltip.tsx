@@ -69,15 +69,10 @@ export const useTooltip = (tooltip: Tooltip | Tooltip[] | undefined) => {
   const tooltips = normalizeTooltips(tooltip);
   const tooltipKey = getTooltipKey(tooltip);
 
-  const [anchor, setAnchor] = useState<{
-    left: number;
-    top: number;
-    width: number;
-    height: number;
-  }>();
+  const [anchorEl, setAnchorEl] = useState<Element | null>(null);
 
   useLayoutEffect(() => {
-    if (anchor === undefined) return;
+    if (anchorEl === null || !anchorEl.isConnected) return;
 
     const hasTooltips =
       tooltips.length > 0 &&
@@ -89,7 +84,8 @@ export const useTooltip = (tooltip: Tooltip | Tooltip[] | undefined) => {
     }
 
     setPopover({
-      anchor,
+      anchor: anchorEl.getBoundingClientRect(),
+      anchorElement: anchorEl,
       withWrapper: false,
       content: (
         <div className="flex flex-col gap-1">
@@ -99,18 +95,18 @@ export const useTooltip = (tooltip: Tooltip | Tooltip[] | undefined) => {
         </div>
       ),
     });
-  }, [tooltipKey, anchor]);
+  }, [tooltipKey, anchorEl]);
 
   const setTooltip = useCallback(
     (target: Element | React.MouseEvent<Element>) => {
       const el = target instanceof Element ? target : target.currentTarget;
-      setAnchor(el.getBoundingClientRect());
+      setAnchorEl(el);
     },
     [],
   );
 
   const closeTooltip = useCallback(() => {
-    setAnchor(undefined);
+    setAnchorEl(null);
     closePopover();
   }, [closePopover]);
 

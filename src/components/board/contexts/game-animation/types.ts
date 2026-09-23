@@ -10,22 +10,22 @@ export type GameAnimationBridge = {
   /** Treasure shop slots (center row), keyed by card globalId. */
   treasureShopPileEls: Map<number, HTMLDivElement>;
   /** Previous-frame rects for shop slots (card still in shop); used when animating buyShopTreasure after the slot unmounts. */
-  previousTreasureShopPileByCard: Map<number, DOMRect>;
+  previousTreasureShopPileByCard: Map<number, RectPlain>;
   /** Monster slots (center row), keyed by top monster card globalId. */
   monsterSlotEls: Map<number, HTMLDivElement>;
   /** Previous-frame rects for monster slots before the card leaves play (obtainMonsterSoul). */
-  previousMonsterSlotByCard: Map<number, DOMRect>;
+  previousMonsterSlotByCard: Map<number, RectPlain>;
   /** Bonus soul piles (center column), keyed by card globalId. */
   bonusSoulPileEls: Map<number, HTMLDivElement>;
   /** Previous-frame rects before the bonus soul is granted (obtainBonusSoul). */
-  previousBonusSoulPileByCard: Map<number, DOMRect>;
+  previousBonusSoulPileByCard: Map<number, RectPlain>;
   meHandEls: Map<number, HTMLDivElement>;
   /** Any in-play item card on the table (all players), keyed by card globalId. */
   inPlayCardEls: Map<number, HTMLDivElement>;
   opponentHandPileEls: Map<string, HTMLDivElement>;
   playerAnchors: Map<string, Map<PlayerAnchor, HTMLDivElement>>;
-  previousMeByCard: Map<number, { slug: string; rect: DOMRect }>;
-  previousOppPile: Map<string, DOMRect>;
+  previousMeByCard: Map<number, { slug: string; rect: RectPlain }>;
+  previousOppPile: Map<string, RectPlain>;
   seenAnimationIds: Set<string>;
   initialized: boolean;
 };

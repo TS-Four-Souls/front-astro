@@ -2,10 +2,16 @@ import {
   createContext,
   useCallback,
   useContext,
+  useLayoutEffect,
   useMemo,
   useState,
 } from "react";
 import { Popover } from "../popover";
+import {
+  boardPointer,
+  rectContainsPoint,
+  subscribeBoardTransform,
+} from "../board-transform";
 
 interface Popover {
   anchor: {
@@ -14,6 +20,8 @@ interface Popover {
     width: number;
     height: number;
   };
+  /** Live element. Remeasured when the board zooms or pans. */
+  anchorElement?: Element;
   withWrapper?: boolean;
   content: React.ReactNode;
   className?: string;
@@ -38,6 +46,38 @@ export const PopoverProvider = ({
   const closePopover = useCallback(() => {
     setPopover(null);
   }, []);
+
+  useLayoutEffect(
+    () =>
+      subscribeBoardTransform(() => {
+        setPopover((current) => {
+          const anchorElement = current?.anchorElement;
+          if (!current || !anchorElement) return current;
+          if (!anchorElement.isConnected) return null;
+          const rect = anchorElement.getBoundingClientRect();
+          const { x, y } = boardPointer;
+          if (x >= 0 && y >= 0 && !rectContainsPoint(rect, x, y)) return null;
+          if (
+            current.anchor.left === rect.left &&
+            current.anchor.top === rect.top &&
+            current.anchor.width === rect.width &&
+            current.anchor.height === rect.height
+          ) {
+            return current;
+          }
+          return {
+            ...current,
+            anchor: {
+              left: rect.left,
+              top: rect.top,
+              width: rect.width,
+              height: rect.height,
+            },
+          };
+        });
+      }),
+    [],
+  );
 
   const value = useMemo(() => ({ setPopover, closePopover }), [closePopover]);
 

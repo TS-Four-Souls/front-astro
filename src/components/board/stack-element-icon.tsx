@@ -22,6 +22,7 @@ export const StackElementIcon = ({ element }: StackElementIconProps) => {
     const rect = e.currentTarget.getBoundingClientRect();
     setPopover({
       anchor: rect,
+      anchorElement: e.currentTarget,
       content: (
         <div className="flex flex-col items-center gap-3">
           <PopoverIcon element={element} />
