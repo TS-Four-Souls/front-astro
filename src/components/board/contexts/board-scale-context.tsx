@@ -13,6 +13,7 @@ import { usePopoverContext } from "./popover-context";
 import {
   boardPointer,
   notifyBoardTransform,
+  setBoardZoomed,
   type BoardRect,
 } from "../board-transform";
 
@@ -97,6 +98,7 @@ export const BoardScaleProvider = ({
 
   const syncZoomed = useCallback(() => {
     const next = zoomRef.current > MIN_ZOOM + ZOOM_EPSILON;
+    setBoardZoomed(next);
     setZoomed((prev) => (prev === next ? prev : next));
   }, []);
 
@@ -572,6 +574,8 @@ export const BoardScaleProvider = ({
     window.addEventListener("resize", autofit);
     return () => window.removeEventListener("resize", autofit);
   }, [autofit]);
+
+  useEffect(() => () => setBoardZoomed(false), []);
 
   const view = useMemo<BoardView>(
     () => ({

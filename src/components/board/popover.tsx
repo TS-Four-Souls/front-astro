@@ -86,7 +86,7 @@ export const Popover = ({
       {withWrapper ? (
         <div
           className={cn(
-            "rounded-3xl border-3 border-taupe-700 bg-taupe-950 p-3",
+            "rounded-3xl border-3 border-taupe-700 bg-taupe-950 p-3 empty:hidden",
             className,
           )}>
           {children}
