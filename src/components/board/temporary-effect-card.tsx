@@ -21,9 +21,10 @@ export const TemporaryEffectCard = ({
   const cardSize = size / 16;
 
   const onHover = (e: React.MouseEvent<HTMLDivElement>) => {
-    const element = e.target as HTMLElement;
+    const element = e.currentTarget;
     setPopover({
       anchor: element.getBoundingClientRect(),
+      anchorElement: element,
       content: (
         <div className="flex flex-col place-items-center gap-2">
           <Card

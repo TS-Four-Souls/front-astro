@@ -140,6 +140,7 @@ export const Pile = ({
     if (onHoverPopover) {
       setPopover({
         anchor: e.currentTarget.getBoundingClientRect(),
+        anchorElement: e.currentTarget,
         content: onHoverPopover(),
       });
     }

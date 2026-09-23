@@ -108,7 +108,7 @@ export const CardGhost = ({
   return (
     <div
       style={{
-        position: "fixed",
+        position: "absolute",
         left,
         top,
         width,

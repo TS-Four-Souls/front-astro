@@ -7,7 +7,9 @@ import {
   useState,
 } from "react";
 import type { RefObject } from "react";
+import { createPortal } from "react-dom";
 import { useGameContext } from "../game-context";
+import { useBoardView } from "../board-scale-context";
 import type { DetailedState } from "@/shared/api";
 import { CardType } from "../../card";
 import {
@@ -15,6 +17,7 @@ import {
   type GameAnimationBridge,
   type PlayerAnchor,
   type Point2D,
+  type RectPlain,
 } from "./types";
 import { CardGhost, type CardGhostPayload } from "./card-ghost";
 import { CoinProjectile } from "./coin-projectile";
@@ -33,9 +36,11 @@ type CardGhostItem = CardGhostPayload & { id: number };
 
 type CoinBurstItem = {
   id: number;
-  fromRect: { left: number; top: number; width: number; height: number };
+  fromRect: RectPlain;
   toPoint: Point2D;
   delayMs: number;
+  /** Multiplier from viewport pixels into board-local pixels at autofit. */
+  spread: number;
 };
 
 export interface GameAnimationContextValue {
@@ -62,6 +67,7 @@ export interface GameAnimationContextValue {
     anchor: PlayerAnchor,
     el: HTMLDivElement | null,
   ) => void;
+  registerAnimationRoot: (el: HTMLDivElement | null) => void;
 }
 
 const GameAnimationContext = createContext<GameAnimationContextValue>({
@@ -75,14 +81,17 @@ const GameAnimationContext = createContext<GameAnimationContextValue>({
   registerInPlayCardEl: () => {},
   registerOpponentHandPile: () => {},
   registerPlayerAnchor: () => {},
+  registerAnimationRoot: () => {},
 });
 
-const rectPlain = (r: DOMRect) => ({
+const rectPlain = (r: RectPlain): RectPlain => ({
   left: r.left,
   top: r.top,
   width: r.width,
   height: r.height,
 });
+
+type ToLocal = (rect: RectPlain) => RectPlain;
 
 const AnimationsFromState = ({
   bridgeRef,
@@ -93,29 +102,30 @@ const AnimationsFromState = ({
   onGiveCoins,
 }: {
   bridgeRef: RefObject<GameAnimationBridge>;
-  onLootToStack: (payload: { slug: string; fromRect: DOMRect }) => void;
+  onLootToStack: (payload: { slug: string; fromRect: RectPlain }) => void;
   onDrawLoot: (payload: {
-    fromRect: DOMRect;
-    toRect: DOMRect;
+    fromRect: RectPlain;
+    toRect: RectPlain;
     delayMs?: number;
   }) => void;
   onTreasureBuyToInPlay: (payload: {
-    fromRect: DOMRect;
-    toRect: DOMRect;
+    fromRect: RectPlain;
+    toRect: RectPlain;
     slug: string;
   }) => void;
   onMonsterSoulToCounter: (payload: {
-    fromRect: DOMRect;
-    toRect: DOMRect;
+    fromRect: RectPlain;
+    toRect: RectPlain;
     slug: string;
   }) => void;
   onGiveCoins: (payload: {
-    fromRect: DOMRect;
+    fromRect: RectPlain;
     toPoint: Point2D;
     count: number;
   }) => void;
 }) => {
   const { state } = useGameContext();
+  const { toLocalRect } = useBoardView();
 
   useLayoutEffect(() => {
     const bridge = bridgeRef.current;
@@ -124,10 +134,10 @@ const AnimationsFromState = ({
       for (const a of state.animations) {
         bridge.seenAnimationIds.add(a.id);
       }
-      refreshHandSnapshots(bridge, state);
-      refreshTreasureShopSnapshots(bridge, state);
-      refreshMonsterSnapshots(bridge, state);
-      refreshBonusSoulSnapshots(bridge, state);
+      refreshHandSnapshots(bridge, state, toLocalRect);
+      refreshTreasureShopSnapshots(bridge, state, toLocalRect);
+      refreshMonsterSnapshots(bridge, state, toLocalRect);
+      refreshBonusSoulSnapshots(bridge, state, toLocalRect);
       bridge.initialized = true;
       return;
     }
@@ -160,8 +170,8 @@ const AnimationsFromState = ({
 
       if (a.type === "giveCoins") {
         if (a.count > 0) {
-          const from = getPlayerCoinRect(bridge, a.sender);
-          const to = getPlayerCoinRect(bridge, a.recipient);
+          const from = getPlayerCoinRect(bridge, a.sender, toLocalRect);
+          const to = getPlayerCoinRect(bridge, a.recipient, toLocalRect);
           if (from && to) {
             const toPoint: Point2D = {
               x: to.left + to.width / 2,
@@ -178,7 +188,7 @@ const AnimationsFromState = ({
         if (el) {
           onLootToStack({
             slug: a.card.slug,
-            fromRect: el.getBoundingClientRect(),
+            fromRect: toLocalRect(el.getBoundingClientRect()),
           });
         }
         continue;
@@ -187,7 +197,7 @@ const AnimationsFromState = ({
       if (a.type === "drawLoot") {
         const fromEl = bridge.lootDeckEl;
         if (fromEl && a.nb > 0) {
-          const fromRect = fromEl.getBoundingClientRect();
+          const fromRect = toLocalRect(fromEl.getBoundingClientRect());
           if (a.player === state.me.name) {
             const hand = state.me.hand;
             const n = Math.min(a.nb, hand.length);
@@ -197,7 +207,7 @@ const AnimationsFromState = ({
               if (el) {
                 onDrawLoot({
                   fromRect,
-                  toRect: el.getBoundingClientRect(),
+                  toRect: toLocalRect(el.getBoundingClientRect()),
                   delayMs: i * DRAW_LOOT_STAGGER_MS,
                 });
               }
@@ -205,7 +215,7 @@ const AnimationsFromState = ({
           } else {
             const pileEl = bridge.opponentHandPileEls.get(a.player);
             if (pileEl) {
-              const toRect = pileEl.getBoundingClientRect();
+              const toRect = toLocalRect(pileEl.getBoundingClientRect());
               const count = Math.min(a.nb, MAX_DRAW_LOOT_GHOSTS);
               for (let i = 0; i < count; i++) {
                 onDrawLoot({
@@ -224,23 +234,24 @@ const AnimationsFromState = ({
         const toEl = bridge.inPlayCardEls.get(a.card.globalId);
         if (!toEl) continue;
 
-        let fromRect: DOMRect | null = null;
+        let fromRect: RectPlain | null = null;
         if (a.type === "buyTopDeckTreasure") {
           const deckEl = bridge.treasureDeckEl;
-          if (deckEl) fromRect = deckEl.getBoundingClientRect();
+          if (deckEl) fromRect = toLocalRect(deckEl.getBoundingClientRect());
         } else {
+          const previous = bridge.previousTreasureShopPileByCard.get(
+            a.card.globalId,
+          );
+          const live = bridge.treasureShopPileEls.get(a.card.globalId);
           fromRect =
-            bridge.previousTreasureShopPileByCard.get(a.card.globalId) ??
-            bridge.treasureShopPileEls
-              .get(a.card.globalId)
-              ?.getBoundingClientRect() ??
-            null;
+            previous ??
+            (live ? toLocalRect(live.getBoundingClientRect()) : null);
         }
 
         if (fromRect) {
           onTreasureBuyToInPlay({
             fromRect,
-            toRect: toEl.getBoundingClientRect(),
+            toRect: toLocalRect(toEl.getBoundingClientRect()),
             slug: a.card.slug,
           });
         }
@@ -248,12 +259,14 @@ const AnimationsFromState = ({
       }
 
       if (a.type === "obtainMonsterSoul") {
+        const previous = bridge.previousMonsterSlotByCard.get(a.card.globalId);
+        const live = bridge.monsterSlotEls.get(a.card.globalId);
         const fromRect =
-          bridge.previousMonsterSlotByCard.get(a.card.globalId) ??
-          bridge.monsterSlotEls.get(a.card.globalId)?.getBoundingClientRect() ??
-          null;
+          previous ?? (live ? toLocalRect(live.getBoundingClientRect()) : null);
         const soulsEl = bridge.playerAnchors.get(a.player)?.get("souls");
-        const toRect = soulsEl?.getBoundingClientRect() ?? null;
+        const toRect = soulsEl
+          ? toLocalRect(soulsEl.getBoundingClientRect())
+          : null;
         if (fromRect && toRect) {
           onMonsterSoulToCounter({
             fromRect,
@@ -265,14 +278,16 @@ const AnimationsFromState = ({
       }
 
       if (a.type === "obtainBonusSoul") {
+        const previous = bridge.previousBonusSoulPileByCard.get(
+          a.card.globalId,
+        );
+        const live = bridge.bonusSoulPileEls.get(a.card.globalId);
         const fromRect =
-          bridge.previousBonusSoulPileByCard.get(a.card.globalId) ??
-          bridge.bonusSoulPileEls
-            .get(a.card.globalId)
-            ?.getBoundingClientRect() ??
-          null;
+          previous ?? (live ? toLocalRect(live.getBoundingClientRect()) : null);
         const soulsEl = bridge.playerAnchors.get(a.player)?.get("souls");
-        const toRect = soulsEl?.getBoundingClientRect() ?? null;
+        const toRect = soulsEl
+          ? toLocalRect(soulsEl.getBoundingClientRect())
+          : null;
         if (fromRect && toRect) {
           onMonsterSoulToCounter({
             fromRect,
@@ -284,10 +299,10 @@ const AnimationsFromState = ({
       }
     }
 
-    refreshHandSnapshots(bridge, state);
-    refreshTreasureShopSnapshots(bridge, state);
-    refreshMonsterSnapshots(bridge, state);
-    refreshBonusSoulSnapshots(bridge, state);
+    refreshHandSnapshots(bridge, state, toLocalRect);
+    refreshTreasureShopSnapshots(bridge, state, toLocalRect);
+    refreshMonsterSnapshots(bridge, state, toLocalRect);
+    refreshBonusSoulSnapshots(bridge, state, toLocalRect);
   }, [
     state,
     bridgeRef,
@@ -296,23 +311,25 @@ const AnimationsFromState = ({
     onTreasureBuyToInPlay,
     onMonsterSoulToCounter,
     onGiveCoins,
+    toLocalRect,
   ]);
 
   return null;
 };
 
-function getPlayerCoinRect(bridge: GameAnimationBridge, playerName: string) {
-  return (
-    bridge.playerAnchors
-      .get(playerName)
-      ?.get("coins")
-      ?.getBoundingClientRect() ?? null
-  );
+function getPlayerCoinRect(
+  bridge: GameAnimationBridge,
+  playerName: string,
+  toLocal: ToLocal,
+) {
+  const el = bridge.playerAnchors.get(playerName)?.get("coins");
+  return el ? toLocal(el.getBoundingClientRect()) : null;
 }
 
 function refreshMonsterSnapshots(
   bridge: GameAnimationBridge,
   state: DetailedState,
+  toLocal: ToLocal,
 ) {
   bridge.previousMonsterSlotByCard.clear();
   for (const slot of state.monsters.inPlay) {
@@ -320,7 +337,7 @@ function refreshMonsterSnapshots(
     if (el) {
       bridge.previousMonsterSlotByCard.set(
         slot.top.globalId,
-        el.getBoundingClientRect(),
+        toLocal(el.getBoundingClientRect()),
       );
     }
   }
@@ -328,9 +345,11 @@ function refreshMonsterSnapshots(
 
 function getFixedStackTargetRect(
   stackEl: HTMLDivElement | null,
-  fromRect: DOMRect,
-) {
-  if (!stackEl) {
+  fromRect: RectPlain,
+  toLocal: ToLocal,
+  baseScale: number,
+): RectPlain {
+  if (!stackEl || baseScale <= 0) {
     return {
       left: fromRect.left,
       top: fromRect.top,
@@ -339,18 +358,20 @@ function getFixedStackTargetRect(
     };
   }
 
-  const stackRect = stackEl.getBoundingClientRect();
+  const stackRect = toLocal(stackEl.getBoundingClientRect());
+  const unit = 1 / baseScale;
   return {
-    left: stackRect.left + STACK_TARGET_OFFSET_LEFT,
-    top: stackRect.top + STACK_TARGET_OFFSET_TOP,
-    width: STACK_TARGET_SIZE,
-    height: STACK_TARGET_SIZE,
+    left: stackRect.left + STACK_TARGET_OFFSET_LEFT * unit,
+    top: stackRect.top + STACK_TARGET_OFFSET_TOP * unit,
+    width: STACK_TARGET_SIZE * unit,
+    height: STACK_TARGET_SIZE * unit,
   };
 }
 
 function refreshHandSnapshots(
   bridge: GameAnimationBridge,
   state: DetailedState,
+  toLocal: ToLocal,
 ) {
   bridge.previousMeByCard.clear();
   for (const card of state.me.hand) {
@@ -358,7 +379,7 @@ function refreshHandSnapshots(
     if (el) {
       bridge.previousMeByCard.set(card.globalId, {
         slug: card.slug,
-        rect: el.getBoundingClientRect(),
+        rect: toLocal(el.getBoundingClientRect()),
       });
     }
   }
@@ -367,7 +388,7 @@ function refreshHandSnapshots(
     if (p.handSize <= 0) continue;
     const el = bridge.opponentHandPileEls.get(p.name);
     if (el) {
-      bridge.previousOppPile.set(p.name, el.getBoundingClientRect());
+      bridge.previousOppPile.set(p.name, toLocal(el.getBoundingClientRect()));
     }
   }
 }
@@ -375,6 +396,7 @@ function refreshHandSnapshots(
 function refreshTreasureShopSnapshots(
   bridge: GameAnimationBridge,
   state: DetailedState,
+  toLocal: ToLocal,
 ) {
   bridge.previousTreasureShopPileByCard.clear();
   for (const card of state.treasure.inPlay) {
@@ -382,7 +404,7 @@ function refreshTreasureShopSnapshots(
     if (el) {
       bridge.previousTreasureShopPileByCard.set(
         card.globalId,
-        el.getBoundingClientRect(),
+        toLocal(el.getBoundingClientRect()),
       );
     }
   }
@@ -391,6 +413,7 @@ function refreshTreasureShopSnapshots(
 function refreshBonusSoulSnapshots(
   bridge: GameAnimationBridge,
   state: DetailedState,
+  toLocal: ToLocal,
 ) {
   bridge.previousBonusSoulPileByCard.clear();
   const souls = state.bonusSouls;
@@ -400,7 +423,7 @@ function refreshBonusSoulSnapshots(
     if (el) {
       bridge.previousBonusSoulPileByCard.set(
         soul.globalId,
-        el.getBoundingClientRect(),
+        toLocal(el.getBoundingClientRect()),
       );
     }
   }
@@ -417,6 +440,10 @@ export const GameAnimationProvider = ({
 
   const [cardGhosts, setCardGhosts] = useState<CardGhostItem[]>([]);
   const [coinBursts, setCoinBursts] = useState<CoinBurstItem[]>([]);
+  const [animationRoot, setAnimationRoot] = useState<HTMLDivElement | null>(
+    null,
+  );
+  const { toLocalRect, getBaseScale } = useBoardView();
 
   const setStackEl = useCallback((el: HTMLDivElement | null) => {
     stackElRef.current = el;
@@ -458,10 +485,19 @@ export const GameAnimationProvider = ({
     [],
   );
 
+  const registerAnimationRoot = useCallback((el: HTMLDivElement | null) => {
+    setAnimationRoot(el);
+  }, []);
+
   const onLootToStack = useCallback(
-    ({ slug, fromRect }: { slug: string; fromRect: DOMRect }) => {
+    ({ slug, fromRect }: { slug: string; fromRect: RectPlain }) => {
       const id = nextIdRef.current++;
-      const toRect = getFixedStackTargetRect(stackElRef.current, fromRect);
+      const toRect = getFixedStackTargetRect(
+        stackElRef.current,
+        fromRect,
+        toLocalRect,
+        getBaseScale(),
+      );
       setCardGhosts((prev) => [
         ...prev,
         {
@@ -472,11 +508,11 @@ export const GameAnimationProvider = ({
         },
       ]);
     },
-    [],
+    [getBaseScale, toLocalRect],
   );
 
   const onDrawLoot = useCallback(
-    (payload: { fromRect: DOMRect; toRect: DOMRect; delayMs?: number }) => {
+    (payload: { fromRect: RectPlain; toRect: RectPlain; delayMs?: number }) => {
       const id = nextIdRef.current++;
       setCardGhosts((prev) => [
         ...prev,
@@ -493,7 +529,7 @@ export const GameAnimationProvider = ({
   );
 
   const onTreasureBuyToInPlay = useCallback(
-    (payload: { fromRect: DOMRect; toRect: DOMRect; slug: string }) => {
+    (payload: { fromRect: RectPlain; toRect: RectPlain; slug: string }) => {
       const id = nextIdRef.current++;
       setCardGhosts((prev) => [
         ...prev,
@@ -513,7 +549,7 @@ export const GameAnimationProvider = ({
   );
 
   const onMonsterSoulToCounter = useCallback(
-    (payload: { fromRect: DOMRect; toRect: DOMRect; slug: string }) => {
+    (payload: { fromRect: RectPlain; toRect: RectPlain; slug: string }) => {
       const id = nextIdRef.current++;
       setCardGhosts((prev) => [
         ...prev,
@@ -536,12 +572,13 @@ export const GameAnimationProvider = ({
       toPoint,
       count,
     }: {
-      fromRect: DOMRect;
+      fromRect: RectPlain;
       toPoint: Point2D;
       count: number;
     }) => {
       const n = Math.min(Math.max(1, count), MAX_VISIBLE_COINS);
       const fromPlain = rectPlain(fromRect);
+      const spread = 1 / Math.max(getBaseScale(), 0.0001);
       setCoinBursts((prev) => {
         const add: CoinBurstItem[] = [];
         for (let i = 0; i < n; i++) {
@@ -550,12 +587,13 @@ export const GameAnimationProvider = ({
             fromRect: { ...fromPlain },
             toPoint: { ...toPoint },
             delayMs: i * COIN_STAGGER_MS,
+            spread,
           });
         }
         return [...prev, ...add];
       });
     },
-    [],
+    [getBaseScale],
   );
 
   const registerMeHandCardEl = useCallback(
@@ -619,6 +657,7 @@ export const GameAnimationProvider = ({
         registerInPlayCardEl,
         registerOpponentHandPile,
         registerPlayerAnchor,
+        registerAnimationRoot,
       }}>
       {children}
       <AnimationsFromState
@@ -629,25 +668,30 @@ export const GameAnimationProvider = ({
         onMonsterSoulToCounter={onMonsterSoulToCounter}
         onGiveCoins={onGiveCoins}
       />
-      <div className="pointer-events-none fixed inset-0 z-50 overflow-hidden">
-        {cardGhosts.map(({ id, ...ghost }) => (
-          <CardGhost
-            key={id}
-            ghost={ghost}
-            onDone={() => removeCardGhost(id)}
-          />
-        ))}
-        {coinBursts.map((c) => (
-          <CoinProjectile
-            key={c.id}
-            flightInstanceId={c.id}
-            fromRect={c.fromRect}
-            toPoint={c.toPoint}
-            delayMs={c.delayMs}
-            onDone={() => removeCoinBurst(c.id)}
-          />
-        ))}
-      </div>
+      {animationRoot &&
+        createPortal(
+          <>
+            {cardGhosts.map(({ id, ...ghost }) => (
+              <CardGhost
+                key={id}
+                ghost={ghost}
+                onDone={() => removeCardGhost(id)}
+              />
+            ))}
+            {coinBursts.map((c) => (
+              <CoinProjectile
+                key={c.id}
+                flightInstanceId={c.id}
+                fromRect={c.fromRect}
+                toPoint={c.toPoint}
+                delayMs={c.delayMs}
+                spread={c.spread}
+                onDone={() => removeCoinBurst(c.id)}
+              />
+            ))}
+          </>,
+          animationRoot,
+        )}
     </GameAnimationContext.Provider>
   );
 };

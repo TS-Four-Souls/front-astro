@@ -15,3 +15,26 @@
 - If new board state, refresh prompt options
 
 - Four players, side players cards are not aligned center when inplay is just one column
+
+
+## Layout revamp
+
+- A board is made of
+- One center
+- Between 1 and 4 player areas (with one being the current player)
+
+Layout depends on:
+- Number of players
+- Play with rooms
+- Play with bonus souls
+- Number of shop item or monsters
+- In plays
+- Hand size
+- Screen ratio
+- Screen size
+
+
+## Or another approach
+
+- Landscape/portrait layout
+- Zoom with mouse wheel or gestures

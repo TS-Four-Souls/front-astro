@@ -30,11 +30,12 @@ const createCoinFlight = (
   delayMs: number,
   sender: Point2D,
   recipient: Point2D,
+  spread: number,
 ): CoinFlight => {
   const angle = Math.random() * Math.PI * 2;
-  const launchDistance = 20 + Math.random() * 22;
-  const curveDistance = 70 + Math.random() * 90;
-  const controlNoise = (Math.random() - 0.5) * 55;
+  const launchDistance = (20 + Math.random() * 22) * spread;
+  const curveDistance = (70 + Math.random() * 90) * spread;
+  const controlNoise = (Math.random() - 0.5) * 55 * spread;
   const controlX = sender.x + Math.cos(angle) * launchDistance;
   const controlY = sender.y + Math.sin(angle) * launchDistance;
   const towardX = recipient.x - sender.x;
@@ -71,6 +72,7 @@ export const CoinProjectile = ({
   toPoint,
   delayMs = 0,
   flightInstanceId,
+  spread = 1,
   onDone,
 }: {
   fromRect: RectPlain;
@@ -78,6 +80,8 @@ export const CoinProjectile = ({
   delayMs?: number;
   /** Used to build a stable, unique `CoinFlight.id` (e.g. from provider burst id) */
   flightInstanceId: number;
+  /** Board-local pixels per original viewport pixel, so the arc scales with the board. */
+  spread?: number;
   onDone: () => void;
 }) => {
   const [flight] = useState(() =>
@@ -86,6 +90,7 @@ export const CoinProjectile = ({
       delayMs,
       centerOfRect(fromRect),
       { ...toPoint },
+      spread,
     ),
   );
   const onDoneRef = useRef(onDone);
@@ -157,7 +162,7 @@ export const CoinProjectile = ({
 
   return (
     <div
-      className="pointer-events-none fixed z-50"
+      className="pointer-events-none absolute z-50"
       style={{
         left: state.x - COIN_HALF_PX,
         top: state.y - COIN_HALF_PX,

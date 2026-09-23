@@ -21,6 +21,10 @@ export default defineConfig({
     },
   },
 
+  devToolbar: {
+    enabled: false,
+  },
+
   vite: {
     plugins: [tailwindcss(), cacheControlImages()],
   },

@@ -16,6 +16,7 @@ export const PendingSelectionIcon = (props: Props) => {
     const rect = e.currentTarget.getBoundingClientRect();
     setPopover({
       anchor: rect,
+      anchorElement: e.currentTarget,
       content: (
         <div className="flex max-w-64 flex-col items-center gap-3">
           <PopoverIcon {...props} />
