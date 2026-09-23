@@ -1,5 +1,7 @@
+import { useSyncExternalStore } from "react";
 import { useLanguageContext } from "../contexts/language-context";
 import { Card, CardType } from "./card";
+import { getBoardZoomed, subscribeBoardZoomed } from "./board-transform";
 import {
   normalizeTooltips,
   TooltipComponent,
@@ -31,18 +33,45 @@ export const CardHoverPreview = ({
   orientation = "portrait",
 }: CardHoverPreviewProps) => {
   const { t } = useLanguageContext();
+  const zoomed = useSyncExternalStore(
+    subscribeBoardZoomed,
+    getBoardZoomed,
+    () => false,
+  );
   const tooltips = normalizeTooltips(tooltip);
   const hasTooltips =
     tooltips.length > 0 &&
     tooltips.some((t) => ("enabled" in t ? t.enabled : t.capable !== true));
+  const tooltipList = hasTooltips ? (
+    <div className="flex flex-col gap-2">
+      {tooltips.map((t, index) => (
+        <TooltipComponent key={index} tooltip={t} />
+      ))}
+    </div>
+  ) : null;
+  const eternalLabel = isEternal ? (
+    <div className="rounded-md bg-taupe-200 p-2 text-center font-main text-sm text-black uppercase">
+      -{t("common.eternal")}-
+    </div>
+  ) : null;
+  const previewWidth =
+    22 * (orientation === "portrait" ? 750 / 1024 : 1024 / 750);
+
+  if (zoomed) {
+    if (!eternalLabel && !tooltipList) return null;
+    return (
+      <div
+        className="flex w-min flex-col items-stretch gap-2.5"
+        style={{ minWidth: `${previewWidth}em` }}>
+        {eternalLabel}
+        {tooltipList}
+      </div>
+    );
+  }
 
   return (
     <div className="flex w-min flex-col items-stretch gap-2.5">
-      {isEternal && (
-        <div className="rounded-md bg-taupe-200 p-2 text-center font-main text-sm text-black uppercase">
-          -{t("common.eternal")}-
-        </div>
-      )}
+      {eternalLabel}
       <div>
         {typeof card === "object" && "slug" in card && (
           <Card
@@ -56,13 +85,7 @@ export const CardHoverPreview = ({
           />
         )}
       </div>
-      {hasTooltips ? (
-        <div className="flex flex-col gap-2">
-          {tooltips.map((t, index) => (
-            <TooltipComponent key={index} tooltip={t} />
-          ))}
-        </div>
-      ) : null}
+      {tooltipList}
     </div>
   );
 };

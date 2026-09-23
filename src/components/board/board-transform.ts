@@ -10,6 +10,24 @@ export const boardPointer = { x: -1, y: -1 };
 
 const listeners = new Set<() => void>();
 
+let boardZoomed = false;
+const zoomListeners = new Set<() => void>();
+
+export const getBoardZoomed = () => boardZoomed;
+
+export const subscribeBoardZoomed = (listener: () => void) => {
+  zoomListeners.add(listener);
+  return () => {
+    zoomListeners.delete(listener);
+  };
+};
+
+export const setBoardZoomed = (next: boolean) => {
+  if (boardZoomed === next) return;
+  boardZoomed = next;
+  zoomListeners.forEach((listener) => listener());
+};
+
 export const subscribeBoardTransform = (listener: () => void) => {
   listeners.add(listener);
   return () => {
