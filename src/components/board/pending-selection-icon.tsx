@@ -1,6 +1,7 @@
 import type { pendingSelectionDetail } from "@/shared/api";
 import { Card } from "./card";
 import { usePopoverContext } from "./contexts/popover-context";
+import { useRevealGesture } from "./use-reveal-gesture";
 import { useLanguageContext } from "../contexts/language-context";
 
 interface Props {
@@ -11,12 +12,11 @@ interface Props {
 export const PendingSelectionIcon = (props: Props) => {
   const { ts, t } = useLanguageContext();
   const { setPopover, closePopover } = usePopoverContext();
-
-  const onHover = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
+  const { pendingSelection, player } = props;
+  const revealProps = useRevealGesture((target) => {
     setPopover({
-      anchor: rect,
-      anchorElement: e.currentTarget,
+      anchor: target.getBoundingClientRect(),
+      anchorElement: target,
       content: (
         <div className="flex max-w-64 flex-col items-center gap-3">
           <PopoverIcon {...props} />
@@ -33,14 +33,12 @@ export const PendingSelectionIcon = (props: Props) => {
         </div>
       ),
     });
-  };
+  }, closePopover);
 
-  const { pendingSelection, player } = props;
   return (
     <div
-      className="flex shrink-0 items-center justify-center transition-transform hover:scale-110"
-      onMouseEnter={onHover}
-      onMouseLeave={closePopover}>
+      {...revealProps}
+      className="flex shrink-0 items-center justify-center transition-transform hover:scale-110">
       <Icon pendingSelection={pendingSelection} player={player} />
     </div>
   );

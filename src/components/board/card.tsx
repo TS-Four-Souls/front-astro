@@ -12,6 +12,7 @@ import { PileIndicator } from "@/icons/pile-indicator";
 import { SelectionIndexIndicator } from "./selection-index-indicator";
 import { useLanguageContext } from "../contexts/language-context";
 import { useBoardScale } from "./contexts/board-scale-context";
+import type { RevealProps } from "./use-reveal-gesture";
 
 export enum CardType {
   BonusSoul = "bsoul",
@@ -51,8 +52,7 @@ interface CardProps {
     evasionPoints?: number | undefined;
   };
   counters?: SerializedCounter[];
-  onMouseEnter?: (e: React.MouseEvent<HTMLDivElement>) => void;
-  onMouseLeave?: (e: React.MouseEvent<HTMLDivElement>) => void;
+  revealProps?: RevealProps;
   icon?: boolean;
 }
 
@@ -122,8 +122,7 @@ export const Card = ({
   effects,
   counters,
   globalId = 0,
-  onMouseEnter,
-  onMouseLeave,
+  revealProps,
   icon = false,
 }: CardProps) => {
   const boardScale = useBoardScale();
@@ -222,8 +221,7 @@ export const Card = ({
           borderRadius,
           ...style,
         }}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}>
+        {...revealProps}>
         <CardImage
           sizes={sizes}
           card={card}

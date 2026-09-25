@@ -84,8 +84,7 @@ export const ReportBugButton = () => {
       <img
         src="/ui/contact.png"
         className="w-12"
-        onMouseEnter={tooltip.setTooltip}
-        onMouseLeave={tooltip.closeTooltip}
+        {...tooltip.revealProps}
         onClick={() => {
           openContactPopup();
           closeMainMenu();
@@ -108,8 +107,7 @@ export const DiscordButton = () => {
         // cause w-18 is not natively supported in tailwind
         width={72}
         height={72}
-        onMouseEnter={tooltip.setTooltip}
-        onMouseLeave={tooltip.closeTooltip}
+        {...tooltip.revealProps}
         onClick={() => {
           window.open("https://discord.gg/MapGcWNJcp", "_blank")!.focus();
         }}

@@ -18,8 +18,7 @@ export const LanguageSelection = ({}: {}) => {
   });
   return (
     <select
-      onMouseEnter={tooltip.setTooltip}
-      onMouseLeave={tooltip.closeTooltip}
+      {...tooltip.revealProps}
       onClick={tooltip.closeTooltip}
       value={language}
       onChange={(event) => setLanguage(event.target.value as LANGUAGE_CODE)}

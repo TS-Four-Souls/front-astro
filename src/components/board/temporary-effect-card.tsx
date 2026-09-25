@@ -2,6 +2,7 @@ import type { TemporaryEffect } from "@/shared/api";
 import { Card } from "./card";
 import { cn } from "@/utils/cn";
 import { usePopoverContext } from "./contexts/popover-context";
+import { useRevealGesture } from "./use-reveal-gesture";
 import { useLanguageContext } from "../contexts/language-context";
 
 interface TemporaryEffectCardProps {
@@ -20,8 +21,7 @@ export const TemporaryEffectCard = ({
 
   const cardSize = size / 16;
 
-  const onHover = (e: React.MouseEvent<HTMLDivElement>) => {
-    const element = e.currentTarget;
+  const revealProps = useRevealGesture((element) => {
     setPopover({
       anchor: element.getBoundingClientRect(),
       anchorElement: element,
@@ -42,14 +42,13 @@ export const TemporaryEffectCard = ({
         </div>
       ),
     });
-  };
+  }, closePopover);
 
   return (
     <Card
       containerClassName={cn(className, "transition-transform hover:scale-110")}
       containerStyle={{ width: cardSize + "em", height: cardSize + "em" }}
-      onMouseEnter={onHover}
-      onMouseLeave={closePopover}
+      revealProps={revealProps}
       card={effect.card}
       orientation={effect.card.orientation}
       icon

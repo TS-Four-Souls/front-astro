@@ -972,7 +972,7 @@ const PlayerCard = ({
   index: number;
 }) => {
   const { t } = useLanguageContext();
-  const { setTooltip, closeTooltip } = useTooltip({
+  const { revealProps } = useTooltip({
     title: t("startStep.playerList.selectCharacterButton.tooltip.title"),
     content: t("startStep.playerList.selectCharacterButton.tooltip.message"),
     enabled: actions?.onCharacterSelectionPress !== undefined,
@@ -1034,7 +1034,7 @@ const PlayerCard = ({
               player={player}
             />
           </div>
-          <div onMouseEnter={setTooltip} onMouseLeave={closeTooltip}>
+          <div {...revealProps}>
             {player.character.character === "random" ? (
               <div className="grid items-center gap-2">
                 <CardImage

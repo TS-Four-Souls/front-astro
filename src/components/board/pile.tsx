@@ -11,6 +11,7 @@ import { usePopoverContext } from "./contexts/popover-context";
 import { useToastContext } from "./contexts/toast-context";
 import type { Tooltip } from "./use-tooltip";
 import { useTooltip } from "./use-tooltip";
+import { useRevealGesture } from "./use-reveal-gesture";
 import { useLanguageContext } from "../contexts/language-context";
 import { CheatButtons, type CheatActions } from "./cheats";
 import { type SerializedCounter } from "../../shared/api";
@@ -134,17 +135,15 @@ export const Pile = ({
   });
 
   const { setPopover, closePopover } = usePopoverContext();
-  const { setTooltip, closeTooltip } = useTooltip(tooltip);
-
-  const onMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (onHoverPopover) {
-      setPopover({
-        anchor: e.currentTarget.getBoundingClientRect(),
-        anchorElement: e.currentTarget,
-        content: onHoverPopover(),
-      });
-    }
-  };
+  const { revealProps: tooltipReveal } = useTooltip(tooltip);
+  const hoverReveal = useRevealGesture((element) => {
+    if (!onHoverPopover) return;
+    setPopover({
+      anchor: element.getBoundingClientRect(),
+      anchorElement: element,
+      content: onHoverPopover(),
+    });
+  }, closePopover);
 
   const maxCards = 16;
 
@@ -251,18 +250,11 @@ export const Pile = ({
                 stats={typeof card === "string" ? undefined : card.stats}
                 effects={typeof card === "string" ? undefined : card.effects}
                 counters={counters}
-                onMouseEnter={
+                revealProps={
                   isTopCard
                     ? onHoverPopover
-                      ? onMouseEnter
-                      : setTooltip
-                    : undefined
-                }
-                onMouseLeave={
-                  isTopCard
-                    ? onHoverPopover
-                      ? closePopover
-                      : closeTooltip
+                      ? hoverReveal
+                      : tooltipReveal
                     : undefined
                 }
                 onPileDetailsClick={isTopCard ? onPileDetailsClick : undefined}

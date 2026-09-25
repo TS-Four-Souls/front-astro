@@ -77,6 +77,16 @@
     drop-shadow(0 calc(-1 * var(--width)) var(--color));
 }
 
+html {
+  -webkit-touch-callout: none;
+}
+
+input,
+textarea,
+[contenteditable="true"] {
+  -webkit-touch-callout: default;
+}
+
 .text-stroke {
   --w: 2px;
   --we: 1.414px;

@@ -8,6 +8,7 @@ import { cn } from "@/utils/cn";
 import { Dice } from "@/icons/dice";
 import { Card } from "./card";
 import { usePopoverContext } from "./contexts/popover-context";
+import { useRevealGesture } from "./use-reveal-gesture";
 import { useLanguageContext } from "../contexts/language-context";
 import { replaceTokens } from "@/utils/replaceToken";
 
@@ -17,12 +18,10 @@ interface StackElementIconProps {
 
 export const StackElementIcon = ({ element }: StackElementIconProps) => {
   const { setPopover, closePopover } = usePopoverContext();
-
-  const onHover = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
+  const revealProps = useRevealGesture((target) => {
     setPopover({
-      anchor: rect,
-      anchorElement: e.currentTarget,
+      anchor: target.getBoundingClientRect(),
+      anchorElement: target,
       content: (
         <div className="flex flex-col items-center gap-3">
           <PopoverIcon element={element} />
@@ -30,13 +29,12 @@ export const StackElementIcon = ({ element }: StackElementIconProps) => {
         </div>
       ),
     });
-  };
+  }, closePopover);
 
   return (
     <div
-      className="flex shrink-0 items-center justify-center transition-transform hover:scale-110 ease-out-back"
-      onMouseEnter={onHover}
-      onMouseLeave={closePopover}>
+      {...revealProps}
+      className="flex shrink-0 items-center justify-center transition-transform ease-out-back hover:scale-110">
       <Icon element={element} />
     </div>
   );

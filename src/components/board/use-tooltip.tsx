@@ -1,8 +1,12 @@
 import { cn } from "@/utils/cn";
-import { usePopoverContext } from "./contexts/popover-context";
+import {
+  subscribePopoverAnchorCleared,
+  usePopoverContext,
+} from "./contexts/popover-context";
 import type { SerializedTranslation } from "@/shared/api";
 import { useLanguageContext } from "../contexts/language-context";
 import { useCallback, useLayoutEffect, useState } from "react";
+import { useRevealGesture } from "./use-reveal-gesture";
 
 type TooltipType = "denied" | "warning" | "gold";
 
@@ -115,7 +119,21 @@ export const useTooltip = (tooltip: Tooltip | Tooltip[] | undefined) => {
   // Close on unmount (layout so a remounted sibling can reopen before paint).
   useLayoutEffect(() => () => closePopover(), [closePopover]);
 
-  return { setTooltip, closeTooltip };
+  // Declared after the unmount close so this unsubscribes first and does not
+  // set state on an unmounted owner.
+  useLayoutEffect(
+    () =>
+      subscribePopoverAnchorCleared((anchor) => {
+        setAnchorEl((current) => (current === anchor ? null : current));
+      }),
+    [],
+  );
+
+  const revealProps = useRevealGesture((element) => {
+    setAnchorEl(element);
+  }, closeTooltip);
+
+  return { setTooltip, closeTooltip, revealProps };
 };
 
 export const TooltipComponent = ({ tooltip }: { tooltip: Tooltip }) => {

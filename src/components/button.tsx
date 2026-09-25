@@ -2,16 +2,22 @@ import { cn } from "@/utils/cn";
 import { HotkeyScope, shouldUseKey } from "@/utils/hotkey";
 import { useHotkeys } from "react-hotkeys-hook";
 import { type Tooltip, useTooltip } from "./board/use-tooltip";
+import { isMouseHoverEvent } from "./board/use-reveal-gesture";
 import { useEffect, useLayoutEffect, useMemo, useRef } from "react";
 
 /** Last pointer position — remounted nodes often don't match :hover until the mouse moves. */
-const lastPointer = { x: -1, y: -1 };
+const lastPointer = { x: -1, y: -1, type: "" };
 if (typeof window !== "undefined") {
   window.addEventListener(
     "pointermove",
     (e) => {
+      if (!isMouseHoverEvent(e)) {
+        lastPointer.type = e.pointerType;
+        return;
+      }
       lastPointer.x = e.clientX;
       lastPointer.y = e.clientY;
+      lastPointer.type = e.pointerType;
     },
     { passive: true },
   );
@@ -20,12 +26,18 @@ if (typeof window !== "undefined") {
     (e) => {
       lastPointer.x = e.clientX;
       lastPointer.y = e.clientY;
+      lastPointer.type = e.pointerType;
     },
     { passive: true },
   );
 }
 
 const isPointerOver = (el: Element) => {
+  if (lastPointer.type !== "mouse") {
+    if (lastPointer.type === "" && lastPointer.x < 0)
+      return el.matches(":hover");
+    return false;
+  }
   if (lastPointer.x >= 0 && lastPointer.y >= 0) {
     const hit = document.elementFromPoint(lastPointer.x, lastPointer.y);
     if (hit === el || el.contains(hit)) return true;
@@ -64,10 +76,11 @@ export const Button = ({
     useKey: shouldUseKey(hotkey ?? ""),
   });
 
-  const { setTooltip, closeTooltip } = useTooltip(tooltip);
+  const { revealProps } = useTooltip(tooltip);
 
   return (
     <button
+      {...revealProps}
       className={cn(
         "relative flex shrink-0 place-content-center place-items-center gap-2 overflow-hidden rounded-md px-4 py-2 font-main text-white uppercase shadow-2xl inset-shadow-xs shadow-taupe-950/10 inset-shadow-taupe-100/10 transition-[colors,filter]",
         theme === "default" && "bg-taupe-600",
@@ -85,9 +98,7 @@ export const Button = ({
         onClick?.();
         e.currentTarget.blur();
       }}
-      type={type}
-      onMouseEnter={setTooltip}
-      onMouseLeave={closeTooltip}>
+      type={type}>
       {hotkey && (
         <img
           src={`/input-prompts/keyboard_${hotkey.split(",")[0]}_outline.svg`}
@@ -147,7 +158,7 @@ export const ImgButton = ({
     return { ...tooltipProps, hotkey };
   }, [tooltipProps, onClick, hotkey]);
 
-  const { setTooltip, closeTooltip } = useTooltip(tooltip);
+  const { setTooltip, revealProps } = useTooltip(tooltip);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const showHoverImage = Boolean(frontHoverImage && onClick && !disabled);
 
@@ -172,6 +183,7 @@ export const ImgButton = ({
 
   return (
     <button
+      {...revealProps}
       ref={buttonRef}
       className={cn(
         "relative block shrink-0 overflow-hidden border-0 bg-transparent p-0 transition-[scale,rotate] ease-out-back",
@@ -190,13 +202,7 @@ export const ImgButton = ({
         e.currentTarget.blur();
       }}
       type={type}
-      style={size !== undefined ? { width: size, height: size } : undefined}
-      onMouseEnter={setTooltip}
-      onMouseLeave={(e) => {
-        // Remount removes the node and synthesizes mouseleave — don't kill the replacement's tooltip.
-        if (!e.currentTarget.isConnected) return;
-        closeTooltip();
-      }}>
+      style={size !== undefined ? { width: size, height: size } : undefined}>
       <img
         src={backgroundImage}
         alt=""

@@ -46,7 +46,7 @@ export const History = () => {
     });
   };
 
-  const { setTooltip, closeTooltip } = useTooltip({
+  const { revealProps } = useTooltip({
     enabled: true,
     title:
       parameters.timer.value > 0
@@ -58,7 +58,7 @@ export const History = () => {
 
   return (
     <div className="flex h-86 flex-col items-center gap-2">
-      <div onMouseEnter={setTooltip} onMouseLeave={closeTooltip}>
+      <div {...revealProps}>
         <RoundCounter value={state.round} className="size-12"></RoundCounter>
       </div>
       <div className="flex h-72 w-14 flex-col gap-2 rounded-lg bg-taupe-800 inset-shadow-sm inset-shadow-taupe-950/30">

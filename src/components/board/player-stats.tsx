@@ -15,6 +15,7 @@ import { usePopoverContext } from "./contexts/popover-context";
 import { usePromptContext } from "./contexts/prompt-context";
 import { useToastContext } from "./contexts/toast-context";
 import { useTooltip } from "./use-tooltip";
+import { useRevealGesture } from "./use-reveal-gesture";
 import { useLanguageContext } from "../contexts/language-context";
 import { gainCoinsCheat } from "./cheats";
 import { Gear } from "@/icons/gear";
@@ -156,46 +157,43 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
     });
   };
 
-  const { setTooltip: setCoinTooltip, closeTooltip: closeCoinTooltip } =
-    useTooltip(
-      player.capabilities.canDonateCoinsTo === true && !isMe
+  const { revealProps: coinReveal } = useTooltip(
+    player.capabilities.canDonateCoinsTo === true && !isMe
+      ? {
+          enabled: true,
+          title: t("gameStep.giveCoins.tooltip.title"),
+          content: t("gameStep.giveCoins.tooltip.message"),
+        }
+      : {
+          title: t("gameStep.giveCoins.blockedTooltip.title"),
+          capable: player.capabilities.canDonateCoinsTo,
+        },
+  );
+
+  const { revealProps: menuReveal } = useTooltip({
+    enabled: true,
+    title: t("gameStep.mainMenu.title"),
+    hotkey: "escape",
+  });
+
+  const { revealProps: switchReveal } = useTooltip(
+    canUseEmotes
+      ? {
+          enabled: true,
+          title: "Emotes",
+          hotkey: "r",
+        }
+      : player.capabilities.canSwitchTo === true && !isMe
         ? {
             enabled: true,
-            title: t("gameStep.giveCoins.tooltip.title"),
-            content: t("gameStep.giveCoins.tooltip.message"),
+            title: t("capability.SwitchToCopy"),
+            content: t("capability.switchOk"),
           }
         : {
-            title: t("gameStep.giveCoins.blockedTooltip.title"),
-            capable: player.capabilities.canDonateCoinsTo,
+            title: t("capability.cannotSwitchToCopy"),
+            capable: player.capabilities.canSwitchTo,
           },
-    );
-
-  const { setTooltip: setMenuTooltip, closeTooltip: closeMenuTooltip } =
-    useTooltip({
-      enabled: true,
-      title: t("gameStep.mainMenu.title"),
-      hotkey: "escape",
-    });
-
-  const { setTooltip: setSwitchToTooltip, closeTooltip: closeSwitchToTooltip } =
-    useTooltip(
-      canUseEmotes
-        ? {
-            enabled: true,
-            title: "Emotes",
-            hotkey: "r",
-          }
-        : player.capabilities.canSwitchTo === true && !isMe
-          ? {
-              enabled: true,
-              title: t("capability.SwitchToCopy"),
-              content: t("capability.switchOk"),
-            }
-          : {
-              title: t("capability.cannotSwitchToCopy"),
-              capable: player.capabilities.canSwitchTo,
-            },
-    );
+  );
 
   const nextMeInstance = state.players.find(
     (p) => p.capabilities.canSwitchTo === true,
@@ -207,6 +205,26 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
     enabled: isNextInstance,
     scopes: [HotkeyScope.Main],
   });
+
+  const soulsReveal = useRevealGesture((element) => {
+    if (soulCards.length === 0) return;
+    setPopover({
+      anchor: element.getBoundingClientRect(),
+      anchorElement: element,
+      content: (
+        <div className="flex w-max flex-nowrap gap-4">
+          {soulCards.map((card, index) => (
+            <Card
+              card={card}
+              key={index}
+              size={22}
+              orientation={card.orientation}
+            />
+          ))}
+        </div>
+      ),
+    });
+  }, closePopover);
 
   return (
     <div
@@ -237,8 +255,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
           )}
           style={{ color }}
           aria-expanded={canUseEmotes ? isEmoteWheelOpen : undefined}
-          onMouseEnter={setSwitchToTooltip}
-          onMouseLeave={closeSwitchToTooltip}
+          {...switchReveal}
           onClick={() => {
             if (canUseEmotes) {
               setIsEmoteWheelOpen((open) => !open);
@@ -268,8 +285,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
         </p>
       </div>
       <div
-        onMouseEnter={setCoinTooltip}
-        onMouseLeave={closeCoinTooltip}
+        {...coinReveal}
         className={cn(
           "relative flex items-center gap-1",
           player.capabilities.canDonateCoinsTo === true
@@ -312,6 +328,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
       </div>
 
       <div
+        {...soulsReveal}
         ref={(el) => {
           soulAnchorRef.current = el;
           registerPlayerAnchor(name, "souls", el);
@@ -319,31 +336,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
         className={cn(
           "icon-shadow flex flex-row-reverse items-center",
           souls > 0 && "cursor-pointer",
-        )}
-        onMouseEnter={() => {
-          if (soulAnchorRef.current && soulCards.length > 0) {
-            const rect = soulAnchorRef.current.getBoundingClientRect();
-            setPopover({
-              anchor: rect,
-              anchorElement: soulAnchorRef.current,
-              content: (
-                <div className="flex w-max flex-nowrap gap-4">
-                  {soulCards.map((card, index) => (
-                    <Card
-                      card={card}
-                      key={index}
-                      size={22}
-                      orientation={card.orientation}
-                    />
-                  ))}
-                </div>
-              ),
-            });
-          }
-        }}
-        onMouseLeave={() => {
-          closePopover();
-        }}>
+        )}>
         {alternateSoulSequence(souls)
           .toReversed()
           .map((type, index) => {
@@ -528,10 +521,9 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
           />
           {!isSpectator && (
             <Gear
+              {...menuReveal}
               className="icon-shadow ml-6 size-6 cursor-pointer transition-[scale,rotate] ease-out-back hover:scale-120 hover:rotate-10"
               onClick={openMenu}
-              onMouseEnter={setMenuTooltip}
-              onMouseLeave={closeMenuTooltip}
             />
           )}
         </div>
