@@ -116,14 +116,14 @@ export const BoardScaleProvider = ({
     const board = boardRef.current;
     const viewport = viewportRef.current;
     if (!board || !viewport) return { x: 0, y: 0 };
-    const maxX = Math.max(
-      0,
-      (board.offsetWidth * scale - viewport.clientWidth) / 2,
-    );
-    const maxY = Math.max(
-      0,
-      (board.offsetHeight * scale - viewport.clientHeight) / 2,
-    );
+    // The frame visible at autofit, so zoom can reach the letterbox as well as the board.
+    const base = baseScaleRef.current;
+    const frameWidth =
+      base > 0 ? viewport.clientWidth / base : board.offsetWidth;
+    const frameHeight =
+      base > 0 ? viewport.clientHeight / base : board.offsetHeight;
+    const maxX = Math.max(0, (frameWidth * scale - viewport.clientWidth) / 2);
+    const maxY = Math.max(0, (frameHeight * scale - viewport.clientHeight) / 2);
     return {
       x: Math.min(maxX, Math.max(-maxX, x)),
       y: Math.min(maxY, Math.max(-maxY, y)),

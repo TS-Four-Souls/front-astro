@@ -65,13 +65,14 @@ export const Board = () => {
             />
           </div>
           {zoomed && (
-            <div className="pointer-events-none absolute inset-x-0 bottom-4 z-40 flex justify-center">
+            <div className="pointer-events-none absolute inset-x-0 bottom-8 z-40 flex justify-center">
               <div data-reset-view className="pointer-events-auto">
                 <Button
                   hotkey="c"
                   hotkeyScope={[HotkeyScope.Main]}
                   onClick={resetView}
                   label={(t as (key: string) => string)("gameStep.resetView")}
+                  className="overflow-visible outline-4 outline-taupe-900 px-6 py-3 text-lg [&_img]:max-h-8"
                 />
               </div>
             </div>
