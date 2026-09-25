@@ -1,4 +1,5 @@
 import type { Player } from "@/shared/api";
+import { CardHoverPreview } from "./card-hover-preview";
 import { Pile } from "./pile";
 import { usePileDetails } from "./use-pile-details";
 import { CardType } from "./card";
@@ -16,12 +17,16 @@ export const HandPile = ({ player }: HandPileProps) => {
   const { t } = useLanguageContext();
   const { registerOpponentHandPile } = useGameAnimation();
   const { isSpectator } = useGameContext();
+  const revealedHand =
+    player.hand !== undefined && !isSpectator ? player.hand : undefined;
+  const topCard = revealedHand?.[revealedHand.length - 1];
+  
   return (
     <div ref={(el) => registerOpponentHandPile(player.name, el)}>
       <Pile
         cards={
-          player.hand !== undefined && !isSpectator
-            ? player.hand.map((c) => ({
+          revealedHand
+            ? revealedHand.map((c) => ({
                 slug: c.slug,
                 globalId: c.globalId,
               }))
@@ -29,22 +34,24 @@ export const HandPile = ({ player }: HandPileProps) => {
                 () => CardType.LootCard,
               )
         }
-        tooltip={{
-          enabled: true,
-          content: t("gameStep.hoverPlayerHand", {
-            player: player.name,
-            value: String(player.handSize),
-          }),
-        }}
+        onHoverPopover={() => (
+          <CardHoverPreview
+            card={topCard}
+            orientation={topCard?.orientation}
+            tooltip={{
+              enabled: true,
+              content: t("gameStep.hoverPlayerHand", {
+                player: player.name,
+                value: String(player.handSize),
+              }),
+            }}
+          />
+        )}
         onClickTopCard={
-          player.hand !== undefined && !isSpectator
-            ? () => displayPileDetails(player.hand)
-            : undefined
+          revealedHand ? () => displayPileDetails(revealedHand) : undefined
         }
         onPileDetailsClick={
-          player.hand !== undefined && !isSpectator
-            ? () => displayPileDetails(player.hand)
-            : undefined
+          revealedHand ? () => displayPileDetails(revealedHand) : undefined
         }
         size={120}>
         <p

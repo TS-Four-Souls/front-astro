@@ -74,21 +74,23 @@ export const useTooltip = (tooltip: Tooltip | Tooltip[] | undefined) => {
   useLayoutEffect(() => {
     if (anchorEl === null || !anchorEl.isConnected) return;
 
-    const hasTooltips =
-      tooltips.length > 0 &&
-      tooltips.some((t) => ("enabled" in t ? t.enabled : t.capable !== true));
+    const visibleCount = tooltips.filter((t) =>
+      "enabled" in t ? t.enabled : t.capable !== true,
+    ).length;
 
-    if (!hasTooltips) {
+    if (visibleCount === 0) {
       closePopover();
       return;
     }
 
+    const multiple = visibleCount > 1;
+
     setPopover({
       anchor: anchorEl.getBoundingClientRect(),
       anchorElement: anchorEl,
-      withWrapper: false,
+      withWrapper: multiple,
       content: (
-        <div className="flex flex-col gap-1">
+        <div className={cn("flex flex-col", multiple ? "gap-2" : "gap-1")}>
           {tooltips.map((t, index) => (
             <TooltipComponent key={index} tooltip={t} />
           ))}
@@ -136,7 +138,7 @@ export const TooltipComponent = ({ tooltip }: { tooltip: Tooltip }) => {
   return (
     <div
       className={cn(
-        "relative w-full gap-1 overflow-hidden rounded-2xl border-3 border-taupe-700 bg-taupe-950 p-3 px-4 text-center",
+        "relative flex w-full flex-col gap-1 overflow-hidden rounded-2xl border-3 border-taupe-700 bg-taupe-950 p-3 px-4 text-center",
         type === "denied" && "border-red-950",
         type === "warning" && "border-yellow-900",
         type === "gold" && "border-yellow-600",
