@@ -10,7 +10,7 @@ import {
 import type { SerializedCounter, TemporaryEffect } from "@/shared/api";
 
 interface CardHoverPreviewProps {
-  card: { slug: string; globalId?: number; parent?: string } | CardType;
+  card?: { slug: string; globalId?: number; parent?: string } | CardType;
   stats?: {
     healthPoints: number;
     attackPoints: number;
@@ -56,35 +56,29 @@ export const CardHoverPreview = ({
   ) : null;
   const previewWidth =
     22 * (orientation === "portrait" ? 750 / 1024 : 1024 / 750);
+  const previewCard =
+    !zoomed && card !== undefined && typeof card === "object" && "slug" in card
+      ? card
+      : undefined;
 
-  if (zoomed) {
-    if (!eternalLabel && !tooltipList) return null;
-    return (
-      <div
-        className="flex w-min flex-col items-stretch gap-2.5"
-        style={{ minWidth: `${previewWidth}em` }}>
-        {eternalLabel}
-        {tooltipList}
-      </div>
-    );
-  }
+  if (!previewCard && !eternalLabel && !tooltipList) return null;
 
   return (
-    <div className="flex w-min flex-col items-stretch gap-2.5">
+    <div
+      className="flex w-min flex-col items-stretch gap-2.5"
+      style={previewCard ? undefined : { minWidth: `${previewWidth}em` }}>
       {eternalLabel}
-      <div>
-        {typeof card === "object" && "slug" in card && (
-          <Card
-            globalId={card.globalId}
-            card={{ slug: card.slug, parent: card.parent }}
-            stats={stats}
-            effects={effects}
-            counters={counters}
-            size={22}
-            orientation={orientation}
-          />
-        )}
-      </div>
+      {previewCard && (
+        <Card
+          globalId={previewCard.globalId}
+          card={{ slug: previewCard.slug, parent: previewCard.parent }}
+          stats={stats}
+          effects={effects}
+          counters={counters}
+          size={22}
+          orientation={orientation}
+        />
+      )}
       {tooltipList}
     </div>
   );
