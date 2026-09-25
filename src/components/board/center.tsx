@@ -306,6 +306,7 @@ export const Center = () => {
       {state.room && activeRoom && (
         <div className="flex flex-col gap-3">
           <Pile
+            size={146}
             cards={state.room.discard}
             onPileDetailsClick={
               state.room.discard.length > 1
@@ -325,6 +326,7 @@ export const Center = () => {
             orientation="landscape"
           />
           <Pile
+            size={146}
             globalId={SpecialGlobalIds.Room}
             cheats={
               isCheatViewOpen
@@ -339,6 +341,7 @@ export const Center = () => {
             orientation="landscape"
           />
           <Pile
+            size={146}
             cards={state.room.inPlay.map((card) => ({
               slug: card.slug,
               globalId: card.globalId,
