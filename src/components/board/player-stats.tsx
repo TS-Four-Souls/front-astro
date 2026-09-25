@@ -170,6 +170,13 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
           },
     );
 
+  const { setTooltip: setMenuTooltip, closeTooltip: closeMenuTooltip } =
+    useTooltip({
+      enabled: true,
+      title: t("gameStep.mainMenu.title"),
+      hotkey: "escape",
+    });
+
   const { setTooltip: setSwitchToTooltip, closeTooltip: closeSwitchToTooltip } =
     useTooltip(
       canUseEmotes
@@ -523,6 +530,8 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
             <Gear
               className="icon-shadow ml-6 size-6 cursor-pointer transition-[scale,rotate] ease-out-back hover:scale-120 hover:rotate-10"
               onClick={openMenu}
+              onMouseEnter={setMenuTooltip}
+              onMouseLeave={closeMenuTooltip}
             />
           )}
         </div>
