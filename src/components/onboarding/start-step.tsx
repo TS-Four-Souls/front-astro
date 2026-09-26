@@ -27,6 +27,7 @@ import { Lock } from "@/icons/lock";
 import React from "react";
 import { SetIcon } from "@/icons/set-icon";
 import { PlayerRestriction } from "@/icons/player-restriction";
+import { Exit } from "@/icons/exit";
 
 interface StartStepProps {
   room: Room;
@@ -365,31 +366,70 @@ export const StartStep = ({ room }: StartStepProps) => {
       className={cn(
         "grid h-full gap-4 p-4 max-[85rem]:grid-rows-none",
         isSpectator
-          ? "grid-rows-[300px_calc(100vh-300px-3em-92px)]"
-          : "grid-rows-[300px_calc(100vh-300px-3em)]",
+          ? "grid-rows-[250px_calc(100vh-250px-3em-92px)]"
+          : "grid-rows-[250px_calc(100vh-250px-3em)]",
       )}>
       <div className="flex place-items-center justify-between gap-18 rounded-lg border-2 border-space-400 bg-space p-6 max-[85rem]:flex-col max-[85rem]:py-16">
         <div className="flex flex-col gap-2">
-          <p className="font-main text-lg">{t("startStep.roomInfo.title")}</p>
-          <p
-            className="mb-2 cursor-pointer text-3xl font-bold"
-            onClick={
-              room.isJoinAllowed
-                ? () => {
-                    navigator.clipboard.writeText(room.id);
-                    toast(
-                      "success",
-                      t("startStep.roomInfo.copyCodeButton.successToast.title"),
-                      t(
-                        "startStep.roomInfo.copyCodeButton.successToast.message",
-                      ),
-                    );
-                  }
-                : undefined
-            }>
-            {t("startStep.roomInfo.copyCodeButton.label", { code: room.id })}
-          </p>
+          <div className="flex place-items-center gap-4">
+            <Button
+              label={<Exit className="size-8 -scale-x-100" />}
+              onClick={isSpectator ? () => {} : onLeaveRoomPress}
+              theme="onSpace"
+              className="size-14 p-2"
+              tooltip={{
+                title: t("common.leaveButton"),
+                enabled: true,
+              }}
+              disabled={isSpectator}
+            />
+            <div className="flex flex-col items-start">
+              <p className="font-main text-lg">
+                {t("startStep.roomInfo.title")}
+              </p>
+              <p
+                className="cursor-pointer text-3xl font-bold"
+                onClick={
+                  room.isJoinAllowed
+                    ? () => {
+                        navigator.clipboard.writeText(room.id);
+                        toast(
+                          "success",
+                          t(
+                            "startStep.roomInfo.copyCodeButton.successToast.title",
+                          ),
+                          t(
+                            "startStep.roomInfo.copyCodeButton.successToast.message",
+                          ),
+                        );
+                      }
+                    : undefined
+                }>
+                {t("startStep.roomInfo.copyCodeButton.label", {
+                  code: room.id,
+                })}
+              </p>
+            </div>
+          </div>
+
           <div className="flex gap-2">
+            <Button
+              label={t("startStep.roomInfo.copyLinkButton.label")}
+              hotkey="c"
+              onClick={() => {
+                if (isSpectator) return;
+                const currentUrl = new URL(window.location.href);
+                const link = new URL(`/?code=${room.id}`, currentUrl.origin);
+                navigator.clipboard.writeText(link.toString());
+                toast(
+                  "success",
+                  t("startStep.roomInfo.copyLinkButton.successToast.title"),
+                  t("startStep.roomInfo.copyLinkButton.successToast.message"),
+                );
+              }}
+              disabled={isSpectator}
+              theme="onSpace"
+            />
             <Button
               label={<Lock isLocked={!room.isJoinAllowed} />}
               theme="onSpace"
@@ -405,26 +445,11 @@ export const StartStep = ({ room }: StartStepProps) => {
               active={!room.isJoinAllowed}
               onClick={() => onSetJoinPermission(!room.isJoinAllowed)}
             />
-            <Button
-              label={t("startStep.roomInfo.copyLinkButton.label")}
-              hotkey="c"
-              onClick={() => {
-                const currentUrl = new URL(window.location.href);
-                const link = new URL(`/?code=${room.id}`, currentUrl.origin);
-                navigator.clipboard.writeText(link.toString());
-                toast(
-                  "success",
-                  t("startStep.roomInfo.copyLinkButton.successToast.title"),
-                  t("startStep.roomInfo.copyLinkButton.successToast.message"),
-                );
-              }}
-              theme="onSpace"
-            />
           </div>
         </div>
 
         <div className="flex place-items-center gap-8 max-[60rem]:flex-col">
-          <div className="mb-2 flex gap-8 max-[60rem]:flex-col">
+          <div className="flex gap-8 max-[60rem]:flex-col">
             {playerSlots.map((player, index) => (
               <PlayerCard
                 key={index}
@@ -437,27 +462,18 @@ export const StartStep = ({ room }: StartStepProps) => {
                         onCharacterSelectionPress: () =>
                           onCharacterSelectionPress(player),
                       }
-                    : undefined
-                }
-                bottomButton={
-                  player &&
-                  !isSpectator &&
-                  (isHost || (player.isMe && !player.isCopy))
-                    ? {
-                        label: player.isCopy
-                          ? t("startStep.playerList.removeButton.label")
-                          : player.isMe
-                            ? t("common.leaveButton")
-                            : t("startStep.playerList.kickButton.label"),
-                        onClick: () => {
-                          if (player.isMe && !player.isCopy) {
-                            onLeaveRoomPress();
-                          } else {
-                            onKickPlayerPress(player);
-                          }
-                        },
-                      }
-                    : undefined
+                    : player && isHost && (!player.isMe || player.isCopy)
+                      ? {
+                          delete: {
+                            label: player.isCopy
+                              ? t("startStep.playerList.removeButton.label")
+                              : player.isMe
+                                ? t("common.leaveButton")
+                                : t("startStep.playerList.kickButton.label"),
+                            onClick: () => onKickPlayerPress(player),
+                          },
+                        }
+                      : undefined
                 }
                 index={index + 1}
               />
@@ -957,17 +973,13 @@ const DeckPile = ({
 const PlayerCard = ({
   player,
   actions,
-  bottomButton,
   index,
 }: {
   player?: RoomPlayer;
   actions?: {
-    onCharacterSelectionPress: () => void;
-    onTeamSelectionPress: (team: Team) => void;
-  };
-  bottomButton?: {
-    label: string;
-    onClick: () => void;
+    onCharacterSelectionPress?: () => void;
+    onTeamSelectionPress?: (team: Team) => void;
+    delete?: { label: string; onClick: () => void };
   };
   index: number;
 }) => {
@@ -980,32 +992,6 @@ const PlayerCard = ({
 
   return (
     <div className="flex shrink-0 flex-col items-center">
-      <div
-        className="mb-1 ml-10 flex h-8 items-center gap-1 font-bold"
-        title={
-          player?.isCopy
-            ? t("startStep.playerList.hoverName.copy", {
-                playerName: player.name,
-              })
-            : player?.isHost
-              ? t("startStep.playerList.hoverName.host", {
-                  playerName: player.name,
-                })
-              : undefined
-        }>
-        {player && (
-          <>
-            {player.isCopy ? (
-              <Copy className="size-4" />
-            ) : player.isHost ? (
-              <Crown className="size-4" />
-            ) : (
-              <Person className="size-4" />
-            )}
-            {player.name}
-          </>
-        )}
-      </div>
       {player ? (
         <div className="flex items-center gap-2">
           <div className="flex flex-col justify-center gap-1">
@@ -1034,28 +1020,51 @@ const PlayerCard = ({
               player={player}
             />
           </div>
-          <div {...revealProps}>
-            {player.character.character === "random" ? (
-              <div className="grid items-center gap-2">
+          <div className="relative">
+            <div {...revealProps}>
+              {player.character.character === "random" ? (
+                <div className="grid items-center gap-2">
+                  <CardImage
+                    card={CardType.CharacterCard}
+                    sizes="7em"
+                    className={cn(
+                      "col-start-1 row-start-1 w-28 shadow-lg/30",
+                      actions?.onCharacterSelectionPress && "cursor-pointer",
+                    )}
+                    onClick={actions?.onCharacterSelectionPress}
+                  />
+                  <p className="pointer-events-none col-start-1 row-start-1 touch-none text-center font-main text-[400%] font-bold text-black uppercase text-shadow-amber-50 text-shadow-lg">
+                    ?
+                  </p>
+                </div>
+              ) : (
                 <CardImage
-                  card={CardType.CharacterCard}
+                  card={{ slug: player.character.character }}
                   sizes="7em"
                   className={cn(
-                    "col-start-1 row-start-1 w-28 shadow-lg/30",
-                    actions && "cursor-pointer",
+                    "w-28 shadow-lg/30",
+                    actions?.onCharacterSelectionPress && "cursor-pointer",
                   )}
                   onClick={actions?.onCharacterSelectionPress}
                 />
-                <p className="pointer-events-none col-start-1 row-start-1 touch-none text-center font-main text-[400%] font-bold text-black uppercase text-shadow-amber-50 text-shadow-lg">
-                  ?
-                </p>
-              </div>
-            ) : (
-              <CardImage
-                card={{ slug: player.character.character }}
-                sizes="7em"
-                className={cn("w-28 shadow-lg/30", actions && "cursor-pointer")}
-                onClick={actions?.onCharacterSelectionPress}
+              )}
+            </div>
+            {actions?.delete && (
+              <Button
+                type="button"
+                theme="onSpace"
+                className="absolute top-1 right-1 size-6 rounded-full p-0 text-lg leading-none shadow-md"
+                label={
+                  <>
+                    <span aria-hidden="true">×</span>
+                    <span className="sr-only">{actions.delete.label}</span>
+                  </>
+                }
+                onClick={actions.delete.onClick}
+                tooltip={{
+                  title: actions.delete.label,
+                  enabled: true,
+                }}
               />
             )}
           </div>
@@ -1067,14 +1076,32 @@ const PlayerCard = ({
           </p>
         </div>
       )}
-      {bottomButton && (
-        <Button
-          label={bottomButton.label}
-          onClick={bottomButton.onClick}
-          theme="onSpace"
-          className="mt-2 ml-10"
-        />
-      )}
+      <div
+        className="mt-1 ml-10 flex h-8 items-center gap-1 font-bold"
+        title={
+          player?.isCopy
+            ? t("startStep.playerList.hoverName.copy", {
+                playerName: player.name,
+              })
+            : player?.isHost
+              ? t("startStep.playerList.hoverName.host", {
+                  playerName: player.name,
+                })
+              : undefined
+        }>
+        {player && (
+          <>
+            {player.isCopy ? (
+              <Copy className="size-4" />
+            ) : player.isHost ? (
+              <Crown className="size-4" />
+            ) : (
+              <Person className="size-4" />
+            )}
+            {player.name}
+          </>
+        )}
+      </div>
     </div>
   );
 };
