@@ -51,9 +51,11 @@ export const OnboardingLayout = ({
             <div className="mb-8 flex flex-1 flex-col place-content-center place-items-center gap-6 p-12 max-sm:p-6">
               {children}
             </div>
-            <div className="mb-8 flex place-content-center gap-4">
-              <DiscordButton />
-              <ReportBugButton />
+            <div className="mb-8 flex place-content-center gap-4 max-[20rem]:flex-col max-[20rem]:items-center">
+              <div className="flex gap-4">
+                <DiscordButton />
+                <ReportBugButton />
+              </div>
               <LanguageSelection />
             </div>
             <a
