@@ -369,7 +369,7 @@ export const StartStep = ({ room }: StartStepProps) => {
           ? "grid-rows-[250px_calc(100vh-250px-3em-92px)]"
           : "grid-rows-[250px_calc(100vh-250px-3em)]",
       )}>
-      <div className="flex place-items-center justify-between gap-18 rounded-lg border-2 border-space-400 bg-space p-6 max-[75rem]:flex-col max-[75rem]:py-16">
+      <div className="flex place-items-center justify-between gap-18 rounded-lg border-2 border-space-400 bg-space p-6 max-[75rem]:grid max-[75rem]:grid-cols-1 max-[75rem]:justify-center max-[75rem]:gap-x-8 max-[75rem]:gap-y-18 max-[75rem]:py-16 max-[75rem]:min-[28.0625rem]:grid-cols-[auto_auto]">
         <div className="flex flex-col gap-2">
           <div className="flex place-items-center gap-4">
             <Button
@@ -448,7 +448,7 @@ export const StartStep = ({ room }: StartStepProps) => {
           </div>
         </div>
 
-        <div className="flex gap-8 max-[60rem]:flex-col">
+        <div className="flex gap-8 max-[75rem]:order-last max-[75rem]:justify-self-center max-[75rem]:min-[28.0625rem]:col-span-2 max-[50rem]:grid max-[50rem]:grid-cols-1 max-[50rem]:min-[28.0625rem]:grid-cols-2">
           {playerSlots.map((player, index) => (
             <PlayerCard
               key={index}
