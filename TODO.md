@@ -38,3 +38,15 @@ Layout depends on:
 
 - Landscape/portrait layout
 - Zoom with mouse wheel or gestures
+
+
+
+
+## Improvements mobile
+- Zoom more on phones (have one card fill the screen)
+- UI way to big
+- Tooltips overflow
+- Prompts look really bad in portrait mode
+- Start step looks really bad
+- Discord/bug report/language selector that sit on top of the content in the onboarding screens
+- Toast should be centered when in portrait mode

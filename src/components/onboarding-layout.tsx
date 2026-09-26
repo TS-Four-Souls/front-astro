@@ -4,6 +4,7 @@ import { useTooltip } from "./board/use-tooltip";
 import { useContactContext } from "./contexts/contact-context";
 import { LanguageSelection } from "./language-selection";
 import { useLanguageContext } from "./contexts/language-context";
+import { cn } from "@/utils/cn";
 interface OnboardingLayoutProps {
   withHeader: boolean;
   children: React.ReactNode;
@@ -50,6 +51,11 @@ export const OnboardingLayout = ({
             <div className="mb-8 flex flex-1 flex-col place-content-center place-items-center gap-6 p-12 max-sm:p-6">
               {children}
             </div>
+            <div className="mb-8 flex place-content-center gap-4">
+              <DiscordButton />
+              <ReportBugButton />
+              <LanguageSelection />
+            </div>
             <a
               href="/privacy"
               className="mb-2 text-center font-main text-blue-200/60 hover:underline">
@@ -62,15 +68,12 @@ export const OnboardingLayout = ({
         ) : (
           children
         )}
-        <ReportBugButton />
-        <DiscordButton />
-        <LanguageSelection />
       </div>
     </div>
   );
 };
 
-export const ReportBugButton = () => {
+export const ReportBugButton = ({ className }: { className?: string }) => {
   const { t } = useLanguageContext();
   const tooltip = useTooltip({
     enabled: true,
@@ -80,7 +83,11 @@ export const ReportBugButton = () => {
   const { openContactPopup } = useContactContext();
   const { closeMenu: closeMainMenu } = useMainMenuContext();
   return (
-    <div className="absolute right-10 bottom-26 cursor-pointer rounded-full bg-space-500 p-3 shadow-xl/50 inset-shadow-xs inset-shadow-taupe-100/10 transition-[filter] hover:brightness-120 active:brightness-150">
+    <div
+      className={cn(
+        "cursor-pointer rounded-full bg-space-500 p-3 shadow-xl/50 inset-shadow-xs inset-shadow-taupe-100/10 transition-[filter] hover:brightness-120 active:brightness-150",
+        className,
+      )}>
       <img
         src="/ui/contact.png"
         className="w-12"
@@ -100,7 +107,7 @@ export const DiscordButton = () => {
     content: "",
   });
   return (
-    <div className="absolute right-10 bottom-48 cursor-pointer rounded-full bg-space-500 p-0 shadow-xl/50 inset-shadow-xs inset-shadow-taupe-100/10 transition-[filter] hover:brightness-120 active:brightness-150">
+    <div className="cursor-pointer rounded-full bg-space-500 p-0 shadow-xl/50 inset-shadow-xs inset-shadow-taupe-100/10 transition-[filter] hover:brightness-120 active:brightness-150">
       <img
         src="/ui/discord.png"
         className=""

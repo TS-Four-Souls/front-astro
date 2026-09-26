@@ -1,7 +1,7 @@
 import { HotkeyScope } from "@/utils/hotkey";
 import { socket } from "@/utils/socket";
 import { Button } from "../button";
-import { DiscordButton, ReportBugButton } from "../onboarding-layout";
+import { ReportBugButton } from "../onboarding-layout";
 import { useGameContext } from "./contexts/game-context";
 import { useMainMenuContext } from "./contexts/main-menu-context";
 import { usePromptContext } from "./contexts/prompt-context";
@@ -182,9 +182,10 @@ export const MainMenu = () => {
           />
         </div>
       </div>
-      <LanguageSelection />
-      <DiscordButton />
-      <ReportBugButton />
+      <div className="mt-3 flex place-content-stretch gap-2">
+        <ReportBugButton className="bg-taupe-600 shadow-lg" />
+        <LanguageSelection className="w-full bg-taupe-600 shadow-lg" />
+      </div>
     </>
   );
 };

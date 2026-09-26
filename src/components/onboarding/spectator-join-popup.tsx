@@ -10,6 +10,7 @@ import { useToastContext } from "../board/contexts/toast-context";
 import { Button } from "../button";
 import { useLanguageContext } from "../contexts/language-context";
 import { Popup } from "../popup";
+import { LanguageSelection } from "../language-selection";
 
 interface SpectatorJoinPopupProps {
   room: Room;
@@ -107,9 +108,12 @@ export const SpectatorJoinPopup = ({
       <div className="flex min-w-80 flex-col gap-4 sm:min-w-xl">
         {step === "options" ? (
           <>
-            <h1 className="text-center font-main text-2xl font-bold uppercase">
-              {t("introStep.joinRoomForm.spectatorPopup.welcomeTitle")}
-            </h1>
+            <div className="flex gap-4 place-content-between place-items-center">
+              <h1 className="text-center font-main text-2xl font-bold uppercase">
+                {t("introStep.joinRoomForm.spectatorPopup.welcomeTitle")}
+              </h1>
+              <LanguageSelection className="shadow-lg bg-taupe-600" />
+            </div>
             <div className="flex flex-col gap-2 sm:flex-row">
               <Button
                 className={optionButtonClassName}
