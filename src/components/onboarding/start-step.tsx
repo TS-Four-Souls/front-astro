@@ -364,7 +364,7 @@ export const StartStep = ({ room }: StartStepProps) => {
   return (
     <div
       className={cn(
-        "grid h-full gap-4 p-4 max-[75rem]:grid-rows-none",
+        "grid h-full gap-4 p-4 max-[75rem]:h-auto max-[75rem]:grid-rows-none",
         isSpectator
           ? "grid-rows-[250px_calc(100vh-250px-3em-92px)]"
           : "grid-rows-[250px_calc(100vh-250px-3em)]",
@@ -534,7 +534,7 @@ export const StartStep = ({ room }: StartStepProps) => {
         </div>
       </div>
       <div className="grid grid-cols-[auto_1fr] place-items-center gap-18 rounded-lg border-2 border-space-400 bg-space p-6 max-lg:grid-cols-1 max-lg:pt-16">
-        <div className="h-full overflow-auto pr-6 max-sm:pr-0">
+        <div className="h-full overflow-auto pr-6 max-lg:order-last max-sm:pr-0">
           <h2 className="font-main text-2xl font-bold">
             {t("startStep.gameParams.title")}
           </h2>
@@ -623,7 +623,7 @@ export const StartStep = ({ room }: StartStepProps) => {
         </div>
 
         <div className="flex h-full w-full flex-col place-content-center-safe place-items-center gap-24 overflow-auto max-lg:pt-4">
-          <div className="flex grid-cols-12 flex-wrap justify-center gap-x-12 gap-y-6 max-xl:gap-x-16">
+          <div className="flex grid-cols-12 flex-wrap justify-center gap-x-12 gap-y-6 max-xl:gap-x-8 max-lg:gap-x-4">
             {gameParameters.decksConfig.useB2Cards && (
               <>
                 <BooleanInput
@@ -889,7 +889,7 @@ export const StartStep = ({ room }: StartStepProps) => {
               </>
             )}
           </div>
-          <div className="flex flex-wrap justify-center gap-x-24 gap-y-16 max-xl:gap-x-16">
+          <div className="flex flex-wrap items-end justify-center gap-x-24 gap-y-16 max-xl:gap-x-16">
             <DeckPile
               type={CardType.CharacterCard}
               label={t("startStep.gameParams.decks.character")}
