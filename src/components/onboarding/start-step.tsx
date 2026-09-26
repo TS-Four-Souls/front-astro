@@ -364,12 +364,12 @@ export const StartStep = ({ room }: StartStepProps) => {
   return (
     <div
       className={cn(
-        "grid h-full gap-4 p-4 max-[85rem]:grid-rows-none",
+        "grid h-full gap-4 p-4 max-[75rem]:grid-rows-none",
         isSpectator
           ? "grid-rows-[250px_calc(100vh-250px-3em-92px)]"
           : "grid-rows-[250px_calc(100vh-250px-3em)]",
       )}>
-      <div className="flex place-items-center justify-between gap-18 rounded-lg border-2 border-space-400 bg-space p-6 max-[85rem]:flex-col max-[85rem]:py-16">
+      <div className="flex place-items-center justify-between gap-18 rounded-lg border-2 border-space-400 bg-space p-6 max-[75rem]:flex-col max-[75rem]:py-16">
         <div className="flex flex-col gap-2">
           <div className="flex place-items-center gap-4">
             <Button
@@ -448,46 +448,49 @@ export const StartStep = ({ room }: StartStepProps) => {
           </div>
         </div>
 
-        <div className="flex place-items-center gap-8 max-[60rem]:flex-col">
-          <div className="flex gap-8 max-[60rem]:flex-col">
-            {playerSlots.map((player, index) => (
-              <PlayerCard
-                key={index}
-                player={player}
-                actions={
-                  player?.isMe && !isSpectator
-                    ? {
-                        onTeamSelectionPress: (team: Team) =>
-                          onTeamSelectionPress(player, team),
-                        onCharacterSelectionPress: () =>
-                          onCharacterSelectionPress(player),
-                      }
-                    : player && isHost && (!player.isMe || player.isCopy)
-                      ? {
-                          delete: {
-                            label: player.isCopy
-                              ? t("startStep.playerList.removeButton.label")
-                              : player.isMe
-                                ? t("common.leaveButton")
-                                : t("startStep.playerList.kickButton.label"),
+        <div className="flex gap-8 max-[60rem]:flex-col">
+          {playerSlots.map((player, index) => (
+            <PlayerCard
+              key={index}
+              player={player}
+              actions={
+                player?.isMe && !isSpectator
+                  ? {
+                      onTeamSelectionPress: (team: Team) =>
+                        onTeamSelectionPress(player, team),
+                      onCharacterSelectionPress: () =>
+                        onCharacterSelectionPress(player),
+                      delete: player.isCopy
+                        ? {
+                            label: t("startStep.playerList.removeButton.label"),
                             onClick: () => onKickPlayerPress(player),
-                          },
-                        }
-                      : undefined
-                }
-                index={index + 1}
-              />
-            ))}
-          </div>
-          {isHost && !isSpectator && (
-            <Button
-              hotkey="a"
-              label={t("startStep.playerList.addCopyButton.label")}
-              onClick={onAddCopyPress}
-              theme="onSpace"
-              disabled={room.players.length >= 4}
+                          }
+                        : undefined,
+                    }
+                  : player && isHost && (!player.isMe || player.isCopy)
+                    ? {
+                        delete: {
+                          label: player.isCopy
+                            ? t("startStep.playerList.removeButton.label")
+                            : player.isMe
+                              ? t("common.leaveButton")
+                              : t("startStep.playerList.kickButton.label"),
+                          onClick: () => onKickPlayerPress(player),
+                        },
+                      }
+                    : undefined
+              }
+              onAddCopy={
+                !player &&
+                isHost &&
+                !isSpectator &&
+                index === room.players.length
+                  ? onAddCopyPress
+                  : undefined
+              }
+              index={index + 1}
             />
-          )}
+          ))}
         </div>
         <div className="flex flex-col gap-4">
           <Button
@@ -973,6 +976,7 @@ const DeckPile = ({
 const PlayerCard = ({
   player,
   actions,
+  onAddCopy,
   index,
 }: {
   player?: RoomPlayer;
@@ -981,6 +985,7 @@ const PlayerCard = ({
     onTeamSelectionPress?: (team: Team) => void;
     delete?: { label: string; onClick: () => void };
   };
+  onAddCopy?: () => void;
   index: number;
 }) => {
   const { t } = useLanguageContext();
@@ -1069,6 +1074,19 @@ const PlayerCard = ({
             )}
           </div>
         </div>
+      ) : onAddCopy ? (
+        <Button
+          hotkey="a"
+          label={
+            <span className="flex flex-col items-center gap-2">
+              <Copy className="size-8" />
+              {t("startStep.playerList.addCopyButton.label")}
+            </span>
+          }
+          onClick={onAddCopy}
+          theme="onSpace"
+          className="aspect-750/1024 h-auto w-32 flex-col px-2 text-center text-sm whitespace-normal"
+        />
       ) : (
         <div className="aspect-750/1024 w-28 place-content-center rounded-md bg-space-500/30 inset-shadow-sm inset-shadow-black">
           <p className="text-center text-6xl font-bold text-space-400/30">
