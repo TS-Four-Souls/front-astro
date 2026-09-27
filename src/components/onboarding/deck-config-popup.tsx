@@ -252,12 +252,12 @@ export const DeckConfigPopup = ({
     <Popup
       onPressBackdrop={onClose}
       className={cn(canUseLookup && "h-full w-full")}>
-      <div className="flex flex-row items-start justify-between gap-8">
-        <div className="flex items-center gap-6">
-          <h1 className="font-main text-2xl leading-tight font-bold uppercase">
+      <div className="grid grid-cols-[auto_1fr_auto] items-start gap-x-8 gap-y-4 max-[900px]:grid-cols-[1fr_auto] max-[900px]:items-center max-[900px]:gap-x-3">
+        <div className="flex items-center gap-6 max-[900px]:col-start-1 max-[900px]:row-start-1 max-[900px]:gap-3 max-[450px]:contents">
+          <h1 className="font-main text-2xl leading-tight font-bold uppercase max-[450px]:col-start-1 max-[450px]:row-start-1">
             {deckTypeLabels[type]}
           </h1>
-          <div className="flex h-full items-center">
+          <div className="flex h-full items-center max-[450px]:col-span-2 max-[450px]:row-start-2 max-[450px]:justify-self-center">
             <Button
               onClick={onModifyAll(-1)}
               label="−"
@@ -273,8 +273,8 @@ export const DeckConfigPopup = ({
             />
           </div>
         </div>
-        <div className="flex items-start gap-2">
-          <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap items-center justify-end gap-x-4 gap-y-2 max-[900px]:col-span-2 max-[900px]:min-[451px]:row-start-2 max-[900px]:gap-x-2 max-[450px]:row-start-3 max-[900px]:justify-center">
+          <div className="flex flex-wrap gap-2 max-[900px]:gap-1">
             {gameParameters.decksConfig.useB2Cards && (
               <Button
                 onClick={() => switchExtensionFilter("b2-")}
@@ -303,66 +303,63 @@ export const DeckConfigPopup = ({
                 active={extensionFilters["r-"]}
               />
             )}
-            <div className="mx-1" />
-            <Button
-              onClick={() => switchCustomFilter("minimumPlayers: 3")}
-              label={<PlayerRestriction className="size-5" />}
-              active={customFilters["minimumPlayers: 3"]}
-            />
-            <div className="mx-1" />
-            <Selector
-              options={[0, 1, 2]}
-              ItemComponent={({ option, active }) =>
-                option === 0 ? (
-                  0
-                ) : (
-                  <img
-                    src={`/ui/soul-${option}.png`}
-                    className={cn(
-                      "size-6",
-                      active && "drop-shadow-sm drop-shadow-taupe-950",
-                    )}
-                  />
-                )
-              }
-              value={soulFilter}
-              onChange={(value) => setSoulFilter(value)}
-              onRemove={() => setSoulFilter(undefined)}
-            />
-            <div className="mx-1" />
-            <select
-              aria-label="Tag filter"
-              className="max-w-40 rounded-md border-2 border-taupe-500 bg-taupe-600 px-3 py-2 font-main text-white uppercase"
-              value={tagFilter ?? ""}
-              onChange={(event) =>
-                setTagFilter(
-                  event.target.value === "" ? undefined : event.target.value,
-                )
-              }>
-              {/* <option value="">Tag: all</option> */}
-              {availableTags.map((tag) => (
-                <option value={tag} key={tag}>
-                  {tagDict[tag] === undefined ? tag : ts({ key: tagDict[tag] })}
-                </option>
-              ))}
-            </select>
-            <div className="mx-1" />
-            {canUseLookup && (
-              <input
-                className="w-48 rounded-md border-2 border-taupe-500 px-4"
-                placeholder={t("common.popup.search.placeholder")}
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            )}
           </div>
           <Button
-            onClick={onClose}
-            hotkey="escape"
-            hotkeyScope={[HotkeyScope.Popup]}
-            label={t("common.closeButton")}
+            onClick={() => switchCustomFilter("minimumPlayers: 3")}
+            label={<PlayerRestriction className="size-5" />}
+            active={customFilters["minimumPlayers: 3"]}
           />
+          <Selector
+            options={[0, 1, 2]}
+            ItemComponent={({ option, active }) =>
+              option === 0 ? (
+                0
+              ) : (
+                <img
+                  src={`/ui/soul-${option}.png`}
+                  className={cn(
+                    "size-6",
+                    active && "drop-shadow-sm drop-shadow-taupe-950",
+                  )}
+                />
+              )
+            }
+            value={soulFilter}
+            onChange={(value) => setSoulFilter(value)}
+            onRemove={() => setSoulFilter(undefined)}
+          />
+          <select
+            aria-label="Tag filter"
+            className="max-w-40 rounded-md border-2 border-taupe-500 bg-taupe-600 px-3 py-2 font-main text-white uppercase"
+            value={tagFilter ?? ""}
+            onChange={(event) =>
+              setTagFilter(
+                event.target.value === "" ? undefined : event.target.value,
+              )
+            }>
+            {/* <option value="">Tag: all</option> */}
+            {availableTags.map((tag) => (
+              <option value={tag} key={tag}>
+                {tagDict[tag] === undefined ? tag : ts({ key: tagDict[tag] })}
+              </option>
+            ))}
+          </select>
+          {canUseLookup && (
+            <input
+              className="h-10 w-48 rounded-md border-2 border-taupe-500 px-4"
+              placeholder={t("common.popup.search.placeholder")}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          )}
         </div>
+        <Button
+          onClick={onClose}
+          hotkey="escape"
+          hotkeyScope={[HotkeyScope.Popup]}
+          label={t("common.closeButton")}
+          className="max-[900px]:col-start-2 max-[900px]:row-start-1"
+        />
       </div>
 
       <div
