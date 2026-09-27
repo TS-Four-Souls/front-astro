@@ -1,5 +1,6 @@
 import type { Room } from "@/shared/api";
 import { CC } from "@/icons/cc";
+import { Exit } from "@/icons/exit";
 import { Eye } from "@/icons/eye";
 import { Share } from "@/icons/share";
 import { cn } from "@/utils/cn";
@@ -77,15 +78,26 @@ export const SpectatorChrome = ({
 
   return (
     <div className="box-border flex h-screen w-screen flex-col gap-4 bg-black p-4">
-      <div className="flex h-11 shrink-0 items-center gap-3 bg-black text-white">
+      <div className="flex h-11 shrink-0 items-center gap-3 bg-black text-white max-[560px]:gap-1.5 max-[470px]:grid max-[470px]:h-auto max-[470px]:grid-cols-[auto_1fr] max-[470px]:items-center max-[470px]:gap-2">
         <Button
-          label={t("gameStep.spectatorBar.leaveButton.label")}
+          label={
+            <>
+              <span className="max-[850px]:hidden">
+                {t("gameStep.spectatorBar.leaveButton.label")}
+              </span>
+              <Exit className="hidden size-5 -scale-x-100 max-[850px]:block" />
+            </>
+          }
           onClick={leaveRoom}
           theme={buttonTheme}
-          className="shrink-0"
+          className="shrink-0 max-[850px]:size-10 max-[850px]:p-0"
+          tooltip={{
+            title: t("gameStep.spectatorBar.leaveButton.label"),
+            enabled: true,
+          }}
         />
-        <div className="flex grow items-center justify-center gap-8">
-          <p className="font-main text-xl font-bold">
+        <div className="flex grow items-center justify-center gap-8 max-[560px]:gap-3 max-[470px]:col-span-2 max-[470px]:row-start-2 max-[470px]:grow-0">
+          <p className="font-main text-xl font-bold max-[700px]:hidden">
             {t("gameStep.spectatorBar.title")}
           </p>
           <div className="flex items-center gap-1.5">
@@ -102,7 +114,7 @@ export const SpectatorChrome = ({
             <ElapsedTime since={room.createdAt} className="text-taupe-300" />
           </div>
         </div>
-        <div className="flex shrink-0 items-center gap-5">
+        <div className="flex shrink-0 items-center gap-5 max-[560px]:gap-2 max-[470px]:col-start-2 max-[470px]:row-start-1 max-[470px]:justify-self-end">
           <Button
             label={<Share className="size-5" />}
             onClick={shareRoom}

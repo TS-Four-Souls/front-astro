@@ -104,15 +104,17 @@ export const SpectatorJoinPopup = ({
   });
 
   return (
-    <Popup onPressBackdrop={onDismiss}>
-      <div className="flex min-w-80 flex-col gap-4 sm:min-w-xl">
+    <Popup
+      onPressBackdrop={onDismiss}
+      className="w-[600px] max-w-[85%]">
+      <div className="flex flex-col gap-4">
         {step === "options" ? (
           <>
-            <div className="flex gap-4 place-content-between place-items-center">
-              <h1 className="text-center font-main text-2xl font-bold uppercase">
+            <div className="flex items-center justify-between gap-3">
+              <h1 className="min-w-0 text-center font-main text-2xl font-bold uppercase">
                 {t("introStep.joinRoomForm.spectatorPopup.welcomeTitle")}
               </h1>
-              <LanguageSelection className="shadow-lg bg-taupe-600" />
+              <LanguageSelection className="shrink-0 bg-taupe-600 shadow-lg" />
             </div>
             <div className="flex flex-col gap-2 sm:flex-row">
               <Button
