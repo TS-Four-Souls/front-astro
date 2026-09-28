@@ -105,7 +105,7 @@ export const Hand = () => {
                   card={card}
                   orientation={card.orientation}
                   tooltip={{
-                    capable: state.me.capabilities.useLoot,
+                    capable: state.me.capabilities.useLoot && card.canBePlayed,
                     title: t("gameStep.play.blockedTooltip.title"),
                   }}
                 />
@@ -115,11 +115,11 @@ export const Hand = () => {
                   ? `${(targetableCards.indexOf(card.slug) + 1) % 10},shift+${(targetableCards.indexOf(card.slug) + 1) % 10}`
                   : undefined
               }
-              disabled={state.me.capabilities.useLoot !== true}
+              disabled={state.me.capabilities.useLoot !== true || card.canBePlayed !== true }
               onClickTopCard={() =>
                 block(
                   t("gameStep.play.blockedTooltip.title"),
-                  state.me.capabilities.useLoot,
+                  state.me.capabilities.useLoot && card.canBePlayed,
                   () => playCard(index),
                 )
               }
