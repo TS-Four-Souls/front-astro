@@ -72,7 +72,7 @@ export const Board = () => {
                   hotkeyScope={[HotkeyScope.Main]}
                   onClick={resetView}
                   label={(t as (key: string) => string)("gameStep.resetView")}
-                  className="overflow-visible outline-4 outline-taupe-900 px-6 py-3 text-lg [&_img]:max-h-8"
+                  className="overflow-visible outline-4 outline-taupe-900"
                 />
               </div>
             </div>
