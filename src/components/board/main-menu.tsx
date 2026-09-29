@@ -111,7 +111,7 @@ export const MainMenu = () => {
   };
 
   return (
-    <>
+    <div className="flex flex-col gap-4 overflow-auto p-4">
       <div className="mb-4 flex items-center justify-between gap-4">
         <h1 className="font-main text-3xl font-bold">
           {t("gameStep.mainMenu.title")}
@@ -186,6 +186,6 @@ export const MainMenu = () => {
         <ReportBugButton className="bg-taupe-600 shadow-lg" />
         <LanguageSelection className="w-full bg-taupe-600 shadow-lg" />
       </div>
-    </>
+    </div>
   );
 };

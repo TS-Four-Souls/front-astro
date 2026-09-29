@@ -27,7 +27,7 @@ export const MainMenuProvider = ({
       }}>
       {children}
       {isOpen && (
-        <Popup onPressBackdrop={() => setIsOpen(false)}>
+        <Popup onPressBackdrop={() => setIsOpen(false)} className="p-0">
           <MainMenu />
         </Popup>
       )}
