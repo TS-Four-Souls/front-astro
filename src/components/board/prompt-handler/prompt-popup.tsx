@@ -12,7 +12,10 @@ import { SelectionIndexIndicator } from "../selection-index-indicator";
 import { useMemo, useState } from "react";
 import { useLanguageContext } from "@/components/contexts/language-context";
 import { cardJsonContentForAdvancedSearch } from "@/utils/cardsJsonForSearch";
-
+import {
+  EffectTextNumberSelector,
+  isEffectTextNumberSelection,
+} from "./effect-text-number-selector";
 interface PromptPopupProps {
   onCancel?: () => void | undefined;
   prompt: string;
@@ -106,6 +109,11 @@ export const PromptPopup = ({
     });
   }, [sortedOptions, search]);
 
+  const toggleSingleSelection = (option: SelectionItem) => {
+    if (selectedOptions.includes(option)) removeSelection(option);
+    else replaceSelection(option);
+  };
+
   return (
     <Popup
       onPressBackdrop={onCancel}
@@ -150,19 +158,17 @@ export const PromptPopup = ({
           "flex grow flex-wrap content-start gap-2 overflow-auto p-4",
           displayRow ? "flex-col" : "flex-row justify-center",
         )}>
-        {isOnCardSelection(filteredOptions) ? (
+        {isEffectTextNumberSelection(filteredOptions) ? (
+          <EffectTextNumberSelector
+            options={filteredOptions}
+            selectedOptions={selectedOptions}
+            onPress={toggleSingleSelection}
+          />
+        ) : isOnCardSelection(filteredOptions) ? (
           <OnCardSelector
             options={filteredOptions}
             selectedOptions={selectedOptions}
-            onPress={(option) => {
-              const selectionIndex = selectedOptions.indexOf(option);
-              const isSelected = selectionIndex >= 0;
-              if (isSelected) {
-                removeSelection(option);
-              } else {
-                replaceSelection(option);
-              }
-            }}
+            onPress={toggleSingleSelection}
           />
         ) : (
           filteredOptions.map((option, index) => {
@@ -363,6 +369,15 @@ export const GenericOption = ({
     case "number":
       return (
         <NumberOption
+          option={option}
+          onPress={onPress}
+          selected={selected}
+          children={children}
+        />
+      );
+    case "effectTextNumber":
+      return (
+        <EffectTextNumberOption
           option={option}
           onPress={onPress}
           selected={selected}
@@ -790,6 +805,24 @@ export const NumberOption = ({
     </div>
   );
 };
+
+const EffectTextNumberOption = ({
+  option,
+  onPress,
+  selected,
+  children,
+}: TemplateOptionProps<"effectTextNumber">) => (
+  <div className="relative">
+    <Card
+      card={option.payload.card}
+      className={cn("shadow-lg/30", selected && "outline-6 outline-blue-400")}
+      size={22}
+    />
+    <div className="absolute inset-4" onClick={onPress}>
+      {children}
+    </div>
+  </div>
+);
 
 /** Check that all the options are cardEffect options and they all refer to the same card */
 const isOnCardSelection = (
