@@ -3,7 +3,7 @@ import type { Player, PlayerMe } from "@/shared/api";
 import { cn } from "@/utils/cn";
 import { HotkeyScope } from "@/utils/hotkey";
 import { socket } from "@/utils/socket";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { ImgButton } from "../button";
 import { Card } from "./card";
@@ -15,6 +15,8 @@ import { useToastContext } from "./contexts/toast-context";
 import { useTooltip } from "./use-tooltip";
 import { useLanguageContext } from "../contexts/language-context";
 import { gainCoinsCheat } from "./cheats";
+import { Gear } from "@/icons/gear";
+import { useMainMenuContext } from "./contexts/main-menu-context";
 
 interface PlayerStatsProps {
   player: Player | PlayerMe;
@@ -23,10 +25,11 @@ interface PlayerStatsProps {
 
 export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
   const { translateError, t } = useLanguageContext();
-  const { state, isCheatViewOpen } = useGameContext();
+  const { state, isCheatViewOpen, isSpectator } = useGameContext();
   const { toast, block } = useToastContext();
   const { addPrompt, removePrompt } = usePromptContext();
   const { setPopover, closePopover } = usePopoverContext();
+  const { openMenu } = useMainMenuContext();
   const { registerPlayerAnchor } = useGameAnimation();
   const soulAnchorRef = useRef<HTMLDivElement | null>(null);
 
@@ -161,7 +164,6 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
             capable: player.capabilities.canDonateCoinsTo,
           },
     );
-
   const { setTooltip: setSwitchToTooltip, closeTooltip: closeSwitchToTooltip } =
     useTooltip(
       player.capabilities.canSwitchTo === true && !isMe
@@ -468,6 +470,12 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
                     }
             }
           />
+          {!isSpectator && (
+            <Gear
+              className="icon-shadow ml-6 size-6 cursor-pointer transition-[scale,rotate] ease-out-back hover:scale-120 hover:rotate-10"
+              onClick={openMenu}
+            />
+          )}
         </div>
       )}
     </div>
