@@ -464,6 +464,7 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
             }
           />
           <ImgButton
+          className="-rotate-5 hover:rotate-0"
             frontImage={
               state.me.character && state.me.character.stats.isEngagedInCombat
                 ? "ui/action-roll.png"
