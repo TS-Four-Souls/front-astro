@@ -12,7 +12,7 @@ export const RoundCounter = ({
   value,
 }: RoundCounterProps) => {
   return (
-    <div className="relative">
+    <div className="relative transition-[scale,rotate] ease-out-back hover:scale-110 hover:rotate-1">
       <img
         src="/ui/d8.png"
         width={48}

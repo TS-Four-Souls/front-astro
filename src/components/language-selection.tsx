@@ -24,7 +24,7 @@ export const LanguageSelection = ({ className }: { className?: string }) => {
       value={language}
       onChange={(event) => setLanguage(event.target.value as LANGUAGE_CODE)}
       className={cn(
-        "cursor-pointer rounded-full bg-space-500 py-3 pr-2 pl-4 shadow-xl/50 inset-shadow-xs inset-shadow-taupe-100/10 transition-[filter] hover:brightness-120 active:brightness-150",
+        "cursor-pointer rounded-full bg-space-500 py-3 pr-2 pl-4 shadow-xl/50 inset-shadow-xs inset-shadow-taupe-100/10 transition-[filter,scale] ease-out-back hover:scale-103 hover:brightness-120 active:brightness-150",
         className,
       )}>
       {Object.values(LANGUAGE_CODE).map((code) => (

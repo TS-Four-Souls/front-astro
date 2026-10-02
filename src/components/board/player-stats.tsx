@@ -287,9 +287,9 @@ export const PlayerStats = ({ player, className }: PlayerStatsProps) => {
       <div
         {...coinReveal}
         className={cn(
-          "relative flex items-center gap-1",
+          "relative flex items-center gap-1 transition-[scale] ease-out-back hover:scale-110",
           player.capabilities.canDonateCoinsTo === true
-            ? "cursor-pointer transition-[scale] ease-out-back hover:scale-110"
+            ? "cursor-pointer"
             : "cursor-not-allowed",
         )}
         onClick={() =>
