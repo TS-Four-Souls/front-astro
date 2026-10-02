@@ -71,6 +71,10 @@ export const GamePage = () => {
     function onDisconnect() {
       console.log("[🔌 Socket] Disconnected from socket");
     }
+    
+    function onRoomGameOver() {
+      console.log("[🔌 Socket] Room game over");
+    }
 
     function onRoomChanged(room: Room | null) {
       console.log("[🔌 Socket] Room changed", room);
@@ -121,6 +125,7 @@ export const GamePage = () => {
     socket.on("connect_error", onConnectError);
     socket.on("disconnect", onDisconnect);
     socket.on("on:room:changed", onRoomChanged);
+    socket.on("on:room:gameover", onRoomGameOver);
     socket.on("on:user:assigned", onUserAssigned);
     socket.on("on:game:quit", onGameQuit);
     socket.on("on:room:broadcast", onRoomBroadcast);
@@ -132,6 +137,7 @@ export const GamePage = () => {
       socket.off("connect_error", onConnectError);
       socket.off("disconnect", onDisconnect);
       socket.off("on:room:changed", onRoomChanged);
+      socket.off("on:room:gameover", onRoomGameOver);
       socket.off("on:user:assigned", onUserAssigned);
       socket.off("on:room:broadcast", onRoomBroadcast);
       socket.off("on:game:quit", onGameQuit);
