@@ -239,10 +239,15 @@ export const PromptOption = ({
   });
 
   return (
-    <GenericOption className= {
-      cn(option.type !== "couplePlayerHand" && "transition-[scale,rotate] ease-out-back hover:scale-103 hover:rotate-1",
-        isSelected && " scale-103 rotate-1")} 
-      option={option} onPress={onPress} selected={isSelected}>
+    <GenericOption
+      className={cn(
+        option.type !== "couplePlayerHand" &&
+          "transition-[scale,rotate] ease-out-back hover:scale-103 hover:rotate-1",
+        isSelected && "scale-103 rotate-1",
+      )}
+      option={option}
+      onPress={onPress}
+      selected={isSelected}>
       {onPress !== undefined && hotkey !== undefined && (
         <div className="absolute top-0 left-0 flex size-7 place-items-center overflow-hidden rounded-md bg-taupe-700 outline-3 outline-taupe-200">
           <img
@@ -258,85 +263,51 @@ export const PromptOption = ({
 };
 
 export const GenericOption = (
-  props
-: TemplateOptionProps<SelectionItem["type"]>) => {
+  props: TemplateOptionProps<SelectionItem["type"]>,
+) => {
   switch (props.option.type) {
     case "player":
-      return (
-        <PlayerOption
-       {...(props as TemplateOptionProps<"player">)}
-        />
-      );
+      return <PlayerOption {...(props as TemplateOptionProps<"player">)} />;
     case "monster":
-      return (
-        <MonsterOption
-       {...(props as TemplateOptionProps<"monster">)}
-        />
-      );
+      return <MonsterOption {...(props as TemplateOptionProps<"monster">)} />;
     case "cardEffect":
       return (
-        <CardEffectOption
-       {...(props as TemplateOptionProps<"cardEffect">)}
-        />
+        <CardEffectOption {...(props as TemplateOptionProps<"cardEffect">)} />
       );
     case "string":
-      return (
-        <StringOption
-       {...(props as TemplateOptionProps<"string">)}
-        />
-      );
+      return <StringOption {...(props as TemplateOptionProps<"string">)} />;
     case "stackElement":
       return (
         <StackElementOption
-       {...(props as TemplateOptionProps<"stackElement">)}
+          {...(props as TemplateOptionProps<"stackElement">)}
         />
       );
     case "chooseOne":
       return (
-        <ChooseOneOption
-       {...(props as TemplateOptionProps<"chooseOne">)}
-        />
+        <ChooseOneOption {...(props as TemplateOptionProps<"chooseOne">)} />
       );
     case "deck":
-      return (
-        <DeckOption
-       {...(props as TemplateOptionProps<"deck">)}
-        />
-      );
+      return <DeckOption {...(props as TemplateOptionProps<"deck">)} />;
     case "card":
-      return (
-        <CardOption
-       {...(props as TemplateOptionProps<"card">)}
-        />
-      );
+      return <CardOption {...(props as TemplateOptionProps<"card">)} />;
     case "couplePlayerHand":
       return (
         <CouplePlayerHandOption
-       {...(props as TemplateOptionProps<"couplePlayerHand">)}
+          {...(props as TemplateOptionProps<"couplePlayerHand">)}
         />
       );
     case "character":
       return (
-        <CharacterOption
-       {...(props as TemplateOptionProps<"character">)}
-        />
+        <CharacterOption {...(props as TemplateOptionProps<"character">)} />
       );
     case "boolean":
-      return (
-        <BooleanOption
-       {...(props as TemplateOptionProps<"boolean">)}
-        />
-      );
+      return <BooleanOption {...(props as TemplateOptionProps<"boolean">)} />;
     case "number":
-      return (
-        <NumberOption
-       {...(props as TemplateOptionProps<"number">)}
-        />
-      );
+      return <NumberOption {...(props as TemplateOptionProps<"number">)} />;
     case "serializedTranslation":
       return (
         <SerializedTranslationOption
-       {...(props as TemplateOptionProps<"serializedTranslation">)}
+          {...(props as TemplateOptionProps<"serializedTranslation">)}
         />
       );
     case "object":
@@ -713,7 +684,7 @@ export const CouplePlayerHandOption = ({
   option,
   onPress,
   children,
-  className
+  className,
 }: TemplateOptionProps<"couplePlayerHand">) => {
   const { ts } = useLanguageContext();
   return (

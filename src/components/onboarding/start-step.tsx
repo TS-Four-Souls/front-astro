@@ -448,7 +448,7 @@ export const StartStep = ({ room }: StartStepProps) => {
           </div>
         </div>
 
-        <div className="flex gap-8 max-[75rem]:order-last max-[75rem]:justify-self-center max-[75rem]:min-[28.0625rem]:col-span-2 max-[50rem]:grid max-[50rem]:grid-cols-1 max-[50rem]:min-[28.0625rem]:grid-cols-2">
+        <div className="flex gap-8 max-[75rem]:order-last max-[75rem]:justify-self-center max-[50rem]:grid max-[50rem]:grid-cols-1 max-[75rem]:min-[28.0625rem]:col-span-2 max-[50rem]:min-[28.0625rem]:grid-cols-2">
           {playerSlots.map((player, index) => (
             <PlayerCard
               key={index}

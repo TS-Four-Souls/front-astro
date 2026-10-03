@@ -20,7 +20,7 @@ export const HandPile = ({ player }: HandPileProps) => {
   const revealedHand =
     player.hand !== undefined && !isSpectator ? player.hand : undefined;
   const topCard = revealedHand?.[revealedHand.length - 1];
-  
+
   return (
     <div ref={(el) => registerOpponentHandPile(player.name, el)}>
       <Pile

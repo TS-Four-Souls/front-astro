@@ -115,7 +115,10 @@ export const Hand = () => {
                   ? `${(targetableCards.indexOf(card.slug) + 1) % 10},shift+${(targetableCards.indexOf(card.slug) + 1) % 10}`
                   : undefined
               }
-              disabled={state.me.capabilities.useLoot !== true || card.canBePlayed !== true }
+              disabled={
+                state.me.capabilities.useLoot !== true ||
+                card.canBePlayed !== true
+              }
               onClickTopCard={() =>
                 block(
                   t("gameStep.play.blockedTooltip.title"),

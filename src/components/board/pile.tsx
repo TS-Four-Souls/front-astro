@@ -205,7 +205,10 @@ export const Pile = ({
           return (
             <div
               key={index}
-              className={cn("relative col-start-1 row-start-1", "transition-[scale,rotate] ease-out-back hover:scale-103 hover:rotate-1")}
+              className={cn(
+                "relative col-start-1 row-start-1",
+                "transition-[scale,rotate] ease-out-back hover:scale-103 hover:rotate-1",
+              )}
               style={transformStyle}>
               <Card
                 onClick={isTopCard ? onClickTopCard : undefined}

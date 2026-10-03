@@ -104,9 +104,7 @@ export const SpectatorJoinPopup = ({
   });
 
   return (
-    <Popup
-      onPressBackdrop={onDismiss}
-      className="w-[600px] max-w-[85%]">
+    <Popup onPressBackdrop={onDismiss} className="w-[600px] max-w-[85%]">
       <div className="flex flex-col gap-4">
         {step === "options" ? (
           <>

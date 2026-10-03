@@ -16,7 +16,6 @@
 
 - Four players, side players cards are not aligned center when inplay is just one column
 
-
 ## Layout revamp
 
 - A board is made of
@@ -24,6 +23,7 @@
 - Between 1 and 4 player areas (with one being the current player)
 
 Layout depends on:
+
 - Number of players
 - Play with rooms
 - Play with bonus souls
@@ -33,16 +33,13 @@ Layout depends on:
 - Screen ratio
 - Screen size
 
-
 ## Or another approach
 
 - Landscape/portrait layout
 - Zoom with mouse wheel or gestures
 
-
-
-
 ## Improvements mobile
+
 - Zoom more on phones (have one card fill the screen)
 - UI way to big
 - Tooltips overflow

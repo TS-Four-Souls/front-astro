@@ -87,7 +87,7 @@ export const ReportBugButton = ({ className }: { className?: string }) => {
   return (
     <div
       className={cn(
-        "cursor-pointer rounded-full bg-space-500 p-3 shadow-xl/50 inset-shadow-xs inset-shadow-taupe-100/10 transition-[filter, scale,rotate] ease-out-back hover:scale-110 hover:rotate-5 hover:brightness-120 active:brightness-150",
+        "transition-[filter, scale,rotate] cursor-pointer rounded-full bg-space-500 p-3 shadow-xl/50 inset-shadow-xs inset-shadow-taupe-100/10 ease-out-back hover:scale-110 hover:rotate-5 hover:brightness-120 active:brightness-150",
         className,
       )}>
       <img
@@ -109,7 +109,7 @@ export const DiscordButton = () => {
     content: "",
   });
   return (
-    <div className="cursor-pointer rounded-full bg-space-500 p-0 shadow-xl/50 inset-shadow-xs inset-shadow-taupe-100/10 transition-[filter, scale,rotate] ease-out-back hover:scale-110 hover:rotate-5 hover:brightness-120 active:brightness-150">
+    <div className="transition-[filter, scale,rotate] cursor-pointer rounded-full bg-space-500 p-0 shadow-xl/50 inset-shadow-xs inset-shadow-taupe-100/10 ease-out-back hover:scale-110 hover:rotate-5 hover:brightness-120 active:brightness-150">
       <img
         src="/ui/discord.png"
         className=""

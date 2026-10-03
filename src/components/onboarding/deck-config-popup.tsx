@@ -273,7 +273,7 @@ export const DeckConfigPopup = ({
             />
           </div>
         </div>
-        <div className="flex flex-wrap items-center justify-end gap-x-4 gap-y-2 max-[900px]:col-span-2 max-[900px]:min-[451px]:row-start-2 max-[900px]:gap-x-2 max-[450px]:row-start-3 max-[900px]:justify-center">
+        <div className="flex flex-wrap items-center justify-end gap-x-4 gap-y-2 max-[900px]:col-span-2 max-[900px]:justify-center max-[900px]:gap-x-2 max-[450px]:row-start-3 max-[900px]:min-[451px]:row-start-2">
           <div className="flex flex-wrap gap-2 max-[900px]:gap-1">
             {gameParameters.decksConfig.useB2Cards && (
               <Button
