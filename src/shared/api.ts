@@ -1109,8 +1109,10 @@ const gameOverScreenPlayerDataSchema = z.object({
   type: z.enum(["win", "lose"]),
   title: serializedTranslationSchema,
 });
-export type GameOverScreenPlayerData = z.infer<typeof gameOverScreenPlayerDataSchema>;
-  
+export type GameOverScreenPlayerData = z.infer<
+  typeof gameOverScreenPlayerDataSchema
+>;
+
 const gameOverBroadcastSchema = z.object({
   type: "gameOver",
   data: z.array(gameOverScreenPlayerDataSchema),
@@ -1411,7 +1413,6 @@ export namespace Responses {
   export type AdminChangeMessageStatus = BasicResponse;
   export type AdminReplyToMessage = AdminReplyToMessageResponse;
 }
-
 
 export interface ServerToClientEvents {
   "on:room:changed": (room: Room | null) => void;
