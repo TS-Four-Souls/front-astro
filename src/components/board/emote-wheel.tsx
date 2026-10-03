@@ -98,10 +98,25 @@ export const EmoteWheel = ({ open, onOpenChange }: EmoteWheelProps) => {
         onClick={() => onOpenChange(false)}
       />
       <div
-        className="absolute top-1/2 left-full z-50 ml-2 size-56 -translate-y-1/2"
+        className="absolute top-1/2 -right-4/5 z-50 ml-2 size-65 -translate-y-1/2"
         role="menu"
         aria-label="Emotes">
-        <div className="absolute inset-3 overflow-hidden rounded-full bg-taupe-950/70 shadow-4xl/40 outline-3 outline-taupe-700 backdrop-blur-md" />
+        <div className="absolute inset-3 overflow-hidden rounded-full bg-transparent shadow-4xl/40 outline-4 outline-taupe-700 backdrop-blur-md" />
+        {EMOTES.map((emote, index) => {
+          const segmentAngle = 360 / EMOTES.length;
+          const angle = index * segmentAngle - 90 + segmentAngle / 2;
+
+          return (
+            <div
+              key={`separator-${emote.type}`}
+              aria-hidden="true"
+              className="pointer-events-none absolute top-1/2 left-1/2 z-0 h-px w-[4rem] origin-left bg-white/80 shadow-[0_0_3px_rgba(255,255,255,0.55)]"
+              style={{
+                transform: `rotate(${angle}deg) translateX(2.8rem)`,
+              }}
+            />
+          );
+        })}
         {EMOTES.map((emote, index) => {
           const angle = (index / EMOTES.length) * 2 * Math.PI - Math.PI / 2;
           const x = Math.cos(angle) * radius;
