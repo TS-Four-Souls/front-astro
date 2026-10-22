@@ -4,6 +4,7 @@ import { useGameAnimation } from "../contexts/game-animation";
 import { CardHoverPreview } from "../card-hover-preview";
 import { useLanguageContext } from "@/components/contexts/language-context";
 import { useToastContext } from "../contexts/toast-context";
+import { useGameContext } from "../contexts/game-context";
 import { socket } from "@/utils/socket";
 
 interface OthersInPlaysProps {
@@ -15,6 +16,7 @@ export const OthersInPlays = ({ cards, player }: OthersInPlaysProps) => {
   const { registerInPlayCardEl } = useGameAnimation();
   const { t, translateError } = useLanguageContext();
   const { toast, block } = useToastContext();
+  const { state } = useGameContext();
 
   const onTargetableCardClick = (card: InPlayCard) => {
     socket.emit("attackMonster", { card }, (response) => {
@@ -31,6 +33,11 @@ export const OthersInPlays = ({ cards, player }: OthersInPlaysProps) => {
     if (card === undefined) {
       return <div key={`empty-${index}`} className="h-full w-full" />;
     }
+    const attackRequirement = state.me.attackRequirements.find(
+      (requirement) =>
+        requirement.target !== "topDeck" &&
+        requirement.target.globalId === card.globalId,
+    );
     return (
       <div
         key={card.globalId}
@@ -55,6 +62,7 @@ export const OthersInPlays = ({ cards, player }: OthersInPlaysProps) => {
               effectTextNumbers: card.effectTextNumbers,
               counters: card.counters,
               stats: card.stats,
+              isRequiredAttack: attackRequirement !== undefined,
             },
           ]}
           disabled={
@@ -74,6 +82,15 @@ export const OthersInPlays = ({ cards, player }: OthersInPlaysProps) => {
                       {
                         capable: card.stats.capabilities.targetable,
                         title: t("gameStep.attack.blockedTooltip.title"),
+                      },
+                      {
+                        enabled: attackRequirement !== undefined,
+                        title: t("gameStep.attack.requiredTooltip.title"),
+                        content:
+                          attackRequirement &&
+                          t("gameStep.attack.requiredTooltip.message", {
+                            card: attackRequirement.source.nameKey,
+                          }),
                       },
                     ]
                   : undefined

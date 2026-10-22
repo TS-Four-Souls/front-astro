@@ -228,6 +228,11 @@ export const Me = () => {
             ? [state.me.character, ...state.me.inPlay]
             : state.me.inPlay
           ).map((card, index) => {
+            const attackRequirement = state.me.attackRequirements.find(
+              (requirement) =>
+                requirement.target !== "topDeck" &&
+                requirement.target.globalId === card.globalId,
+            );
             return (
               <div
                 key={card.globalId}
@@ -267,6 +272,7 @@ export const Me = () => {
                       effectTextNumbers: card.effectTextNumbers,
                       counters: card.counters,
                       stats: card.stats,
+                      isRequiredAttack: attackRequirement !== undefined,
                     },
                   ]}
                   disabled={
@@ -290,10 +296,25 @@ export const Me = () => {
                               ),
                               capable: card.capabilities.activate,
                             }
-                          : {
-                              title: t("gameStep.attack.blockedTooltip.title"),
-                              capable: card.stats.capabilities.targetable,
-                            }
+                          : [
+                              {
+                                title: t(
+                                  "gameStep.attack.blockedTooltip.title",
+                                ),
+                                capable: card.stats.capabilities.targetable,
+                              },
+                              {
+                                enabled: attackRequirement !== undefined,
+                                title: t(
+                                  "gameStep.attack.requiredTooltip.title",
+                                ),
+                                content:
+                                  attackRequirement &&
+                                  t("gameStep.attack.requiredTooltip.message", {
+                                    card: attackRequirement.source.nameKey,
+                                  }),
+                              },
+                            ]
                       }
                     />
                   )}
