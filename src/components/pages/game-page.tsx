@@ -145,6 +145,7 @@ export const GamePage = () => {
     socket.on("on:room:gameover", onGameOver);
     socket.onAnyOutgoing(onAnyOutgoing);
     socket.onAny(onAnyIncoming);
+    if (socket.connected) onConnect();
 
     return () => {
       socket.off("connect", onConnect);

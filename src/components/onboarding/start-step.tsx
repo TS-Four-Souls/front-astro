@@ -28,6 +28,7 @@ import React from "react";
 import { SetIcon } from "@/icons/set-icon";
 import { PlayerRestriction } from "@/icons/player-restriction";
 import { Exit } from "@/icons/exit";
+import { AddBotControl, BotControls } from "./lobby-bots";
 
 interface StartStepProps {
   room: Room;
@@ -227,7 +228,7 @@ export const StartStep = ({ room }: StartStepProps) => {
     const promptId = `add-copy-${Date.now()}`;
     const options: Extract<SelectionItem, { type: "string" }>[] =
       room.players.flatMap((player) => {
-        if (player.isCopy) return [];
+        if (player.isCopy || player.bot) return [];
         return {
           type: "string",
           payload: player.name,
@@ -362,13 +363,7 @@ export const StartStep = ({ room }: StartStepProps) => {
   );
 
   return (
-    <div
-      className={cn(
-        "grid h-full gap-4 p-4 max-[75rem]:h-auto max-[75rem]:grid-rows-none",
-        isSpectator
-          ? "grid-rows-[250px_calc(100vh-250px-3em-92px)]"
-          : "grid-rows-[250px_calc(100vh-250px-3em)]",
-      )}>
+    <div className="grid h-full grid-rows-[auto_minmax(0,1fr)] gap-4 p-4 max-[75rem]:h-auto max-[75rem]:grid-rows-none">
       <div className="flex place-items-center justify-between gap-18 rounded-lg border-2 border-space-400 bg-space p-6 max-[75rem]:grid max-[75rem]:grid-cols-1 max-[75rem]:justify-center max-[75rem]:gap-x-8 max-[75rem]:gap-y-18 max-[75rem]:py-16 max-[75rem]:min-[28.0625rem]:grid-cols-[auto_auto]">
         <div className="flex flex-col gap-2">
           <div className="flex place-items-center gap-4">
@@ -454,7 +449,9 @@ export const StartStep = ({ room }: StartStepProps) => {
               key={index}
               player={player}
               actions={
-                player?.isMe && !isSpectator
+                player &&
+                (player.isMe || (player.bot && isHost)) &&
+                !isSpectator
                   ? {
                       onTeamSelectionPress: (team: Team) =>
                         onTeamSelectionPress(player, team),
@@ -480,6 +477,7 @@ export const StartStep = ({ room }: StartStepProps) => {
                       }
                     : undefined
               }
+              canConfigureBot={isHost && !isSpectator}
               onAddCopy={
                 !player &&
                 isHost &&
@@ -977,6 +975,7 @@ const PlayerCard = ({
   player,
   actions,
   onAddCopy,
+  canConfigureBot,
   index,
 }: {
   player?: RoomPlayer;
@@ -986,6 +985,7 @@ const PlayerCard = ({
     delete?: { label: string; onClick: () => void };
   };
   onAddCopy?: () => void;
+  canConfigureBot: boolean;
   index: number;
 }) => {
   const { t } = useLanguageContext();
@@ -1075,18 +1075,21 @@ const PlayerCard = ({
           </div>
         </div>
       ) : onAddCopy ? (
-        <Button
-          hotkey="a"
-          label={
-            <span className="flex flex-col items-center gap-2">
-              <Copy className="size-8" />
-              {t("startStep.playerList.addCopyButton.label")}
-            </span>
-          }
-          onClick={onAddCopy}
-          theme="onSpace"
-          className="aspect-750/1024 h-auto w-32 flex-col px-2 text-center text-sm whitespace-normal"
-        />
+        <div className="flex w-32 flex-col gap-2">
+          <AddBotControl />
+          <Button
+            hotkey="a"
+            label={
+              <span className="flex flex-col items-center gap-2">
+                <Copy className="size-8" />
+                {t("startStep.playerList.addCopyButton.label")}
+              </span>
+            }
+            onClick={onAddCopy}
+            theme="onSpace"
+            className="w-32 px-2 text-center text-sm whitespace-normal"
+          />
+        </div>
       ) : (
         <div className="aspect-750/1024 w-28 place-content-center rounded-md bg-space-500/30 inset-shadow-sm inset-shadow-black">
           <p className="text-center text-6xl font-bold text-space-400/30">
@@ -1120,6 +1123,9 @@ const PlayerCard = ({
           </>
         )}
       </div>
+      {player?.bot && (
+        <BotControls bot={player.bot} canConfigure={canConfigureBot} />
+      )}
     </div>
   );
 };

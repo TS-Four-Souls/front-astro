@@ -8,7 +8,7 @@ import {
   LANGUAGE_CODE,
   translation_dics,
 } from "@/utils/translate";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import type { TranslationFunctionArgs, TranslationKeys } from "translations";
 
 const STORAGE_KEY = "language";
@@ -51,7 +51,12 @@ export const LanguageProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [language, setLanguage] = useState<LANGUAGE_CODE>(initLanguage());
+  const [language, setLanguage] = useState<LANGUAGE_CODE>(DEFAULT_LANGUAGE);
+
+  useEffect(() => {
+    setLanguage(initLanguage());
+  }, []);
+
   function changeLanguage(language: LANGUAGE_CODE) {
     setLanguage(language);
     storage.setItem(STORAGE_KEY, language);
