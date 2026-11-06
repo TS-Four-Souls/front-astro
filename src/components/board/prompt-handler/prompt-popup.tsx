@@ -118,11 +118,11 @@ export const PromptPopup = ({
     <Popup
       onPressBackdrop={onCancel}
       className={cn(canUseLookup && "h-full w-full")}>
-      <div className="flex flex-row justify-between gap-8">
-        <h1 className="font-main text-2xl leading-tight font-bold uppercase">
+      <div className="flex shrink-0 flex-row flex-wrap justify-between gap-x-8 gap-y-2">
+        <h1 className="font-main text-2xl leading-tight font-bold uppercase max-sm:text-lg">
           {prompt}
         </h1>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           {canUseLookup && (
             <input
               className="w-48 rounded-md border-2 border-taupe-500 px-4"
@@ -155,7 +155,7 @@ export const PromptPopup = ({
 
       <div
         className={cn(
-          "flex grow flex-wrap content-start gap-2 overflow-auto p-4",
+          "flex min-h-0 grow flex-wrap content-start gap-2 overflow-auto p-4",
           displayRow ? "flex-col" : "flex-row justify-center",
         )}>
         {isEffectTextNumberSelection(filteredOptions) ? (
@@ -214,6 +214,7 @@ export const PromptPopup = ({
             selectedOptions.length < minCount ||
             selectedOptions.length > maxCount
           }
+          className="shrink-0"
           theme="onLight"
           hotkey="enter"
           hotkeyScope={[HotkeyScope.Popup]}

@@ -43,9 +43,9 @@ export const PromptBoardSelection = ({
   }, []);
 
   return (
-    <div className="pointer-events-none fixed top-0 right-0 left-0 z-50 flex justify-center p-6">
-      <div className="pointer-events-auto flex items-center gap-4 rounded-2xl border-2 border-taupe-700 bg-taupe-900 p-4 shadow-xl">
-        <div className="flex flex-col">
+    <div className="pointer-events-none fixed top-0 right-0 left-0 z-50 flex justify-center p-6 max-sm:p-2">
+      <div className="pointer-events-auto flex max-w-full flex-wrap items-center justify-center gap-4 rounded-2xl border-2 border-taupe-700 bg-taupe-900 p-4 shadow-xl max-sm:gap-2 max-sm:p-2">
+        <div className="flex min-w-0 flex-col">
           <p className="font-main text-lg font-bold">{prompt}</p>
           <p className="text-sm text-taupe-400">
             {t("gameStep.boardSelection.selectedCount", {
