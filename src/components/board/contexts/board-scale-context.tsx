@@ -337,6 +337,13 @@ export const BoardScaleProvider = ({
     };
 
     const onWheel = (event: WheelEvent) => {
+      // Let overflowing panels (history, stack) scroll instead of zooming the board.
+      if (
+        !event.ctrlKey &&
+        event.target instanceof Element &&
+        event.target.closest(".scroll-priority")
+      )
+        return;
       event.preventDefault();
       rememberPointer(event.clientX, event.clientY);
       clearTransition();

@@ -20,8 +20,6 @@ export const History = () => {
   const reversedHistory = state.history.toReversed();
   const displayedHistory = reversedHistory.slice(0, 30);
 
-  if (!isOpen) return null;
-
   useEffect(() => {
     const scrollView = scrollViewRef.current;
     if (!scrollView) return;
@@ -33,7 +31,7 @@ export const History = () => {
     } else {
       scrollView.classList.remove("scroll-priority");
     }
-  }, [state.stack.length]);
+  }, [displayedHistory.length, isOpen]);
 
   const rollback = () => {
     socket.emit("rollback", (response) => {
@@ -55,6 +53,8 @@ export const History = () => {
           })
         : t("gameStep.roundCounter.tooltip.title", { count: state.round }),
   });
+
+  if (!isOpen) return null;
 
   return (
     <div className="flex h-86 flex-col items-center gap-2">
