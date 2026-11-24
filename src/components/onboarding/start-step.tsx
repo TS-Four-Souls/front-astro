@@ -795,6 +795,92 @@ export const StartStep = ({ room }: StartStepProps) => {
                 />
               </>
             )}
+            {gameParameters.decksConfig.useBOXCards && (
+              <>
+                <BooleanInput
+                  label={
+                    <SetIcon
+                      set="box"
+                      className={cn(
+                        "size-6",
+                        gameParameters.decksConfig.useBOXCards.value
+                          ? "text-taupe-900"
+                          : "text-space/40",
+                      )}
+                    />
+                  }
+                  value={gameParameters.decksConfig.useBOXCards.value}
+                  onChange={(value) =>
+                    onChangeGameParameter({
+                      parameter: "decksConfig",
+                      value: {
+                        useBOXCards: {
+                          text: gameParameters.decksConfig.useBOXCards!.text,
+                          translationKey:
+                            gameParameters.decksConfig.useBOXCards!
+                              .translationKey,
+                          value,
+                        },
+                      },
+                    })
+                  }
+                  tooltip={{
+                    title: ts(
+                      gameParameters.decksConfig.useBOXCards.translationKey,
+                    ),
+                    content: t(
+                      "startStep.gameParams.helpButton.useExpansionCards",
+                      { expansionName: "The Unboxing of Isaac" },
+                    ),
+                    enabled: true,
+                  }}
+                  disabled={!isHost || isSpectator}
+                />
+              </>
+            )}
+            {gameParameters.decksConfig.useRWZCards && (
+              <>
+                <BooleanInput
+                  label={
+                    <SetIcon
+                      set="rwz"
+                      className={cn(
+                        "size-6",
+                        gameParameters.decksConfig.useRWZCards.value
+                          ? "text-taupe-900"
+                          : "text-space/40",
+                      )}
+                    />
+                  }
+                  value={gameParameters.decksConfig.useRWZCards.value}
+                  onChange={(value) =>
+                    onChangeGameParameter({
+                      parameter: "decksConfig",
+                      value: {
+                        useRWZCards: {
+                          text: gameParameters.decksConfig.useRWZCards!.text,
+                          translationKey:
+                            gameParameters.decksConfig.useRWZCards!
+                              .translationKey,
+                          value,
+                        },
+                      },
+                    })
+                  }
+                  tooltip={{
+                    title: ts(
+                      gameParameters.decksConfig.useRWZCards.translationKey,
+                    ),
+                    content: t(
+                      "startStep.gameParams.helpButton.useExpansionCards",
+                      { expansionName: "Requiem Warp Zone" },
+                    ),
+                    enabled: true,
+                  }}
+                  disabled={!isHost || isSpectator}
+                />
+              </>
+            )}
             {gameParameters.decksConfig.nbPlayerCardRestriction && (
               <>
                 <BooleanInput

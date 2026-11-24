@@ -80,6 +80,8 @@ export type CardAndEffectTextNumber = z.infer<
 >;
 const playableCardSchema = cardSchema.extend({
   canBePlayed: capabilitySchema,
+  // Source card granting a free play (no loot play used); absent for regular hand cards.
+  free: cardSchema.optional(),
 });
 export type PlayableCard = z.infer<typeof playableCardSchema>;
 
@@ -246,6 +248,7 @@ const pendingSelectionReasonSchema = z.union([
   z.literal("coinGift"),
   z.literal("miniDraft"),
   z.literal("mulliganCharacters"),
+  z.literal("infiniteLoop"),
 ]);
 export type PendingSelectionReason = z.infer<
   typeof pendingSelectionReasonSchema
@@ -287,7 +290,7 @@ const statsSchema = z.object({
   }),
 });
 
-const counterTypeSchema = z.union([z.literal("normal"), z.literal("golden")]);
+const counterTypeSchema = z.union([z.literal("normal"), z.literal("golden"), z.literal("spider"), z.literal("gut"), z.literal("bounty")]);
 export type CounterType = z.infer<typeof counterTypeSchema>;
 
 const serializedCounterSchema = z.object({
@@ -309,6 +312,8 @@ const inPlayCardSchema = attackableCardSchema.extend({
   capabilities: z.object({
     activate: capabilitySchema,
   }),
+  // Effects you may activate on another player's item, while you may activate their items (e.g. Possession).
+  effects: z.array(activeEffectEntrySchema).optional(),
 });
 export type InPlayCard = z.infer<typeof inPlayCardSchema>;
 
@@ -524,7 +529,7 @@ const contactRequestSchema = z.object({
 
 const giveCoinsSchema = z.object({
   target: z.string(),
-  coins: z.number(),
+  coins: z.number().int().positive(),
 });
 
 const attackMonsterSchema = z.union([
@@ -557,6 +562,8 @@ const decksConfigSchema = z.object({
   useG2Cards: booleanGameParameterSchema.optional(),
   useB2Cards: booleanGameParameterSchema.optional(),
   useRCards: booleanGameParameterSchema.optional(),
+  useBOXCards: booleanGameParameterSchema.optional(),
+  useRWZCards: booleanGameParameterSchema.optional(),
 
   character: characterDeckSchema,
   monster: deckSchema,
@@ -576,6 +583,8 @@ const decksConfigPatchSchema = z.object({
   useG2Cards: booleanGameParameterSchema.optional(),
   useB2Cards: booleanGameParameterSchema.optional(),
   useRCards: booleanGameParameterSchema.optional(),
+  useBOXCards: booleanGameParameterSchema.optional(),
+  useRWZCards: booleanGameParameterSchema.optional(),
 
   monster: z.array(deckConfigCardSchema).optional(),
   character: z.array(deckConfigCardSchema).optional(),
@@ -811,6 +820,7 @@ export type Emote = z.infer<typeof emoteSchema>;
 const cardActivationSchema = z.object({
   type: z.union([
     z.literal("hand"),
+    z.literal("topLootCard"),
     z.literal("inPlay"),
     z.literal("character"),
     z.literal("room"),
@@ -818,10 +828,13 @@ const cardActivationSchema = z.object({
   index: z.number(),
   effectIndex: z.union([z.number(), z.literal("tap")]),
   targetChoices: z.array(selectionItemSchema).optional(),
+  // In-play area of another player whose items the requester may activate (e.g. Possession).
+  ownerId: z.string().optional(),
 });
 const cardActivationWithIdSchema = z.object({
   type: z.union([
     z.literal("hand"),
+    z.literal("topLootCard"),
     z.literal("inPlay"),
     z.literal("character"),
     z.literal("room"),
@@ -829,6 +842,8 @@ const cardActivationWithIdSchema = z.object({
   index: z.number(),
   effectIndex: z.number(),
   targetChoices: z.array(selectionItemSchema).optional(),
+  // In-play area of another player whose items the requester may activate (e.g. Possession).
+  ownerId: z.string().optional(),
 });
 
 const setGameParameterRequestSchema = z.discriminatedUnion("parameter", [
@@ -841,7 +856,7 @@ const setGameParameterRequestSchema = z.discriminatedUnion("parameter", [
           ] === numberGameParameterSchema,
       ) as [NumberParameterKeys, ...NumberParameterKeys[]],
     ),
-    value: z.number(),
+    value: z.number().int(),
   }),
   z.object({
     parameter: z.enum(
@@ -930,7 +945,6 @@ const diceRollAnimationSchema = genericAnimationSchema.extend({
 
 const transferLootAnimationSchema = genericAnimationSchema.extend({
   type: z.literal("transferLoot"),
-  card: identifierTypeSchema,
   sender: z.string(),
   recipient: z.string(),
 });
@@ -1028,6 +1042,7 @@ export type RoomSlot = z.infer<typeof roomSlotSchema>;
 const lootDeckSchema = z.object({
   discard: z.array(cardSchema),
   deckSize: z.number(),
+  firstCardLootDeck: playableCardSchema.optional(),
 });
 export type LootDeck = z.infer<typeof lootDeckSchema>;
 
