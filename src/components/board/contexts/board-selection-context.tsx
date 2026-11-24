@@ -5,7 +5,7 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
+  useLayoutEffect,
   useMemo,
   useState,
 } from "react";
@@ -70,10 +70,8 @@ export const BoardSelectionProvider = ({
 
   const [selectedOptions, setSelectedOptions] = useState<SelectionItem[]>([]);
 
-  useEffect(() => {
-    if (!prompt) {
-      setSelectedOptions([]);
-    }
+  useLayoutEffect(() => {
+    setSelectedOptions([]);
   }, [prompt]);
 
   const isGlobalIdOnBoard = useCallback(

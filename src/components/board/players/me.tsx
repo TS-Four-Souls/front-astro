@@ -46,6 +46,12 @@ export const Me = () => {
     const pendingSelection = state.me.pendingSelection;
     if (pendingSelection) {
       const promptId = `pending-selection-${pendingSelection.requestId}`;
+      // The server shows one selection at a time: the previous one is over (answered, or gone with a rollback).
+      if (
+        pendingSelectionsPrompts.current &&
+        pendingSelectionsPrompts.current !== promptId
+      )
+        removePrompt(pendingSelectionsPrompts.current);
       pendingSelectionsPrompts.current = promptId;
       addPrompt({
         promptId,
