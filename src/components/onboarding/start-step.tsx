@@ -644,8 +644,7 @@ export const StartStep = ({ room }: StartStepProps) => {
                       gameParameters.decksConfig.useB2Cards.translationKey,
                     ),
                     content: t(
-                      "startStep.gameParams.helpButton.useExpansionCards",
-                      { expansionName: "Four Souls+" },
+                      "startStep.gameParams.helpButton.useBaseGameCards",
                     ),
                     enabled: true,
                   }}
